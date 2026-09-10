@@ -1,0 +1,217 @@
+.contact-main-section {
+  padding: 50px 0 60px;
+  background-color: #ffffff;
+}
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 50px;
+  align-items: center;
+  margin-bottom: 50px;
+}
+
+.contact-heading {
+  font-size: 32px;
+  font-weight: 800;
+  color: #2e7d32;
+  margin-bottom: 8px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.contact-lead-sub {
+  font-size: 14.5px;
+  color: #666666;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+/* Form Styles */
+.blessings-style-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group-custom {
+  width: 100%;
+}
+
+.input-custom,
+.textarea-custom {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1.5px solid #d4ded5;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: 'Open Sans', sans-serif;
+  color: #333333;
+  background: #fbfdfb;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+.input-custom:focus,
+.textarea-custom:focus {
+  outline: none;
+  border-color: #2e7d32;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.15);
+}
+
+.textarea-custom {
+  resize: vertical;
+}
+
+.btn-submit-contact {
+  background: #534537; /* Brown button matching Blessings Ayurveda screenshot */
+  color: #ffffff;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  width: fit-content;
+}
+
+.btn-submit-contact:hover {
+  background: #2e7d32;
+  box-shadow: 0 4px 15px rgba(46, 125, 50, 0.35);
+}
+
+.btn-submit-contact:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.alert-success-box {
+  background: #eaf6ec;
+  color: #1e7025;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #b7e4be;
+}
+
+.alert-error-box {
+  background: #fde8e8;
+  color: #c53030;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  border: 1px solid #feb2b2;
+}
+
+/* Illustration Col */
+.contact-illustration-col {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.illustration-wrapper {
+  width: 100%;
+  max-width: 440px;
+}
+
+.support-svg-art {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.08));
+}
+
+/* 3-Column Contact Strip Matching Screenshot */
+.contact-cards-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding-top: 25px;
+  border-top: 1px solid #e2ebe3;
+}
+
+.contact-strip-box {
+  background: #f8faf8;
+  border: 1.5px solid #e5ede6;
+  border-radius: 12px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.contact-strip-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-color: #2e7d32;
+}
+
+.strip-icon-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #eaf4eb;
+  color: #2e7d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.strip-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.strip-title {
+  font-size: 12.5px;
+  color: #777777;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.strip-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: #333333;
+  text-decoration: none;
+  margin-top: 2px;
+}
+
+.strip-value:hover {
+  color: #2e7d32;
+}
+
+@media (max-width: 991px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .contact-cards-strip {
+    grid-template-columns: 1fr;
+  }
+}

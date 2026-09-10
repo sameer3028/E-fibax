@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,600&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-sans text-charcoal bg-white antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-serif text-forest-deep tracking-tight;
+  }
+}
+
+/* Custom scrollbar for desktop & drawers */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f4f6f3;
+}
+::-webkit-scrollbar-thumb {
+  background: #74c69d;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2d6a4f;
+}
