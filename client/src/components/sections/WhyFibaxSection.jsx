@@ -32,7 +32,7 @@ export function WhyFibaxSection() {
           <span className="text-xs font-bold text-sage uppercase tracking-widest block mb-1.5">
             The Fibax Promise
           </span>
-          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-forest-deep">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-forest-deep">
             Why Thousands Choose Fibax Pharma
           </h2>
           <p className="text-xs sm:text-sm text-charcoal-muted mt-2">
@@ -51,7 +51,7 @@ export function WhyFibaxSection() {
                 <div className="w-12 h-12 rounded-2xl bg-sage-soft text-forest mx-auto flex items-center justify-center mb-4">
                   <Icon className="h-6 w-6" />
                 </div>
-                <h4 className="font-serif font-bold text-base text-forest-deep mb-2">
+                <h4 className="font-heading font-bold text-base text-forest-deep mb-2">
                   {feat.title}
                 </h4>
                 <p className="text-xs text-charcoal-muted leading-relaxed">

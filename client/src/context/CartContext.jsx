@@ -26,13 +26,19 @@ export function CartProvider({ children }) {
 
   const addToCart = (product, quantity = 1) => {
     setItems(prev => {
-      const existingIdx = prev.findIndex(item => item.product.id === product.id);
+      const prodId = product.id;
+      const existingIdx = prev.findIndex(item => (item.product?.id || item.id) === prodId);
       if (existingIdx > -1) {
         const updated = [...prev];
-        updated[existingIdx].quantity += quantity;
+        updated[existingIdx] = {
+          ...updated[existingIdx],
+          ...product,
+          product: product,
+          quantity: updated[existingIdx].quantity + quantity
+        };
         return updated;
       }
-      return [...prev, { product, quantity }];
+      return [...prev, { ...product, product, quantity }];
     });
     setIsOpen(true);
   };
@@ -43,14 +49,15 @@ export function CartProvider({ children }) {
       return;
     }
     setItems(prev =>
-      prev.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
-      )
+      prev.map(item => {
+        const itemId = item.product?.id || item.id;
+        return itemId === productId ? { ...item, quantity } : item;
+      })
     );
   };
 
   const removeFromCart = (productId) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+    setItems(prev => prev.filter(item => (item.product?.id || item.id) !== productId));
   };
 
   const clearCart = () => {
@@ -59,7 +66,10 @@ export function CartProvider({ children }) {
     setDiscountAmount(0);
   };
 
-  const subtotal = items.reduce((acc, item) => acc + (item.product.salePrice * item.quantity), 0);
+  const subtotal = items.reduce((acc, item) => {
+    const price = item.salePrice || item.product?.salePrice || 0;
+    return acc + (price * item.quantity);
+  }, 0);
   const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
   const amountUntilFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD - subtotal);
   const freeShippingProgress = Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100));
@@ -93,8 +103,10 @@ export function CartProvider({ children }) {
     <CartContext.Provider
       value={{
         items,
+        cartItems: items,
         totalItemsCount,
         isOpen,
+        isCartOpen: isOpen,
         openCart: () => setIsOpen(true),
         closeCart: () => setIsOpen(false),
         toggleCart: () => setIsOpen(prev => !prev),
@@ -103,8 +115,11 @@ export function CartProvider({ children }) {
         removeFromCart,
         clearCart,
         subtotal,
+        cartSubtotal: subtotal,
         isFreeShipping,
         amountUntilFreeShipping,
+        amountNeededForFreeShipping: amountUntilFreeShipping,
+        freeShippingThreshold: FREE_SHIPPING_THRESHOLD,
         freeShippingProgress,
         shippingFee,
         appliedCoupon,

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <defs>
+    <linearGradient id="liverGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="50%" stop-color="#B91C1C"/>
+      <stop offset="100%" stop-color="#7F1D1D"/>
+    </linearGradient>
+    <linearGradient id="gallbladderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+    <linearGradient id="vesselBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle Soft Tint -->
+  <circle cx="48" cy="48" r="46" fill="#FEF2F2" stroke="#FEE2E2" stroke-width="2"/>
+
+  <!-- Vena Cava / Hepatic Vein entering top -->
+  <path d="M46 12 L46 28 C46 30 48 32 50 32 C52 32 54 30 54 28 L54 12 Z" fill="url(#vesselBlue)"/>
+
+  <!-- Anatomical Liver Shape: Large right lobe and tapering left lobe -->
+  <path d="M22 34 C28 26 50 25 72 32 C78 35 80 44 76 52 C70 64 56 68 40 68 C28 68 16 58 16 46 C16 38 18 35 22 34 Z" fill="url(#liverGrad)" stroke="#450A0A" stroke-width="2"/>
+
+  <!-- Falciform Ligament dividing lobes -->
+  <path d="M46 28 C46 38 48 50 49 68" stroke="#F87171" stroke-width="1.8" stroke-dasharray="2 2"/>
+
+  <!-- Hepatic Portal & Artery Branches -->
+  <path d="M48 48 L48 56 M44 52 L52 52" stroke="#EF4444" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Gallbladder tucked underneath right lobe -->
+  <ellipse cx="38" cy="62" rx="6" ry="9" transform="rotate(-25 38 62)" fill="url(#gallbladderGrad)" stroke="#047857" stroke-width="1.5"/>
+  <path d="M38 54 C40 50 44 48 48 50" stroke="#059669" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Healthy Detox Sparkles / Pure Drops -->
+  <circle cx="28" cy="42" r="1.5" fill="#FCA5A5"/>
+  <circle cx="62" cy="46" r="2" fill="#FCA5A5"/>
+  <path d="M72 20 L73.5 23 L76.5 24.5 L73.5 26 L72 29 L70.5 26 L67.5 24.5 L70.5 23 Z" fill="#10B981"/>
+</svg>

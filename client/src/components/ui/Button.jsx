@@ -13,12 +13,12 @@ export const Button = React.forwardRef(({
   const baseStyles = 'inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
 
   const variants = {
-    primary: 'bg-forest hover:bg-forest-light text-white shadow-sm focus:ring-forest-light rounded-full',
-    secondary: 'bg-sand hover:bg-sand-border text-forest border border-sand-border focus:ring-forest rounded-full',
-    outline: 'bg-transparent border-1.5 border-forest text-forest hover:bg-sage-soft focus:ring-forest rounded-full',
-    gold: 'bg-gold hover:bg-gold-dark text-forest-deep font-semibold shadow-sm focus:ring-gold rounded-full',
-    sale: 'bg-crimson hover:bg-crimson-dark text-white font-semibold shadow-sm focus:ring-crimson rounded-full',
-    ghost: 'bg-transparent text-charcoal hover:bg-sand hover:text-forest rounded-lg',
+    primary: 'bg-brand hover:bg-brand-hover text-white shadow-sm focus:ring-brand rounded-full font-bold',
+    forest: 'bg-forest hover:bg-forest-light text-white shadow-sm focus:ring-forest rounded-full font-bold',
+    secondary: 'bg-brand-soft hover:bg-brand-subtle text-brand border border-brand-border focus:ring-brand rounded-full font-bold',
+    outline: 'bg-transparent border-1.5 border-forest text-forest hover:bg-forest hover:text-white focus:ring-forest rounded-full font-semibold',
+    leaf: 'bg-leaf hover:bg-leaf-dark text-forest-deep font-bold shadow-sm focus:ring-leaf rounded-full',
+    ghost: 'bg-transparent text-charcoal hover:bg-sand hover:text-brand rounded-lg',
   };
 
   const sizes = {

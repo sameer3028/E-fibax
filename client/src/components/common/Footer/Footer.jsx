@@ -23,7 +23,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
               <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
-              <h5 className="font-serif text-sm font-semibold text-white">AYUSH Approved</h5>
+              <h5 className="font-heading text-sm font-semibold text-white">AYUSH Approved</h5>
               <p className="text-xs text-sand/70">Certified authentic formulations</p>
             </div>
           </div>
@@ -33,7 +33,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
               <Award className="h-6 w-6" />
             </div>
             <div>
-              <h5 className="font-serif text-sm font-semibold text-white">GMP Certified</h5>
+              <h5 className="font-heading text-sm font-semibold text-white">GMP Certified</h5>
               <p className="text-xs text-sand/70">Pharmaceutical purity standards</p>
             </div>
           </div>
@@ -43,7 +43,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
               <Leaf className="h-6 w-6" />
             </div>
             <div>
-              <h5 className="font-serif text-sm font-semibold text-white">100% Herbal Actives</h5>
+              <h5 className="font-heading text-sm font-semibold text-white">100% Herbal Actives</h5>
               <p className="text-xs text-sand/70">Zero synthetic chemical fillers</p>
             </div>
           </div>
@@ -53,7 +53,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
               <Truck className="h-6 w-6" />
             </div>
             <div>
-              <h5 className="font-serif text-sm font-semibold text-white">Delhivery Express</h5>
+              <h5 className="font-heading text-sm font-semibold text-white">Delhivery Express</h5>
               <p className="text-xs text-sand/70">Fast Pan-India delivery & COD</p>
             </div>
           </div>
@@ -67,7 +67,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
               <div className="w-8 h-8 rounded-lg bg-forest flex items-center justify-center text-gold">
                 <Sparkles className="h-4 w-4" />
               </div>
-              <span className="font-serif text-xl font-bold tracking-tight text-white">
+              <span className="font-heading text-xl font-bold tracking-tight text-white">
                 FIBAX PHARMA
               </span>
             </div>
@@ -93,7 +93,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
 
           {/* Col 2: Health Concerns */}
           <div>
-            <h5 className="font-serif font-semibold text-white text-sm mb-3">Shop by Concern</h5>
+            <h5 className="font-heading font-semibold text-white text-sm mb-3">Shop by Concern</h5>
             <ul className="space-y-2">
               {CONCERNS.slice(0, 6).map((c) => (
                 <li key={c.id}>
@@ -110,7 +110,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
 
           {/* Col 3: Categories */}
           <div>
-            <h5 className="font-serif font-semibold text-white text-sm mb-3">Formulations</h5>
+            <h5 className="font-heading font-semibold text-white text-sm mb-3">Formulations</h5>
             <ul className="space-y-2">
               {CATEGORIES.map((cat) => (
                 <li key={cat.id}>
@@ -127,7 +127,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
 
           {/* Col 4: Trust & Policies */}
           <div>
-            <h5 className="font-serif font-semibold text-white text-sm mb-3">Customer Support</h5>
+            <h5 className="font-heading font-semibold text-white text-sm mb-3">Customer Support</h5>
             <ul className="space-y-2">
               <li>
                 <a href="#track-order" className="hover:text-gold transition-colors">

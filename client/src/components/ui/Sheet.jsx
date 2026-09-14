@@ -39,7 +39,7 @@ export function Sheet({ isOpen, onClose, title, children, side = 'right', classN
         >
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-sand-border bg-sand-warm">
-            <h3 className="text-lg font-serif font-semibold text-forest-deep">
+            <h3 className="text-lg font-heading font-semibold text-forest-deep">
               {title}
             </h3>
             <button

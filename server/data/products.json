@@ -1,0 +1,1961 @@
+[
+  {
+    "id": "3632",
+    "title": "Fibax Safed Musli Powder 100gm",
+    "slug": "fibax-safed-musli-powder",
+    "sku": "FBX-FIBAXSA-3632",
+    "dosageForm": "Powder",
+    "categoryId": "powders",
+    "concernId": "mens-wellness-stamina",
+    "mrp": 650,
+    "salePrice": 600,
+    "discountPercent": 8,
+    "stockQuantity": 35,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/safed-musli.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 28,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Made from pure Safed Musli root for natural strength and stamina Naturally boosts energy, endurance, and daily performance Helps improve vitality, reproductive wellness, and overall vigor Supports faster recovery from tiredness, stress, and physical exertion Strengthens immunity and overall wellness with daily use Blends easily in milk, smoothies, shakes, or herbal drinks Free from preservatives, chemicals, fillers, and artificial additives Suitable for both men and women seeking natural energy support Ideal for athletes, active individuals, and those needing extra strength Comes in a fine-quality powder for quick absorption and better results",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 600,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 1080,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Best Value)",
+        "quantity": 3,
+        "price": 1530,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-10T10:43:10.576Z",
+    "updatedAt": "2026-09-14T07:53:01.034Z"
+  },
+  {
+    "id": "3620",
+    "title": "Fibax Ashwagandha Powder 100gm",
+    "slug": "fibax-ashwagandha-powder",
+    "sku": "FBX-FIBAXAS-3620",
+    "dosageForm": "Powder",
+    "categoryId": "powders",
+    "concernId": "immunity-vitality",
+    "mrp": 249,
+    "salePrice": 230,
+    "discountPercent": 8,
+    "stockQuantity": 4,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/ashwgandha-powder.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 35,
+    "isBestseller": true,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "About This Item: Made from pure Ashwagandha root powder for natural wellness support Helps reduce stress, anxiety, and mental fatigue with powerful adaptogenic action Supports better sleep quality and promotes a calm, relaxed mind Boosts energy, stamina, and physical performance naturally Helps strengthen the immune system and overall vitality Useful for muscle recovery , strength building, and active lifestyles Promotes mental clarity, focus, and mood balance Easily mixes with milk, warm water, smoothies, or herbal drinks Free from preservatives, chemicals, artificial colors, and additives Suitable for daily use for both men and women",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 230,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 414,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 587,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-09T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3578",
+    "title": "Fibax Amla Powder 100gm | Pure & Natural Herbal Supplement",
+    "slug": "fibax-amla-powder",
+    "sku": "FBX-FIBAXAM-3578",
+    "dosageForm": "Powder",
+    "categoryId": "powders",
+    "concernId": "immunity-vitality",
+    "mrp": 249,
+    "salePrice": 230,
+    "discountPercent": 8,
+    "stockQuantity": 49,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/fibax-amla-powder.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 42,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "About This Item: Made from pure Amla (Indian Gooseberry) for natural nourishment Rich in Vitamin C to support immunity and daily wellness Helps improve digestion, metabolism, and gut health Promotes healthy, strong, and shiny hair Supports bright, clear, and refreshed skin Provides strong antioxidant protection Helps detoxify the body naturally Suitable for hair masks, face packs, and internal use Free from chemicals, preservatives, and artificial additives Easy to mix with water, honey, smoothies, or juices",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 230,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 414,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 587,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-08T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3569",
+    "title": "Fibax Rose Soap 75gm",
+    "slug": "fibax-rose-soap",
+    "sku": "FBX-FIBAXRO-3569",
+    "dosageForm": "Soap",
+    "categoryId": "skincare",
+    "concernId": "skin-personal-care",
+    "mrp": 99,
+    "salePrice": 90,
+    "discountPercent": 9,
+    "stockQuantity": 800,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/rose-shop.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 49,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "About this item: Handmade Rose Soap: Enriched with pure rose extracts, and natural glycerin for soft, nourished, and refreshed skin. Moisturising &amp; Brightening: Glycerin hydrates deeply while rose helps even skin tone, making this a gentle skin brightening soap. Ayurvedic &amp; Natural: Crafted with Ayurvedic herbs and oils, free from parabens, sulfates, and harsh chemicals. Anti-Fungal &amp; Antiseptic Care: Works as a mild anti fungal and antibacterial bathing soap, ideal for daily skin hygiene. Refreshing Fragrance: Infused with a soothing rose scent that uplifts your bath experience. Unisex &amp; Everyday Use: Suitable for men, women, and youth with all skin types.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 90,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 162,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 230,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-07T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3564",
+    "title": "Fibax Lemon Soap 75gm",
+    "slug": "fibax-lemon-soap",
+    "sku": "FBX-FIBAXLE-3564",
+    "dosageForm": "Soap",
+    "categoryId": "skincare",
+    "concernId": "skin-personal-care",
+    "mrp": 99,
+    "salePrice": 90,
+    "discountPercent": 9,
+    "stockQuantity": 63,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/lemon-shop.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 56,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "About this item: Deep Cleansing and Oil Control &#8211; Clearer, non-greasy skin that feels fresh and clean all day Refreshes and Energizes Your Senses &#8211; A refreshing bath experience that rejuvenates both body and mind. Helpful in Brightens Skin Naturally &#8211; A radiant, glowing complexion with regular use. Helpful in Fights Acne and Pimples &#8211; Reduced acne, clearer skin, and minimized redness. Neutralizes Body Odor &#8211; A clean, citrusy fragrance that lingers on your skin. Helps with Skin Infections &#8211; Healthier skin free from minor infections or irritations.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 90,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 162,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 230,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-06T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3561",
+    "title": "Fibax Neem Aloevera Soap 75gm",
+    "slug": "fibax-neem-aloevera-soap",
+    "sku": "FBX-FIBAXNE-3561",
+    "dosageForm": "Soap",
+    "categoryId": "skincare",
+    "concernId": "skin-personal-care",
+    "mrp": 105,
+    "salePrice": 95,
+    "discountPercent": 10,
+    "stockQuantity": 70,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/neem-shop.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 63,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "About this item: Ayurvedic Herbal Care: Crafted with the natural goodness of Neem and Aloe Vera, this handmade glycerin soap is gentle on skin while keeping it clean, fresh, and nourished. Skin Hygiene Made Simple: Neem helps remove excess oil and impurities, while Aloe Vera soothes and hydrates for healthy-looking skin. Chemical-Free &amp; Safe: Made without harsh chemicals, parabens, or sulfates. Perfect for men and women who prefer natural, skin-friendly bathing bars. Glycerin Base for Softness: The glycerin-rich formula locks in moisture, leaving your skin soft, supple, and smooth after every bath. Refreshing Citrus Fragrance: A mild, uplifting scent that makes your daily bath refreshing and energizing.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 95,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 171,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 242,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-05T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3558",
+    "title": "Fibax Haldi Chandan Soap 75gm",
+    "slug": "fibax-haldi-chandan-soap",
+    "sku": "FBX-FIBAXHA-3558",
+    "dosageForm": "Soap",
+    "categoryId": "skincare",
+    "concernId": "skin-personal-care",
+    "mrp": 159,
+    "salePrice": 120,
+    "discountPercent": 25,
+    "stockQuantity": 0,
+    "lowStockThreshold": 15,
+    "inStock": false,
+    "featuredImage": "/uploads/haldi-chandan.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 70,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "About this item: Deeply Cleanses &amp; Moisturizes: This Isn’t Your Regular Soap, It’s Better! Chandan Moisturizing Soap Washes Away Dirt And Impurities With Natural Moisture. Helps Purify The Skin: Fibax Soap Is Infused With Haldi &amp; Chandan, Which Are Known For Their Anti-Bacterial &amp; Anti-Inflammatory Properties, Giving You Softer Skin. Made Safe Certified: Fibax Soap Is Free Of Toxins And Is Made Safe Certified. Say Yes To Natural Goodness.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 120,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 216,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Best Value)",
+        "quantity": 3,
+        "price": 306,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-04T10:43:10.577Z",
+    "updatedAt": "2026-09-14T07:53:39.740Z"
+  },
+  {
+    "id": "3430",
+    "title": "Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support",
+    "slug": "ayurvedic-multivitamin-syrup",
+    "sku": "FBX-AYURVEDI-3430",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "immunity-vitality",
+    "mrp": 350,
+    "salePrice": 345,
+    "discountPercent": 1,
+    "stockQuantity": 84,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/multivitamin.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 77,
+    "isBestseller": true,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Ayurvedic multivitamin tonic that supports recovery from weakness, anemia, and post-fever fatigue while enhancing immunity and vitality.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 345,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 621,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 880,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-03T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3428",
+    "title": "Lipidobax Syrup 200ml – Ayurvedic Cholesterol Control Tonic for Heart and Blood Pressure Health",
+    "slug": "lipidobax-cholesterol-syrup",
+    "sku": "FBX-LIPIDOBA-3428",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "cardiac-blood-pressure",
+    "mrp": 218,
+    "salePrice": 200,
+    "discountPercent": 8,
+    "stockQuantity": 91,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/lipodobax.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 84,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Lipidobax an Ayurvedic Cholesterol Control Syrup that helps reduce triglycerides, support heart health, and maintain balanced blood pressure naturally.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 200,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 360,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 510,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-02T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3426",
+    "title": "Fp Enzyme Syrup 200ml – Digestive Enzyme Supplement for Gut Health, Indigestion & Abdominal Gas",
+    "slug": "fp-enzyme-syrup",
+    "sku": "FBX-FPENZYM-3426",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "digestive-gut-health",
+    "mrp": 155,
+    "salePrice": 150,
+    "discountPercent": 3,
+    "stockQuantity": 98,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/fp-enzyme.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 91,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Fp Enzyme Syrup 200ml supports healthy digestion and gut comfort. It combines Fungal Diastase, Alpha-Galactosidase, Pepsin, and Lipase to relieve bloating, indigestion, and gas naturally.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 150,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 270,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 383,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-09-01T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3423",
+    "title": "BP Hype Syrup 200ml – Ayurvedic Support for Blood Pressure, Hypertension & Heart Health",
+    "slug": "bp-hype-syrup",
+    "sku": "FBX-BPHYPE-3423",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "cardiac-blood-pressure",
+    "mrp": 170,
+    "salePrice": 162,
+    "discountPercent": 5,
+    "stockQuantity": 456,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/bp-hype.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 98,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "BP Hype Syrup supports healthy blood pressure, heart function, and circulation with Ayurvedic herbs like Arjun, Guggul, and Triphala. Sugar-free and safe for daily use.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 162,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 292,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 413,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-31T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3416",
+    "title": "Nariupchar Women Syrup 200ml – Ayurvedic Hormonal & Menstrual Health Tonic",
+    "slug": "nariupchar-women-syrup",
+    "sku": "FBX-NARIUPCH-3416",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "womens-wellness",
+    "mrp": 189,
+    "salePrice": 180,
+    "discountPercent": 5,
+    "stockQuantity": 47,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/nariupchar.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 105,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Nariupchar Women Syrup supports hormonal balance, menstrual health, and reproductive wellness with Ayurvedic herbs like Ashok, Lodhra, and Shatavari.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 180,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 324,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 459,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-30T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3413",
+    "title": "Livupchar Ayurvedic Liver Care Syrup 200ml",
+    "slug": "livupchar-ayurvedic-liver-care-syrup-200ml",
+    "sku": "FBX-LIVUPCHA-3413",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "liver-care-detox",
+    "mrp": 235,
+    "salePrice": 229,
+    "discountPercent": 3,
+    "stockQuantity": 54,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/livupchar.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 112,
+    "isBestseller": true,
+    "volumeWeight": "200ml",
+    "shortDesc": "Livupchar Ayurvedic Liver Care Syrup supports liver detox, helps manage fatty liver and hepatitis, and promotes natural liver regeneration.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 229,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 412,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 584,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-29T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3410",
+    "title": "Immunbax Syrup – Ayurvedic Immunity & Platelet Support 200ml",
+    "slug": "immunbax-syrup-ayurvedic-immunity-platelet-support-200ml",
+    "sku": "FBX-IMMUNBAX-3410",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "immunity-vitality",
+    "mrp": 225,
+    "salePrice": 220,
+    "discountPercent": 2,
+    "stockQuantity": 61,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/immunbax.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 119,
+    "isBestseller": false,
+    "volumeWeight": "200ml",
+    "shortDesc": "Immunbax Ayurvedic Syrup boosts immunity and platelet count naturally with Giloy, Amla, and Ashwagandha. Perfect for fever and viral recovery.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 220,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 396,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 561,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-28T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3407",
+    "title": "Fibocid Syrup – Ayurvedic Antacid & Digestive Enzyme 200ml",
+    "slug": "fibocid-syrup-ayurvedic-antacid-digestive-enzyme-200ml",
+    "sku": "FBX-FIBOCID-3407",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "digestive-gut-health",
+    "mrp": 169,
+    "salePrice": 160,
+    "discountPercent": 5,
+    "stockQuantity": 68,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/fibocid.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 126,
+    "isBestseller": false,
+    "volumeWeight": "200ml",
+    "shortDesc": "Fibocid Syrup relieves acidity, gas, and indigestion with Ayurvedic herbs like Punarnava, Guduchi, and Amla. A natural digestive tonic for all ages.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 160,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 288,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 408,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-27T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3400",
+    "title": "Tus Remove Syrup – Ayurvedic Cough Relief Syrup 100ml",
+    "slug": "tus-remove-syrup-ayurvedic-cough-relief-syrup-100ml",
+    "sku": "FBX-TUSREMO-3400",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "immunity-vitality",
+    "mrp": 125,
+    "salePrice": 120,
+    "discountPercent": 4,
+    "stockQuantity": 75,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/tus-remove.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 133,
+    "isBestseller": false,
+    "volumeWeight": "100ml",
+    "shortDesc": "Tus Remove Syrup helps relieve cough, sore throat, and asthma naturally with Karkatshringi, Pipali, and Honey. Ayurvedic and gentle for all ages.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 120,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 216,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 306,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-26T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3397",
+    "title": "Piles Back Combo Kit – Ayurvedic Capsules and Syrup for Piles Relief",
+    "slug": "piles-back-combo-kit-ayurvedic-capsules-and-syrup-for-piles-relief",
+    "sku": "FBX-PILESBA-3397",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "digestive-gut-health",
+    "mrp": 499,
+    "salePrice": 485,
+    "discountPercent": 3,
+    "stockQuantity": 82,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/piles-kit.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 140,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Piles Back Combo Kit combines Ayurvedic capsules and syrup for piles relief, supporting digestion and natural healing.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 485,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 873,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 1237,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-25T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3390",
+    "title": "Fevobax Ayurvedic Capsules for Fever and Immunity Support – 30 Capsules",
+    "slug": "fevobax-ayurvedic-capsules-for-fever-and-immunity-support",
+    "sku": "FBX-FEVOBAX-3390",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "immunity-vitality",
+    "mrp": 315,
+    "salePrice": 300,
+    "discountPercent": 5,
+    "stockQuantity": 89,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/fevobax.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 147,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Fevobax Ayurvedic Capsules help reduce fever, boost immunity, and speed up recovery from viral infections like malaria and dengue.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 300,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 540,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 765,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-24T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "2796",
+    "title": "Constisol Ayurvedic Syrup 200ml – Natural Relief for Constipation",
+    "slug": "constisoal-syrup-for-constipation",
+    "sku": "FBX-CONSTISO-2796",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "digestive-gut-health",
+    "mrp": 210,
+    "salePrice": 199,
+    "discountPercent": 5,
+    "stockQuantity": 96,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/constisol.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 154,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Constisol Syrup relieves constipation, gas, and bloating naturally. Ayurvedic formula with Triphala, Senna &amp; Fennel for smooth digestion.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 199,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 358,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 507,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-23T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "2795",
+    "title": "Diabdic Ayurvedic & Natural Blood Sugar Support – 30 Capsules",
+    "slug": "diabdic-capsules",
+    "sku": "FBX-DIABDIC-2795",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "diabetes-blood-sugar",
+    "mrp": 410,
+    "salePrice": 399,
+    "discountPercent": 3,
+    "stockQuantity": 38,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/diabdic-capsule.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 161,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Diabdic Capsules are a natural Ayurvedic formulation that helps manage blood sugar levels and support overall metabolic health. Enriched with time-tested herbs, it aids insulin function, improves glucose metabolism, and promotes energy balance.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 399,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 718,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 1017,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-22T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "2791",
+    "title": "Platobax Ayurvedic Syrup for Boosting Platelet Count & Immunity - 200ml",
+    "slug": "platobax-syrup-for-platelet-boost-immunity",
+    "sku": "FBX-PLATOBAX-2791",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "immunity-vitality",
+    "mrp": 240,
+    "salePrice": 229,
+    "discountPercent": 5,
+    "stockQuantity": 45,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/platobax.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 168,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Platobax Syrup boosts platelet count naturally with Papaya Leaf, Giloy &amp; Amla. Supports faster recovery and strengthens immunity.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 229,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 412,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 584,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-21T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "1200",
+    "title": "Fibax Neem & Aloevera Facewash for Clear, Healthy, and Glowing Skin – 100ml",
+    "slug": "fibax-neem-aloevera-facewash",
+    "sku": "FBX-FIBAXNE-1200",
+    "dosageForm": "Facewash",
+    "categoryId": "skincare",
+    "concernId": "skin-personal-care",
+    "mrp": 195,
+    "salePrice": 190,
+    "discountPercent": 3,
+    "stockQuantity": 52,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/neem-alovera-facewash.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 175,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Fibax Neem &amp; Aloevera Facewash deeply cleanses and purifies skin naturally. Fights acne and gives a fresh, glowing look.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 190,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 342,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 485,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-20T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "104",
+    "title": "Fibax Triphala Juice for Digestion and Detox – 500ml",
+    "slug": "fibax-triphala-juice",
+    "sku": "FBX-FIBAXTR-104",
+    "dosageForm": "Juice",
+    "categoryId": "juices",
+    "concernId": "digestive-gut-health",
+    "mrp": 275,
+    "salePrice": 260,
+    "discountPercent": 5,
+    "stockQuantity": 59,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/triphla-juice.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 182,
+    "isBestseller": true,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Fibax Triphala Juice supports digestion, detox, and immunity with Amla, Harad, and Baheda. Pure Ayurvedic formula for daily wellness.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 260,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 468,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 663,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-19T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "103",
+    "title": "Fibax Neem Karela Jamun Juice for Sugar Balance and Detox – 500ml",
+    "slug": "fibax-neem-karela-jamun-juice",
+    "sku": "FBX-FIBAXNE-103",
+    "dosageForm": "Juice",
+    "categoryId": "juices",
+    "concernId": "diabetes-blood-sugar",
+    "mrp": 275,
+    "salePrice": 260,
+    "discountPercent": 5,
+    "stockQuantity": 66,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/neem-karla-jamun.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 189,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Fibax Neem Karela Jamun Juice supports natural blood sugar balance, detox, and liver health with pure Ayurvedic herbs.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 260,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 468,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 663,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-18T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "102",
+    "title": "Axe Ortho Pain Relief Oil – 60ml",
+    "slug": "axe-ortho-oil",
+    "sku": "FBX-AXEORTH-102",
+    "dosageForm": "Oil",
+    "categoryId": "oils",
+    "concernId": "joint-pain-relief",
+    "mrp": 145,
+    "salePrice": 140,
+    "discountPercent": 3,
+    "stockQuantity": 73,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/axe-ortho-oil.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 196,
+    "isBestseller": true,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Get fast, natural relief from joint and muscle pain with Axe Ortho Oil. Herbal Ayurvedic formula for stiffness, inflammation &amp; mobility support.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 140,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 252,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 357,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-17T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "101",
+    "title": "Axe Ortho Pain Relief- 30 Capsules",
+    "slug": "axe-ortho-pain-relief-capsules",
+    "sku": "FBX-AXEORTH-101",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "joint-pain-relief",
+    "mrp": 385,
+    "salePrice": 380,
+    "discountPercent": 1,
+    "stockQuantity": 80,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/axe-ortho-capsuple.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 203,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Axe Ortho Ayurvedic Capsules relieve joint and back pain naturally. Herbal blend of Ashwagandha, Shallaki &amp; Guggul for flexibility &amp; mobility.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 380,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 684,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 969,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-16T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "100",
+    "title": "Axe Ortho Pain Relief Syrup – 200ml",
+    "slug": "axe-ortho-syrup",
+    "sku": "FBX-AXEORTH-100",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "joint-pain-relief",
+    "mrp": 220,
+    "salePrice": 210,
+    "discountPercent": 5,
+    "stockQuantity": 87,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/axe-ortho-syurp.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 30,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Axe Ortho Syrup gives natural relief from joint, back, and muscle pain. Herbal Ayurvedic formula for stiffness and inflammation. Safe &amp; effective!",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 210,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 378,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 536,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-15T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "99",
+    "title": "Diabdic Ayurvedic Syrup Helps Maintain Healthy Blood Sugar Levels – 300ml",
+    "slug": "diabdic-ayurvedic-syrup",
+    "sku": "FBX-DIABDIC-99",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "diabetes-blood-sugar",
+    "mrp": 299,
+    "salePrice": 290,
+    "discountPercent": 3,
+    "stockQuantity": 94,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/diabdic-syurp.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 37,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Diabdic Ayurvedic Syrup helps maintain natural blood sugar levels with herbs like Jamun, Karela &amp; Gudmar. Supports energy &amp; metabolism naturally.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 290,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 522,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 740,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-14T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "98",
+    "title": "Incredible Musli Gold Capsules – 30 Capsules",
+    "slug": "incredible-musli-gold",
+    "sku": "FBX-INCREDIB-98",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "mens-wellness-stamina",
+    "mrp": 275,
+    "salePrice": 269,
+    "discountPercent": 2,
+    "stockQuantity": 36,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/musli-gold.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 44,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Incredible Musli Gold Capsules with Safed Musli help boost stamina, strength, and vitality naturally. Ayurvedic, safe, and effective.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 269,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 484,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 686,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-13T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "97",
+    "title": "Livupchar Capsules Supports Liver Health & Detox Naturally – 30 Capsules",
+    "slug": "livupchar-capsules-for-liver-detox",
+    "sku": "FBX-LIVUPCHA-97",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "liver-care-detox",
+    "mrp": 260,
+    "salePrice": 255,
+    "discountPercent": 2,
+    "stockQuantity": 43,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/livupchar.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 51,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Livupchar Ayurvedic Capsules help detoxify the liver and support recovery from hepatitis and toxin damage. Herbal and safe for daily use.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 255,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 459,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 650,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-12T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "96",
+    "title": "Stonupchar Ayurvedic Capsules – 30 Capsules",
+    "slug": "stonupchar-capsules-for-kidney-detox",
+    "sku": "FBX-STONUPCH-96",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "kidney-urinary-care",
+    "mrp": 240,
+    "salePrice": 225,
+    "discountPercent": 6,
+    "stockQuantity": 50,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/stoneupchar-cap.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 58,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Stonupchar Capsules for Kidney Detox and UTI Support help remove stones, ease infections, and promote healthy urine flow ayurvedic.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 225,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 405,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 574,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-11T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "95",
+    "title": "Arthobax Ayurvedic Capsules for Arthritis & Joint Pain Relief – 30 Capsules",
+    "slug": "arthobax-capsules-for-arthritis-joint-pain-relief",
+    "sku": "FBX-ARTHOBAX-95",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "joint-pain-relief",
+    "mrp": 348,
+    "salePrice": 330,
+    "discountPercent": 5,
+    "stockQuantity": 57,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/arthobax.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 65,
+    "isBestseller": true,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Arthobax Capsules for Arthritis and Joint Pain Relief help reduce inflammation, stiffness, and swelling. Ayurvedic formula for natural mobility.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 330,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 594,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 842,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-10T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "94",
+    "title": "Moonkind Ayurvedic Capsules for Power, Stamina, Strength & Stress Relief – 30 Capsules",
+    "slug": "moonkind-capsules-for-power-stamina-strength-stress-relief",
+    "sku": "FBX-MOONKIND-94",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "mens-wellness-stamina",
+    "mrp": 799,
+    "salePrice": 750,
+    "discountPercent": 6,
+    "stockQuantity": 64,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/moonkind.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 72,
+    "isBestseller": true,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Moonkind Capsules for Power, Stamina, and Stress Relief naturally enhance vitality, strength, and focus with Ashwagandha, Shilajit, and Kesar.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 750,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 1350,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 1913,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-09T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "77",
+    "title": "Uriupchar Ayurvedic Capsules for Uric Acid Control & Joint Health – 30 Capsules",
+    "slug": "uriupchar-capsules-for-uric-acid-control-joint-pain-relief",
+    "sku": "FBX-URIUPCHA-77",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "joint-pain-relief",
+    "mrp": 310,
+    "salePrice": 300,
+    "discountPercent": 3,
+    "stockQuantity": 71,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/uri-upchar-cap.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 79,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Uriupchar Capsules for Uric Acid Control naturally reduce joint pain and gout with Gokshru, Giloy, and Punarnava. Supports kidney detox and mobility.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 300,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 540,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 765,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-08T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "72",
+    "title": "Stonupchar Ayurvedic Syrup for Kidney and Urinary Health – 200ml",
+    "slug": "stonupchar-ayurvedic-syrup",
+    "sku": "FBX-STONUPCH-72",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "kidney-urinary-care",
+    "mrp": 280,
+    "salePrice": 269,
+    "discountPercent": 4,
+    "stockQuantity": 78,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/stone-upchar-syrup.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 86,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Stonupchar Ayurvedic Syrup supports kidney and urinary health with natural herbs like Pashan Bhed, Sariva, and Guduchi.",
+    "keyBenefits": [
+      "Promotes balanced wellness and natural recovery",
+      "Formulated with AYUSH-approved botanical ingredients",
+      "No artificial chemicals, heavy metals, or added sugar"
+    ],
+    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
+    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
+    "ayushCertified": true,
+    "multiPacks": [
+      {
+        "name": "1 Unit (Standard)",
+        "quantity": 1,
+        "price": 269,
+        "savings": 0
+      },
+      {
+        "name": "2 Units (Value Pack)",
+        "quantity": 2,
+        "price": 484,
+        "savings": "10% OFF"
+      },
+      {
+        "name": "3-Month Course (Max Results)",
+        "quantity": 3,
+        "price": 686,
+        "savings": "15% OFF"
+      }
+    ],
+    "createdAt": "2026-08-07T10:43:10.577Z",
+    "updatedAt": "2026-09-11T13:13:59.939Z"
+  },
+  {
+    "id": "3701",
+    "title": "Fibax Kesh Sanjeevani Herbal Hair Shampoo – 200ml",
+    "slug": "fibax-herbal-hair-shampoo",
+    "sku": "FBX-SHAMPOO-3701",
+    "dosageForm": "Liquid",
+    "categoryId": "personal-care",
+    "concernId": "hair-care",
+    "mrp": 399,
+    "salePrice": 299,
+    "discountPercent": 25,
+    "stockQuantity": 50,
+    "lowStockThreshold": 10,
+    "inStock": true,
+    "featuredImage": "/uploads/hair-shampo.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 142,
+    "isBestseller": true,
+    "volumeWeight": "200ml",
+    "shortDesc": "Formulated with Bhringraj, Amla, Shikakai and Reetha for deep root nourishment, hairfall control and natural shine.",
+    "keyBenefits": [
+      "Reduces excessive hairfall & breakage",
+      "Controls dandruff & scalp itchiness",
+      "Sulphate & Paraben Free herbal formula"
+    ],
+    "ingredients": "Bhringraj, Shikakai, Reetha, Amla, Methi & Aloe Vera extract",
+    "dosage": "Apply evenly on wet scalp, massage gently for 2 minutes, and rinse thoroughly.",
+    "ayushCertified": true
+  },
+  {
+    "id": "3702",
+    "title": "Fibax Pure Gulab Jal / Ayurvedic Rose Water – 100ml",
+    "slug": "fibax-ayurvedic-rose-water",
+    "sku": "FBX-ROSEWAT-3702",
+    "dosageForm": "Liquid",
+    "categoryId": "personal-care",
+    "concernId": "skin-glow-acne",
+    "mrp": 249,
+    "salePrice": 180,
+    "discountPercent": 28,
+    "stockQuantity": 65,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/rose-water.png",
+    "ratingAverage": "4.9",
+    "ratingCount": 189,
+    "isBestseller": false,
+    "volumeWeight": "100ml",
+    "shortDesc": "Steam-distilled pure Kannauj rose water for instant skin toning, cooling hydration, and natural radiance.",
+    "keyBenefits": [
+      "Soothes irritated skin and tightens pores",
+      "Natural alcohol-free toner",
+      "Pleasant calming aromatherapy fragrance"
+    ],
+    "ingredients": "100% Steam-distilled pure Damask Rose water",
+    "dosage": "Spray directly on face as a toner or mix with herbal ubtans.",
+    "ayushCertified": true
+  },
+  {
+    "id": "3703",
+    "title": "Fibax Pure Neem Leaf Powder 100gm – Blood Purifier & Detox",
+    "slug": "fibax-neem-leaf-powder",
+    "sku": "FBX-NEEMPOW-3703",
+    "dosageForm": "Powder",
+    "categoryId": "powders",
+    "concernId": "skin-glow-acne",
+    "mrp": 350,
+    "salePrice": 280,
+    "discountPercent": 20,
+    "stockQuantity": 40,
+    "lowStockThreshold": 10,
+    "inStock": true,
+    "featuredImage": "/uploads/neem-powder.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 95,
+    "isBestseller": false,
+    "volumeWeight": "100gm",
+    "shortDesc": "Naturally detoxifies blood, prevents acne breakouts, and improves skin texture from within.",
+    "keyBenefits": [
+      "Ayurvedic blood purifier",
+      "Controls skin blemishes and boils",
+      "Supports natural immunity"
+    ],
+    "ingredients": "100% Organic Shade-Dried Azadirachta Indica (Neem) leaf powder",
+    "dosage": "1/2 teaspoon twice daily with warm water, or use topically with rose water as face pack.",
+    "ayushCertified": true
+  },
+  {
+    "id": "3704",
+    "title": "Fibax Constisol Digestive Churan 100gm – Quick Relief for Constipation",
+    "slug": "fibax-constisol-churan-powder",
+    "sku": "FBX-CONSTCH-3704",
+    "dosageForm": "Powder",
+    "categoryId": "powders",
+    "concernId": "digestive-gut-health",
+    "mrp": 320,
+    "salePrice": 260,
+    "discountPercent": 19,
+    "stockQuantity": 60,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/contisol-powder.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 164,
+    "isBestseller": false,
+    "volumeWeight": "100gm",
+    "shortDesc": "Traditional Ayurvedic churnam blend of Sanay, Isabgol, Ajwain and Haritaki for non-habit forming smooth bowel regularity.",
+    "keyBenefits": [
+      "Relieves chronic constipation overnight",
+      "Eases bloating, gas, and heaviness",
+      "Non-habit forming botanical formula"
+    ],
+    "ingredients": "Senna leaves, Haritaki, Ajwain, Saunf, Kala Namak, Triphala",
+    "dosage": "1 teaspoon with warm water at bedtime.",
+    "ayushCertified": true
+  },
+  {
+    "id": "3705",
+    "title": "Piles Back Ayurvedic Relief Capsules – 30 Capsules",
+    "slug": "piles-back-relief-capsules",
+    "sku": "FBX-PILESCA-3705",
+    "dosageForm": "Capsule",
+    "categoryId": "capsules",
+    "concernId": "digestive-gut-health",
+    "mrp": 450,
+    "salePrice": 380,
+    "discountPercent": 16,
+    "stockQuantity": 45,
+    "lowStockThreshold": 10,
+    "inStock": true,
+    "featuredImage": "/uploads/piles-capsule.png",
+    "ratingAverage": "4.7",
+    "ratingCount": 118,
+    "isBestseller": false,
+    "volumeWeight": "30 Capsules",
+    "shortDesc": "Ayurvedic anti-inflammatory formulation to relieve hemorrhoid swelling, bleeding, and rectal discomfort.",
+    "keyBenefits": [
+      "Reduces vein swelling & bleeding",
+      "Promotes fissure wound healing",
+      "Provides cooling soothing relief"
+    ],
+    "ingredients": "Nagkesar, Neem seeds, Triphala, Daruharidra, Shuddha Guggulu",
+    "dosage": "1 capsule twice daily after meals with lukewarm water.",
+    "ayushCertified": true
+  },
+  {
+    "id": "3706",
+    "title": "Piles Back Soothing Ayurvedic Syrup – 200ml",
+    "slug": "piles-back-soothing-syrup",
+    "sku": "FBX-PILESSY-3706",
+    "dosageForm": "Syrup",
+    "categoryId": "syrups",
+    "concernId": "digestive-gut-health",
+    "mrp": 380,
+    "salePrice": 320,
+    "discountPercent": 16,
+    "stockQuantity": 50,
+    "lowStockThreshold": 10,
+    "inStock": true,
+    "featuredImage": "/uploads/piles-syurp.png",
+    "ratingAverage": "4.6",
+    "ratingCount": 105,
+    "isBestseller": false,
+    "volumeWeight": "200ml",
+    "shortDesc": "Digestive and vascular tonic for soothing internal inflammation and ensuring soft, effortless bowel movements.",
+    "keyBenefits": [
+      "Softens stools naturally",
+      "Reduces pain and burning sensation",
+      "Speeds up tissue repair"
+    ],
+    "ingredients": "Amaltas, Haritaki, Pippali, Khadir, Chitrak, Triphala",
+    "dosage": "10-15ml twice daily after meals with equal quantity water.",
+    "ayushCertified": true
+  }
+]

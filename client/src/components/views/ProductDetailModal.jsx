@@ -138,7 +138,7 @@ export function ProductDetailModal({ product, isOpen, onClose }) {
                   {product.isBestseller && <Badge variant="bestseller">POPULAR REMEDY</Badge>}
                 </div>
 
-                <h2 className="font-serif text-2xl font-bold text-forest-deep leading-tight">
+                <h2 className="font-heading text-2xl font-bold text-forest-deep leading-tight">
                   {product.title}
                 </h2>
                 <p className="text-xs text-charcoal-muted mt-1 font-medium">

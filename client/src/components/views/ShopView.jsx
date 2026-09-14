@@ -43,7 +43,7 @@ export function ShopView({
             <span className="text-xs font-bold text-sage uppercase tracking-wider block mb-1">
               Fibax Herbal Dispensary
             </span>
-            <h1 className="font-serif text-2xl sm:text-3xl font-bold text-forest-deep">
+            <h1 className="font-heading text-2xl sm:text-3xl font-bold text-forest-deep">
               {activeConcernObj ? activeConcernObj.name : 'All Ayurvedic Formulations'}
             </h1>
             <p className="text-xs sm:text-sm text-charcoal-muted mt-1 max-w-xl">
@@ -75,7 +75,7 @@ export function ShopView({
           {/* Desktop Filter Sidebar */}
           <aside className="hidden lg:block bg-white p-6 rounded-3xl border border-sand-border shadow-subtle space-y-6 sticky top-24">
             <div className="flex items-center justify-between pb-3 border-b border-sand-border">
-              <h3 className="font-serif font-bold text-forest text-base flex items-center gap-2">
+              <h3 className="font-heading font-bold text-forest text-base flex items-center gap-2">
                 <Filter className="h-4 w-4 text-sage" />
                 <span>Filter Formulations</span>
               </h3>
@@ -208,7 +208,7 @@ export function ShopView({
             {filteredProducts.length === 0 ? (
               <div className="text-center py-20 bg-white rounded-3xl border border-sand-border p-8">
                 <Sparkles className="h-10 w-10 text-sage mx-auto mb-3" />
-                <h3 className="font-serif font-bold text-forest text-xl">No Formulations Match Criteria</h3>
+                <h3 className="font-heading font-bold text-forest text-xl">No Formulations Match Criteria</h3>
                 <p className="text-xs text-charcoal-muted mt-1 max-w-sm mx-auto">
                   Try clearing some filters or widening your price threshold to discover remedies.
                 </p>

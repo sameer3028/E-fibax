@@ -49,7 +49,7 @@ export function CheckoutModal({ isOpen, onClose }) {
 
           {/* Stepper Header */}
           <div className="pb-6 border-b border-sand-border mb-6">
-            <h3 className="font-serif font-bold text-forest-deep text-xl sm:text-2xl">
+            <h3 className="font-heading font-bold text-forest-deep text-xl sm:text-2xl">
               {step === 4 ? 'Order Confirmed!' : 'Fibax Express Checkout'}
             </h3>
             <p className="text-xs text-charcoal-muted mt-1">
@@ -213,7 +213,7 @@ export function CheckoutModal({ isOpen, onClose }) {
               <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-700 mx-auto flex items-center justify-center">
                 <CheckCircle className="h-10 w-10" />
               </div>
-              <h3 className="font-serif font-bold text-2xl text-forest-deep">
+              <h3 className="font-heading font-bold text-2xl text-forest-deep">
                 Thank You, {name}!
               </h3>
               <p className="text-xs text-charcoal-muted max-w-sm mx-auto">

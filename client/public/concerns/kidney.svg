@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+  <defs>
+    <linearGradient id="kidneyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E11D48"/>
+      <stop offset="50%" stop-color="#9F1239"/>
+      <stop offset="100%" stop-color="#4C0519"/>
+    </linearGradient>
+    <linearGradient id="arteryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#B91C1C"/>
+    </linearGradient>
+    <linearGradient id="veinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="100%" stop-color="#0284C7"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Circle Soft Tint -->
+  <circle cx="48" cy="48" r="46" fill="#F0F9FF" stroke="#E0F2FE" stroke-width="2"/>
+
+  <!-- Aorta & Vena Cava Vertical Trunks -->
+  <path d="M45 16 L45 78" stroke="url(#arteryGrad)" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M51 16 L51 78" stroke="url(#veinGrad)" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- Left Kidney (Observer's Left) -->
+  <path d="M36 30 C24 30 18 42 18 52 C18 64 24 72 34 72 C39 72 40 64 36 56 C34 50 34 46 37 42 C40 36 39 30 36 30 Z" fill="url(#kidneyGrad)" stroke="#4C0519" stroke-width="1.8"/>
+
+  <!-- Right Kidney (Observer's Right) -->
+  <path d="M60 30 C72 30 78 42 78 52 C78 64 72 72 62 72 C57 72 56 64 60 56 C62 50 62 46 59 42 C56 36 57 30 60 30 Z" fill="url(#kidneyGrad)" stroke="#4C0519" stroke-width="1.8"/>
+
+  <!-- Renal Arteries (Red to each kidney) -->
+  <path d="M45 46 C41 46 38 48 35 48" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M45 48 C49 48 56 46 61 48" stroke="#EF4444" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Renal Veins (Blue from each kidney) -->
+  <path d="M51 52 C45 52 40 50 36 50" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M51 50 C55 50 58 52 61 50" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Bilateral Ureters to Bladder -->
+  <path d="M35 58 C37 68 43 82 45 88" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 0"/>
+  <path d="M61 58 C59 68 53 82 51 88" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 0"/>
+
+  <!-- Water Cleansing Drops / Renal Detox -->
+  <path d="M48 82 C48 82 44 86 44 88 C44 90.2 45.8 92 48 92 C50.2 92 52 90.2 52 88 C52 86 48 82 48 82 Z" fill="#0EA5E9"/>
+  <circle cx="27" cy="46" r="2" fill="#FDA4AF" opacity="0.6"/>
+  <circle cx="69" cy="46" r="2" fill="#FDA4AF" opacity="0.6"/>
+</svg>

@@ -52,7 +52,7 @@ export function CombosSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12">
           <Badge variant="bestseller" className="mb-2">AOV VALUE MULTIPLIERS</Badge>
-          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold text-forest-deep">
+          <h2 className="font-heading text-2xl sm:text-3xl md:text-4xl font-bold text-forest-deep">
             Synergistic Ayurvedic Course Packs
           </h2>
           <p className="text-xs sm:text-sm text-charcoal-muted mt-2">
@@ -80,7 +80,7 @@ export function CombosSection() {
                   />
                 </div>
 
-                <h3 className="font-serif font-bold text-lg text-forest-deep leading-snug">
+                <h3 className="font-heading font-bold text-lg text-forest-deep leading-snug">
                   {combo.title}
                 </h3>
                 <p className="text-xs text-sage-dark font-medium mt-1">

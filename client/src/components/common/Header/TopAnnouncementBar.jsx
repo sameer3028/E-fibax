@@ -3,34 +3,31 @@ import { Truck, ShieldCheck, Sparkles } from 'lucide-react';
 
 export function TopAnnouncementBar() {
   return (
-    <div className="bg-forest-deep text-white text-xs py-2 px-4 border-b border-forest-dark/40 select-none">
-      <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-1.5 text-center sm:text-left">
-        <div className="flex items-center gap-2">
-          <span className="inline-flex items-center justify-center p-1 bg-forest-light rounded-full text-sage-soft">
-            <Truck className="h-3 w-3" />
+    <div className="bg-forest-deep text-white text-xs py-2 px-4 border-b border-forest-dark/40">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
+        {/* Left assurance with Logo Lime Leaf icon */}
+        <div className="hidden md:flex items-center gap-2 text-leaf-light">
+          <ShieldCheck className="h-3.5 w-3.5 text-leaf-light" />
+          <span className="font-semibold tracking-wide text-[11px] text-white">
+            100% AYUSH Certified Ayurvedic Formulations
           </span>
-          <p className="font-medium tracking-wide">
-            Orders over <span className="text-gold font-bold">₹499</span> qualify for <span className="text-sage-light font-bold">FREE Delivery</span> across India
-          </p>
         </div>
 
-        <div className="hidden md:flex items-center gap-5 text-sand/80 text-[11px]">
-          <span className="flex items-center gap-1.5">
-            <ShieldCheck className="h-3.5 w-3.5 text-sage" />
-            AYUSH Approved & GMP Certified
+        {/* Center shipping marquee with Logo Orange highlight */}
+        <div className="flex-1 md:flex-none text-center flex items-center justify-center gap-2 font-medium text-[11px]">
+          <Truck className="h-3.5 w-3.5 text-leaf-light" />
+          <span>
+            <strong className="text-brand-light font-bold">FREE Delivery</strong> on orders above <span className="underline decoration-brand-light font-bold text-brand-light">₹499</span>
           </span>
-          <span className="text-sand/30">•</span>
-          <span className="flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 text-gold" />
-            100% Pure Botanical Extracts
+          <span className="hidden sm:inline text-white/30">|</span>
+          <span className="hidden sm:inline text-white/80">Express Delhivery Tracking</span>
+        </div>
+
+        {/* Right Helpline */}
+        <div className="flex items-center gap-3 text-[11px]">
+          <span className="text-white/90">
+            Helpline: <a href="tel:+917657963458" className="font-bold text-white hover:text-brand-light transition-colors">+91 76579 63458</a>
           </span>
-          <span className="text-sand/30">•</span>
-          <a
-            href="#track-order"
-            className="hover:text-gold transition-colors font-medium underline underline-offset-2"
-          >
-            Track with Delhivery
-          </a>
         </div>
       </div>
     </div>

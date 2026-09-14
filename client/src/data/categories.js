@@ -4,41 +4,47 @@ export const CATEGORIES = [
     "name": "Ayurvedic Syrups",
     "slug": "syrups",
     "count": 14,
-    "icon": "Droplet"
+    "icon": "Droplet",
+    "image": "/categories/syrups.jpg"
   },
   {
     "id": "capsules",
     "name": "Capsules & Tablets",
     "slug": "capsules",
     "count": 10,
-    "icon": "Pill"
+    "icon": "Pill",
+    "image": "/categories/capsules.jpg"
   },
   {
     "id": "juices",
     "name": "Pure Herbal Juices",
     "slug": "juices",
     "count": 2,
-    "icon": "CupSoda"
+    "icon": "CupSoda",
+    "image": "/categories/juices.png"
   },
   {
     "id": "powders",
     "name": "Churna & Powders",
     "slug": "powders",
     "count": 3,
-    "icon": "Wind"
+    "icon": "Wind",
+    "image": "/categories/powders.png"
   },
   {
     "id": "oils",
     "name": "Therapeutic Oils",
     "slug": "oils",
     "count": 1,
-    "icon": "Sparkle"
+    "icon": "Sparkle",
+    "image": "/categories/oils.avif"
   },
   {
     "id": "skincare",
     "name": "Soaps & Skincare",
     "slug": "skincare",
     "count": 5,
-    "icon": "Sun"
+    "icon": "Sun",
+    "image": "/categories/skincare.png"
   }
 ];
