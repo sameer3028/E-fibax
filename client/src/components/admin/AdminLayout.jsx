@@ -5,6 +5,7 @@ import { ProductModal } from './ProductModal';
 import { OffersManager } from './OffersManager';
 import { InventoryTable } from './InventoryTable';
 import { OrdersView } from './OrdersView';
+import { UsersView } from './UsersView';
 import { AdminLogin } from './AdminLogin';
 import { ChangeCredentialsModal } from './ChangeCredentialsModal';
 import {
@@ -18,7 +19,8 @@ import {
   Plus,
   KeyRound,
   LogOut,
-  UserCheck
+  UserCheck,
+  Users
 } from 'lucide-react';
 
 export function AdminLayout({ onExitAdmin }) {
@@ -248,6 +250,18 @@ export function AdminLayout({ onExitAdmin }) {
             <ShoppingCart className="h-4 w-4" />
             <span>Orders & Delhivery</span>
           </button>
+
+          <button
+            onClick={() => setActiveTab('users')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              activeTab === 'users'
+                ? 'bg-forest text-white shadow-xs'
+                : 'text-charcoal hover:bg-sand text-charcoal-muted'
+            }`}
+          >
+            <Users className="h-4 w-4 text-emerald-500" />
+            <span>Customers & Logins</span>
+          </button>
         </div>
       </div>
 
@@ -259,6 +273,7 @@ export function AdminLayout({ onExitAdmin }) {
         {activeTab === 'offers' && <OffersManager />}
         {activeTab === 'inventory' && <InventoryTable />}
         {activeTab === 'orders' && <OrdersView />}
+        {activeTab === 'users' && <UsersView />}
       </main>
 
       {/* Product Add / Edit Modal */}

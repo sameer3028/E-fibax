@@ -445,7 +445,11 @@ app.post('/api/auth/login', (req, res) => {
     }
 
     const token = generateCustomerToken(user.id);
-    console.log(`🔑 Customer logged in: ${user.name} (${user.email})`);
+    user.lastLoginAt = new Date().toISOString();
+    user.loginCount = (user.loginCount || 0) + 1;
+    saveUsers(users);
+
+    console.log(`🔑 Customer logged in: ${user.name} (${user.email}) - Total logins: ${user.loginCount}`);
 
     return res.json({
       success: true,
@@ -456,6 +460,57 @@ app.post('/api/auth/login', (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     return res.status(500).json({ success: false, error: 'Internal server error during login.' });
+  }
+});
+
+// GET /api/admin/users - List all registered customers, active sessions, and order stats
+app.get('/api/admin/users', (req, res) => {
+  try {
+    const users = readUsers();
+    const orders = readOrders();
+    const now = Date.now();
+
+    // Active session user IDs
+    const activeUserIds = new Set();
+    customerSessions.forEach((session) => {
+      if (now < session.expiresAt) {
+        activeUserIds.add(session.userId);
+      }
+    });
+
+    const usersWithStats = users.map((u) => {
+      const userOrders = orders.filter(
+        (o) =>
+          (o.customer?.userId && o.customer.userId === u.id) ||
+          (o.customer?.email && o.customer.email.toLowerCase() === u.email.toLowerCase()) ||
+          (o.customer?.phone && o.customer.phone === u.phone)
+      );
+      const totalSpend = userOrders.reduce((sum, o) => sum + (o.totals?.grandTotal || 0), 0);
+
+      return {
+        id: u.id,
+        name: u.name,
+        email: u.email,
+        phone: u.phone,
+        addresses: u.addresses || [],
+        createdAt: u.createdAt,
+        lastLoginAt: u.lastLoginAt || u.createdAt,
+        loginCount: u.loginCount || 1,
+        isOnline: activeUserIds.has(u.id),
+        ordersCount: userOrders.length,
+        totalSpend
+      };
+    });
+
+    return res.json({
+      success: true,
+      totalUsers: users.length,
+      activeSessions: activeUserIds.size,
+      data: usersWithStats
+    });
+  } catch (err) {
+    console.error('Error fetching admin users:', err);
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 
