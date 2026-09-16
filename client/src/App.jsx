@@ -18,6 +18,7 @@ import { SearchModal } from './components/sections/SearchModal';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AuthModal } from './components/auth/AuthModal';
 import { AccountModal } from './components/auth/AccountModal';
+import { BrandLoader } from './components/common/BrandLoader';
 
 function StorefrontApp() {
   const { products } = useProducts();
@@ -120,6 +121,9 @@ function StorefrontApp() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white font-sans text-charcoal selection:bg-brand-soft selection:text-brand-dark">
+      {/* 0. Initial Brand Loader */}
+      <BrandLoader />
+
       {/* 1. Header with integrated Navbar */}
       <Header
         activePage={currentPage}
