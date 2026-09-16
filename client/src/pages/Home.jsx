@@ -9,7 +9,6 @@ import { ComboDealsSection } from '../components/sections/ComboDealsSection';
 import { TestimonialsSection } from '../components/sections/TestimonialsSection';
 import { AppPromoSection } from '../components/sections/AppPromoSection';
 import { BlogsSection } from '../components/sections/BlogsSection';
-import { HeritageBanner } from '../components/sections/HeritageBanner';
 import { MediaPressBar } from '../components/sections/MediaPressBar';
 import { FloatingConsultationBar } from '../components/sections/FloatingConsultationBar';
 import { Building2, Globe, ShieldCheck, Factory, ArrowRight, Award, CheckCircle2 } from 'lucide-react';
@@ -216,10 +215,7 @@ export function Home({
         <BlogsSection />
       </div>
 
-      {/* 13. Heritage & Organic Farms Banner */}
-      <HeritageBanner />
-
-      {/* 14. Media & Logistics Ticker */}
+      {/* 13. Media & Logistics Ticker */}
       <MediaPressBar />
 
       {/* 15. Free Ayurvedic Consultation Bar */}
