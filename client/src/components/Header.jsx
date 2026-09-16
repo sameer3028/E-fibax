@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { Navbar } from './Navbar';
@@ -154,18 +155,29 @@ export function Header({
               )}
 
               {/* Cart Drawer Trigger */}
-              <button
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.94 }}
                 onClick={openCart}
-                className="relative flex items-center justify-center p-2.5 rounded-full bg-brand text-white hover:bg-brand-hover shadow-md hover:shadow-orange-glow transition-all transform active:scale-95"
+                className="relative flex items-center justify-center p-2.5 rounded-full bg-brand text-white hover:bg-brand-hover shadow-md hover:shadow-orange-glow transition-colors"
                 aria-label="Open Cart"
               >
                 <ShoppingBag className="h-5 w-5" />
-                {totalItemsCount > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-forest text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs border border-white animate-scaleIn">
-                    {totalItemsCount}
-                  </span>
-                )}
-              </button>
+                <AnimatePresence>
+                  {totalItemsCount > 0 && (
+                    <motion.span
+                      key={totalItemsCount}
+                      initial={{ scale: 0.4, opacity: 0 }}
+                      animate={{ scale: [1.25, 1], opacity: 1 }}
+                      exit={{ scale: 0, opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                      className="absolute -top-1.5 -right-1.5 bg-forest text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-xs border border-white"
+                    >
+                      {totalItemsCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
+              </motion.button>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { useCart } from '../../../context/CartContext';
 import { formatPrice } from '../../../lib/utils';
 import { Star, ShoppingBag, AlertCircle } from 'lucide-react';
@@ -8,7 +9,11 @@ export function ProductCard({ product, onSelectProduct }) {
   const isOutOfStock = !product.inStock || product.stockQuantity === 0;
 
   return (
-    <div className="group rounded-2xl bg-white border border-sand-border p-3.5 hover:shadow-botanical hover:border-brand/40 transition-all duration-300 flex flex-col justify-between">
+    <motion.div 
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
+      className="group rounded-2xl bg-white border border-sand-border p-3.5 hover:shadow-botanical hover:border-brand/40 transition-shadow duration-300 flex flex-col justify-between"
+    >
       <div>
         {/* Packshot Image Container with Badges */}
         <div className="relative aspect-square w-full rounded-xl bg-sand/50 p-4 mb-3 overflow-hidden flex items-center justify-center">
@@ -82,14 +87,15 @@ export function ProductCard({ product, onSelectProduct }) {
           <span>Out of Stock</span>
         </button>
       ) : (
-        <button
+        <motion.button
+          whileTap={{ scale: 0.95 }}
           onClick={() => addToCart(product, 1)}
-          className="w-full py-2.5 px-4 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold tracking-wide transition-all duration-200 shadow-sm hover:shadow-orange-glow flex items-center justify-center gap-2 transform active:scale-98"
+          className="w-full py-2.5 px-4 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold tracking-wide transition-colors duration-200 shadow-sm hover:shadow-orange-glow flex items-center justify-center gap-2"
         >
           <ShoppingBag className="h-3.5 w-3.5" />
           <span>Add to cart</span>
-        </button>
+        </motion.button>
       )}
-    </div>
+    </motion.div>
   );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { Sparkles, ArrowRight, ShieldCheck, HeartHandshake, Star, Flame } from 'lucide-react';
 
 export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
@@ -15,15 +16,30 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
           {/* Banner Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center p-6 sm:p-10 lg:p-14 relative z-10">
             {/* Left Content Area */}
-            <div className="lg:col-span-7 space-y-4 text-center lg:text-left">
+            <motion.div 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.55, ease: 'easeOut' }}
+              className="lg:col-span-7 space-y-4 text-center lg:text-left"
+            >
               {/* Vibrant 3D Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg transform -rotate-1">
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.88 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1, duration: 0.4 }}
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-white font-extrabold text-xs uppercase tracking-wider shadow-lg transform -rotate-1"
+              >
                 <Flame className="h-4 w-4 text-white animate-bounce" />
                 <span>MONSOON & DAILY WELLNESS SPECIAL</span>
-              </div>
+              </motion.div>
 
               {/* Headline */}
-              <div className="space-y-1">
+              <motion.div 
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="space-y-1"
+              >
                 <span className="block font-heading text-sm sm:text-base font-bold text-emerald-300 uppercase tracking-widest">
                   India's 1st Certified • 100% Preservative-Free
                 </span>
@@ -34,32 +50,51 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
                   </span> <br />
                   VITALITY TONICS
                 </h1>
-              </div>
+              </motion.div>
 
-              <p className="text-xs sm:text-sm text-sand/90 max-w-lg mx-auto lg:mx-0 leading-relaxed font-sans font-medium">
+              <motion.p 
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.5 }}
+                className="text-xs sm:text-sm text-sand/90 max-w-lg mx-auto lg:mx-0 leading-relaxed font-sans font-medium"
+              >
                 Traditional swaras & kwath decoctions boiled in small batches by master vaidyas. Formulated with wild forest Amla, pure Safed Musli, Ashwagandha, and 45+ authentic Himalayan herbs.
-              </p>
+              </motion.p>
 
               {/* Vibrant CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
-                <button
+              <motion.div 
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4, duration: 0.5 }}
+                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2"
+              >
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={onExploreBestsellers}
                   className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-gradient-to-r from-[#ea580c] to-[#f97316] hover:from-[#c2410c] hover:to-[#ea580c] text-white text-xs sm:text-sm font-extrabold tracking-wider uppercase transition-all shadow-xl hover:shadow-orange-500/30 transform hover:-translate-y-0.5 active:scale-98 flex items-center justify-center gap-2"
                 >
                   <span>SHOP REMEDIES NOW</span>
                   <ArrowRight className="h-4 w-4" />
-                </button>
+                </motion.button>
 
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
                   onClick={onExploreConcerns}
                   className="w-full sm:w-auto px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold tracking-wider uppercase border border-white/25 transition-all hover:border-amber-400/80 backdrop-blur-sm"
                 >
                   Shop By Concern
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
 
               {/* Bottom Assurance Metrics */}
-              <div className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-semibold text-emerald-100">
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.4 }}
+                className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-semibold text-emerald-100"
+              >
                 <span className="flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-full border border-white/10">
                   <ShieldCheck className="h-4 w-4 text-emerald-400" />
                   <span>AYUSH Ministry Certified</span>
@@ -68,18 +103,25 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
                   <Star className="h-4 w-4 text-amber-400 fill-amber-400" />
                   <span>4.8/5 Rated (1,00,000+ Reviews)</span>
                 </span>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             {/* Right Hero Product Composition */}
-            <div className="lg:col-span-5 flex items-center justify-center relative">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.92, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.25, duration: 0.6, ease: 'easeOut' }}
+              className="lg:col-span-5 flex items-center justify-center relative"
+            >
               {/* Circular Sun Glow Backdrop */}
               <div className="absolute w-72 h-72 sm:w-80 sm:h-80 bg-gradient-to-br from-amber-400/30 via-orange-500/20 to-emerald-500/10 rounded-full blur-2xl animate-pulse-slow" />
 
               {/* 3D Product Presentation Display */}
-              <div 
+              <motion.div 
+                whileHover={{ y: -6, scale: 1.01 }}
+                transition={{ duration: 0.25 }}
                 onClick={onExploreBestsellers}
-                className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-white/20 via-white/10 to-white/5 p-4 sm:p-5 backdrop-blur-md border border-white/25 shadow-2xl flex flex-col items-center justify-center cursor-pointer group transition-all duration-300 hover:border-amber-400/60 hover:shadow-orange-500/20"
+                className="relative w-full max-w-md rounded-3xl bg-gradient-to-b from-white/20 via-white/10 to-white/5 p-4 sm:p-5 backdrop-blur-md border border-white/25 shadow-2xl flex flex-col items-center justify-center cursor-pointer group hover:border-amber-400/60 hover:shadow-orange-500/20"
               >
                 <div className="absolute -top-3 -right-3 bg-gradient-to-r from-amber-400 to-orange-500 text-forest-deep text-[11px] font-extrabold px-3.5 py-1 rounded-full uppercase tracking-wider shadow-lg border border-white z-10 flex items-center gap-1">
                   <Sparkles className="h-3 w-3 fill-forest-deep" />
@@ -110,14 +152,19 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
                     <span className="text-emerald-300 font-semibold">Doctor Formulated</span>
                   </div>
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
 
         {/* 3 Key Stats Pills right below Hero */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
-          <div className="bg-white rounded-2xl p-3.5 border border-[#e8e2d5] shadow-xs flex items-center gap-3.5">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4"
+        >
+          <motion.div whileHover={{ y: -3 }} transition={{ duration: 0.2 }} className="bg-white rounded-2xl p-3.5 border border-[#e8e2d5] shadow-xs flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-forest flex-shrink-0">
               <ShieldCheck className="h-5 w-5 text-forest" />
             </div>
@@ -125,9 +172,9 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
               <div className="font-heading font-bold text-forest-deep text-xs sm:text-sm">100% Pure & Preservative-Free</div>
               <div className="text-[11px] text-charcoal-muted">Traditional Vedic preparation</div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-white rounded-2xl p-3.5 border border-[#e8e2d5] shadow-xs flex items-center gap-3.5">
+          <motion.div whileHover={{ y: -3 }} transition={{ duration: 0.2 }} className="bg-white rounded-2xl p-3.5 border border-[#e8e2d5] shadow-xs flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-200 flex items-center justify-center text-brand flex-shrink-0">
               <HeartHandshake className="h-5 w-5 text-brand" />
             </div>
@@ -135,9 +182,9 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
               <div className="font-heading font-bold text-forest-deep text-xs sm:text-sm">5,00,000+ Happy Customers</div>
               <div className="text-[11px] text-charcoal-muted">Delivering across all Indian PIN codes</div>
             </div>
-          </div>
+          </motion.div>
 
-          <div className="bg-white rounded-2xl p-3.5 border border-[#e8e2d5] shadow-xs flex items-center gap-3.5">
+          <motion.div whileHover={{ y: -3 }} transition={{ duration: 0.2 }} className="bg-white rounded-2xl p-3.5 border border-[#e8e2d5] shadow-xs flex items-center gap-3.5">
             <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-200 flex items-center justify-center text-amber-600 flex-shrink-0">
               <Star className="h-5 w-5 text-amber-500 fill-amber-500" />
             </div>
@@ -145,8 +192,8 @@ export function HeroSection({ onExploreConcerns, onExploreBestsellers }) {
               <div className="font-heading font-bold text-forest-deep text-xs sm:text-sm">4.8★ Verified Doctor Rating</div>
               <div className="text-[11px] text-charcoal-muted">Master Vaidya approved formulas</div>
             </div>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );

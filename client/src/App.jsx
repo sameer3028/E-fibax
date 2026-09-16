@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ProductProvider, useProducts } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './context/AuthContext';
@@ -130,53 +131,63 @@ function StorefrontApp() {
 
       {/* 2. Main Page Render */}
       <main className="flex-1">
-        {currentPage === 'home' && (
-          <Home
-            products={products}
-            onSelectProduct={handleSelectProduct}
-            onSelectCategory={handleSelectCategory}
-            onSelectConcern={handleSelectConcern}
-            onNavigate={handleNavigate}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentPage === 'product-detail' ? `product-${selectedProduct?.id || selectedProduct?.slug}` : currentPage}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.22, ease: 'easeOut' }}
+          >
+            {currentPage === 'home' && (
+              <Home
+                products={products}
+                onSelectProduct={handleSelectProduct}
+                onSelectCategory={handleSelectCategory}
+                onSelectConcern={handleSelectConcern}
+                onNavigate={handleNavigate}
+              />
+            )}
 
-        {currentPage === 'about' && (
-          <About onNavigate={handleNavigate} />
-        )}
+            {currentPage === 'about' && (
+              <About onNavigate={handleNavigate} />
+            )}
 
-        {currentPage === 'products' && (
-          <Products
-            products={products}
-            initialCategory={activeCategory}
-            initialConcern={activeConcern}
-            onSelectProduct={handleSelectProduct}
-            onNavigate={handleNavigate}
-          />
-        )}
+            {currentPage === 'products' && (
+              <Products
+                products={products}
+                initialCategory={activeCategory}
+                initialConcern={activeConcern}
+                onSelectProduct={handleSelectProduct}
+                onNavigate={handleNavigate}
+              />
+            )}
 
-        {currentPage === 'product-detail' && (
-          <ProductDetail
-            product={selectedProduct}
-            allProducts={products}
-            onBack={() => handleNavigate('products')}
-            onSelectProduct={handleSelectProduct}
-            onCheckout={() => setIsCheckoutOpen(true)}
-            onSelectConcern={handleSelectConcern}
-            onNavigate={handleNavigate}
-          />
-        )}
+            {currentPage === 'product-detail' && (
+              <ProductDetail
+                product={selectedProduct}
+                allProducts={products}
+                onBack={() => handleNavigate('products')}
+                onSelectProduct={handleSelectProduct}
+                onCheckout={() => setIsCheckoutOpen(true)}
+                onSelectConcern={handleSelectConcern}
+                onNavigate={handleNavigate}
+              />
+            )}
 
-        {currentPage === 'industries' && (
-          <Industries onNavigate={handleNavigate} />
-        )}
+            {currentPage === 'industries' && (
+              <Industries onNavigate={handleNavigate} />
+            )}
 
-        {currentPage === 'global-reach' && (
-          <GlobalReach onNavigate={handleNavigate} />
-        )}
+            {currentPage === 'global-reach' && (
+              <GlobalReach onNavigate={handleNavigate} />
+            )}
 
-        {currentPage === 'contact' && (
-          <Contact />
-        )}
+            {currentPage === 'contact' && (
+              <Contact />
+            )}
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       {/* 3. Global Footer */}
