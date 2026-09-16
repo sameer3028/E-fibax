@@ -13,6 +13,14 @@ export function BlogsSection({ onNavigate }) {
     }
   };
 
+  const handleOpenArticle = (item) => {
+    if (onNavigate) {
+      onNavigate('blog-detail', { post: item });
+    } else {
+      window.location.hash = `blog/${item.slug || item.id}`;
+    }
+  };
+
   return (
     <section className="py-14 bg-[#fbf9f4] border-b border-[#e8e2d5]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,7 +48,7 @@ export function BlogsSection({ onNavigate }) {
           {articles.map((item) => (
             <article
               key={item.id}
-              onClick={handleOpenBlogs}
+              onClick={() => handleOpenArticle(item)}
               className="group bg-white rounded-2xl overflow-hidden border border-[#e8e2d5] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div>

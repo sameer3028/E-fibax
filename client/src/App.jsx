@@ -13,6 +13,8 @@ import { Industries } from './pages/Industries';
 import { GlobalReach } from './pages/GlobalReach';
 import { Contact } from './pages/Contact';
 import { Blogs } from './pages/Blogs';
+import { BlogDetail } from './pages/BlogDetail';
+import { BLOG_POSTS } from './data/blogs';
 import { CartDrawer } from './components/common/Cart/CartDrawer';
 import { CheckoutModal } from './components/views/CheckoutModal';
 import { SearchModal } from './components/sections/SearchModal';
@@ -26,6 +28,7 @@ function StorefrontApp() {
   const [currentPage, setCurrentPage] = useState('home'); 
   // 'home' | 'about' | 'products' | 'product-detail' | 'industries' | 'global-reach' | 'contact' | 'admin'
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [selectedBlogPost, setSelectedBlogPost] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
   const [activeConcern, setActiveConcern] = useState('all');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -46,8 +49,19 @@ function StorefrontApp() {
         setCurrentPage('industries');
       } else if (hash === 'global-reach' || hash === 'global') {
         setCurrentPage('global-reach');
-      } else if (hash === 'blogs' || hash === 'blog' || hash === 'journal') {
+      } else if (hash === 'blogs' || hash === 'journal') {
         setCurrentPage('blogs');
+      } else if (hash.startsWith('blog/')) {
+        const identifier = decodeURIComponent(hash.replace('blog/', ''));
+        const found = BLOG_POSTS.find(
+          (b) => (b.slug && b.slug.toLowerCase() === identifier.toLowerCase()) || String(b.id) === identifier
+        );
+        if (found) {
+          setSelectedBlogPost(found);
+          setCurrentPage('blog-detail');
+        } else {
+          setCurrentPage('blogs');
+        }
       } else if (hash === 'contact') {
         setCurrentPage('contact');
       } else if (hash === 'admin' || window.location.pathname === '/admin') {
@@ -77,11 +91,15 @@ function StorefrontApp() {
       if (params.category) setActiveCategory(params.category);
       if (params.concern) setActiveConcern(params.concern);
       if (params.product) setSelectedProduct(params.product);
+      if (params.post) setSelectedBlogPost(params.post);
     }
 
     if (pageId === 'product-detail' && params?.product) {
       setSelectedProduct(params.product);
       window.location.hash = `product/${params.product.slug || params.product.id}`;
+    } else if (pageId === 'blog-detail' && params?.post) {
+      setSelectedBlogPost(params.post);
+      window.location.hash = `blog/${params.post.slug || params.post.id}`;
     } else {
       window.location.hash = pageId === 'home' ? '' : pageId;
     }
@@ -140,7 +158,13 @@ function StorefrontApp() {
       <main className="flex-1">
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentPage === 'product-detail' ? `product-${selectedProduct?.id || selectedProduct?.slug}` : currentPage}
+            key={
+              currentPage === 'product-detail'
+                ? `product-${selectedProduct?.id || selectedProduct?.slug}`
+                : currentPage === 'blog-detail'
+                ? `blog-${selectedBlogPost?.id || selectedBlogPost?.slug}`
+                : currentPage
+            }
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
@@ -192,6 +216,13 @@ function StorefrontApp() {
 
             {currentPage === 'blogs' && (
               <Blogs onNavigate={handleNavigate} />
+            )}
+
+            {currentPage === 'blog-detail' && (
+              <BlogDetail
+                post={selectedBlogPost}
+                onNavigate={handleNavigate}
+              />
             )}
 
             {currentPage === 'contact' && (

@@ -178,15 +178,6 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                   <span>Contact & PCD Franchise</span>
                 </button>
               </li>
-              <li>
-                <a
-                  href="#admin"
-                  className="hover:text-amber-300 transition-colors flex items-center gap-1.5 text-white/50 hover:text-white"
-                >
-                  <ArrowRight className="h-3 w-3" />
-                  <span>Admin Console</span>
-                </a>
-              </li>
             </ul>
           </div>
 

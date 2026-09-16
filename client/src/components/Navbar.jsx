@@ -13,12 +13,10 @@ export function Navbar({
 }) {
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
-  const [isIndustriesDropdownOpen, setIsIndustriesDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const handleNavClick = (pageId, param = null) => {
     setIsProductsDropdownOpen(false);
-    setIsIndustriesDropdownOpen(false);
     setIsMobileMenuOpen(false);
     if (onNavigate) {
       onNavigate(pageId, param);
@@ -29,8 +27,6 @@ export function Navbar({
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About Us' },
     { id: 'products', label: 'Products', hasDropdown: true },
-    { id: 'industries', label: 'Industries' },
-    { id: 'global-reach', label: 'Global Reach' },
     { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' }
   ];

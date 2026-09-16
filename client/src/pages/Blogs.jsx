@@ -24,9 +24,15 @@ export function Blogs({ onNavigate }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const [activeArticle, setActiveArticle] = useState(null);
-  const [copiedLink, setCopiedLink] = useState(false);
   const topListRef = useRef(null);
+
+  const handleOpenArticle = (post) => {
+    if (onNavigate) {
+      onNavigate('blog-detail', { post });
+    } else {
+      window.location.hash = `blog/${post.slug || post.id}`;
+    }
+  };
 
   // Filter posts based on category and search query
   const filteredPosts = useMemo(() => {
@@ -71,14 +77,6 @@ export function Blogs({ onNavigate }) {
     setCurrentPage(1);
   };
 
-  // Copy share link
-  const handleShare = (article) => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2000);
-    }
-  };
 
   return (
     <div className="w-full bg-[#fbf9f4] min-h-screen">
@@ -234,7 +232,7 @@ export function Blogs({ onNavigate }) {
               key={post.id}
               whileHover={{ y: -5 }}
               transition={{ duration: 0.2 }}
-              onClick={() => setActiveArticle(post)}
+              onClick={() => handleOpenArticle(post)}
               className="group bg-white rounded-2xl overflow-hidden border border-sand-border shadow-xs hover:shadow-botanical transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div>
@@ -363,128 +361,6 @@ export function Blogs({ onNavigate }) {
           </div>
         )}
       </div>
-
-      {/* 5. Full Article Reader Modal */}
-      <AnimatePresence>
-        {activeArticle && (
-          <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4 sm:p-6">
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setActiveArticle(null)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm"
-            />
-
-            {/* Modal Dialog */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 15 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 15 }}
-              transition={{ duration: 0.25 }}
-              className="relative bg-white rounded-3xl shadow-2xl border border-sand-border max-w-3xl w-full max-h-[90vh] overflow-y-auto z-10"
-            >
-              {/* Top Banner Image */}
-              <div className="relative aspect-[21/9] w-full overflow-hidden bg-forest">
-                <img
-                  src={activeArticle.image}
-                  alt={activeArticle.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-
-                {/* Close Button */}
-                <button
-                  onClick={() => setActiveArticle(null)}
-                  className="absolute top-4 right-4 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-
-                {/* Category & Tag on Image */}
-                <div className="absolute bottom-4 left-4 sm:left-6 flex items-center gap-2">
-                  <span className="bg-brand text-white text-xs font-extrabold uppercase px-3 py-1 rounded-full shadow-md">
-                    {activeArticle.tag}
-                  </span>
-                  <span className="bg-white/20 backdrop-blur-md text-white text-xs font-semibold px-2.5 py-1 rounded-full">
-                    {activeArticle.category}
-                  </span>
-                </div>
-              </div>
-
-              {/* Article Content Body */}
-              <div className="p-6 sm:p-8 space-y-6">
-                {/* Meta info */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-sand-border text-xs text-charcoal-muted">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={activeArticle.author.avatar}
-                      alt={activeArticle.author.name}
-                      className="w-10 h-10 rounded-full object-cover border border-sand-border"
-                    />
-                    <div>
-                      <h4 className="font-bold text-forest-deep text-sm">{activeArticle.author.name}</h4>
-                      <p className="text-[11px] text-charcoal-muted">{activeArticle.author.role}</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="h-3.5 w-3.5 text-forest" />
-                      <span>{activeArticle.date}</span>
-                    </span>
-                    <span>•</span>
-                    <span className="flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5 text-forest" />
-                      <span>{activeArticle.readTime}</span>
-                    </span>
-                  </div>
-                </div>
-
-                {/* Headline */}
-                <h2 className="font-heading text-xl sm:text-2xl font-extrabold text-forest-deep leading-tight">
-                  {activeArticle.title}
-                </h2>
-
-                {/* Lead Excerpt */}
-                <p className="text-sm font-medium text-forest bg-forest/5 p-4 rounded-2xl border-l-4 border-forest leading-relaxed">
-                  {activeArticle.excerpt}
-                </p>
-
-                {/* Full Markdown-style text */}
-                <div className="prose prose-sm max-w-none text-charcoal leading-relaxed whitespace-pre-line space-y-4 font-sans">
-                  {activeArticle.content}
-                </div>
-
-                {/* Action Bar */}
-                <div className="pt-6 border-t border-sand-border flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <button
-                    onClick={() => handleShare(activeArticle)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sand hover:bg-sand-border text-charcoal text-xs font-bold transition-all w-full sm:w-auto justify-center"
-                  >
-                    <Share2 className="h-4 w-4" />
-                    <span>{copiedLink ? 'Link Copied to Clipboard!' : 'Share This Guide'}</span>
-                  </button>
-
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <button
-                      onClick={() => {
-                        setActiveArticle(null);
-                        if (onNavigate) onNavigate('products');
-                      }}
-                      className="px-6 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold shadow-md hover:shadow-orange-glow transition-all flex items-center justify-center gap-2 w-full sm:w-auto"
-                    >
-                      <span>Explore Related Remedies</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
