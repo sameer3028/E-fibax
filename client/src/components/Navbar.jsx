@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ChevronDown, Menu, X, Sparkles, Phone, ShieldCheck, Globe, Building2, Package, ArrowRight } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { ChevronDown, Menu, X, Sparkles, Phone, ShieldCheck, Globe, Building2, Package, ArrowRight, User } from 'lucide-react';
 import { CATEGORIES } from '../data/categories';
 import { CONCERNS } from '../data/concerns';
 
@@ -10,6 +11,7 @@ export function Navbar({
   onSelectConcern,
   onOpenSearch
 }) {
+  const { currentUser, openAuthModal, openAccountModal } = useAuth();
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [isIndustriesDropdownOpen, setIsIndustriesDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -229,6 +231,38 @@ export function Navbar({
               </span>
               <span className="bg-white/20 px-2 py-0.5 rounded text-[11px]">Save up to 25%</span>
             </button>
+
+            {/* Mobile Customer Account Trigger */}
+            <div className="pt-1">
+              {currentUser ? (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openAccountModal('orders');
+                  }}
+                  className="w-full flex items-center justify-between p-2.5 rounded-xl bg-forest/10 border border-forest/20 text-forest text-xs font-bold"
+                >
+                  <span className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-forest text-white text-[10px] font-black flex items-center justify-center">
+                      {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
+                    </div>
+                    <span>My Account ({currentUser.name?.split(' ')[0]})</span>
+                  </span>
+                  <span className="text-[11px] text-brand underline font-semibold">View Orders</span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openAuthModal('login');
+                  }}
+                  className="w-full flex items-center justify-center gap-2 p-2.5 rounded-xl bg-forest text-white text-xs font-bold shadow-xs"
+                >
+                  <User className="h-4 w-4" />
+                  <span>Sign In / Create Account</span>
+                </button>
+              )}
+            </div>
 
             <div className="pt-2 text-center">
               <a

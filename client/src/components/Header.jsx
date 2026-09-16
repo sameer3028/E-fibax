@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { Navbar } from './Navbar';
 import {
   ShoppingBag,
@@ -8,7 +9,9 @@ import {
   ShieldCheck,
   Truck,
   Sparkles,
-  Lock
+  Lock,
+  User,
+  Package
 } from 'lucide-react';
 
 export function Header({
@@ -20,6 +23,7 @@ export function Header({
   onOpenAdmin
 }) {
   const { totalItemsCount, openCart } = useCart();
+  const { currentUser, openAuthModal, openAccountModal } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -125,6 +129,31 @@ export function Header({
                 <PhoneCall className="h-3.5 w-3.5 text-forest" />
                 <span>Ayurveda Support</span>
               </a>
+
+              {/* Customer Account Button (Sign In or Profile) */}
+              {currentUser ? (
+                <button
+                  onClick={() => openAccountModal('orders')}
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-forest/10 hover:bg-forest/20 text-forest text-xs font-bold transition-all"
+                  title="My Account & Orders"
+                >
+                  <div className="w-6 h-6 rounded-full bg-forest text-white text-[10px] font-black flex items-center justify-center">
+                    {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}
+                  </div>
+                  <span className="hidden sm:inline truncate max-w-[85px]">
+                    {currentUser.name?.split(' ')[0]}
+                  </span>
+                </button>
+              ) : (
+                <button
+                  onClick={() => openAuthModal('login')}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-sand hover:bg-sand-border/50 border border-sand-border text-charcoal text-xs font-semibold transition-all"
+                  title="Login or Register"
+                >
+                  <User className="h-4 w-4 text-forest" />
+                  <span className="hidden sm:inline">Sign In</span>
+                </button>
+              )}
 
               {/* Cart Drawer Trigger */}
               <button

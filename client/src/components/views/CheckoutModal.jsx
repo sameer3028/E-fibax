@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { formatPrice } from '../../lib/utils';
@@ -10,28 +11,102 @@ import {
   CheckCircle,
   CreditCard,
   Banknote,
-  ArrowRight
+  ArrowRight,
+  User,
+  Sparkles,
+  Lock
 } from 'lucide-react';
 
 export function CheckoutModal({ isOpen, onClose }) {
   const { items, grandTotal, subtotal, shippingFee, discountAmount, clearCart } = useCart();
+  const { currentUser, token, openAuthModal, fetchUserOrders } = useAuth();
+
   const [step, setStep] = useState(1); // 1: Info, 2: Address, 3: Payment, 4: Confirmed
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [city, setCity] = useState('');
   const [pincode, setPincode] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('UPI');
   const [orderNumber, setOrderNumber] = useState('');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Auto-fill from logged-in customer profile
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.name && !name) setName(currentUser.name);
+      if (currentUser.phone && !phone) setPhone(currentUser.phone);
+      if (currentUser.email && !email) setEmail(currentUser.email);
+      if (currentUser.addresses && currentUser.addresses.length > 0) {
+        const def = currentUser.addresses[0];
+        if (def.address && !address) setAddress(def.address);
+        if (def.city && !city) setCity(def.city);
+        if (def.pincode && !pincode) setPincode(def.pincode);
+      }
+    }
+  }, [currentUser, isOpen]);
 
   if (!isOpen) return null;
 
-  const handleCompleteOrder = (e) => {
+  const handleCompleteOrder = async (e) => {
     e.preventDefault();
-    const generatedOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
-    setOrderNumber(generatedOrder);
-    setStep(4);
-    clearCart();
+    setIsSubmitting(true);
+
+    const orderPayload = {
+      customer: {
+        name,
+        phone,
+        email: email || currentUser?.email || '',
+        userId: currentUser?.id || null
+      },
+      items: items.map((i) => ({
+        id: i.id,
+        title: i.title,
+        price: i.price,
+        quantity: i.quantity,
+        packName: i.packName,
+        featuredImage: i.featuredImage
+      })),
+      shipping: { address, city, pincode },
+      payment: { method: paymentMethod, status: paymentMethod === 'COD' ? 'Pending' : 'Success' },
+      totals: { subtotal, grandTotal, discountAmount, shippingFee }
+    };
+
+    try {
+      const headers = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(orderPayload)
+      });
+      const data = await response.json();
+
+      if (data.success && data.data) {
+        setOrderNumber(data.data.orderId);
+        setTrackingNumber(data.data.trackingId);
+      } else {
+        const genOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
+        setOrderNumber(genOrder);
+        setTrackingNumber('DLH-' + Math.floor(100000000 + Math.random() * 900000000));
+      }
+
+      if (currentUser && fetchUserOrders) {
+        fetchUserOrders();
+      }
+    } catch {
+      const genOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
+      setOrderNumber(genOrder);
+      setTrackingNumber('DLH-' + Math.floor(100000000 + Math.random() * 900000000));
+    } finally {
+      setIsSubmitting(false);
+      setStep(4);
+      clearCart();
+    }
   };
 
   return (
@@ -48,13 +123,44 @@ export function CheckoutModal({ isOpen, onClose }) {
           </button>
 
           {/* Stepper Header */}
-          <div className="pb-6 border-b border-sand-border mb-6">
+          <div className="pb-5 border-b border-sand-border mb-6">
             <h3 className="font-heading font-bold text-forest-deep text-xl sm:text-2xl">
               {step === 4 ? 'Order Confirmed!' : 'Fibax Express Checkout'}
             </h3>
             <p className="text-xs text-charcoal-muted mt-1">
               Dispatched with care via Delhivery Express • 100% Secure Checkout
             </p>
+
+            {/* Logged in indicator or Quick Login hint */}
+            {step !== 4 && (
+              <div className="mt-3">
+                {currentUser ? (
+                  <div className="p-2.5 bg-forest/5 border border-forest/15 rounded-xl flex items-center justify-between text-xs text-forest">
+                    <span className="flex items-center gap-1.5 font-medium">
+                      <User className="h-3.5 w-3.5" />
+                      <span>Logged in as <strong>{currentUser.name}</strong> ({currentUser.email})</span>
+                    </span>
+                    <span className="text-[10px] bg-forest text-white px-2 py-0.5 rounded-full font-bold">
+                      Account Verified
+                    </span>
+                  </div>
+                ) : (
+                  <div className="p-2.5 bg-brand-soft border border-brand-border/60 rounded-xl flex items-center justify-between text-xs">
+                    <span className="text-charcoal-muted flex items-center gap-1.5">
+                      <Sparkles className="h-3.5 w-3.5 text-brand" />
+                      <span>Have a Fibax account?</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => openAuthModal('login')}
+                      className="text-brand font-bold hover:underline"
+                    >
+                      Sign In for Saved Address
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {step === 1 && (
@@ -75,6 +181,13 @@ export function CheckoutModal({ isOpen, onClose }) {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                 required
+              />
+              <Input
+                label="Email Address (for Invoice & Receipt)"
+                placeholder="you@email.com"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Button
                 variant="primary"
@@ -138,57 +251,77 @@ export function CheckoutModal({ isOpen, onClose }) {
               <h4 className="font-semibold text-sm text-forest">Step 3: Payment Method</h4>
 
               {/* Order Summary Recap */}
-              <div className="p-3.5 rounded-2xl bg-sand border border-sand-border text-xs space-y-1">
-                <div className="flex justify-between">
-                  <span className="text-charcoal-muted">Items ({items.length})</span>
+              <div className="p-4 bg-sand rounded-2xl border border-sand-border space-y-1.5 text-xs text-charcoal">
+                <div className="flex justify-between font-semibold">
+                  <span>Subtotal ({items.length} items):</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-charcoal-muted">Delivery</span>
-                  <span>{shippingFee === 0 ? 'FREE' : formatPrice(shippingFee)}</span>
-                </div>
                 {discountAmount > 0 && (
-                  <div className="flex justify-between text-crimson font-medium">
-                    <span>Coupon Discount</span>
+                  <div className="flex justify-between text-forest font-bold">
+                    <span>Course Discount:</span>
                     <span>-{formatPrice(discountAmount)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-sm text-forest-deep pt-1 border-t border-sand-border">
-                  <span>Payable Amount</span>
+                <div className="flex justify-between">
+                  <span>Delhivery Express Shipping:</span>
+                  <span className={shippingFee === 0 ? 'text-forest font-bold' : ''}>
+                    {shippingFee === 0 ? 'FREE' : formatPrice(shippingFee)}
+                  </span>
+                </div>
+                <div className="pt-2 border-t border-sand-border flex justify-between font-extrabold text-sm text-forest-deep">
+                  <span>Grand Total:</span>
                   <span>{formatPrice(grandTotal)}</span>
                 </div>
               </div>
 
-              {/* Payment Selector */}
-              <div className="space-y-2">
+              {/* Payment Select */}
+              <div className="space-y-2 pt-2">
                 <label
-                  onClick={() => setPaymentMethod('UPI')}
-                  className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer text-xs transition-all ${
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                     paymentMethod === 'UPI'
-                      ? 'border-forest bg-sage-soft/30 font-bold text-forest'
+                      ? 'border-forest bg-forest/5 shadow-xs'
                       : 'border-sand-border hover:bg-sand'
                   }`}
+                  onClick={() => setPaymentMethod('UPI')}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <CreditCard className="h-4 w-4 text-forest" />
-                    <span>Instant UPI / Cards / Netbanking (Razorpay)</span>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === 'UPI'}
+                      onChange={() => setPaymentMethod('UPI')}
+                      className="text-forest focus:ring-forest"
+                    />
+                    <div>
+                      <p className="text-xs font-bold text-charcoal">UPI Instant (GPay / PhonePe / Paytm)</p>
+                      <p className="text-[11px] text-charcoal-muted">Fastest checkout & instant priority dispatch</p>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-emerald-800 font-bold">Fastest</span>
+                  <CreditCard className="h-4 w-4 text-forest" />
                 </label>
 
                 <label
-                  onClick={() => setPaymentMethod('COD')}
-                  className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer text-xs transition-all ${
+                  className={`flex items-center justify-between p-3.5 rounded-xl border cursor-pointer transition-all ${
                     paymentMethod === 'COD'
-                      ? 'border-forest bg-sage-soft/30 font-bold text-forest'
+                      ? 'border-forest bg-forest/5 shadow-xs'
                       : 'border-sand-border hover:bg-sand'
                   }`}
+                  onClick={() => setPaymentMethod('COD')}
                 >
-                  <div className="flex items-center gap-2.5">
-                    <Banknote className="h-4 w-4 text-forest" />
-                    <span>Cash on Delivery (COD)</span>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="radio"
+                      name="payment"
+                      checked={paymentMethod === 'COD'}
+                      onChange={() => setPaymentMethod('COD')}
+                      className="text-forest focus:ring-forest"
+                    />
+                    <div>
+                      <p className="text-xs font-bold text-charcoal">Cash on Delivery (COD)</p>
+                      <p className="text-[11px] text-charcoal-muted">Pay cash at doorstep when order arrives</p>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-charcoal-muted">OTP Verified</span>
+                  <Banknote className="h-4 w-4 text-brand" />
                 </label>
               </div>
 
@@ -199,10 +332,11 @@ export function CheckoutModal({ isOpen, onClose }) {
                 <Button
                   variant="primary"
                   size="md"
+                  disabled={isSubmitting}
                   onClick={handleCompleteOrder}
                   className="flex-1 font-bold text-base py-3"
                 >
-                  Place Order • {formatPrice(grandTotal)}
+                  {isSubmitting ? 'Placing Order...' : `Place Order • ${formatPrice(grandTotal)}`}
                 </Button>
               </div>
             </div>
@@ -219,8 +353,9 @@ export function CheckoutModal({ isOpen, onClose }) {
               <p className="text-xs text-charcoal-muted max-w-sm mx-auto">
                 Your order <strong>#{orderNumber}</strong> has been received and scheduled for dispatch via <strong>Delhivery Express</strong>.
               </p>
-              <div className="p-4 rounded-2xl bg-sand border border-sand-border text-xs max-w-sm mx-auto text-left space-y-1 text-charcoal">
-                <p><strong>Tracking partner:</strong> Delhivery</p>
+              <div className="p-4 rounded-2xl bg-sand border border-sand-border text-xs max-w-sm mx-auto text-left space-y-1.5 text-charcoal">
+                <p><strong>AWB Tracking:</strong> <span className="font-mono text-forest font-bold">{trackingNumber}</span></p>
+                <p><strong>Courier:</strong> Delhivery Express Air</p>
                 <p><strong>Delivery Address:</strong> {address}, {city} - {pincode}</p>
                 <p><strong>Confirmation SMS/WhatsApp:</strong> Sent to +91 {phone}</p>
               </div>

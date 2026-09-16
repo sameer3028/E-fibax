@@ -1,0 +1,21 @@
+[
+  {
+    "id": "USR-mu400hxkBB0D",
+    "name": "Sameer Sharma",
+    "email": "sameer@fibaxpharma.com",
+    "phone": "9876543210",
+    "salt": "0e0fe52412aa5c21412b8c6af7d7212e",
+    "passwordHash": "d6433b57840337bacaccb1831e53b20e11944a7bb6dee05e9fef0979259080316f640a079d15350b5066c71ef1f1ea2b4e75a9f666ef58eb357b6f0940541bdf",
+    "addresses": [
+      {
+        "id": "addr_1789556968136",
+        "address": "Flat 402, Green Valley",
+        "city": "Zirakpur",
+        "pincode": "140603",
+        "isDefault": true
+      }
+    ],
+    "createdAt": "2026-09-16T11:09:28.136Z",
+    "updatedAt": "2026-09-16T11:09:28.137Z"
+  }
+]

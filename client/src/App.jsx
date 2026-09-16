@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ProductProvider, useProducts } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { Home } from './pages/Home';
@@ -14,6 +15,8 @@ import { CartDrawer } from './components/common/Cart/CartDrawer';
 import { CheckoutModal } from './components/views/CheckoutModal';
 import { SearchModal } from './components/sections/SearchModal';
 import { AdminLayout } from './components/admin/AdminLayout';
+import { AuthModal } from './components/auth/AuthModal';
+import { AccountModal } from './components/auth/AccountModal';
 
 function StorefrontApp() {
   const { products } = useProducts();
@@ -200,6 +203,14 @@ function StorefrontApp() {
         onSelectProduct={handleSelectProduct}
         onSelectConcern={handleSelectConcern}
       />
+
+      {/* 7. Customer Auth Modal (Sign In / Register) */}
+      <AuthModal />
+
+      {/* 8. Customer Account Dashboard Modal (Orders, Tracking, Profile) */}
+      <AccountModal
+        onExploreProducts={() => handleNavigate('products')}
+      />
     </div>
   );
 }
@@ -208,7 +219,9 @@ export default function App() {
   return (
     <ProductProvider>
       <CartProvider>
-        <StorefrontApp />
+        <AuthProvider>
+          <StorefrontApp />
+        </AuthProvider>
       </CartProvider>
     </ProductProvider>
   );

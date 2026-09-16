@@ -269,6 +269,298 @@ app.post('/api/admin/logout', (req, res) => {
 });
 
 // ==========================================
+// 0B. CUSTOMER USER AUTHENTICATION & ACCOUNT
+// ==========================================
+const usersFile = join(dataDir, 'users.json');
+if (!existsSync(usersFile)) {
+  writeFileSync(usersFile, JSON.stringify([], null, 2), 'utf8');
+}
+
+function readUsers() {
+  try {
+    if (!existsSync(usersFile)) return [];
+    return JSON.parse(readFileSync(usersFile, 'utf8'));
+  } catch (err) {
+    console.error('Error reading users:', err);
+    return [];
+  }
+}
+
+function saveUsers(users) {
+  writeFileSync(usersFile, JSON.stringify(users, null, 2), 'utf8');
+}
+
+// In-memory customer sessions: Map<token, { userId, expiresAt }>
+const customerSessions = new Map();
+
+function generateCustomerToken(userId) {
+  const token = 'cust_' + crypto.randomBytes(32).toString('hex');
+  const expiresAt = Date.now() + 30 * 24 * 60 * 60 * 1000; // 30 days
+  customerSessions.set(token, { userId, expiresAt });
+  return token;
+}
+
+function getCustomerFromRequest(req) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return null;
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') return null;
+  const token = parts[1];
+  const session = customerSessions.get(token);
+  if (!session) return null;
+  if (Date.now() > session.expiresAt) {
+    customerSessions.delete(token);
+    return null;
+  }
+  const users = readUsers();
+  const user = users.find(u => u.id === session.userId);
+  if (!user) return null;
+  return { ...user, sessionToken: token };
+}
+
+function sanitizeUser(user) {
+  if (!user) return null;
+  const { salt, passwordHash, ...safeUser } = user;
+  return safeUser;
+}
+
+// POST /api/auth/register - Customer Account Creation
+app.post('/api/auth/register', (req, res) => {
+  try {
+    const { name, email, phone, password, address, city, pincode } = req.body || {};
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ success: false, error: 'Full name is required.' });
+    }
+    if (!email || !email.trim()) {
+      return res.status(400).json({ success: false, error: 'Email address is required.' });
+    }
+    if (!phone || !phone.trim()) {
+      return res.status(400).json({ success: false, error: 'Mobile number is required.' });
+    }
+    if (!password || password.length < 6) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long.' });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(cleanEmail)) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid email address.' });
+    }
+
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 10 || cleanPhone.length > 15) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid 10-digit mobile number.' });
+    }
+
+    const cleanName = name.replace(/[<>]/g, '').trim();
+    if (cleanName.length < 2) {
+      return res.status(400).json({ success: false, error: 'Name must be at least 2 characters.' });
+    }
+
+    const users = readUsers();
+
+    // Check existing email or phone
+    const existingEmail = users.find(u => u.email.toLowerCase() === cleanEmail);
+    if (existingEmail) {
+      return res.status(400).json({ success: false, error: 'An account with this email address already exists. Please log in.' });
+    }
+
+    const existingPhone = users.find(u => u.phone === cleanPhone);
+    if (existingPhone) {
+      return res.status(400).json({ success: false, error: 'An account with this mobile number already exists. Please log in.' });
+    }
+
+    const salt = crypto.randomBytes(16).toString('hex');
+    const passwordHash = hashPassword(password, salt);
+    const userId = 'USR-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+    const addresses = [];
+    if (address && address.trim()) {
+      addresses.push({
+        id: 'addr_' + Date.now(),
+        address: address.trim(),
+        city: (city || '').trim(),
+        pincode: (pincode || '').trim(),
+        isDefault: true
+      });
+    }
+
+    const newUser = {
+      id: userId,
+      name: cleanName,
+      email: cleanEmail,
+      phone: cleanPhone,
+      salt,
+      passwordHash,
+      addresses,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    saveUsers(users);
+
+    const token = generateCustomerToken(userId);
+    console.log(`👤 New customer registered: ${newUser.name} (${newUser.email}) - ID: ${newUser.id}`);
+
+    return res.status(201).json({
+      success: true,
+      message: 'Account created successfully!',
+      token,
+      user: sanitizeUser(newUser)
+    });
+  } catch (err) {
+    console.error('Registration error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to create account. Please try again.' });
+  }
+});
+
+// POST /api/auth/login - Customer Login (Email or Phone)
+app.post('/api/auth/login', (req, res) => {
+  try {
+    const { identifier, password } = req.body || {};
+
+    if (!identifier || !identifier.trim() || !password) {
+      return res.status(400).json({ success: false, error: 'Please enter your email or phone and password.' });
+    }
+
+    const rawId = identifier.trim();
+    const cleanId = rawId.toLowerCase();
+    const phoneDigits = rawId.replace(/[^0-9]/g, '');
+
+    const users = readUsers();
+    // Search by email or phone
+    const user = users.find(u => 
+      u.email.toLowerCase() === cleanId || 
+      (phoneDigits.length >= 10 && u.phone === phoneDigits)
+    );
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'No account found with this email or mobile number.' });
+    }
+
+    const isMatch = verifyPassword(password, user.salt, user.passwordHash);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, error: 'Incorrect password. Please try again.' });
+    }
+
+    const token = generateCustomerToken(user.id);
+    console.log(`🔑 Customer logged in: ${user.name} (${user.email})`);
+
+    return res.json({
+      success: true,
+      message: 'Logged in successfully!',
+      token,
+      user: sanitizeUser(user)
+    });
+  } catch (err) {
+    console.error('Login error:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error during login.' });
+  }
+});
+
+// GET /api/auth/me - Get Current Customer Profile
+app.get('/api/auth/me', (req, res) => {
+  const customer = getCustomerFromRequest(req);
+  if (!customer) {
+    return res.status(401).json({ success: false, error: 'Session expired or invalid.' });
+  }
+  return res.json({ success: true, user: sanitizeUser(customer) });
+});
+
+// PUT /api/auth/profile - Update Customer Profile
+app.put('/api/auth/profile', (req, res) => {
+  try {
+    const customer = getCustomerFromRequest(req);
+    if (!customer) {
+      return res.status(401).json({ success: false, error: 'Unauthorized.' });
+    }
+
+    const users = readUsers();
+    const idx = users.findIndex(u => u.id === customer.id);
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'User not found.' });
+    }
+
+    const { name, phone, address, city, pincode } = req.body || {};
+    if (name && name.trim()) {
+      users[idx].name = name.replace(/[<>]/g, '').trim();
+    }
+    if (phone && phone.replace(/[^0-9]/g, '').length >= 10) {
+      users[idx].phone = phone.replace(/[^0-9]/g, '');
+    }
+
+    if (address && address.trim()) {
+      if (!users[idx].addresses) users[idx].addresses = [];
+      const existingDefault = users[idx].addresses.find(a => a.isDefault);
+      if (existingDefault) {
+        existingDefault.address = address.trim();
+        if (city) existingDefault.city = city.trim();
+        if (pincode) existingDefault.pincode = pincode.trim();
+      } else {
+        users[idx].addresses.push({
+          id: 'addr_' + Date.now(),
+          address: address.trim(),
+          city: (city || '').trim(),
+          pincode: (pincode || '').trim(),
+          isDefault: true
+        });
+      }
+    }
+
+    users[idx].updatedAt = new Date().toISOString();
+    saveUsers(users);
+
+    return res.json({
+      success: true,
+      message: 'Profile updated successfully!',
+      user: sanitizeUser(users[idx])
+    });
+  } catch (err) {
+    console.error('Profile update error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to update profile.' });
+  }
+});
+
+// GET /api/user/orders - Get Orders for Authenticated Customer
+app.get('/api/user/orders', (req, res) => {
+  try {
+    const customer = getCustomerFromRequest(req);
+    if (!customer) {
+      return res.status(401).json({ success: false, error: 'Please log in to view your orders.' });
+    }
+
+    const allOrders = readOrders();
+    const userOrders = allOrders.filter(o => 
+      (o.customer?.userId && o.customer.userId === customer.id) ||
+      (o.customer?.email && o.customer.email.toLowerCase() === customer.email.toLowerCase()) ||
+      (o.customer?.phone && o.customer.phone === customer.phone)
+    );
+
+    return res.json({
+      success: true,
+      count: userOrders.length,
+      data: userOrders
+    });
+  } catch (err) {
+    console.error('User orders error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to fetch order history.' });
+  }
+});
+
+// POST /api/auth/logout - Logout Customer
+app.post('/api/auth/logout', (req, res) => {
+  const authHeader = req.headers['authorization'];
+  if (authHeader) {
+    const parts = authHeader.split(' ');
+    if (parts.length === 2 && parts[0] === 'Bearer') {
+      customerSessions.delete(parts[1]);
+    }
+  }
+  return res.json({ success: true, message: 'Logged out successfully.' });
+});
+
+// ==========================================
 // 1. PRODUCTS REST API (CRUD + OFFERS + STOCK)
 // ==========================================
 
@@ -550,7 +842,10 @@ app.post('/api/orders', (req, res) => {
   try {
     const orders = readOrders();
     const products = readProducts();
-    const { customer, items, shipping, payment, totals } = req.body;
+    const { customer, items, shipping, payment, totals } = req.body || {};
+    const authenticatedCustomer = getCustomerFromRequest(req);
+    const resolvedUserId = authenticatedCustomer?.id || customer?.userId || null;
+    const resolvedEmail = authenticatedCustomer?.email || customer?.email || '';
 
     const orderId = 'FBX-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substring(2, 5).toUpperCase();
     const trackingId = 'DLH-' + Math.floor(100000000 + Math.random() * 900000000);
@@ -561,12 +856,36 @@ app.post('/api/orders', (req, res) => {
       courier: 'Delhivery Express',
       createdAt: new Date().toISOString(),
       status: 'Processing',
-      customer: customer || {},
+      customer: {
+        ...(customer || {}),
+        userId: resolvedUserId,
+        email: resolvedEmail || customer?.email || ''
+      },
       items: items || [],
       shipping: shipping || {},
       payment: payment || { method: 'COD', status: 'Pending' },
       totals: totals || {}
     };
+
+    // If customer is logged in and has no saved address, auto-save this address
+    if (authenticatedCustomer && shipping?.address) {
+      try {
+        const users = readUsers();
+        const uIdx = users.findIndex(u => u.id === authenticatedCustomer.id);
+        if (uIdx !== -1 && (!users[uIdx].addresses || users[uIdx].addresses.length === 0)) {
+          users[uIdx].addresses = [{
+            id: 'addr_' + Date.now(),
+            address: shipping.address,
+            city: shipping.city || '',
+            pincode: shipping.pincode || '',
+            isDefault: true
+          }];
+          saveUsers(users);
+        }
+      } catch (err) {
+        console.error('Error auto-saving address:', err);
+      }
+    }
 
     // Decrement stock for ordered items
     if (items && Array.isArray(items)) {
