@@ -194,10 +194,9 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                       if (onSelectCategory) onSelectCategory(cat.slug);
                       handleNav('products', { category: cat.slug });
                     }}
-                    className="hover:text-leaf transition-colors flex items-center justify-between w-full"
+                    className="hover:text-leaf transition-colors text-left w-full block"
                   >
                     <span>{cat.name}</span>
-                    <span className="text-[10px] text-white/40">AYUSH</span>
                   </button>
                 </li>
               ))}
