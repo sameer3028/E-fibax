@@ -46,28 +46,37 @@ export function Industries({ onNavigate }) {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setInquiryForm((prev) => ({ ...prev, [name]: value }));
+    // Strip tag brackets immediately to prevent injection
+    const clean = value.replace(/[<>]/g, '');
+    setInquiryForm((prev) => ({ ...prev, [name]: clean }));
   };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      await fetch('/api/enquiry', {
+      const cleanPhone = inquiryForm.phone.replace(/[^0-9]/g, '');
+      const response = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: inquiryForm.name,
-          phone: inquiryForm.phone,
-          city: `${inquiryForm.city} (${inquiryForm.sector})`,
-          message: `Email: ${inquiryForm.email} | Sector: ${inquiryForm.sector} | Notes: ${inquiryForm.notes}`
+          name: inquiryForm.name.trim(),
+          phone: cleanPhone,
+          email: inquiryForm.email.trim(),
+          city: `${inquiryForm.city.trim()} (${inquiryForm.sector})`,
+          experience: inquiryForm.sector,
+          message: `Notes: ${inquiryForm.notes.trim()}`
         })
       });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setFormSubmitted(true);
+      }
     } catch (err) {
       // Fallback graceful
+      setFormSubmitted(true);
     }
     setIsSubmitting(false);
-    setFormSubmitted(true);
   };
 
   return (

@@ -592,52 +592,164 @@ app.post('/api/orders', (req, res) => {
 });
 
 // ==========================================
-// 3. ENQUIRIES API
+// 3. ENQUIRIES API (WITH ANTI-INJECTION SECURITY & VALIDATION)
 // ==========================================
 
-// POST /api/enquiry - Handle lead form submissions
+// Rate-limiting map: ip -> array of timestamps
+const enquiryRateLimit = new Map();
+
+// Known malicious code injection patterns (XSS, SQLi, Shell, Template Injection)
+const INJECTION_PATTERNS = [
+  /<\s*script[^>]*>/i,                          // Script tags
+  /<\s*\/\s*script\s*>/i,                       // Closing script tags
+  /<\s*(iframe|object|embed|svg|img|style|link|meta|body|input|button|form)\b[^>]*>/i, // Unsafe HTML tags
+  /javascript\s*:/i,                            // Javascript URI scheme
+  /vbscript\s*:/i,                              // VBScript URI scheme
+  /data\s*:\s*text\/html/i,                     // Data URI scheme
+  /on\w+\s*=/i,                                 // Event handlers (onerror, onload, onclick, etc.)
+  /(eval|setTimeout|setInterval|Function)\s*\(/i, // Code execution functions
+  /(\${|{{|<%|%>|`)/,                           // Template / Expression injection
+  /(union\s+select|select\s+.*\s+from|insert\s+into|drop\s+table|delete\s+from|update\s+\w+\s+set|exec\s*\(|xp_)/i, // SQL injection
+  /(;|\||&&|\$\()\s*(curl|wget|bash|sh|powershell|cmd|nc|netcat)/i, // Command injection
+  /document\.(location|cookie|write)/i          // DOM access attempts
+];
+
+function containsInjectionPayload(str) {
+  if (typeof str !== 'string') return false;
+  return INJECTION_PATTERNS.some(pattern => pattern.test(str));
+}
+
+function sanitizeInput(str, maxLength = 1000) {
+  if (typeof str !== 'string') return '';
+  // Truncate to maximum permitted length
+  const truncated = str.slice(0, maxLength);
+  // Encode dangerous HTML special characters to prevent any render-time injection
+  return truncated
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/`/g, '&#x60;')
+    .replace(/\//g, '&#x2F;')
+    .trim();
+}
+
+// POST /api/enquiry - Handle lead form submissions with strict validation
 app.post('/api/enquiry', (req, res) => {
   try {
-    const { name, phone, city, message, requirement } = req.body;
+    const clientIp = req.ip || req.connection.remoteAddress || 'unknown';
+    const now = Date.now();
 
+    // 1. Anti-Spam Rate Limiting (max 25 requests per 10 minutes per IP)
+    const timestamps = enquiryRateLimit.get(clientIp) || [];
+    const recent = timestamps.filter(t => now - t < 10 * 60 * 1000);
+    if (recent.length >= 25) {
+      return res.status(429).json({
+        success: false,
+        error: 'Too many requests from this device. Please wait a few minutes before submitting another enquiry.'
+      });
+    }
+    recent.push(now);
+    enquiryRateLimit.set(clientIp, recent);
+
+    const { name, phone, city, message, requirement, email, experience, hp_field } = req.body || {};
+
+    // 2. Honeypot Anti-Bot Check
+    if (hp_field && String(hp_field).trim() !== '') {
+      console.warn(`🤖 Bot trap triggered from IP: ${clientIp}`);
+      return res.status(400).json({ success: false, error: 'Invalid submission.' });
+    }
+
+    // 3. Required Fields Check
     if (!name || !phone || !city) {
       return res.status(400).json({
         success: false,
-        error: 'Name, phone, and city are required fields.'
+        error: 'Name, phone, and city/state are required fields.'
       });
     }
 
-    const phoneClean = phone.replace(/[^0-9]/g, '');
-    if (phoneClean.length < 10) {
+    const rawInputs = [name, phone, city, message, requirement, email, experience].filter(Boolean);
+
+    // 4. Code Injection Detection across all submitted strings
+    for (const input of rawInputs) {
+      if (typeof input === 'string' && containsInjectionPayload(input)) {
+        console.warn(`🚨 Code injection attempt detected from ${clientIp}:`, input.slice(0, 100));
+        return res.status(400).json({
+          success: false,
+          error: 'Security alert: Unsafe code or script characters are strictly prohibited.'
+        });
+      }
+    }
+
+    // 5. Strict Name Validation (alphabetic characters, spaces, dots, and hyphens only, 2-70 chars)
+    const cleanName = String(name).trim();
+    if (!/^[a-zA-Z\s.\-']{2,70}$/.test(cleanName)) {
       return res.status(400).json({
         success: false,
-        error: 'Please enter a valid 10-digit phone number.'
+        error: 'Please enter a valid full name (2-70 letters; numbers and script code are not permitted).'
       });
     }
 
-    const enquiry = {
+    // 6. Strict Phone Validation (must be 10-15 digits, typically standard Indian 10 digits)
+    const phoneClean = String(phone).replace(/[^0-9]/g, '');
+    if (phoneClean.length < 10 || phoneClean.length > 15) {
+      return res.status(400).json({
+        success: false,
+        error: 'Please enter a valid 10-digit mobile number.'
+      });
+    }
+
+    // 7. Strict City / Location Validation (letters, numbers, commas, periods, hyphens, 2-100 chars)
+    const cleanCity = String(city).trim();
+    if (!/^[a-zA-Z0-9\s,.\-()]{2,100}$/.test(cleanCity)) {
+      return res.status(400).json({
+        success: false,
+        error: 'City / District contains invalid characters.'
+      });
+    }
+
+    // 8. Strict Email Validation (if provided)
+    let cleanEmail = '';
+    if (email && String(email).trim()) {
+      cleanEmail = String(email).trim().toLowerCase();
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(cleanEmail) || cleanEmail.length > 100) {
+        return res.status(400).json({
+          success: false,
+          error: 'Please enter a valid email address.'
+        });
+      }
+    }
+
+    // 9. Sanitize and escape all content before persistence
+    const combinedMessage = (message || requirement || '').trim();
+    const sanitizedEnquiry = {
       id: Date.now().toString(36) + Math.random().toString(36).substr(2, 5),
-      name: name.trim(),
-      phone: phone.trim(),
-      city: city.trim(),
-      message: (message || requirement || '').trim(),
+      name: sanitizeInput(cleanName, 70),
+      phone: sanitizeInput(phoneClean, 15),
+      email: cleanEmail ? sanitizeInput(cleanEmail, 100) : '',
+      city: sanitizeInput(cleanCity, 100),
+      experience: experience ? sanitizeInput(String(experience), 60) : 'General Inquiry',
+      message: sanitizeInput(combinedMessage, 1000),
       timestamp: new Date().toISOString(),
-      source: req.headers.referer || 'direct',
-      ip: req.ip
+      source: req.headers.referer || 'contact_page',
+      ip: clientIp
     };
 
     let enquiries = [];
     try {
-      const data = readFileSync(enquiriesFile, 'utf8');
-      enquiries = JSON.parse(data);
+      if (existsSync(enquiriesFile)) {
+        const data = readFileSync(enquiriesFile, 'utf8');
+        enquiries = JSON.parse(data);
+      }
     } catch {
       enquiries = [];
     }
 
-    enquiries.push(enquiry);
+    enquiries.push(sanitizedEnquiry);
     writeFileSync(enquiriesFile, JSON.stringify(enquiries, null, 2));
 
-    console.log(`✅ New enquiry from: ${enquiry.name} (${enquiry.city}) - ${enquiry.phone}`);
+    console.log(`✅ Secure enquiry logged: ${sanitizedEnquiry.name} (${sanitizedEnquiry.city}) - ${sanitizedEnquiry.phone}`);
 
     res.status(201).json({
       success: true,

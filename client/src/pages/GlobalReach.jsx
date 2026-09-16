@@ -77,20 +77,32 @@ export function GlobalReach({ onNavigate }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await fetch('/api/enquiry', {
+      const cleanName = inquiry.name.replace(/[<>]/g, '').trim();
+      const cleanCountry = inquiry.country.replace(/[<>]/g, '').trim();
+      const cleanPhone = inquiry.phone.replace(/[^0-9+]/g, '').trim();
+      const cleanEmail = inquiry.email.replace(/[<>]/g, '').trim();
+      const cleanReq = inquiry.requirement.replace(/[<>]/g, '').trim();
+
+      const response = await fetch('/api/enquiry', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: inquiry.name,
-          phone: inquiry.phone,
-          city: `${inquiry.country} (Export Inquiry)`,
-          message: `Email: ${inquiry.email} | Country: ${inquiry.country} | Requirement: ${inquiry.requirement}`
+          name: cleanName,
+          phone: cleanPhone,
+          email: cleanEmail,
+          city: `${cleanCountry} (Export Inquiry)`,
+          experience: 'Global Export Partner',
+          message: `Country: ${cleanCountry} | Requirement: ${cleanReq}`
         })
       });
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setSubmitted(true);
+      }
     } catch (e) {
       // Graceful
+      setSubmitted(true);
     }
-    setSubmitted(true);
   };
 
   return (
