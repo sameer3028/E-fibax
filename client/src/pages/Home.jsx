@@ -155,8 +155,10 @@ export function Home({
               <span className="text-xs font-bold text-emerald-300 uppercase tracking-widest bg-white/10 px-3 py-1 rounded-full inline-block mb-3">
                 Global Standards • Pan-India Network
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold leading-tight mb-4">
-                Exporting Certified Ayurvedic Excellence Worldwide
+              <h2 className="text-2xl sm:text-3xl font-extrabold leading-tight mb-4 drop-shadow-md">
+                <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-400 bg-clip-text text-transparent">
+                  Exporting Certified Ayurvedic Excellence Worldwide
+                </span>
               </h2>
               <p className="text-sand-warm/80 text-sm leading-relaxed mb-6">
                 With a registered footprint spanning all 28 Indian states and active international consignments across Southeast Asia, the Middle East, and Africa, Fibax Pharma adheres to international CTD dossiers, Certificate of Pharmaceutical Product (COPP), and WHO-GMP standards.
