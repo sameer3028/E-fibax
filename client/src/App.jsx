@@ -1,255 +1,199 @@
 import React, { useState, useEffect } from 'react';
 import { ProductProvider, useProducts } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
-import { TopAnnouncementBar } from './components/common/Header/TopAnnouncementBar';
-import { Header } from './components/common/Header/Header';
-import { HeroSection } from './components/sections/HeroSection';
-import { TrustBar } from './components/sections/TrustBar';
-import { ShopByConcernSection } from './components/sections/ShopByConcernSection';
-import { CustomerStoriesSection } from './components/sections/CustomerStoriesSection';
-import { BestsellersSection } from './components/sections/BestsellersSection';
-import { ShopByCategoriesSection } from './components/sections/ShopByCategoriesSection';
-import { ComboDealsSection } from './components/sections/ComboDealsSection';
-import { TestimonialsSection } from './components/sections/TestimonialsSection';
-import { AppPromoSection } from './components/sections/AppPromoSection';
-import { BlogsSection } from './components/sections/BlogsSection';
-import { HeritageBanner } from './components/sections/HeritageBanner';
-import { MediaPressBar } from './components/sections/MediaPressBar';
-import { FloatingConsultationBar } from './components/sections/FloatingConsultationBar';
-import { Footer } from './components/common/Footer/Footer';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
+import { Home } from './pages/Home';
+import { About } from './pages/About';
+import { Products } from './pages/Products';
+import { ProductDetail } from './pages/ProductDetail';
+import { Industries } from './pages/Industries';
+import { GlobalReach } from './pages/GlobalReach';
+import { Contact } from './pages/Contact';
 import { CartDrawer } from './components/common/Cart/CartDrawer';
-import { ShopView } from './components/views/ShopView';
-import { ProductPageView } from './components/views/ProductPageView';
-import { ProductDetailModal } from './components/views/ProductDetailModal';
 import { CheckoutModal } from './components/views/CheckoutModal';
 import { SearchModal } from './components/sections/SearchModal';
 import { AdminLayout } from './components/admin/AdminLayout';
 
-function StorefrontContent() {
+function StorefrontApp() {
   const { products } = useProducts();
-  const [currentView, setCurrentView] = useState('home'); // 'home' | 'shop' | 'admin' | 'product'
-  const [activeConcern, setActiveConcern] = useState('all');
-  const [activeCategory, setActiveCategory] = useState('all');
+  const [currentPage, setCurrentPage] = useState('home'); 
+  // 'home' | 'about' | 'products' | 'product-detail' | 'industries' | 'global-reach' | 'contact' | 'admin'
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [activeConcern, setActiveConcern] = useState('all');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-  // Sync hash routing e.g. #admin, #shop, #product/slug
+  // Sync hash routing e.g. #home, #about, #products, #industries, #global-reach, #contact, #admin, #product/:id
   useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash;
-      if (hash === '#admin' || window.location.pathname === '/admin') {
-        setCurrentView('admin');
-      } else if (hash === '#shop') {
-        setCurrentView('shop');
-      } else if (hash.startsWith('#product/')) {
-        const identifier = decodeURIComponent(hash.replace('#product/', ''));
+    const handleHashRouting = () => {
+      const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+
+      if (!hash || hash === 'home') {
+        setCurrentPage('home');
+      } else if (hash === 'about') {
+        setCurrentPage('about');
+      } else if (hash === 'products' || hash === 'shop') {
+        setCurrentPage('products');
+      } else if (hash === 'industries') {
+        setCurrentPage('industries');
+      } else if (hash === 'global-reach' || hash === 'global') {
+        setCurrentPage('global-reach');
+      } else if (hash === 'contact') {
+        setCurrentPage('contact');
+      } else if (hash === 'admin' || window.location.pathname === '/admin') {
+        setCurrentPage('admin');
+      } else if (hash.startsWith('product/')) {
+        const identifier = decodeURIComponent(hash.replace('product/', ''));
         const found = products.find(
           (p) => (p.slug && p.slug.toLowerCase() === identifier.toLowerCase()) || String(p.id) === identifier
         );
         if (found) {
           setSelectedProduct(found);
-          setCurrentView('product');
+          setCurrentPage('product-detail');
+        } else {
+          setCurrentPage('products');
         }
       }
     };
-    handleHash();
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+
+    handleHashRouting();
+    window.addEventListener('hashchange', handleHashRouting);
+    return () => window.removeEventListener('hashchange', handleHashRouting);
   }, [products]);
 
-  const handleSelectConcern = (concernSlug) => {
-    setActiveConcern(concernSlug || 'all');
-    setActiveCategory('all');
-    setCurrentView('shop');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleSelectCategory = (categorySlug) => {
-    if (categorySlug === 'combos') {
-      setCurrentView('home');
-      setTimeout(() => {
-        const el = document.getElementById('combo-deals');
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      return;
+  // Master navigation handler
+  const handleNavigate = (pageId, params = null) => {
+    if (params) {
+      if (params.category) setActiveCategory(params.category);
+      if (params.concern) setActiveConcern(params.concern);
+      if (params.product) setSelectedProduct(params.product);
     }
-    setActiveCategory(categorySlug || 'all');
-    setActiveConcern('all');
-    setCurrentView('shop');
+
+    if (pageId === 'product-detail' && params?.product) {
+      setSelectedProduct(params.product);
+      window.location.hash = `product/${params.product.slug || params.product.id}`;
+    } else {
+      window.location.hash = pageId === 'home' ? '' : pageId;
+    }
+
+    setCurrentPage(pageId);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
-    setCurrentView('product');
+    setCurrentPage('product-detail');
     window.location.hash = `product/${product.slug || product.id}`;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleNavigateHome = () => {
-    setCurrentView('home');
-    setSelectedProduct(null);
+  const handleSelectCategory = (categorySlug) => {
+    setActiveCategory(categorySlug || 'all');
     setActiveConcern('all');
+    setCurrentPage('products');
+    window.location.hash = 'products';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSelectConcern = (concernSlug) => {
+    setActiveConcern(concernSlug || 'all');
     setActiveCategory('all');
-    window.location.hash = '';
+    setCurrentPage('products');
+    window.location.hash = 'products';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleOpenAdmin = () => {
-    setCurrentView('admin');
-    window.location.hash = 'admin';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const handleExitAdmin = () => {
-    setCurrentView('home');
-    window.location.hash = '';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  // If Admin View is active, render Admin Panel
-  if (currentView === 'admin') {
-    return <AdminLayout onExitAdmin={handleExitAdmin} />;
+  // If Admin view is active, render Admin console directly
+  if (currentPage === 'admin') {
+    return (
+      <AdminLayout
+        onExitAdmin={() => handleNavigate('home')}
+      />
+    );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white font-sans text-charcoal selection:bg-sage-soft selection:text-forest">
-      {/* 1. Top Announcement Bar */}
-      <TopAnnouncementBar />
-
-      {/* 2. Header & Sticky Nav */}
+    <div className="min-h-screen flex flex-col bg-white font-sans text-charcoal selection:bg-brand-soft selection:text-brand-dark">
+      {/* 1. Header with integrated Navbar */}
       <Header
-        onNavigateHome={handleNavigateHome}
-        onSelectConcern={handleSelectConcern}
+        activePage={currentPage}
+        onNavigate={handleNavigate}
         onSelectCategory={handleSelectCategory}
+        onSelectConcern={handleSelectConcern}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenAdmin={() => handleNavigate('admin')}
       />
 
-      {/* Main Content Area */}
-      {/* Main Content Area */}
+      {/* 2. Main Page Render */}
       <main className="flex-1">
-        {currentView === 'product' && selectedProduct ? (
-          <ProductPageView
+        {currentPage === 'home' && (
+          <Home
+            products={products}
+            onSelectProduct={handleSelectProduct}
+            onSelectCategory={handleSelectCategory}
+            onSelectConcern={handleSelectConcern}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'about' && (
+          <About onNavigate={handleNavigate} />
+        )}
+
+        {currentPage === 'products' && (
+          <Products
+            products={products}
+            initialCategory={activeCategory}
+            initialConcern={activeConcern}
+            onSelectProduct={handleSelectProduct}
+            onNavigate={handleNavigate}
+          />
+        )}
+
+        {currentPage === 'product-detail' && (
+          <ProductDetail
             product={selectedProduct}
             allProducts={products}
-            onBack={handleNavigateHome}
+            onBack={() => handleNavigate('products')}
             onSelectProduct={handleSelectProduct}
             onCheckout={() => setIsCheckoutOpen(true)}
             onSelectConcern={handleSelectConcern}
+            onNavigate={handleNavigate}
           />
-        ) : currentView === 'home' ? (
-          <>
-            {/* 3. Hero Campaign Banner */}
-            <HeroSection
-              onExploreConcerns={() => {
-                const el = document.getElementById('all-concerns');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-              onExploreBestsellers={() => {
-                handleSelectCategory('all');
-              }}
-            />
+        )}
 
-            {/* 4. Deep Green USPs Ribbon */}
-            <TrustBar />
+        {currentPage === 'industries' && (
+          <Industries onNavigate={handleNavigate} />
+        )}
 
-            {/* 5. Shop By Concern (Pill Tabs + 4-Cards) */}
-            <div id="all-concerns">
-              <ShopByConcernSection
-                onSelectProduct={handleSelectProduct}
-                onViewAllConcern={handleSelectConcern}
-              />
-            </div>
+        {currentPage === 'global-reach' && (
+          <GlobalReach onNavigate={handleNavigate} />
+        )}
 
-            {/* 6. Customer Video Reels / Stories Carousel */}
-            <CustomerStoriesSection
-              onSelectProduct={handleSelectProduct}
-            />
-
-            {/* 7. Our Bestsellers */}
-            <BestsellersSection
-              products={products}
-              onSelectProduct={handleSelectProduct}
-              onViewAll={() => handleSelectCategory('all')}
-            />
-
-            {/* 8. Shop by Categories (Deep Green Section) */}
-            <ShopByCategoriesSection
-              onSelectCategory={handleSelectCategory}
-            />
-
-            {/* 9. Combo Deals */}
-            <div id="combo-deals">
-              <ComboDealsSection
-                onExploreCombos={() => handleSelectCategory('combos')}
-              />
-            </div>
-
-            {/* 10. Over 1,00,000+ People Trust Fibax */}
-            <TestimonialsSection />
-
-            {/* 11. Fibax App / VIP Health Club Promo */}
-            <AppPromoSection />
-
-            {/* 12. Wellness Journal / Blogs */}
-            <div id="all-blogs">
-              <BlogsSection />
-            </div>
-
-            {/* 13. Heritage & Organic Farms Banner */}
-            <HeritageBanner />
-
-            {/* 14. Media & Logistics Ticker */}
-            <MediaPressBar />
-
-            {/* 15. Free Ayurvedic Consultation Bar */}
-            <FloatingConsultationBar />
-          </>
-        ) : (
-          <ShopView
-            products={products}
-            initialConcern={activeConcern}
-            initialCategory={activeCategory}
-            onSelectProduct={handleSelectProduct}
-            onResetFilters={() => {
-              setActiveConcern('all');
-              setActiveCategory('all');
-            }}
-          />
+        {currentPage === 'contact' && (
+          <Contact />
         )}
       </main>
 
-      {/* 16. Universal Trust Footer */}
+      {/* 3. Global Footer */}
       <Footer
-        onSelectConcern={handleSelectConcern}
+        onNavigate={handleNavigate}
         onSelectCategory={handleSelectCategory}
-        onNavigateHome={handleNavigateHome}
+        onSelectConcern={handleSelectConcern}
       />
 
-      {/* Slide-over Cart Drawer */}
+      {/* 4. Slide-over Cart Drawer */}
       <CartDrawer onCheckout={() => setIsCheckoutOpen(true)} />
 
-      {/* Product Detail Modal (PDP Quickview if not full product page) */}
-      {selectedProduct && currentView !== 'product' && (
-        <ProductDetailModal
-          product={selectedProduct}
-          isOpen={!!selectedProduct}
-          onClose={() => setSelectedProduct(null)}
-          onBuyNow={() => {
-            setSelectedProduct(null);
-            setIsCheckoutOpen(true);
-          }}
-        />
-      )}
-
-      {/* 3-Step Checkout Modal */}
+      {/* 5. 3-Step Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
       />
 
-      {/* Live Search Modal */}
+      {/* 6. Live Search Modal */}
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
@@ -264,7 +208,7 @@ export default function App() {
   return (
     <ProductProvider>
       <CartProvider>
-        <StorefrontContent />
+        <StorefrontApp />
       </CartProvider>
     </ProductProvider>
   );
