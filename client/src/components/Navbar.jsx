@@ -31,6 +31,7 @@ export function Navbar({
     { id: 'products', label: 'Products', hasDropdown: true },
     { id: 'industries', label: 'Industries' },
     { id: 'global-reach', label: 'Global Reach' },
+    { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' }
   ];
 

@@ -162,6 +162,15 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
               </li>
               <li>
                 <button
+                  onClick={() => handleNav('blogs')}
+                  className="hover:text-leaf transition-colors flex items-center gap-1.5"
+                >
+                  <ArrowRight className="h-3 w-3 text-leaf" />
+                  <span>Ayurvedic Health Blog</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleNav('contact')}
                   className="hover:text-leaf transition-colors flex items-center gap-1.5"
                 >

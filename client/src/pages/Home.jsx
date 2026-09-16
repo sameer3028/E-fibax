@@ -249,7 +249,7 @@ export function Home({
       {/* 12. Wellness Journal / Blogs */}
       <div id="all-blogs">
         <FadeInWhenVisible>
-          <BlogsSection />
+          <BlogsSection onNavigate={onNavigate} />
         </FadeInWhenVisible>
       </div>
 

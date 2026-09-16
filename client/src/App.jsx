@@ -12,6 +12,7 @@ import { ProductDetail } from './pages/ProductDetail';
 import { Industries } from './pages/Industries';
 import { GlobalReach } from './pages/GlobalReach';
 import { Contact } from './pages/Contact';
+import { Blogs } from './pages/Blogs';
 import { CartDrawer } from './components/common/Cart/CartDrawer';
 import { CheckoutModal } from './components/views/CheckoutModal';
 import { SearchModal } from './components/sections/SearchModal';
@@ -45,6 +46,8 @@ function StorefrontApp() {
         setCurrentPage('industries');
       } else if (hash === 'global-reach' || hash === 'global') {
         setCurrentPage('global-reach');
+      } else if (hash === 'blogs' || hash === 'blog' || hash === 'journal') {
+        setCurrentPage('blogs');
       } else if (hash === 'contact') {
         setCurrentPage('contact');
       } else if (hash === 'admin' || window.location.pathname === '/admin') {
@@ -185,6 +188,10 @@ function StorefrontApp() {
 
             {currentPage === 'global-reach' && (
               <GlobalReach onNavigate={handleNavigate} />
+            )}
+
+            {currentPage === 'blogs' && (
+              <Blogs onNavigate={handleNavigate} />
             )}
 
             {currentPage === 'contact' && (

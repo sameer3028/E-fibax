@@ -1,53 +1,17 @@
 import React from 'react';
 import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
+import { BLOG_POSTS } from '../../data/blogs';
 
-export function BlogsSection() {
-  const articles = [
-    {
-      id: 1,
-      category: 'Liver Detox',
-      title: '5 Ayurvedic Herbs to Cleanse Sluggish Liver & Restore SGPT Naturally',
-      date: 'Aug 24, 2026',
-      readTime: '4 min read',
-      colorBlock: 'bg-[#581c87] text-white', // Deep Purple
-      tag: 'Liver Health',
-      excerpt: 'Discover how Bhumi Amla, Punarnava, and Kutki work in synergy to flush accumulated hepatic toxins and boost enzyme performance.',
-      image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 2,
-      category: 'Digestion & Gut',
-      title: 'The Golden Ayurvedic Rule for Ending Chronic Acidity and Severe Bloating',
-      date: 'Aug 18, 2026',
-      readTime: '5 min read',
-      colorBlock: 'bg-[#9a3412] text-white', // Rich Terracotta / Rust
-      tag: 'Gut Wellness',
-      excerpt: 'Mastering Agni: Why drinking chilled water during meals dampens digestive enzymes and how warm carminative swaras restore digestion.',
-      image: 'https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=500&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 3,
-      category: 'Joint Care',
-      title: 'Ayurvedic Remedies for Joint Pain: Ending Morning Stiffness Naturally',
-      date: 'Aug 12, 2026',
-      readTime: '6 min read',
-      colorBlock: 'bg-[#285238] text-white', // Deep Olive Botanical
-      tag: 'Pain Recovery',
-      excerpt: 'How Shallaki and Guggulu reduce systemic joint inflammation, rebuild synovial fluid, and improve pain-free mobility.',
-      image: 'https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=500&auto=format&fit=crop&q=80',
-    },
-    {
-      id: 4,
-      category: 'Vitality & Vigor',
-      title: 'Ashwagandha vs. Safed Musli: Choosing the Right Vitality Root for Energy',
-      date: 'Aug 05, 2026',
-      readTime: '4 min read',
-      colorBlock: 'bg-[#1e293b] text-white', // Sophisticated Slate / Charcoal
-      tag: 'Men Stamina',
-      excerpt: 'A complete breakdown of adaptogenic root pharmacology, cortisol regulation, testosterone support, and stamina enhancement.',
-      image: 'https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=500&auto=format&fit=crop&q=80',
+export function BlogsSection({ onNavigate }) {
+  const articles = BLOG_POSTS.slice(0, 4);
+
+  const handleOpenBlogs = () => {
+    if (onNavigate) {
+      onNavigate('blogs');
+    } else {
+      window.location.hash = 'blogs';
     }
-  ];
+  };
 
   return (
     <section className="py-14 bg-[#fbf9f4] border-b border-[#e8e2d5]">
@@ -62,13 +26,13 @@ export function BlogsSection() {
               Evidence-Based <span className="text-brand">Herbal Insights</span>
             </h2>
           </div>
-          <a
-            href="#all-blogs"
-            className="text-xs font-bold text-forest hover:text-brand flex items-center gap-1.5 transition-colors"
+          <button
+            onClick={handleOpenBlogs}
+            className="text-xs font-bold text-forest hover:text-brand flex items-center gap-1.5 transition-colors group"
           >
             <span>Read All Articles</span>
-            <ArrowRight className="h-4 w-4" />
-          </a>
+            <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+          </button>
         </div>
 
         {/* 4 Colorful Themed Cards Matching Screenshot */}
@@ -76,7 +40,8 @@ export function BlogsSection() {
           {articles.map((item) => (
             <article
               key={item.id}
-              className="group bg-white rounded-2xl overflow-hidden border border-[#e8e2d5] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
+              onClick={handleOpenBlogs}
+              className="group bg-white rounded-2xl overflow-hidden border border-[#e8e2d5] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div>
                 {/* Colorful Block Header */}
