@@ -126,7 +126,6 @@ function StorefrontApp() {
         onSelectCategory={handleSelectCategory}
         onSelectConcern={handleSelectConcern}
         onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenAdmin={() => handleNavigate('admin')}
       />
 
       {/* 2. Main Page Render */}

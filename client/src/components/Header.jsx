@@ -9,7 +9,6 @@ import {
   ShieldCheck,
   Truck,
   Sparkles,
-  Lock,
   User,
   Package
 } from 'lucide-react';
@@ -19,8 +18,7 @@ export function Header({
   onNavigate,
   onSelectConcern,
   onSelectCategory,
-  onOpenSearch,
-  onOpenAdmin
+  onOpenSearch
 }) {
   const { totalItemsCount, openCart } = useCart();
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
@@ -168,18 +166,6 @@ export function Header({
                   </span>
                 )}
               </button>
-
-              {/* Optional Admin Link if passed */}
-              {onOpenAdmin && (
-                <button
-                  onClick={onOpenAdmin}
-                  className="p-2 rounded-full text-charcoal-muted hover:text-forest hover:bg-sand transition-colors"
-                  title="Admin Console"
-                  aria-label="Admin Portal"
-                >
-                  <Lock className="h-4 w-4" />
-                </button>
-              )}
             </div>
           </div>
         </div>
