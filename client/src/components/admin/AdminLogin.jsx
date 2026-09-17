@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Lock, User, Eye, EyeOff, ArrowLeft, KeyRound, AlertCircle, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, User, Eye, EyeOff, ArrowLeft, KeyRound, AlertCircle } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
 
 export function AdminLogin({ onLoginSuccess, onExit }) {
@@ -171,23 +171,6 @@ export function AdminLogin({ onLoginSuccess, onExit }) {
             )}
           </button>
         </form>
-
-        {/* Default Access Credential Helper for Owner */}
-        <div className="mt-6 pt-5 border-t border-sand-border/70 text-center">
-          <div className="p-3 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-left space-y-1">
-            <div className="flex items-center gap-1 text-[11px] font-bold text-forest uppercase tracking-wider">
-              <Sparkles className="h-3 w-3 text-forest" />
-              <span>Initial Master Credentials:</span>
-            </div>
-            <div className="text-xs text-charcoal flex items-center justify-between">
-              <span>User ID: <strong className="font-mono text-forest-deep">admin</strong></span>
-              <span>Password: <strong className="font-mono text-forest-deep">admin@fibax2026</strong></span>
-            </div>
-            <div className="text-[10px] text-charcoal-muted">
-              You can change both User ID & Password anytime inside Settings.
-            </div>
-          </div>
-        </div>
       </div>
 
       <div className="mt-6 text-center text-xs text-emerald-200/60">
