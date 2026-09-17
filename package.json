@@ -1,0 +1,13 @@
+{
+  "name": "fibax-pharma",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "node server/index.js",
+    "dev:server": "node --watch server/index.js",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "install:all": "npm install --prefix client && npm install --prefix server"
+  }
+}

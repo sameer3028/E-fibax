@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { formatPrice } from '../../lib/utils';
 import { ShoppingCart, Truck, Clock, CheckCircle2 } from 'lucide-react';
+import { apiRequest } from '../../utils/api';
 
 export function OrdersView() {
   const [orders, setOrders] = useState([]);
@@ -10,10 +11,9 @@ export function OrdersView() {
     async function loadOrders() {
       try {
         setIsLoading(true);
-        const res = await fetch('http://localhost:5000/api/orders');
-        if (res.ok) {
-          const data = await res.json();
-          if (data.success) setOrders(data.data);
+        const res = await apiRequest('/api/orders');
+        if (res.success && Array.isArray(res.data)) {
+          setOrders(res.data);
         }
       } catch {
         // Fallback sample data

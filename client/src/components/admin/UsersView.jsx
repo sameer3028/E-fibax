@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatPrice } from '../../lib/utils';
+import { apiRequest } from '../../utils/api';
 import {
   Users,
   UserCheck,
@@ -27,12 +28,14 @@ export function UsersView() {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/users');
-      const data = await res.json();
-      if (data.success) {
-        setUsers(data.data || []);
-        setTotalUsers(data.totalUsers || 0);
-        setActiveSessions(data.activeSessions || 0);
+      const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+      const res = await apiRequest('/api/admin/users', {
+        headers: token ? { Authorization: `Bearer ${token}` } : {}
+      });
+      if (res.success) {
+        setUsers(res.data || []);
+        setTotalUsers(res.totalUsers || 0);
+        setActiveSessions(res.activeSessions || 0);
       }
     } catch (err) {
       console.error('Failed to fetch users:', err);

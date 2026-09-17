@@ -14,10 +14,13 @@ import {
   CheckCircle2,
   ArrowRight,
   Send,
+  Boxes,
+  Microscope,
   PhoneCall,
-  Check,
-  FileText
+  Clock,
+  Sparkle
 } from 'lucide-react';
+import { apiRequest } from '../utils/api';
 
 export function Industries({ onNavigate }) {
   const [selectedIndustry, setSelectedIndustry] = useState(INDUSTRIES[0].id);
@@ -56,9 +59,8 @@ export function Industries({ onNavigate }) {
     setIsSubmitting(true);
     try {
       const cleanPhone = inquiryForm.phone.replace(/[^0-9]/g, '');
-      const response = await fetch('/api/enquiry', {
+      const data = await apiRequest('/api/enquiry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: inquiryForm.name.trim(),
           phone: cleanPhone,
@@ -68,8 +70,7 @@ export function Industries({ onNavigate }) {
           message: `Notes: ${inquiryForm.notes.trim()}`
         })
       });
-      const data = await response.json();
-      if (response.ok && data.success) {
+      if (data.success) {
         setFormSubmitted(true);
       }
     } catch (err) {

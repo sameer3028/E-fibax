@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
 import { CONCERNS } from '../../data/concerns';
+import { apiRequest } from '../../utils/api';
 
 const PRESET_IMAGES = [
   { name: 'Syrup Bottle', url: 'https://fibaxpharma.com/wp-content/uploads/2025/11/fp-enzyme.png' },
@@ -127,17 +128,15 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
       // Upload to backend API
       try {
         setIsUploading(true);
-        const res = await fetch('http://localhost:5000/api/upload', {
+        const res = await apiRequest('/api/upload', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             image: base64Content,
             filename: file.name
           })
         });
-        const data = await res.json();
-        if (data.success && data.url) {
-          setFormData(prev => ({ ...prev, featuredImage: data.url }));
+        if (res.success && res.url) {
+          setFormData(prev => ({ ...prev, featuredImage: res.url }));
         }
       } catch (err) {
         console.warn('Server upload fallback (using base64 preview):', err);

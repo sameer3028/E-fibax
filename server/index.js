@@ -1149,6 +1149,14 @@ app.get('/api/enquiries', (req, res) => {
   }
 });
 
+// Catch-all 404 handler specifically for API routes (prevent returning index.html for API requests)
+app.all('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    error: `API route not found: ${req.method} ${req.originalUrl}`
+  });
+});
+
 // Serve React build in production
 const clientDist = join(__dirname, '..', 'client', 'dist');
 if (existsSync(clientDist)) {

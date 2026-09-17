@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Lock, User, KeyRound, Check, AlertCircle } from 'lucide-react';
+import { apiRequest } from '../../utils/api';
 
 export function ChangeCredentialsModal({ isOpen, onClose, currentUsername, onCredentialsUpdated }) {
   const [oldPassword, setOldPassword] = useState('');
@@ -18,7 +19,12 @@ export function ChangeCredentialsModal({ isOpen, onClose, currentUsername, onCre
     setSuccess('');
 
     if (!oldPassword) {
-      setError('Please enter your current password to verify identity.');
+      setError('Please enter your current password.');
+      return;
+    }
+
+    if (newUsername.trim().length < 3) {
+      setError('Username must be at least 3 characters long.');
       return;
     }
 
@@ -36,10 +42,9 @@ export function ChangeCredentialsModal({ isOpen, onClose, currentUsername, onCre
 
     try {
       const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
-      const res = await fetch('/api/admin/change-password', {
+      const res = await apiRequest('/api/admin/change-password', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
@@ -48,10 +53,10 @@ export function ChangeCredentialsModal({ isOpen, onClose, currentUsername, onCre
           newPassword: newPassword || undefined
         })
       });
+      const data = res;
 
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to update credentials.');
+      if (!res.success) {
+        throw new Error(res.error || 'Failed to update credentials.');
       }
 
       setSuccess('Credentials successfully updated!');

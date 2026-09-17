@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ShieldCheck, Lock, User, Eye, EyeOff, ArrowLeft, KeyRound, AlertCircle, Sparkles } from 'lucide-react';
+import { apiRequest } from '../../utils/api';
 
 export function AdminLogin({ onLoginSuccess, onExit }) {
   const [username, setUsername] = useState('');
@@ -20,31 +21,28 @@ export function AdminLogin({ onLoginSuccess, onExit }) {
     setError('');
 
     try {
-      const res = await fetch('/api/admin/login', {
+      const res = await apiRequest('/api/admin/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: username.trim(),
           password
         })
       });
 
-      const data = await res.json();
-
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Authentication failed. Please check your credentials.');
+      if (!res.success) {
+        throw new Error(res.error || 'Authentication failed. Please check your credentials.');
       }
 
       // Store session token
       if (rememberMe) {
-        localStorage.setItem('fibax_admin_token', data.token);
-        localStorage.setItem('fibax_admin_user', data.username);
+        localStorage.setItem('fibax_admin_token', res.token);
+        localStorage.setItem('fibax_admin_user', res.username);
       } else {
-        sessionStorage.setItem('fibax_admin_token', data.token);
-        sessionStorage.setItem('fibax_admin_user', data.username);
+        sessionStorage.setItem('fibax_admin_token', res.token);
+        sessionStorage.setItem('fibax_admin_user', res.username);
       }
 
-      onLoginSuccess({ username: data.username, token: data.token });
+      onLoginSuccess({ username: res.username, token: res.token });
     } catch (err) {
       setError(err.message || 'Invalid User ID or Password.');
     } finally {

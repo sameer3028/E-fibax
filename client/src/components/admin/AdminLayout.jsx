@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useProducts } from '../../context/ProductContext';
+import { apiRequest } from '../../utils/api';
 import { ProductsTable } from './ProductsTable';
 import { ProductModal } from './ProductModal';
 import { OffersManager } from './OffersManager';
@@ -46,17 +47,20 @@ export function AdminLayout({ onExitAdmin }) {
       }
 
       try {
-        const res = await fetch('/api/admin/verify', {
+        const res = await apiRequest('/api/admin/verify', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
-        if (res.ok && data.valid) {
+        if (res.success && res.valid) {
           setIsAuthenticated(true);
-          setAdminUser(data.username || savedUser || 'admin');
-        } else {
+          setAdminUser(res.username || savedUser || 'admin');
+        } else if (res.status === 401) {
           localStorage.removeItem('fibax_admin_token');
           sessionStorage.removeItem('fibax_admin_token');
           setIsAuthenticated(false);
+        } else {
+          // Keep local state if server has network issue
+          setIsAuthenticated(!!token);
+          if (savedUser) setAdminUser(savedUser);
         }
       } catch (err) {
         // Offline or fallback verification
@@ -74,7 +78,7 @@ export function AdminLayout({ onExitAdmin }) {
     const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
     try {
       if (token) {
-        await fetch('/api/admin/logout', {
+        await apiRequest('/api/admin/logout', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });

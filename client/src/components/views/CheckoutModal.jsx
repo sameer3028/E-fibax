@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { formatPrice } from '../../lib/utils';
+import { apiRequest } from '../../utils/api';
 import {
   X,
   ShieldCheck,
@@ -75,16 +76,15 @@ export function CheckoutModal({ isOpen, onClose }) {
     };
 
     try {
-      const headers = { 'Content-Type': 'application/json' };
+      const headers = {};
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
       }
-      const response = await fetch('/api/orders', {
+      const data = await apiRequest('/api/orders', {
         method: 'POST',
         headers,
         body: JSON.stringify(orderPayload)
       });
-      const data = await response.json();
 
       if (data.success && data.data) {
         setOrderNumber(data.data.orderId);

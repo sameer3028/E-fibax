@@ -13,6 +13,7 @@ import {
   ChevronDown,
   Lock
 } from 'lucide-react';
+import { apiRequest } from '../utils/api';
 
 // Strict anti-injection patterns
 const INJECTION_DETECTOR = /<\s*script|<\s*\/\s*script|<\s*(iframe|object|embed|svg|img|style|link|body|input|button|form)\b|javascript\s*:|vbscript\s*:|data\s*:\s*text\/html|on\w+\s*=|eval\s*\(|(\${|{{|<%|%>|`)|(union\s+select|select\s+.*\s+from|insert\s+into|drop\s+table|delete\s+from|update\s+\w+\s+set)|(;|\||&&|\$\()\s*(curl|wget|bash|sh|powershell|cmd)/i;
@@ -209,9 +210,8 @@ export function Contact() {
     setStatus({ submitting: true, success: false, error: null });
 
     try {
-      const response = await fetch('/api/enquiry', {
+      const data = await apiRequest('/api/enquiry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name.trim(),
           city: `${formData.city.trim()}, ${formData.state.trim()}`,
@@ -223,8 +223,7 @@ export function Contact() {
         })
       });
 
-      const data = await response.json();
-      if (response.ok && data.success) {
+      if (data.success) {
         setStatus({ submitting: false, success: true, error: null });
         setFormData({
           name: '',

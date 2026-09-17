@@ -13,6 +13,7 @@ import {
   ArrowRight,
   Package
 } from 'lucide-react';
+import { apiRequest } from '../utils/api';
 
 export function GlobalReach({ onNavigate }) {
   const [inquiry, setInquiry] = useState({
@@ -83,9 +84,8 @@ export function GlobalReach({ onNavigate }) {
       const cleanEmail = inquiry.email.replace(/[<>]/g, '').trim();
       const cleanReq = inquiry.requirement.replace(/[<>]/g, '').trim();
 
-      const response = await fetch('/api/enquiry', {
+      const data = await apiRequest('/api/enquiry', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: cleanName,
           phone: cleanPhone,
@@ -95,8 +95,7 @@ export function GlobalReach({ onNavigate }) {
           message: `Country: ${cleanCountry} | Requirement: ${cleanReq}`
         })
       });
-      const data = await response.json();
-      if (response.ok && data.success) {
+      if (data.success) {
         setSubmitted(true);
       }
     } catch (e) {

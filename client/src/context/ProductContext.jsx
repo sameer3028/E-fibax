@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { PRODUCTS as INITIAL_PRODUCTS } from '../data/products';
+import { apiRequest } from '../utils/api';
 
 const ProductContext = createContext(null);
-const API_BASE = 'http://localhost:5000/api';
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(INITIAL_PRODUCTS);
@@ -18,11 +18,9 @@ export function ProductProvider({ children }) {
   const fetchProducts = useCallback(async () => {
     try {
       setIsLoading(true);
-      const res = await fetch(`${API_BASE}/products`);
-      if (!res.ok) throw new Error('Failed to fetch products');
-      const data = await res.json();
-      if (data.success && Array.isArray(data.data)) {
-        setProducts(data.data);
+      const res = await apiRequest('/api/products');
+      if (res.success && Array.isArray(res.data)) {
+        setProducts(res.data);
       }
     } catch (err) {
       console.warn('Backend offline or unreachable, using local state:', err.message);
@@ -34,12 +32,9 @@ export function ProductProvider({ children }) {
   // Fetch inventory stats
   const fetchStats = useCallback(async () => {
     try {
-      const res = await fetch(`${API_BASE}/inventory/stats`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) {
-          setStats(data.data);
-        }
+      const res = await apiRequest('/api/inventory/stats');
+      if (res.success && res.data) {
+        setStats(res.data);
       }
     } catch {
       // fallback to recalculating from local products
@@ -63,18 +58,16 @@ export function ProductProvider({ children }) {
   // 1. Add Product
   const addProduct = async (productData) => {
     try {
-      const res = await fetch(`${API_BASE}/products`, {
+      const res = await apiRequest('/api/products', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(productData),
       });
-      const data = await res.json();
-      if (data.success && data.data) {
-        setProducts(prev => [data.data, ...prev]);
+      if (res.success && res.data) {
+        setProducts(prev => [res.data, ...prev]);
         fetchStats();
-        return { success: true, product: data.data };
+        return { success: true, product: res.data };
       }
-      throw new Error(data.error || 'Failed to create product');
+      throw new Error(res.error || 'Failed to create product');
     } catch (err) {
       // Local fallback
       const newId = String(Date.now());
@@ -101,18 +94,16 @@ export function ProductProvider({ children }) {
   // 2. Update Product
   const updateProduct = async (id, updatedFields) => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}`, {
+      const res = await apiRequest(`/api/products/${id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedFields),
       });
-      const data = await res.json();
-      if (data.success && data.data) {
-        setProducts(prev => prev.map(p => String(p.id) === String(id) ? data.data : p));
+      if (res.success && res.data) {
+        setProducts(prev => prev.map(p => String(p.id) === String(id) ? res.data : p));
         fetchStats();
-        return { success: true, product: data.data };
+        return { success: true, product: res.data };
       }
-      throw new Error(data.error || 'Failed to update product');
+      throw new Error(res.error || 'Failed to update product');
     } catch (err) {
       // Local fallback
       setProducts(prev => prev.map(p => {
@@ -141,7 +132,7 @@ export function ProductProvider({ children }) {
   // 3. Delete Product
   const deleteProduct = async (id) => {
     try {
-      await fetch(`${API_BASE}/products/${id}`, { method: 'DELETE' });
+      await apiRequest(`/api/products/${id}`, { method: 'DELETE' });
     } catch (err) {
       console.warn('Backend delete failed, performing local removal:', err.message);
     }
@@ -153,14 +144,12 @@ export function ProductProvider({ children }) {
   // 4. Update Offer & Pricing
   const updatePricing = async (id, pricingData) => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}/pricing`, {
+      const res = await apiRequest(`/api/products/${id}/pricing`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(pricingData),
       });
-      const data = await res.json();
-      if (data.success && data.data) {
-        setProducts(prev => prev.map(p => String(p.id) === String(id) ? data.data : p));
+      if (res.success && res.data) {
+        setProducts(prev => prev.map(p => String(p.id) === String(id) ? res.data : p));
         return { success: true };
       }
     } catch (err) {
@@ -188,19 +177,17 @@ export function ProductProvider({ children }) {
   // 5. Adjust Stock Quantity
   const adjustStock = async (id, { stockQuantity, delta }) => {
     try {
-      const res = await fetch(`${API_BASE}/products/${id}/stock`, {
+      const res = await apiRequest(`/api/products/${id}/stock`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ stockQuantity, delta }),
       });
-      const data = await res.json();
-      if (data.success && data.data) {
-        setProducts(prev => prev.map(p => String(p.id) === String(id) ? data.data : p));
+      if (res.success && res.data) {
+        setProducts(prev => prev.map(p => String(p.id) === String(id) ? res.data : p));
         fetchStats();
         return { success: true };
       }
     } catch (err) {
-      console.warn('Backend stock adjustment failed, updating locally:', err.message);
+      console.warn('Backend stock update failed, applying locally:', err.message);
     }
 
     setProducts(prev => prev.map(p => {
