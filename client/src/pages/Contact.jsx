@@ -30,7 +30,7 @@ export function Contact() {
     email: '',
     city: '',
     state: '',
-    experience: 'Pharma Distributor / Wholesaler',
+    experience: 'Customer / Personal Health Concern',
     message: '',
     captchaInput: '',
     hp_field: '' // Honeypot anti-bot trap
@@ -62,24 +62,24 @@ export function Contact() {
 
   const faqs = [
     {
-      q: 'What are the basic requirements to start an Ayurvedic PCD Pharma Franchise?',
-      a: 'To start an Ayurvedic PCD franchise with Fibax Pharma, you primarily need a GST Number and basic business registration. An Ayurvedic (AYUSH) retail or wholesale drug license is helpful. We offer full marketing support, visual aids, and sample kits to help you start immediately.'
+      q: 'How do I know which Ayurvedic formulation is right for my condition?',
+      a: 'You can speak directly with our certified Ayurvedic doctors and health consultants via phone, WhatsApp, or the inquiry form. We assess your constitution (Dosha/Prakriti) and current health concerns to recommend the ideal herbal remedy.'
     },
     {
-      q: 'Do you provide 100% District Monopoly Rights?',
-      a: 'Yes, absolutely! Fibax Pharma provides strict district-wise monopoly marketing agreements. No other distributor will be authorized to sell our formulations in your assigned district territory.'
+      q: 'Are Fibax Ayurveda products 100% natural, vegetarian, and safe?',
+      a: 'Yes, absolutely! Every formulation is 100% vegetarian, non-GMO, and free from heavy metals, harmful preservatives, steroids, and artificial chemicals. All remedies are produced in WHO-GMP and Ministry of AYUSH licensed cleanroom facilities.'
     },
     {
-      q: 'What is the minimum initial investment required?',
-      a: 'Our investment requirement is very flexible, starting from as low as ₹15,000 to ₹50,000 depending on your territory size and chosen product range. We believe in empowering entrepreneurs with accessible entry points.'
+      q: 'How long does delivery take and can I track my order?',
+      a: 'Orders are dispatched within 24 to 48 hours via Delhivery Express Cargo. You will receive real-time SMS/email tracking updates, and you can also track your shipment status anytime inside your Fibax Customer Account.'
     },
     {
-      q: 'What promotional materials do franchise partners receive?',
-      a: 'All franchise associates receive free visual aids, product glossary brochures, M.R. bags, catch covers, visiting cards, reminder cards, and prescription pads with zero hidden charges.'
+      q: 'Do you offer Cash on Delivery (COD) across India?',
+      a: 'Yes! We offer Cash on Delivery (COD) as well as secure online prepaid payment options (UPI, GPay, PhonePe, Cards, Net Banking) across all serviceable pin codes in India with free shipping on orders above ₹499.'
     },
     {
-      q: 'How fast are orders dispatched?',
-      a: 'All confirmed orders are processed and dispatched within 24 to 48 hours from our central warehouse via reputed express cargo partners with live tracking provided.'
+      q: 'Can I take these herbal formulations alongside my allopathic medications?',
+      a: 'Most Ayurvedic formulations can be safely consumed with a 1 to 2 hour interval from allopathic drugs. However, we always recommend consulting your physician or our Ayurvedic team for personalized guidance.'
     }
   ];
 
@@ -231,7 +231,7 @@ export function Contact() {
           email: '',
           city: '',
           state: '',
-          experience: 'Pharma Distributor / Wholesaler',
+          experience: 'Customer / Personal Health Concern',
           message: '',
           captchaInput: '',
           hp_field: ''
@@ -272,14 +272,14 @@ export function Contact() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-leaf/20 text-leaf border border-leaf/30 text-xs font-bold uppercase tracking-wider mb-4">
-              <Building2 className="h-3.5 w-3.5" />
-              <span>Verified Direct Channel</span>
+              <HeartHandshake className="h-3.5 w-3.5" />
+              <span>Direct Customer Care & Support</span>
             </span>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-              Contact & Monopoly Territory Inquiries
+              Contact Us & Ayurvedic Health Consultation
             </h1>
             <p className="mt-4 text-sm sm:text-base text-sand-warm/80 leading-relaxed">
-              Inquire for exclusive PCD Pharma Franchise rights, verified 2026 price list, or customized third-party manufacturing solutions. All communications are safeguarded and strictly confidential.
+              Reach out to our certified Ayurvedic consultation team for personalized health advice, dosage inquiries, order tracking, or general customer support. All communications are safeguarded and strictly confidential.
             </p>
           </div>
         </div>
@@ -360,10 +360,10 @@ export function Contact() {
                 </div>
 
                 <h2 className="text-2xl font-black text-forest-deep mb-1">
-                  Send Your Inquiry / Check District Monopoly
+                  Send Us a Message / Consultation Request
                 </h2>
                 <p className="text-xs sm:text-sm text-charcoal-muted mb-6">
-                  Please fill out the verified form below. All input fields are strictly sanitized against automated injection.
+                  Please fill out the verified form below. Our Ayurvedic consultants and customer care team will respond within 2-4 hours.
                 </p>
 
                 {/* Success Alert */}
@@ -373,7 +373,7 @@ export function Contact() {
                     <div>
                       <h4 className="text-xs font-bold">Thank You! Your Request Has Been Logged.</h4>
                       <p className="text-xs mt-1 text-emerald-700">
-                        Our regional business development team has received your verified inquiry and will connect with you via phone or WhatsApp shortly.
+                        Our Ayurvedic health advisors will connect with you via phone or WhatsApp shortly to assist you with your inquiry or consultation.
                       </p>
                     </div>
                   </div>
@@ -608,10 +608,10 @@ export function Contact() {
                       )}
                     </div>
 
-                    {/* Professional Background */}
+                    {/* Purpose of Inquiry */}
                     <div>
                       <label className="block text-xs font-bold text-charcoal mb-1">
-                        Your Professional Background
+                        Purpose of Inquiry / Background
                       </label>
                       <select
                         name="experience"
@@ -619,12 +619,12 @@ export function Contact() {
                         onChange={handleChange}
                         className="w-full px-4 py-2.5 bg-white border border-sand-border rounded-xl text-xs text-charcoal focus:outline-none focus:border-brand"
                       >
-                        <option value="Pharma Distributor / Wholesaler">Pharma Distributor / Wholesaler</option>
-                        <option value="Medical Representative (M.R.)">Medical Representative (M.R.)</option>
-                        <option value="Chemist / Retail Pharmacist">Chemist / Retail Pharmacist</option>
-                        <option value="Doctor / Ayurvedic Practitioner">Doctor / Ayurvedic Practitioner</option>
-                        <option value="New Entrepreneur">New Entrepreneur</option>
-                        <option value="Third-Party Brand Owner">Third-Party Brand Owner</option>
+                        <option value="Customer / Personal Health Concern">Customer / Personal Health Concern</option>
+                        <option value="Product Inquiry & Dosage Advice">Product Inquiry &amp; Dosage Advice</option>
+                        <option value="Order Tracking & Delivery Support">Order Tracking &amp; Delivery Support</option>
+                        <option value="Ayurvedic Doctor / Clinic Consultation">Ayurvedic Doctor / Clinic Consultation</option>
+                        <option value="Bulk / Family Wellness Pack">Bulk / Family Wellness Pack</option>
+                        <option value="General Feedback / Other">General Feedback / Other</option>
                       </select>
                     </div>
                   </div>
@@ -633,7 +633,7 @@ export function Contact() {
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-bold text-charcoal">
-                        Specific Requirements or Message
+                        Specific Health Concern, Order Query or Message
                       </label>
                       <span className={`text-[10px] ${
                         formData.message.length > 450 ? 'text-amber-600 font-bold' : 'text-charcoal-subtle'
@@ -648,7 +648,7 @@ export function Contact() {
                       value={formData.message}
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      placeholder="e.g. Inquiring for monopoly rights in Kanpur district for syrups and diabetic care products..."
+                      placeholder="e.g. Inquiring about Axe-Ortho oil dosage for joint pain, or asking about delivery timeline..."
                       className={`w-full px-4 py-2.5 bg-white border rounded-xl text-xs text-charcoal focus:outline-none transition-colors ${
                         touched.message && errors.message
                           ? 'border-rose-500 bg-rose-50/20 focus:border-rose-600'
@@ -721,7 +721,7 @@ export function Contact() {
                       }`}
                     >
                       <Send className="h-4 w-4" />
-                      <span>{status.submitting ? 'Verifying & Submitting...' : 'Submit Verified Franchise Request'}</span>
+                      <span>{status.submitting ? 'Verifying & Submitting...' : 'Send Message to Health Experts'}</span>
                     </button>
                     <p className="text-[10px] text-charcoal-subtle text-center mt-2">
                       🔒 All inquiries are checked against code injection and protected by strict enterprise privacy.
@@ -735,35 +735,35 @@ export function Contact() {
             <div className="lg:col-span-5 space-y-6">
               <div className="p-6 rounded-3xl bg-forest text-white border border-forest-dark shadow-botanical">
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-300 block mb-2">
-                  Franchise Benefits
+                  The Fibax Promise
                 </span>
-                <h3 className="text-lg font-black mb-4">Why Associate with Fibax Pharma?</h3>
+                <h3 className="text-lg font-black mb-4">Why Choose Fibax Ayurveda?</h3>
                 <ul className="space-y-3 text-xs text-sand-warm/90">
                   <li className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>100% Guaranteed District Exclusivity</span>
+                    <span>100% Certified WHO-GMP & Ministry of AYUSH Formulations</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>250+ DCGI & AYUSH Approved Formulations</span>
+                    <span>Pure Himalayan Botanicals & Zero Harmful Chemicals</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>Complimentary Visual Aids, MR Bags & Catch Covers</span>
+                    <span>Ayurvedic Doctor Consultations & Dosage Guidance</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>24-48 Hours Fast Logistics Dispatch</span>
+                    <span>24-48 Hours Express Dispatch with Live Delhivery Tracking</span>
                   </li>
                   <li className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>High Profit Margins with Lucrative Schemes</span>
+                    <span>Pan-India Cash on Delivery (COD) & Easy Returns</span>
                   </li>
                 </ul>
 
                 <div className="mt-6 pt-5 border-t border-white/10">
                   <a
-                    href="https://wa.me/917657963458?text=Hello%20Fibax%20Pharma,%20I%20want%20to%20apply%20for%20a%20PCD%20Franchise"
+                    href="https://wa.me/917657963458?text=Hello%20Fibax%20Ayurveda,%20I%20would%20like%20to%20consult%20about%20your%20products"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full py-2.5 px-4 rounded-xl bg-leaf text-forest-deep font-bold text-xs hover:bg-leaf-light transition-colors text-center block"
@@ -788,7 +788,7 @@ export function Contact() {
         </div>
       </section>
 
-      {/* 4. Franchise FAQs Section */}
+      {/* 4. FAQs Section */}
       <section className="py-16 bg-sand border-t border-sand-border">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
@@ -796,7 +796,7 @@ export function Contact() {
               Common Inquiries
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-forest-deep">
-              Frequently Asked Questions About Franchises
+              Frequently Asked Questions (FAQ)
             </h2>
           </div>
 

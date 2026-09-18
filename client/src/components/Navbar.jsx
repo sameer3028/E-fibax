@@ -161,14 +161,14 @@ export function Navbar({
             </button>
           </div>
 
-          {/* Quick Contact / PCD Inquiry Pill */}
+          {/* Quick Contact / Ayurvedic Helpline Pill */}
           <div className="hidden md:flex items-center gap-3">
             <a
               href="tel:+918872544458"
               className="flex items-center gap-2 text-xs font-semibold text-forest-deep bg-sand px-3 py-1.5 rounded-full border border-sand-border hover:bg-sand-warm transition-colors"
             >
               <Phone className="h-3.5 w-3.5 text-forest" />
-              <span>Monopoly PCD Enquiry: <strong className="text-forest">+91-8872544458</strong></span>
+              <span>Ayurvedic Care: <strong className="text-forest">+91-8872544458</strong></span>
             </a>
           </div>
 
@@ -263,7 +263,7 @@ export function Navbar({
 
             <div className="pt-2 text-center">
               <a
-                href="https://wa.me/917657963458?text=Hello%20Fibax%20Pharma,%20I%20am%20interested%20in%20franchise%20and%20products"
+                href="https://wa.me/917657963458?text=Hello%20Fibax%20Ayurveda,%20I%20have%20an%20inquiry%20about%20your%20products"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-leaf-soft text-forest text-xs font-bold border border-leaf-border hover:bg-leaf/20 transition-colors"

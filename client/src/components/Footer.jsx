@@ -43,24 +43,24 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
 
           <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/5 border border-white/10">
             <div className="p-2.5 rounded-xl bg-brand/20 text-brand-light">
-              <Building2 className="h-6 w-6" />
+              <ShieldCheck className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white">Monopoly PCD Franchise</h4>
+              <h4 className="text-sm font-bold text-white">Direct Farm-to-Bottle</h4>
               <p className="text-xs text-sand-warm/70 mt-1 leading-relaxed">
-                100% district exclusivity and free promotional aids for franchise partners.
+                100% natural, lab-tested herbal formulations delivered fresh to your doorstep.
               </p>
             </div>
           </div>
 
           <div className="flex items-start gap-3.5 p-4 rounded-2xl bg-white/5 border border-white/10">
             <div className="p-2.5 rounded-xl bg-leaf/20 text-leaf">
-              <Globe className="h-6 w-6" />
+              <Truck className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-white">Pan-India & Global Export</h4>
+              <h4 className="text-sm font-bold text-white">Pan-India Express Delivery</h4>
               <p className="text-xs text-sand-warm/70 mt-1 leading-relaxed">
-                Rapid 24-48 hr dispatch network across 28 states and international ports.
+                Rapid 24-48 hr dispatch across all 28 states with Delhivery live tracking & COD.
               </p>
             </div>
           </div>
@@ -93,7 +93,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
               />
             </div>
             <p className="text-xs sm:text-sm text-sand-warm/80 leading-relaxed max-w-md">
-              <strong>Fibax Pharma</strong> is India's leading Ayurvedic PCD Pharma Franchise & Third-Party Manufacturing company. Formulating authentic, science-backed botanical remedies under WHO-GMP, ISO 9001:2015, and Ministry of AYUSH guidelines.
+              <strong>Fibax Ayurveda</strong> is India's trusted direct-to-consumer Ayurvedic wellness brand. Formulating authentic, science-backed botanical remedies under WHO-GMP, ISO 9001:2015, and Ministry of AYUSH guidelines for your family's lifelong health and vitality.
             </p>
             
             <div className="pt-2">
@@ -112,7 +112,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
           {/* Col 2: Quick Navigation */}
           <div>
             <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-4 border-b border-white/10 pb-2">
-              Company & Links
+              Explore & Shop
             </h4>
             <ul className="space-y-2.5 text-xs text-sand-warm/80">
               <li>
@@ -130,7 +130,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                   className="hover:text-leaf transition-colors flex items-center gap-1.5"
                 >
                   <ArrowRight className="h-3 w-3 text-leaf" />
-                  <span>About Fibax</span>
+                  <span>About Us</span>
                 </button>
               </li>
               <li>
@@ -139,25 +139,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                   className="hover:text-leaf transition-colors flex items-center gap-1.5"
                 >
                   <ArrowRight className="h-3 w-3 text-leaf" />
-                  <span>Our Formulations</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('industries')}
-                  className="hover:text-leaf transition-colors flex items-center gap-1.5"
-                >
-                  <ArrowRight className="h-3 w-3 text-leaf" />
-                  <span>Industries & Sectors</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => handleNav('global-reach')}
-                  className="hover:text-leaf transition-colors flex items-center gap-1.5"
-                >
-                  <ArrowRight className="h-3 w-3 text-leaf" />
-                  <span>Global Reach & Exports</span>
+                  <span>All Remedies & Formulations</span>
                 </button>
               </li>
               <li>
@@ -175,7 +157,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                   className="hover:text-leaf transition-colors flex items-center gap-1.5"
                 >
                   <ArrowRight className="h-3 w-3 text-leaf" />
-                  <span>Contact & PCD Franchise</span>
+                  <span>Contact Us & Support</span>
                 </button>
               </li>
             </ul>
@@ -238,7 +220,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                 onClick={() => handleNav('contact')}
                 className="w-full py-2 px-3 rounded-xl bg-brand text-white font-bold text-xs hover:bg-brand-hover transition-colors shadow-xs text-center"
               >
-                Apply for PCD Franchise
+                Consult Ayurvedic Doctor
               </button>
             </div>
           </div>
@@ -254,9 +236,9 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
           <div className="flex items-center gap-4 text-[11px]">
             <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Privacy Policy</a>
             <span>•</span>
-            <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Terms of Distribution</a>
+            <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Terms of Service</a>
             <span>•</span>
-            <a href="#contact" onClick={() => handleNav('contact')} className="hover:underline">Monopoly Agreement</a>
+            <a href="#contact" onClick={() => handleNav('contact')} className="hover:underline">Shipping & Return Policy</a>
           </div>
         </div>
         <p className="text-[10px] text-sand-warm/40 mt-3 text-center sm:text-left leading-relaxed">

@@ -45,10 +45,8 @@ function StorefrontApp() {
         setCurrentPage('about');
       } else if (hash === 'products' || hash === 'shop') {
         setCurrentPage('products');
-      } else if (hash === 'industries') {
-        setCurrentPage('industries');
-      } else if (hash === 'global-reach' || hash === 'global') {
-        setCurrentPage('global-reach');
+      } else if (hash === 'industries' || hash === 'global-reach' || hash === 'global') {
+        setCurrentPage('about');
       } else if (hash === 'blogs' || hash === 'journal') {
         setCurrentPage('blogs');
       } else if (hash.startsWith('blog/')) {

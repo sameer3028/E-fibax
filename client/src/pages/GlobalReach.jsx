@@ -148,7 +148,7 @@ export function GlobalReach({ onNavigate }) {
             <div className="p-6 bg-white rounded-2xl border border-sand-border shadow-xs">
               <div className="text-3xl font-black text-forest">28</div>
               <div className="text-xs font-bold text-charcoal mt-1">Indian States Covered</div>
-              <p className="text-[11px] text-charcoal-subtle mt-0.5">500+ Franchise Districts</p>
+              <p className="text-[11px] text-charcoal-subtle mt-0.5">500+ Cities & Districts</p>
             </div>
 
             <div className="p-6 bg-white rounded-2xl border border-sand-border shadow-xs">

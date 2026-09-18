@@ -31,10 +31,10 @@ export function About({ onNavigate }) {
               <span>Authentic Ayurvedic Heritage</span>
             </span>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-              Pioneering Pure Ayurvedic Healthcare & PCD Franchise Excellence
+              Pioneering Pure Ayurvedic Healthcare & Natural Wellness
             </h1>
             <p className="mt-4 text-sm sm:text-base text-sand-warm/80 leading-relaxed">
-              Fibax Pharma is a premier Ayurvedic pharmaceutical enterprise dedicated to formulating authentic, research-driven botanical medicines. Backed by WHO-GMP certified infrastructure, we deliver ethical healthcare formulations to millions across India and global markets.
+              Fibax Ayurveda is a premier herbal wellness brand dedicated to formulating authentic, research-driven botanical remedies. Backed by WHO-GMP certified infrastructure, we deliver pure, chemical-free healthcare solutions directly to households across India.
             </p>
             <div className="mt-8 flex flex-wrap gap-4 justify-center sm:justify-start">
               <button
@@ -48,7 +48,7 @@ export function About({ onNavigate }) {
                 onClick={() => onNavigate && onNavigate('contact')}
                 className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm border border-white/20 transition-all"
               >
-                Request Monopoly Territory
+                Consult Ayurvedic Doctor
               </button>
             </div>
           </div>
@@ -90,7 +90,7 @@ export function About({ onNavigate }) {
                   While conventional commercial formulations often compromise on active phytochemical concentrations, Fibax utilizes standardized herbal extracts with verified bioactive markers. Whether it is Curcumin in our joint care products, Gymnemic acids in diabetic care, or Silymarin & Kutki in our liver tonics, we guarantee therapeutic potency in every single dose.
                 </p>
                 <p>
-                  Today, Fibax Pharma stands as a trusted manufacturing partner and supplier for over 1,500 Ayurvedic PCD franchise distributors, healthcare practitioners, hospitals, and institutional healthcare buyers across all 28 states of India.
+                  Today, Fibax Ayurveda stands as a trusted wellness brand chosen by over 50,000 families, practitioners, and wellness seekers across all 28 states of India for authentic holistic healing.
                 </p>
               </div>
 
@@ -109,7 +109,7 @@ export function About({ onNavigate }) {
                 </div>
                 <div className="flex items-center gap-2.5 text-xs font-bold text-forest">
                   <CheckCircle2 className="h-4 w-4 text-leaf" />
-                  <span>100% District Monopoly Rights</span>
+                  <span>100% Safe, Pure & Chemical-Free</span>
                 </div>
               </div>
             </div>
@@ -172,7 +172,7 @@ export function About({ onNavigate }) {
               </div>
               <h3 className="text-lg font-bold text-forest-deep mb-2">OUR VISION</h3>
               <p className="text-xs sm:text-sm text-charcoal-muted leading-relaxed">
-                To stand as India’s most dependable Ayurvedic PCD Pharma Franchise network, driving sustainable business growth for regional distributors and becoming a recognized global exporter of validated Indian herbal remedies.
+                To stand as India’s most trusted direct-to-consumer Ayurvedic wellness brand, making pure, chemical-free herbal healthcare accessible, transparent, and transformative for every household.
               </p>
             </div>
 
@@ -231,10 +231,10 @@ export function About({ onNavigate }) {
               </p>
               <div className="mt-6">
                 <button
-                  onClick={() => onNavigate && onNavigate('industries')}
+                  onClick={() => onNavigate && onNavigate('products')}
                   className="inline-flex items-center gap-2 text-sm font-bold text-forest hover:text-forest-light group"
                 >
-                  <span>Explore Third-Party Manufacturing Capabilities</span>
+                  <span>Explore Our Certified Herbal Formulations</span>
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </button>
               </div>
@@ -277,23 +277,24 @@ export function About({ onNavigate }) {
       <section className="py-16 bg-sand text-center">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-black text-forest-deep">
-            Ready to Partner with India’s Fastest Growing Ayurvedic Company?
+            Begin Your Natural Ayurvedic Healing Journey Today
           </h2>
           <p className="text-sm text-charcoal-muted mt-3 max-w-2xl mx-auto">
-            Secure exclusive monopoly marketing rights for your district or discuss custom third-party manufacturing requirements with our senior directors.
+            Experience the revitalizing power of authentic herbs. Get free personalized dosage consultation, lab-tested classical formulations, and express doorstep delivery across India.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-4">
             <button
-              onClick={() => onNavigate && onNavigate('contact')}
-              className="px-8 py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brand-hover shadow-orange-glow transition-all"
+              onClick={() => onNavigate && onNavigate('products')}
+              className="px-8 py-3.5 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brand-hover shadow-orange-glow transition-all flex items-center gap-2"
             >
-              Contact Us / Get Franchise Kit
+              <span>Shop All Formulations</span>
+              <ArrowRight className="h-4 w-4" />
             </button>
             <a
               href="tel:+918872544458"
               className="px-8 py-3.5 rounded-xl bg-white text-forest border border-sand-border font-bold text-sm hover:bg-sand-warm shadow-xs transition-all"
             >
-              Call Directly: +91-8872544458
+              Doctor Helpline: +91-8872544458
             </a>
           </div>
         </div>

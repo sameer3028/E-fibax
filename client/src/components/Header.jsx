@@ -52,7 +52,7 @@ export function Header({
 
           <div className="flex items-center gap-4 text-[11px] sm:text-xs">
             <span className="hidden lg:inline text-emerald-200">
-              Monopoly PCD Franchise Available in All Districts
+              100% Authentic Ayurveda • Cash on Delivery (COD) Available
             </span>
             <span className="hidden lg:inline text-white/40">|</span>
             <a
@@ -118,9 +118,9 @@ export function Header({
                 <Search className="h-5 w-5" />
               </button>
 
-              {/* Doctor / PCD WhatsApp Contact */}
+              {/* Doctor / Ayurveda WhatsApp Contact */}
               <a
-                href="https://wa.me/917657963458?text=Hello%20Fibax%20Pharma,%20I%20need%20assistance%20with%20Ayurvedic%20products%20and%20franchise"
+                href="https://wa.me/917657963458?text=Hello%20Fibax%20Ayurveda,%20I%20need%20assistance%20with%20Ayurvedic%20products%20and%20consultation"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-leaf-soft text-forest font-semibold border border-leaf-border text-xs hover:bg-leaf/20 transition-colors"
