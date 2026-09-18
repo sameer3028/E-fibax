@@ -21,6 +21,7 @@ import { SearchModal } from './components/sections/SearchModal';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AuthModal } from './components/auth/AuthModal';
 import { AccountModal } from './components/auth/AccountModal';
+import { TrackOrderModal } from './components/common/TrackOrderModal';
 import { BrandLoader } from './components/common/BrandLoader';
 
 function StorefrontApp() {
@@ -33,6 +34,8 @@ function StorefrontApp() {
   const [activeConcern, setActiveConcern] = useState('all');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isTrackOrderOpen, setIsTrackOrderOpen] = useState(false);
+  const [trackInitialId, setTrackInitialId] = useState('');
 
   // Sync hash routing e.g. #home, #about, #products, #industries, #global-reach, #contact, #admin, #product/:id
   useEffect(() => {
@@ -62,6 +65,10 @@ function StorefrontApp() {
         }
       } else if (hash === 'contact') {
         setCurrentPage('contact');
+      } else if (hash === 'track' || hash.startsWith('track/')) {
+        const id = hash.startsWith('track/') ? decodeURIComponent(hash.replace('track/', '')) : '';
+        setTrackInitialId(id);
+        setIsTrackOrderOpen(true);
       } else if (hash === 'admin' || window.location.pathname === '/admin') {
         setCurrentPage('admin');
       } else if (hash.startsWith('product/')) {
@@ -90,6 +97,12 @@ function StorefrontApp() {
       if (params.concern) setActiveConcern(params.concern);
       if (params.product) setSelectedProduct(params.product);
       if (params.post) setSelectedBlogPost(params.post);
+    }
+
+    if (pageId === 'track') {
+      setTrackInitialId(params?.trackingId || '');
+      setIsTrackOrderOpen(true);
+      return;
     }
 
     if (pageId === 'product-detail' && params?.product) {
@@ -150,6 +163,10 @@ function StorefrontApp() {
         onSelectCategory={handleSelectCategory}
         onSelectConcern={handleSelectConcern}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenTrackOrder={(id) => {
+          setTrackInitialId(id || '');
+          setIsTrackOrderOpen(true);
+        }}
       />
 
       {/* 2. Main Page Render */}
@@ -235,6 +252,10 @@ function StorefrontApp() {
         onNavigate={handleNavigate}
         onSelectCategory={handleSelectCategory}
         onSelectConcern={handleSelectConcern}
+        onOpenTrackOrder={(id) => {
+          setTrackInitialId(id || '');
+          setIsTrackOrderOpen(true);
+        }}
       />
 
       {/* 4. Slide-over Cart Drawer */}
@@ -244,6 +265,10 @@ function StorefrontApp() {
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
+        onOpenTrackOrder={(id) => {
+          setTrackInitialId(id || '');
+          setIsTrackOrderOpen(true);
+        }}
       />
 
       {/* 6. Live Search Modal */}
@@ -260,6 +285,17 @@ function StorefrontApp() {
       {/* 8. Customer Account Dashboard Modal (Orders, Tracking, Profile) */}
       <AccountModal
         onExploreProducts={() => handleNavigate('products')}
+        onOpenTrackOrder={(id) => {
+          setTrackInitialId(id || '');
+          setIsTrackOrderOpen(true);
+        }}
+      />
+
+      {/* 9. Public Live Order Tracking Modal (Delhivery & Shiprocket) */}
+      <TrackOrderModal
+        isOpen={isTrackOrderOpen}
+        onClose={() => setIsTrackOrderOpen(false)}
+        initialTrackingId={trackInitialId}
       />
     </div>
   );

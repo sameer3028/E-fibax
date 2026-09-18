@@ -4,6 +4,15 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import crypto from 'crypto';
+import {
+  getShippingConfig,
+  saveShippingConfig,
+  checkPincodeServiceability,
+  calculateShippingFee,
+  createShipmentForOrder,
+  getTrackingDetails,
+  generatePrintableLabel
+} from './shipping.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -904,14 +913,11 @@ app.post('/api/orders', (req, res) => {
     const resolvedEmail = authenticatedCustomer?.email || customer?.email || '';
 
     const orderId = 'FBX-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substring(2, 5).toUpperCase();
-    const trackingId = 'DLH-' + Math.floor(100000000 + Math.random() * 900000000);
-
-    const newOrder = {
+    
+    // Auto-generate rich shipment data with tracking
+    const tempOrder = {
       orderId,
-      trackingId,
-      courier: 'Delhivery Express',
       createdAt: new Date().toISOString(),
-      status: 'Processing',
       customer: {
         ...(customer || {}),
         userId: resolvedUserId,
@@ -921,6 +927,18 @@ app.post('/api/orders', (req, res) => {
       shipping: shipping || {},
       payment: payment || { method: 'COD', status: 'Pending' },
       totals: totals || {}
+    };
+
+    const shipmentData = createShipmentForOrder(tempOrder);
+    const trackingId = shipmentData.trackingId;
+    const courier = shipmentData.courier;
+
+    const newOrder = {
+      ...tempOrder,
+      trackingId,
+      courier,
+      status: 'Processing',
+      shipment: shipmentData
     };
 
     // If customer is logged in and has no saved address, auto-save this address
@@ -959,10 +977,158 @@ app.post('/api/orders', (req, res) => {
     orders.unshift(newOrder);
     saveOrders(orders);
 
-    console.log(`📦 New Order placed: ${orderId} with tracking ${trackingId}`);
+    console.log(`📦 New Order placed: ${orderId} with tracking ${trackingId} (${courier})`);
     res.status(201).json({ success: true, data: newOrder });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==========================================
+// 2B. SHIPPING & LOGISTICS PLATFORM API
+// ==========================================
+
+// GET /api/shipping/config - Get active shipping platform configuration
+app.get('/api/shipping/config', (req, res) => {
+  try {
+    const config = getShippingConfig();
+    res.json({ success: true, data: config });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/shipping/config - Save shipping platform configuration
+app.post('/api/shipping/config', (req, res) => {
+  try {
+    const updated = saveShippingConfig(req.body || {});
+    res.json({ success: true, message: 'Shipping platform configuration saved', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/shipping/check-serviceability - Real-time PIN code verification
+app.post('/api/shipping/check-serviceability', (req, res) => {
+  try {
+    const { pincode } = req.body || {};
+    const result = checkPincodeServiceability(pincode);
+    res.json({ success: result.serviceable, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/shipping/rates - Dynamic Shipping & COD Fee Calculation
+app.post('/api/shipping/rates', (req, res) => {
+  try {
+    const { cartTotal, pincode, paymentMethod } = req.body || {};
+    const result = calculateShippingFee({ cartTotal, pincode, paymentMethod });
+    res.json({ success: true, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/shipping/ship-order/:id - 1-Click Order Fulfillment / AWB Assignment
+app.post('/api/shipping/ship-order/:id', (req, res) => {
+  try {
+    const orders = readOrders();
+    const idx = orders.findIndex(o => o.orderId === req.params.id);
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    const order = orders[idx];
+    const shipmentData = createShipmentForOrder(order, req.body || {});
+
+    orders[idx] = {
+      ...order,
+      status: 'Manifested',
+      trackingId: shipmentData.trackingId,
+      courier: shipmentData.courier,
+      shipment: shipmentData,
+      updatedAt: new Date().toISOString()
+    };
+
+    saveOrders(orders);
+    console.log(`🚚 Shipment manifested for ${order.orderId}: AWB ${shipmentData.trackingId} (${shipmentData.courier})`);
+    res.json({ success: true, message: 'Shipment created successfully', data: orders[idx] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/shipping/track/:id - Public Tracking Lookup (by orderId or trackingId/AWB)
+app.get('/api/shipping/track/:id', (req, res) => {
+  try {
+    const orders = readOrders();
+    const tracking = getTrackingDetails(req.params.id, orders);
+    if (!tracking) {
+      return res.status(404).json({
+        success: false,
+        error: `No shipment found matching tracking ID or Order number "${req.params.id}". Please verify and try again.`
+      });
+    }
+    res.json({ success: true, data: tracking });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/shipping/label/:orderId - Printable Shipping Label HTML
+app.get('/api/shipping/label/:orderId', (req, res) => {
+  try {
+    const orders = readOrders();
+    const order = orders.find(o => o.orderId === req.params.orderId || o.trackingId === req.params.orderId);
+    if (!order) {
+      return res.status(404).send('<h3>Order not found for shipping label</h3>');
+    }
+    const html = generatePrintableLabel(order);
+    res.setHeader('Content-Type', 'text/html');
+    res.send(html);
+  } catch (err) {
+    res.status(500).send('Error generating shipping label: ' + err.message);
+  }
+});
+
+// PATCH /api/shipping/status/:orderId - Update shipment status and location remarks
+app.patch('/api/shipping/status/:orderId', (req, res) => {
+  try {
+    const { status, location, remark } = req.body || {};
+    const orders = readOrders();
+    const idx = orders.findIndex(o => o.orderId === req.params.orderId || o.trackingId === req.params.orderId);
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Order not found' });
+    }
+
+    const order = orders[idx];
+    const currentTimeline = order.shipment?.timeline || createShipmentForOrder(order).timeline;
+
+    const newMilestone = {
+      status: status || order.status,
+      title: status || 'Status Update',
+      location: location || 'Transit Hub',
+      timestamp: new Date().toISOString(),
+      completed: true,
+      description: remark || `Package status updated to ${status}`
+    };
+
+    orders[idx] = {
+      ...order,
+      status: status || order.status,
+      shipment: {
+        ...(order.shipment || {}),
+        status: status || order.status,
+        timeline: [...currentTimeline, newMilestone]
+      },
+      updatedAt: new Date().toISOString()
+    };
+
+    saveOrders(orders);
+    res.json({ success: true, message: 'Shipment status updated', data: orders[idx] });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

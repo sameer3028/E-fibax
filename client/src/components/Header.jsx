@@ -19,7 +19,8 @@ export function Header({
   onNavigate,
   onSelectConcern,
   onSelectCategory,
-  onOpenSearch
+  onOpenSearch,
+  onOpenTrackOrder
 }) {
   const { totalItemsCount, openCart } = useCart();
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
@@ -50,11 +51,15 @@ export function Header({
             </span>
           </div>
 
-          <div className="flex items-center gap-4 text-[11px] sm:text-xs">
-            <span className="hidden lg:inline text-emerald-200">
-              100% Authentic Ayurveda • Cash on Delivery (COD) Available
-            </span>
-            <span className="hidden lg:inline text-white/40">|</span>
+          <div className="flex items-center gap-3 sm:gap-4 text-[11px] sm:text-xs">
+            <button
+              onClick={() => onOpenTrackOrder ? onOpenTrackOrder() : onNavigate('track')}
+              className="hover:text-emerald-300 transition-colors font-semibold flex items-center gap-1 text-sand-warm cursor-pointer"
+            >
+              <Truck className="h-3 w-3 text-leaf" />
+              <span>Track Order</span>
+            </button>
+            <span className="text-white/40">|</span>
             <a
               href="tel:+918872544458"
               className="hover:text-leaf transition-colors font-semibold flex items-center gap-1 text-sand-warm"
@@ -190,6 +195,7 @@ export function Header({
         onSelectCategory={onSelectCategory}
         onSelectConcern={onSelectConcern}
         onOpenSearch={onOpenSearch}
+        onOpenTrackOrder={onOpenTrackOrder}
       />
     </header>
   );

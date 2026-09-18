@@ -1,0 +1,29 @@
+{
+  "provider": "delhivery",
+  "mode": "sandbox",
+  "autoAssignAWB": true,
+  "defaultCourier": "Delhivery Express Surface & Air",
+  "freeShippingThreshold": 499,
+  "standardShippingFee": 49,
+  "codFee": 0,
+  "delhivery": {
+    "apiKey": "",
+    "clientName": "FIBAX_AYURVEDA",
+    "pickupLocation": "Fibax Central Fulfillment Hub"
+  },
+  "shiprocket": {
+    "email": "",
+    "password": "",
+    "token": "",
+    "pickupLocation": "Primary"
+  },
+  "warehouse": {
+    "name": "Fibax Ayurveda Central Logistics Hub",
+    "address": "SCO 42, Sector 12, Chandigarh Tricity Logistics Corridor",
+    "city": "Zirakpur",
+    "state": "Punjab",
+    "pincode": "140603",
+    "phone": "+91-8872544458",
+    "email": "care@fibaxpharma.com"
+  }
+}

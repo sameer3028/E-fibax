@@ -18,7 +18,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 
-export function AccountModal({ onExploreProducts }) {
+export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
   const {
     currentUser,
     isAccountModalOpen,
@@ -219,9 +219,23 @@ export function AccountModal({ onExploreProducts }) {
                             <Truck className="h-3.5 w-3.5 text-forest" />
                             <span>Courier: <strong>{order.courier || 'Delhivery Express'}</strong></span>
                           </span>
-                          <span className="text-forest font-mono font-bold text-[11px]">
-                            AWB: {order.trackingId}
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-forest font-mono font-bold text-[11px] bg-sand px-2 py-0.5 rounded border border-sand-border">
+                              AWB: {order.trackingId || 'Generated'}
+                            </span>
+                            {onOpenTrackOrder && (
+                              <button
+                                onClick={() => {
+                                  closeAccountModal();
+                                  onOpenTrackOrder(order.trackingId || order.orderId);
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-forest text-white font-bold text-[11px] hover:bg-forest-light transition-colors flex items-center gap-1 shadow-xs"
+                              >
+                                <ExternalLink className="h-2.5 w-2.5" />
+                                Track
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {/* Items list */}

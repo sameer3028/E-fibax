@@ -6,6 +6,7 @@ import { ProductModal } from './ProductModal';
 import { OffersManager } from './OffersManager';
 import { InventoryTable } from './InventoryTable';
 import { OrdersView } from './OrdersView';
+import { ShippingView } from './ShippingView';
 import { UsersView } from './UsersView';
 import { AdminLogin } from './AdminLogin';
 import { ChangeCredentialsModal } from './ChangeCredentialsModal';
@@ -15,6 +16,7 @@ import {
   Sparkles,
   Layers,
   ShoppingCart,
+  Truck,
   ArrowLeft,
   ShieldCheck,
   Plus,
@@ -251,8 +253,8 @@ export function AdminLayout({ onExitAdmin }) {
                 : 'text-charcoal hover:bg-sand text-charcoal-muted'
             }`}
           >
-            <ShoppingCart className="h-4 w-4" />
-            <span>Orders & Delhivery</span>
+            <Truck className="h-4 w-4 text-brand" />
+            <span>Logistics & Shipping</span>
           </button>
 
           <button
@@ -276,7 +278,7 @@ export function AdminLayout({ onExitAdmin }) {
         )}
         {activeTab === 'offers' && <OffersManager />}
         {activeTab === 'inventory' && <InventoryTable />}
-        {activeTab === 'orders' && <OrdersView />}
+        {activeTab === 'orders' && <ShippingView />}
         {activeTab === 'users' && <UsersView />}
       </main>
 

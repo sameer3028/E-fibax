@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ChevronDown, Menu, X, Sparkles, Phone, ShieldCheck, Globe, Building2, Package, ArrowRight, User } from 'lucide-react';
+import { ChevronDown, Menu, X, Sparkles, Phone, ShieldCheck, Globe, Building2, Package, ArrowRight, User, Truck } from 'lucide-react';
 import { CATEGORIES } from '../data/categories';
 import { CONCERNS } from '../data/concerns';
 
@@ -9,7 +9,8 @@ export function Navbar({
   onNavigate,
   onSelectCategory,
   onSelectConcern,
-  onOpenSearch
+  onOpenSearch,
+  onOpenTrackOrder
 }) {
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
@@ -259,6 +260,21 @@ export function Navbar({
                   <span>Sign In / Create Account</span>
                 </button>
               )}
+
+              {/* Mobile Track Order Trigger */}
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (onOpenTrackOrder) onOpenTrackOrder();
+                }}
+                className="w-full flex items-center justify-between p-2.5 rounded-xl bg-leaf-soft/50 border border-leaf-border text-forest text-xs font-bold mt-2"
+              >
+                <span className="flex items-center gap-2">
+                  <Truck className="h-4 w-4 text-forest" />
+                  <span>Track Your Order</span>
+                </span>
+                <span className="text-[10px] bg-forest text-white px-2 py-0.5 rounded-full font-bold">Delhivery Live</span>
+              </button>
             </div>
 
             <div className="pt-2 text-center">

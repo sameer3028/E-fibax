@@ -17,7 +17,7 @@ import {
 import { CATEGORIES } from '../data/categories';
 import { CONCERNS } from '../data/concerns';
 
-export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
+export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTrackOrder }) {
   const handleNav = (pageId, param = null) => {
     if (onNavigate) {
       onNavigate(pageId, param);
@@ -160,6 +160,15 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
                   <span>Contact Us & Support</span>
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => onOpenTrackOrder && onOpenTrackOrder()}
+                  className="text-leaf font-semibold hover:underline transition-colors flex items-center gap-1.5"
+                >
+                  <Truck className="h-3.5 w-3.5 text-leaf" />
+                  <span>Track Your Order</span>
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -234,6 +243,13 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern }) {
             &copy; {new Date().getFullYear()} <strong>Fibax Pharma Private Limited</strong>. All Rights Reserved.
           </p>
           <div className="flex items-center gap-4 text-[11px]">
+            <button
+              onClick={() => onOpenTrackOrder && onOpenTrackOrder()}
+              className="text-leaf hover:underline flex items-center gap-1 font-medium"
+            >
+              <Truck className="h-3 w-3 inline" /> Track Order
+            </button>
+            <span>•</span>
             <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Privacy Policy</a>
             <span>•</span>
             <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Terms of Service</a>

@@ -1,0 +1,420 @@
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const dataDir = join(__dirname, 'data');
+if (!existsSync(dataDir)) {
+  mkdirSync(dataDir, { recursive: true });
+}
+
+const shippingConfigFile = join(dataDir, 'shipping_config.json');
+
+export const DEFAULT_SHIPPING_CONFIG = {
+  provider: 'delhivery', // 'delhivery' | 'shiprocket' | 'auto'
+  mode: 'sandbox', // 'sandbox' | 'production'
+  autoAssignAWB: true,
+  defaultCourier: 'Delhivery Express Surface & Air',
+  freeShippingThreshold: 499,
+  standardShippingFee: 49,
+  codFee: 0,
+  delhivery: {
+    apiKey: '',
+    clientName: 'FIBAX_AYURVEDA',
+    pickupLocation: 'Fibax Central Fulfillment Hub'
+  },
+  shiprocket: {
+    email: '',
+    password: '',
+    token: '',
+    pickupLocation: 'Primary'
+  },
+  warehouse: {
+    name: 'Fibax Ayurveda Central Logistics Hub',
+    address: 'SCO 42, Sector 12, Chandigarh Tricity Logistics Corridor',
+    city: 'Zirakpur',
+    state: 'Punjab',
+    pincode: '140603',
+    phone: '+91-8872544458',
+    email: 'care@fibaxpharma.com'
+  }
+};
+
+export function getShippingConfig() {
+  try {
+    if (!existsSync(shippingConfigFile)) {
+      writeFileSync(shippingConfigFile, JSON.stringify(DEFAULT_SHIPPING_CONFIG, null, 2), 'utf8');
+      return DEFAULT_SHIPPING_CONFIG;
+    }
+    const data = readFileSync(shippingConfigFile, 'utf8');
+    return { ...DEFAULT_SHIPPING_CONFIG, ...JSON.parse(data) };
+  } catch (err) {
+    console.error('Error reading shipping config:', err);
+    return DEFAULT_SHIPPING_CONFIG;
+  }
+}
+
+export function saveShippingConfig(newConfig) {
+  const current = getShippingConfig();
+  const updated = {
+    ...current,
+    ...newConfig,
+    delhivery: { ...(current.delhivery || {}), ...(newConfig.delhivery || {}) },
+    shiprocket: { ...(current.shiprocket || {}), ...(newConfig.shiprocket || {}) },
+    warehouse: { ...(current.warehouse || {}), ...(newConfig.warehouse || {}) },
+    updatedAt: new Date().toISOString()
+  };
+  writeFileSync(shippingConfigFile, JSON.stringify(updated, null, 2), 'utf8');
+  return updated;
+}
+
+export const PINCODE_CIRCLES = {
+  '11': { state: 'Delhi', region: 'National Capital Region', transitDays: '1-2 business days' },
+  '12': { state: 'Haryana', region: 'Gurugram / Faridabad / Ambala', transitDays: '1-2 business days' },
+  '13': { state: 'Haryana', region: 'Karnal / Kurukshetra / Yamunanagar', transitDays: '1-2 business days' },
+  '14': { state: 'Punjab', region: 'Chandigarh / Mohali / Ludhiana / Patiala', transitDays: '24-48 hours' },
+  '15': { state: 'Punjab', region: 'Bathinda / Firozpur', transitDays: '1-2 business days' },
+  '16': { state: 'Chandigarh', region: 'Chandigarh Tricity', transitDays: 'Same / Next Day' },
+  '17': { state: 'Himachal Pradesh', region: 'Shimla / Solan / Kangra', transitDays: '2-3 business days' },
+  '18': { state: 'Jammu & Kashmir', region: 'Jammu Circle', transitDays: '2-3 business days' },
+  '19': { state: 'Jammu & Kashmir', region: 'Srinagar / Kashmir Circle', transitDays: '3-4 business days' },
+  '20': { state: 'Uttar Pradesh', region: 'Noida / Ghaziabad / Meerut', transitDays: '1-2 business days' },
+  '21': { state: 'Uttar Pradesh', region: 'Allahabad / Prayagraj', transitDays: '2-3 business days' },
+  '22': { state: 'Uttar Pradesh', region: 'Lucknow / Faizabad', transitDays: '2-3 business days' },
+  '23': { state: 'Uttar Pradesh', region: 'Varanasi / Mirzapur', transitDays: '2-3 business days' },
+  '24': { state: 'Uttarakhand', region: 'Dehradun / Haridwar / Rishikesh', transitDays: '2-3 business days' },
+  '25': { state: 'Uttar Pradesh', region: 'Muzaffarnagar / Saharanpur', transitDays: '1-2 business days' },
+  '26': { state: 'Uttarakhand', region: 'Nainital / Haldwani', transitDays: '2-3 business days' },
+  '27': { state: 'Uttar Pradesh', region: 'Gorakhpur / Basti', transitDays: '2-3 business days' },
+  '28': { state: 'Uttar Pradesh', region: 'Agra / Jhansi / Mathura', transitDays: '2-3 business days' },
+  '30': { state: 'Rajasthan', region: 'Jaipur Circle', transitDays: '2-3 business days' },
+  '31': { state: 'Rajasthan', region: 'Udaipur / Ajmer', transitDays: '2-3 business days' },
+  '32': { state: 'Rajasthan', region: 'Kota / Bharatpur', transitDays: '2-3 business days' },
+  '33': { state: 'Rajasthan', region: 'Bikaner / Sikar', transitDays: '2-3 business days' },
+  '34': { state: 'Rajasthan', region: 'Jodhpur / Barmer', transitDays: '2-3 business days' },
+  '36': { state: 'Gujarat', region: 'Rajkot / Saurashtra', transitDays: '2-3 business days' },
+  '37': { state: 'Gujarat', region: 'Kutch Circle', transitDays: '3-4 business days' },
+  '38': { state: 'Gujarat', region: 'Ahmedabad / Gandhinagar', transitDays: '2-3 business days' },
+  '39': { state: 'Gujarat', region: 'Surat / Vadodara', transitDays: '2-3 business days' },
+  '40': { state: 'Maharashtra', region: 'Mumbai / Thane / Navi Mumbai', transitDays: '2-3 business days' },
+  '41': { state: 'Maharashtra', region: 'Pune / Nashik / Kolhapur', transitDays: '2-3 business days' },
+  '42': { state: 'Maharashtra', region: 'Kalyan / Jalgaon', transitDays: '2-3 business days' },
+  '43': { state: 'Maharashtra', region: 'Aurangabad / Nanded', transitDays: '2-3 business days' },
+  '44': { state: 'Maharashtra', region: 'Nagpur / Amravati', transitDays: '2-3 business days' },
+  '45': { state: 'Madhya Pradesh', region: 'Indore / Ujjain', transitDays: '2-3 business days' },
+  '46': { state: 'Madhya Pradesh', region: 'Bhopal / Hoshangabad', transitDays: '2-3 business days' },
+  '47': { state: 'Madhya Pradesh', region: 'Gwalior / Morena', transitDays: '2-3 business days' },
+  '48': { state: 'Madhya Pradesh', region: 'Jabalpur / Sagar', transitDays: '2-3 business days' },
+  '49': { state: 'Chhattisgarh', region: 'Raipur / Bilaspur', transitDays: '3-4 business days' },
+  '50': { state: 'Telangana', region: 'Hyderabad / Secunderabad', transitDays: '2-3 business days' },
+  '51': { state: 'Andhra Pradesh', region: 'Tirupati / Kurnool', transitDays: '3-4 business days' },
+  '52': { state: 'Andhra Pradesh', region: 'Vijayawada / Guntur', transitDays: '3-4 business days' },
+  '53': { state: 'Andhra Pradesh', region: 'Visakhapatnam / Kakinada', transitDays: '3-4 business days' },
+  '56': { state: 'Karnataka', region: 'Bengaluru / Kolar', transitDays: '2-3 business days' },
+  '57': { state: 'Karnataka', region: 'Mangalore / Udupi', transitDays: '3-4 business days' },
+  '58': { state: 'Karnataka', region: 'Hubli / Belgaum', transitDays: '3-4 business days' },
+  '59': { state: 'Karnataka', region: 'Gulbarga / Bellary', transitDays: '3-4 business days' },
+  '60': { state: 'Tamil Nadu', region: 'Chennai Circle', transitDays: '2-3 business days' },
+  '61': { state: 'Tamil Nadu', region: 'Tiruchirappalli / Thanjavur', transitDays: '3-4 business days' },
+  '62': { state: 'Tamil Nadu', region: 'Madurai / Tirunelveli', transitDays: '3-4 business days' },
+  '63': { state: 'Tamil Nadu', region: 'Salem / Vellore', transitDays: '3-4 business days' },
+  '64': { state: 'Tamil Nadu', region: 'Coimbatore / Erode', transitDays: '3-4 business days' },
+  '67': { state: 'Kerala', region: 'Kozhikode / Kannur', transitDays: '3-4 business days' },
+  '68': { state: 'Kerala', region: 'Kochi / Ernakulam / Thrissur', transitDays: '3-4 business days' },
+  '69': { state: 'Kerala', region: 'Thiruvananthapuram / Kollam', transitDays: '3-4 business days' },
+  '70': { state: 'West Bengal', region: 'Kolkata Metropolitan', transitDays: '2-3 business days' },
+  '71': { state: 'West Bengal', region: 'Howrah / Hooghly', transitDays: '2-3 business days' },
+  '72': { state: 'West Bengal', region: 'Midnapore / Bankura', transitDays: '3-4 business days' },
+  '73': { state: 'West Bengal', region: 'Siliguri / Jalpaiguri', transitDays: '3-4 business days' },
+  '74': { state: 'West Bengal', region: 'Malda / Murshidabad', transitDays: '3-4 business days' },
+  '75': { state: 'Odisha', region: 'Bhubaneswar / Cuttack', transitDays: '3-4 business days' },
+  '76': { state: 'Odisha', region: 'Berhampur / Puri', transitDays: '3-4 business days' },
+  '77': { state: 'Odisha', region: 'Rourkela / Sambalpur', transitDays: '3-4 business days' },
+  '78': { state: 'Assam', region: 'Guwahati / Dibrugarh', transitDays: '3-5 business days' },
+  '79': { state: 'North East', region: 'Shillong / Imphal / Agartala / Aizawl', transitDays: '4-6 business days' },
+  '80': { state: 'Bihar', region: 'Patna / Nalanda', transitDays: '2-4 business days' },
+  '81': { state: 'Bihar', region: 'Bhagalpur / Munger', transitDays: '3-4 business days' },
+  '82': { state: 'Bihar', region: 'Gaya / Nawada', transitDays: '3-4 business days' },
+  '83': { state: 'Jharkhand', region: 'Ranchi / Jamshedpur', transitDays: '3-4 business days' },
+  '84': { state: 'Bihar', region: 'Muzaffarpur / Darbhanga', transitDays: '3-4 business days' },
+  '85': { state: 'Bihar', region: 'Purnia / Saharsa', transitDays: '3-5 business days' }
+};
+
+export function checkPincodeServiceability(pincode) {
+  const cleanPin = String(pincode || '').trim().replace(/\D/g, '');
+  if (cleanPin.length !== 6) {
+    return {
+      serviceable: false,
+      pincode: cleanPin,
+      error: 'Please enter a valid 6-digit Indian PIN code.'
+    };
+  }
+
+  const prefix = cleanPin.substring(0, 2);
+  const circle = PINCODE_CIRCLES[prefix] || {
+    state: 'India',
+    region: 'Standard Delivery Zone',
+    transitDays: '3-5 business days'
+  };
+
+  const config = getShippingConfig();
+
+  const availableCouriers = [
+    { name: 'Delhivery Express Air & Surface', code: 'DELHIVERY', cod: true, fast: true },
+    { name: 'Blue Dart Express', code: 'BLUEDART', cod: true, fast: true },
+    { name: 'Shadowfax E-Commerce', code: 'SHADOWFAX', cod: true, fast: false }
+  ];
+
+  return {
+    serviceable: true,
+    pincode: cleanPin,
+    state: circle.state,
+    region: circle.region,
+    estimatedDays: circle.transitDays,
+    codAvailable: true,
+    prepaidAvailable: true,
+    freeDeliveryEligible: true,
+    freeShippingThreshold: config.freeShippingThreshold || 499,
+    couriers: availableCouriers,
+    dispatchWarehouse: config.warehouse?.city || 'Zirakpur, Punjab'
+  };
+}
+
+export function calculateShippingFee({ cartTotal = 0, pincode = '', paymentMethod = 'COD' }) {
+  const config = getShippingConfig();
+  const threshold = config.freeShippingThreshold || 499;
+  const isFree = Number(cartTotal) >= threshold;
+
+  const shippingFee = isFree ? 0 : (config.standardShippingFee || 49);
+  const codFee = (paymentMethod === 'COD' && config.codFee > 0) ? config.codFee : 0;
+
+  return {
+    cartTotal: Number(cartTotal),
+    isFreeShipping: isFree,
+    amountNeededForFreeShipping: isFree ? 0 : Math.max(0, threshold - Number(cartTotal)),
+    shippingFee,
+    codFee,
+    totalShipping: shippingFee + codFee
+  };
+}
+
+export function createShipmentForOrder(order, options = {}) {
+  const config = getShippingConfig();
+  const provider = options.provider || config.provider || 'delhivery';
+  const courierName = options.courier || config.defaultCourier || 'Delhivery Express';
+
+  const randomDigits = Math.floor(100000000 + Math.random() * 900000000);
+  let awb = '';
+  if (provider === 'shiprocket') {
+    awb = 'SR-' + randomDigits;
+  } else if (provider === 'bluedart') {
+    awb = 'BD-' + randomDigits;
+  } else {
+    awb = 'DLH-' + randomDigits;
+  }
+
+  const now = new Date();
+  const estDate = new Date(now.getTime() + 3 * 24 * 60 * 60 * 1000);
+
+  const initialTimeline = [
+    {
+      status: 'Order Placed',
+      title: 'Order Confirmed & Verified',
+      location: 'Fibax Digital Storefront',
+      timestamp: order.createdAt || now.toISOString(),
+      completed: true,
+      description: 'Customer order placed successfully. Payment: ' + (order.payment?.method || 'COD')
+    },
+    {
+      status: 'Manifested',
+      title: 'Packed & Manifest Generated',
+      location: (config.warehouse?.city || 'Zirakpur') + ' Hub',
+      timestamp: now.toISOString(),
+      completed: true,
+      description: 'AWB ' + awb + ' generated. Formulations securely packed with tamper-evident seal.'
+    },
+    {
+      status: 'Dispatched',
+      title: 'Handed Over to Courier',
+      location: courierName + ' Tricity Sorting Center',
+      timestamp: new Date(now.getTime() + 6 * 60 * 60 * 1000).toISOString(),
+      completed: false,
+      description: 'Package handed to ' + courierName + ' dispatch executive.'
+    },
+    {
+      status: 'In Transit',
+      title: 'In Transit to Destination Hub',
+      location: 'National Highway Express Route',
+      timestamp: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
+      completed: false,
+      description: 'Air/Surface cargo en route to regional delivery hub.'
+    },
+    {
+      status: 'Out for Delivery',
+      title: 'Out for Doorstep Delivery',
+      location: (order.shipping?.city || 'Destination') + ' Hub',
+      timestamp: new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString(),
+      completed: false,
+      description: 'Delivery associate assigned for doorstep handover.'
+    },
+    {
+      status: 'Delivered',
+      title: 'Delivered to Consignee',
+      location: order.shipping?.address || 'Consignee Address',
+      timestamp: estDate.toISOString(),
+      completed: false,
+      description: 'Package delivered safely. OTP verified.'
+    }
+  ];
+
+  return {
+    orderId: order.orderId,
+    trackingId: awb,
+    courier: courierName,
+    provider,
+    status: 'Manifested',
+    shippedAt: now.toISOString(),
+    estimatedDelivery: estDate.toISOString(),
+    pickupWarehouse: config.warehouse,
+    destination: {
+      name: order.customer?.name || 'Customer',
+      phone: order.customer?.phone || '',
+      address: order.shipping?.address || '',
+      city: order.shipping?.city || '',
+      pincode: order.shipping?.pincode || ''
+    },
+    payment: {
+      method: order.payment?.method || 'COD',
+      collectableAmount: order.payment?.method === 'COD' ? (order.totals?.grandTotal || 0) : 0
+    },
+    timeline: initialTimeline
+  };
+}
+
+export function getTrackingDetails(identifier, orders = []) {
+  if (!identifier) return null;
+  const cleanId = String(identifier).trim().toUpperCase();
+  const order = orders.find(o => 
+    (o.orderId && o.orderId.toUpperCase() === cleanId) ||
+    (o.trackingId && o.trackingId.toUpperCase() === cleanId)
+  );
+  if (!order) return null;
+
+  const config = getShippingConfig();
+  let timeline = order.shipment?.timeline;
+
+  if (!timeline || !Array.isArray(timeline)) {
+    const shipmentData = createShipmentForOrder(order);
+    timeline = shipmentData.timeline;
+  }
+
+  const status = order.status || 'Processing';
+  let activeStep = 1;
+  if (status === 'Delivered') activeStep = 6;
+  else if (status === 'Out for Delivery') activeStep = 5;
+  else if (status === 'In Transit') activeStep = 4;
+  else if (status === 'Dispatched') activeStep = 3;
+  else if (status === 'Manifested' || status === 'Processing') activeStep = 2;
+  else activeStep = 1;
+
+  const updatedTimeline = timeline.map((step, idx) => ({
+    ...step,
+    completed: idx < activeStep,
+    current: idx === activeStep - 1
+  }));
+
+  return {
+    orderId: order.orderId,
+    trackingId: order.trackingId || ('DLH-' + Math.floor(100000000 + Math.random() * 900000000)),
+    courier: order.courier || config.defaultCourier || 'Delhivery Express',
+    status: order.status || 'Processing',
+    activeStep,
+    totalSteps: 6,
+    createdAt: order.createdAt,
+    estimatedDelivery: order.shipment?.estimatedDelivery || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+    customer: {
+      name: order.customer?.name || 'Customer',
+      city: order.shipping?.city || order.customer?.city || '',
+      pincode: order.shipping?.pincode || '',
+      address: order.shipping?.address || ''
+    },
+    items: order.items || [],
+    payment: order.payment || { method: 'COD' },
+    totals: order.totals || {},
+    timeline: updatedTimeline,
+    warehouse: config.warehouse
+  };
+}
+
+export function generatePrintableLabel(order) {
+  const config = getShippingConfig();
+  const awb = order.trackingId || 'DLH-' + Date.now().toString().slice(-9);
+  const orderId = order.orderId || 'FBX-ORDER';
+  const isCod = order.payment?.method === 'COD';
+  const codAmount = isCod ? (order.totals?.grandTotal || 0) : 0;
+  const itemsSummary = (order.items || []).map(it => it.quantity + 'x ' + it.title).join(', ');
+
+  return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Shipping Label - ${orderId}</title>
+  <style>
+    body { font-family: 'Courier New', Courier, monospace; margin: 0; padding: 20px; background: #fff; color: #000; }
+    .label { max-width: 440px; border: 2px solid #000; padding: 15px; margin: auto; }
+    .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 10px; }
+    .courier-title { font-size: 20px; font-weight: bold; text-transform: uppercase; }
+    .awb-box { text-align: center; background: #eee; padding: 6px; font-size: 16px; font-weight: bold; letter-spacing: 2px; border: 1px dashed #000; margin: 8px 0; }
+    .barcode { font-size: 32px; letter-spacing: 6px; text-align: center; margin: 6px 0; font-family: monospace; }
+    .section { border-bottom: 1px solid #000; padding: 8px 0; font-size: 12px; line-height: 1.4; }
+    .cod-banner { background: #000; color: #fff; font-size: 15px; font-weight: bold; text-align: center; padding: 8px; margin: 10px 0; }
+    .prepaid-banner { border: 2px solid #000; font-size: 14px; font-weight: bold; text-align: center; padding: 6px; margin: 10px 0; }
+    .details-table { width: 100%; font-size: 11px; margin-top: 8px; border-collapse: collapse; }
+    .details-table td { padding: 4px; border: 1px solid #ccc; }
+    .footer { text-align: center; font-size: 10px; margin-top: 10px; color: #555; }
+    @media print { body { padding: 0; } .no-print { display: none; } }
+  </style>
+</head>
+<body>
+  <div class="no-print" style="text-align: center; margin-bottom: 15px;">
+    <button onclick="window.print()" style="padding: 10px 24px; background: #1b4332; color: #fff; border: none; font-weight: bold; cursor: pointer; border-radius: 8px; font-size: 14px;">Print Label (Thermal / A4)</button>
+  </div>
+  <div class="label">
+    <div class="header">
+      <div class="courier-title">${order.courier || 'Delhivery Express'}</div>
+      <div>Standard Express Cargo / Air Express Logistics</div>
+    </div>
+    <div class="awb-box">AWB: ${awb}</div>
+    <div class="barcode">||| | |||| || ||| |||| |</div>
+    <div class="${isCod ? 'cod-banner' : 'prepaid-banner'}">
+      ${isCod ? 'CASH ON DELIVERY (COD): ₹' + codAmount : 'PREPAID — DO NOT COLLECT CASH'}
+    </div>
+    <div class="section">
+      <strong>SHIP TO (CONSIGNEE):</strong><br>
+      <strong>${order.customer?.name || 'Customer'}</strong><br>
+      ${order.shipping?.address || 'Address Not Provided'}<br>
+      ${order.shipping?.city || ''} - ${order.shipping?.pincode || ''}<br>
+      Phone: ${order.customer?.phone || 'N/A'}
+    </div>
+    <div class="section">
+      <strong>RETURN TO (SHIPPER):</strong><br>
+      ${config.warehouse?.name || 'Fibax Ayurveda Fulfillment Hub'}<br>
+      ${config.warehouse?.address || 'SCO 42, Sector 12, Chandigarh Corridor'}<br>
+      ${config.warehouse?.city || 'Zirakpur'}, ${config.warehouse?.state || 'Punjab'} - ${config.warehouse?.pincode || '140603'}<br>
+      Helpline: ${config.warehouse?.phone || '+91-8872544458'}
+    </div>
+    <table class="details-table">
+      <tr><td><strong>Order ID:</strong></td><td>${orderId}</td></tr>
+      <tr><td><strong>Date:</strong></td><td>${new Date(order.createdAt || Date.now()).toLocaleDateString('en-IN')}</td></tr>
+      <tr><td><strong>Items:</strong></td><td>${itemsSummary || 'Ayurvedic Formulations'}</td></tr>
+      <tr><td><strong>Payment:</strong></td><td>${order.payment?.method || 'COD'}</td></tr>
+    </table>
+    <div class="footer">
+      WHO-GMP & Ministry of AYUSH Certified Facility • Fibax Ayurveda Healthcare
+    </div>
+  </div>
+</body>
+</html>`;
+}

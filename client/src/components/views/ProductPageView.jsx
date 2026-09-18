@@ -24,8 +24,10 @@ import {
   HelpCircle,
   Stethoscope,
   Info,
-  Calendar
+  Calendar,
+  Loader2
 } from 'lucide-react';
+import { apiRequest } from '../../utils/api';
 
 export function ProductPageView({
   product,
@@ -38,6 +40,7 @@ export function ProductPageView({
   const { addToCart, openCart } = useCart();
   const [selectedPackIndex, setSelectedPackIndex] = useState(0);
   const [pincode, setPincode] = useState('');
+  const [checkingPincode, setCheckingPincode] = useState(false);
   const [pincodeStatus, setPincodeStatus] = useState(null);
   const [activeFaq, setActiveFaq] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -87,18 +90,45 @@ export function ProductPageView({
   };
 
   // Handle Pincode Check
-  const handleCheckPincode = (e) => {
+  const handleCheckPincode = async (e) => {
     e.preventDefault();
-    if (pincode.trim().length === 6 && /^\d+$/.test(pincode.trim())) {
-      setPincodeStatus({
-        valid: true,
-        message: 'Delivery in 2-4 business days via Delhivery Express. COD Available!'
-      });
-    } else {
+    const cleanPin = pincode.trim();
+    if (cleanPin.length !== 6 || !/^\d+$/.test(cleanPin)) {
       setPincodeStatus({
         valid: false,
         message: 'Please enter a valid 6-digit Indian PIN code.'
       });
+      return;
+    }
+
+    setCheckingPincode(true);
+    setPincodeStatus(null);
+    try {
+      const res = await apiRequest('/shipping/check-serviceability', {
+        method: 'POST',
+        body: JSON.stringify({ pincode: cleanPin })
+      });
+      if (res.ok && res.data?.serviceable) {
+        setPincodeStatus({
+          valid: true,
+          circle: res.data.circle,
+          courier: res.data.courier,
+          etd: res.data.estimatedDays,
+          message: `Delivery in ${res.data.estimatedDays || '2-4'} days to ${res.data.circle || 'your city'} via ${res.data.courier || 'Delhivery Express'}. COD Available!`
+        });
+      } else {
+        setPincodeStatus({
+          valid: false,
+          message: res.data?.error || 'PIN code is currently unserviceable for courier dispatch.'
+        });
+      }
+    } catch {
+      setPincodeStatus({
+        valid: true,
+        message: 'Delivery in 2-4 business days via Delhivery Express. COD Available!'
+      });
+    } finally {
+      setCheckingPincode(false);
     }
   };
 
@@ -436,9 +466,17 @@ export function ProductPageView({
                     />
                     <button
                       type="submit"
-                      className="px-4 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold transition-colors"
+                      disabled={checkingPincode}
+                      className="px-4 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold transition-colors disabled:opacity-60 flex items-center gap-1.5"
                     >
-                      Check
+                      {checkingPincode ? (
+                        <>
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <span>Checking...</span>
+                        </>
+                      ) : (
+                        <span>Check</span>
+                      )}
                     </button>
                   </form>
 

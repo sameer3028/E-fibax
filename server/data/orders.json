@@ -1,1 +1,116 @@
-[]
+[
+  {
+    "orderId": "FBX-227338-7MJ",
+    "createdAt": "2026-09-18T11:00:27.338Z",
+    "customer": {
+      "name": "Aarav Sharma",
+      "phone": "9876543210",
+      "email": "aarav@example.com",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": 1,
+        "title": "Axe-Ortho Ayurvedic Joint Pain Relief Oil (100ml)",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Flat 402, Green Avenue",
+      "city": "Jaipur",
+      "pincode": "302001"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "shipping": 0,
+      "grandTotal": 499
+    },
+    "trackingId": "DLH-100266766",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "shipment": {
+      "orderId": "FBX-227338-7MJ",
+      "trackingId": "DLH-100266766",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "status": "Manifested",
+      "shippedAt": "2026-09-18T11:00:27.339Z",
+      "estimatedDelivery": "2026-09-21T11:00:27.339Z",
+      "pickupWarehouse": {
+        "name": "Fibax Ayurveda Central Logistics Hub",
+        "address": "SCO 42, Sector 12, Chandigarh Tricity Logistics Corridor",
+        "city": "Zirakpur",
+        "state": "Punjab",
+        "pincode": "140603",
+        "phone": "+91-8872544458",
+        "email": "care@fibaxpharma.com"
+      },
+      "destination": {
+        "name": "Aarav Sharma",
+        "phone": "9876543210",
+        "address": "Flat 402, Green Avenue",
+        "city": "Jaipur",
+        "pincode": "302001"
+      },
+      "payment": {
+        "method": "COD",
+        "collectableAmount": 499
+      },
+      "timeline": [
+        {
+          "status": "Order Placed",
+          "title": "Order Confirmed & Verified",
+          "location": "Fibax Digital Storefront",
+          "timestamp": "2026-09-18T11:00:27.338Z",
+          "completed": true,
+          "description": "Customer order placed successfully. Payment: COD"
+        },
+        {
+          "status": "Manifested",
+          "title": "Packed & Manifest Generated",
+          "location": "Zirakpur Hub",
+          "timestamp": "2026-09-18T11:00:27.339Z",
+          "completed": true,
+          "description": "AWB DLH-100266766 generated. Formulations securely packed with tamper-evident seal."
+        },
+        {
+          "status": "Dispatched",
+          "title": "Handed Over to Courier",
+          "location": "Delhivery Express Surface & Air Tricity Sorting Center",
+          "timestamp": "2026-09-18T17:00:27.339Z",
+          "completed": false,
+          "description": "Package handed to Delhivery Express Surface & Air dispatch executive."
+        },
+        {
+          "status": "In Transit",
+          "title": "In Transit to Destination Hub",
+          "location": "National Highway Express Route",
+          "timestamp": "2026-09-19T11:00:27.339Z",
+          "completed": false,
+          "description": "Air/Surface cargo en route to regional delivery hub."
+        },
+        {
+          "status": "Out for Delivery",
+          "title": "Out for Doorstep Delivery",
+          "location": "Jaipur Hub",
+          "timestamp": "2026-09-20T11:00:27.339Z",
+          "completed": false,
+          "description": "Delivery associate assigned for doorstep handover."
+        },
+        {
+          "status": "Delivered",
+          "title": "Delivered to Consignee",
+          "location": "Flat 402, Green Avenue",
+          "timestamp": "2026-09-21T11:00:27.339Z",
+          "completed": false,
+          "description": "Package delivered safely. OTP verified."
+        }
+      ]
+    }
+  }
+]
