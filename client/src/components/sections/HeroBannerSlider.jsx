@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export const HERO_SLIDES = [
   {
@@ -178,29 +178,6 @@ export function HeroBannerSlider({
               </motion.div>
             </AnimatePresence>
 
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                prevSlide();
-              }}
-              className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/85 hover:bg-white text-forest-deep flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 active:scale-95 border border-sand-border/60 opacity-80 group-hover:opacity-100"
-              aria-label="Previous Banner Slide"
-            >
-              <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                nextSlide();
-              }}
-              className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-9 h-9 sm:w-12 sm:h-12 rounded-full bg-white/85 hover:bg-white text-forest-deep flex items-center justify-center shadow-lg backdrop-blur-md transition-all duration-200 hover:scale-110 active:scale-95 border border-sand-border/60 opacity-80 group-hover:opacity-100"
-              aria-label="Next Banner Slide"
-            >
-              <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
-            </button>
 
             <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
               {HERO_SLIDES.map((slide, idx) => {
