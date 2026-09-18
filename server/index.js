@@ -21,7 +21,8 @@ const dataDir = join(__dirname, 'data');
 if (!existsSync(dataDir)) {
   mkdirSync(dataDir, { recursive: true });
 }
-const uploadsDir = join(__dirname, '..', 'client', 'public', 'uploads');
+const defaultClientUploads = join(__dirname, '..', 'client', 'public', 'uploads');
+const uploadsDir = process.env.UPLOADS_DIR || (existsSync(join(__dirname, '..', 'client')) ? defaultClientUploads : join(__dirname, 'uploads'));
 if (!existsSync(uploadsDir)) {
   mkdirSync(uploadsDir, { recursive: true });
 }
