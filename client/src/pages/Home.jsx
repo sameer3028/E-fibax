@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { HeroSection } from '../components/sections/HeroSection';
+import { HeroBannerSlider } from '../components/sections/HeroBannerSlider';
 import { TrustBar } from '../components/sections/TrustBar';
 import { ShopByConcernSection } from '../components/sections/ShopByConcernSection';
 import { CustomerStoriesSection } from '../components/sections/CustomerStoriesSection';
@@ -36,15 +36,12 @@ export function Home({
 }) {
   return (
     <div className="w-full bg-white space-y-0">
-      {/* 1. Hero Campaign Banner */}
-      <HeroSection
-        onExploreConcerns={() => {
-          const el = document.getElementById('all-concerns');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }}
-        onExploreBestsellers={() => {
-          if (onNavigate) onNavigate('products');
-        }}
+      {/* 1. Hero Campaign Banner Slider (3 High-Res Graphic Sliders: Multivitamin, Axe Ortho, Triphala) */}
+      <HeroBannerSlider
+        products={products}
+        onSelectProduct={onSelectProduct}
+        onNavigate={onNavigate}
+        onSelectConcern={onSelectConcern}
       />
 
       {/* 2. Deep Green USPs Ribbon */}
