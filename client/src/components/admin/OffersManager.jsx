@@ -34,8 +34,10 @@ export function OffersManager() {
             <Sparkles className="h-3.5 w-3.5 text-gold" />
             <span>Ayurvedic Offer & Discount Engine</span>
           </div>
-          <h3 className="font-heading text-xl font-bold">Manage Promotional Prices & Multi-Pack Tiers</h3>
-          <p className="text-xs text-sand/80 max-w-xl mt-1">
+          <h3 className="font-heading text-xl font-bold !text-white text-white drop-shadow-sm">
+            Manage Promotional Prices & Multi-Pack Tiers
+          </h3>
+          <p className="text-xs !text-white/90 text-white/90 max-w-xl mt-1">
             Configure MRP, discount rates, flash sale tags, and bestseller flags. Updates instantly reflect on product cards, PDP modals, and customer carts.
           </p>
         </div>

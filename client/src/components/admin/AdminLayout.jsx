@@ -5,7 +5,6 @@ import { ProductsTable } from './ProductsTable';
 import { ProductModal } from './ProductModal';
 import { OffersManager } from './OffersManager';
 import { InventoryTable } from './InventoryTable';
-import { OrdersView } from './OrdersView';
 import { ShippingView } from './ShippingView';
 import { UsersView } from './UsersView';
 import { AdminLogin } from './AdminLogin';

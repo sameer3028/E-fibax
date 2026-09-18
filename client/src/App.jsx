@@ -9,8 +9,6 @@ import { Home } from './pages/Home';
 import { About } from './pages/About';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
-import { Industries } from './pages/Industries';
-import { GlobalReach } from './pages/GlobalReach';
 import { Contact } from './pages/Contact';
 import { Blogs } from './pages/Blogs';
 import { BlogDetail } from './pages/BlogDetail';
@@ -221,13 +219,7 @@ function StorefrontApp() {
               />
             )}
 
-            {currentPage === 'industries' && (
-              <Industries onNavigate={handleNavigate} />
-            )}
 
-            {currentPage === 'global-reach' && (
-              <GlobalReach onNavigate={handleNavigate} />
-            )}
 
             {currentPage === 'blogs' && (
               <Blogs onNavigate={handleNavigate} />
