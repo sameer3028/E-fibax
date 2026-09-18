@@ -11,7 +11,7 @@ import { TestimonialsSection } from '../components/sections/TestimonialsSection'
 import { AppPromoSection } from '../components/sections/AppPromoSection';
 import { BlogsSection } from '../components/sections/BlogsSection';
 import { FloatingConsultationBar } from '../components/sections/FloatingConsultationBar';
-import { Building2, Globe, ShieldCheck, Factory, ArrowRight, Award, CheckCircle2, Truck, HeartHandshake, Sparkles, PhoneCall } from 'lucide-react';
+import { ArrowRight, PhoneCall } from 'lucide-react';
 
 function FadeInWhenVisible({ children, className = '' }) {
   return (
@@ -94,150 +94,65 @@ export function Home({
         />
       </FadeInWhenVisible>
 
-      {/* 7. Why Indian Families Choose Fibax Ayurveda */}
+      {/* 7. Dual Promotional Banners Grid (Livupchar Liver Tonic & Aloe Vera Neem Face Wash) */}
       <FadeInWhenVisible>
-        <section className="py-16 bg-sand border-y border-sand-border">
+        <section className="py-10 sm:py-14 bg-[#fbf9f4] border-y border-sand-border/70">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
-              <div>
-                <span className="text-xs font-bold text-forest uppercase tracking-widest bg-forest/10 px-3 py-1 rounded-full inline-block mb-2">
-                  The Fibax Ayurveda Difference
-                </span>
-                <h2 className="text-2xl sm:text-3xl font-extrabold text-forest-deep">
-                  Why Thousands of Families Trust Fibax Ayurveda
-                </h2>
-                <p className="text-charcoal-muted text-sm mt-1 max-w-xl">
-                  Formulated with 100% pure botanical extracts, standardized active bio-compounds, and backed by centuries of classical Ayurvedic knowledge.
-                </p>
-              </div>
-              <button
-                onClick={() => onNavigate && onNavigate('products')}
-                className="inline-flex items-center gap-2 text-sm font-bold text-brand hover:text-brand-hover group"
-              >
-                <span>Shop All Ayurvedic Remedies</span>
-                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-7">
+              {/* Left Banner: Livupchar Liver Tonic */}
               <motion.div
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -4, scale: 1.01 }}
                 transition={{ duration: 0.25 }}
-                className="bg-white rounded-2xl p-6 border border-sand-border shadow-subtle hover:shadow-botanical transition-all duration-300 flex flex-col justify-between"
+                onClick={() => {
+                  const matched = products.find(
+                    (p) =>
+                      p.slug === 'livupchar-ayurvedic-liver-care-syrup-200ml' ||
+                      p.title?.toLowerCase().includes('livupchar')
+                  );
+                  if (matched && onSelectProduct) {
+                    onSelectProduct(matched);
+                  } else if (onNavigate) {
+                    onNavigate('products', { concern: 'liver-care' });
+                  }
+                }}
+                className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-sand-border/80 bg-stone-900 cursor-pointer group aspect-[2/1]"
+                title="Fibax Livupchar Liver Tonic - Click to shop"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
-                      Farm to Bottle
-                    </span>
-                    <span className="text-xs text-charcoal-subtle font-medium">100% Chemical-Free</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-forest-deep mb-2">Pure Himalayan Botanicals</h3>
-                  <p className="text-xs text-charcoal-muted leading-relaxed mb-4">
-                    Directly sourced from certified organic cultivation belts. We select only wild-harvested, pesticide-free roots, leaves, and barks with verified bioactive potency.
-                  </p>
-                  <ul className="space-y-1.5 mb-6">
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Standardized Phytochemical Extracts</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Zero Heavy Metals & Zero Contaminants</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>100% Vegetarian & Halal Formulations</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <button
-                  onClick={() => onNavigate && onNavigate('products')}
-                  className="w-full py-2.5 px-4 rounded-xl bg-sand hover:bg-forest hover:text-white text-forest text-xs font-bold transition-colors text-center"
-                >
-                  Explore Herbal Formulations
-                </button>
+                <img
+                  src="/banners/banner-livupchar.jpg"
+                  alt="Fibax Ayurveda Livupchar Liver Tonic Banner"
+                  className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
               </motion.div>
 
+              {/* Right Banner: Aloe Vera Neem Face Wash */}
               <motion.div
-                whileHover={{ y: -6 }}
+                whileHover={{ y: -4, scale: 1.01 }}
                 transition={{ duration: 0.25 }}
-                className="bg-white rounded-2xl p-6 border border-sand-border shadow-subtle hover:shadow-botanical transition-all duration-300 flex flex-col justify-between"
+                onClick={() => {
+                  const matched = products.find(
+                    (p) =>
+                      p.slug === 'fibax-neem-aloevera-facewash' ||
+                      p.title?.toLowerCase().includes('facewash')
+                  );
+                  if (matched && onSelectProduct) {
+                    onSelectProduct(matched);
+                  } else if (onNavigate) {
+                    onNavigate('products', { concern: 'skin-hair-care' });
+                  }
+                }}
+                className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl border border-sand-border/80 bg-stone-900 cursor-pointer group aspect-[2/1]"
+                title="Fibax Aloe Vera Neem Face Wash - Click to shop"
               >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-brand-soft text-brand border border-brand-border">
-                      Vaidya Formulated
-                    </span>
-                    <span className="text-xs text-charcoal-subtle font-medium">AYUSH Certified</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-forest-deep mb-2">Classical Science & Modern Safety</h3>
-                  <p className="text-xs text-charcoal-muted leading-relaxed mb-4">
-                    Crafted strictly according to classical Ayurvedic treatises (Charaka Samhita & Bhavaprakasha) and validated in our WHO-GMP and GLP compliant facility.
-                  </p>
-                  <ul className="space-y-1.5 mb-6">
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Batch-to-Batch Potency Testing</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Clinically Researched Dosage Synergy</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Cleanroom Blister & Bottle Sealing</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <button
-                  onClick={() => onNavigate && onNavigate('about')}
-                  className="w-full py-2.5 px-4 rounded-xl bg-sand hover:bg-forest hover:text-white text-forest text-xs font-bold transition-colors text-center"
-                >
-                  Learn Our Science & Heritage
-                </button>
-              </motion.div>
-
-              <motion.div
-                whileHover={{ y: -6 }}
-                transition={{ duration: 0.25 }}
-                className="bg-white rounded-2xl p-6 border border-sand-border shadow-subtle hover:shadow-botanical transition-all duration-300 flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <span className="text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
-                      Pan-India Express
-                    </span>
-                    <span className="text-xs text-charcoal-subtle font-medium">COD Available</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-forest-deep mb-2">Direct Doorstep Delivery</h3>
-                  <p className="text-xs text-charcoal-muted leading-relaxed mb-4">
-                    Fast, secure, and temperature-stable packaging dispatched within 24-48 hours directly to your doorstep anywhere in India with live Delhivery tracking.
-                  </p>
-                  <ul className="space-y-1.5 mb-6">
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Free Delivery Above ₹499</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Cash on Delivery (COD) Pan-India</span>
-                    </li>
-                    <li className="flex items-center gap-2 text-xs text-charcoal">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-leaf flex-shrink-0" />
-                      <span>Free Ayurvedic Dosage Consultation</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <button
-                  onClick={() => onNavigate && onNavigate('contact')}
-                  className="w-full py-2.5 px-4 rounded-xl bg-sand hover:bg-forest hover:text-white text-forest text-xs font-bold transition-colors text-center"
-                >
-                  Consult an Ayurvedic Expert
-                </button>
+                <img
+                  src="/banners/banner-neem-facewash.jpg"
+                  alt="Fibax Ayurveda Aloe Vera Neem Face Wash Banner"
+                  className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.02]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
               </motion.div>
             </div>
           </div>
