@@ -82,11 +82,15 @@ export function AppPromoSection() {
                     <span className="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">ONLINE</span>
                   </div>
 
-                  <div className="aspect-square rounded-xl bg-white p-3 flex items-center justify-center border border-sand-border">
+                  <div className="aspect-square rounded-xl bg-white p-3 flex items-center justify-center border border-sand-border overflow-hidden">
                     <img
-                      src="https://fibaxpharma.com/wp-content/uploads/2025/11/safed-musli-powder.webp"
-                      alt="Product preview"
-                      className="w-full h-full object-contain"
+                      src="/uploads/safed-musli.png"
+                      alt="Safed Musli Vitality Powder"
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = '/uploads/fibax-safed-musli-powder.jpg';
+                      }}
+                      className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                     />
                   </div>
 

@@ -7,7 +7,7 @@
   "standardShippingFee": 49,
   "codFee": 0,
   "delhivery": {
-    "apiKey": "",
+    "apiKey": "f828737d5fc0ed68cb226f2cf83a35cc74d35e8e",
     "clientName": "FIBAX_AYURVEDA",
     "pickupLocation": "Fibax Central Fulfillment Hub"
   },
@@ -25,5 +25,6 @@
     "pincode": "140603",
     "phone": "+91-8872544458",
     "email": "care@fibaxpharma.com"
-  }
+  },
+  "updatedAt": "2026-09-18T11:34:27.525Z"
 }

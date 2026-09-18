@@ -40,7 +40,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
     salePrice: 249,
     stockQuantity: 50,
     lowStockThreshold: 15,
-    featuredImage: 'https://fibaxpharma.com/wp-content/uploads/2025/11/front.webp',
+    featuredImage: '/uploads/fibax-hero-product.jpg',
     isBestseller: false,
     ayushCertified: true,
     shortDesc: '',
