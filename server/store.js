@@ -91,10 +91,21 @@ function loadFromJsonFiles() {
   }
 }
 
+// When the Supabase REST credentials are present, prefer the HTTPS REST
+// driver (supabase.js) over a direct Postgres socket connection (pg.js),
+// since shared hosting often blocks outbound DB ports.
+function pickDbModule() {
+  if (DRIVER === 'postgres' && process.env.SUPABASE_URL && process.env.SUPABASE_API_KEY) {
+    return './supabase.js';
+  }
+  return DRIVER === 'postgres' ? './pg.js' : './db.js';
+}
+
 export async function initStore() {
   if (DB_DRIVERS.includes(DRIVER)) {
     try {
-      db = await import(DRIVER === 'postgres' ? './pg.js' : './db.js');
+      const modulePath = pickDbModule();
+      db = await import(modulePath);
       await db.assertConnection();
       await db.initSchema();
       for (const name of ARRAY_NAMES) {
@@ -103,7 +114,10 @@ export async function initStore() {
       for (const name of SINGLETON_NAMES) {
         cache[name] = await db.loadSingleton(name);
       }
-      console.log(`🗄️  Storage driver: ${DRIVER === 'postgres' ? 'PostgreSQL (Supabase)' : 'MySQL'}`);
+      const label =
+        modulePath === './supabase.js' ? 'Supabase (REST)' :
+        DRIVER === 'postgres' ? 'PostgreSQL (Supabase)' : 'MySQL';
+      console.log(`🗄️  Storage driver: ${label}`);
       return;
     } catch (err) {
       // Do not crash the whole app on a DB problem — fall back to JSON files so

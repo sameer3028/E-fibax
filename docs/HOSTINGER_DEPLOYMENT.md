@@ -33,14 +33,34 @@ single Node server serves both the REST API and the built React frontend.
 
 ## 1. Create the Supabase database
 
-1. In Supabase, create a **New project** and set a strong database password
-   (save it somewhere safe).
-2. Go to **Project Settings → Database → Connection string → URI**.
-3. Copy the **Connection pooling** URI (Transaction mode, port `6543`). It looks
-   like:
-   `postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres`
-4. You'll paste this into `DATABASE_URL` in `server/.env`. The app creates its
-   table automatically on first run — no manual SQL needed.
+Use Hostinger's **Supabase database** setup → **Create a new database**. It
+provisions a managed Supabase project and shows you:
+
+- `SUPABASE_URL` (e.g. `https://<ref>.supabase.co`)
+- `SUPABASE_API_KEY` (a `sb_secret_...` key)
+
+The app connects over HTTPS with these two values (no DB ports needed).
+
+**One-time table setup.** PostgREST cannot create tables, so create the
+`collections` table once. Open the project in the Supabase dashboard →
+**SQL Editor** → New query → paste and run:
+
+```sql
+create table if not exists public.collections (
+  collection text        not null,
+  item_id    text        not null,
+  position   integer     not null default 0,
+  data       jsonb       not null,
+  updated_at timestamptz not null default now(),
+  primary key (collection, item_id)
+);
+
+create index if not exists idx_collections_position
+  on public.collections (collection, position);
+
+-- The secret API key bypasses RLS; enabling it blocks any future anon access.
+alter table public.collections enable row level security;
+```
 
 ---
 
@@ -73,12 +93,11 @@ Set at least:
 PORT=5000
 NODE_ENV=production
 STORAGE_DRIVER=postgres
-DATABASE_URL=
-DB_POOL_LIMIT=5
+SUPABASE_URL=
+SUPABASE_API_KEY=
 ```
 
-Paste the Supabase **Connection pooling** URI from step 1 as the value of
-`DATABASE_URL` (it already contains the host, user, and password).
+Paste the two values from the Hostinger database panel (step 1).
 `.env` is git-ignored and never committed.
 
 ---
@@ -122,7 +141,7 @@ hPanel → **Advanced → Node.js** → **Create application**:
 
 Add the same environment variables from your `.env` in the Node.js app's
 **Environment variables** section (hPanel runs the app via Passenger, which reads
-these). Keep `STORAGE_DRIVER=postgres` and `DATABASE_URL`.
+these). Keep `STORAGE_DRIVER=postgres`, `SUPABASE_URL`, and `SUPABASE_API_KEY`.
 
 > Set the application to run a **single instance** (default for this tool). The
 > storage layer keeps an in-memory cache that writes through to Supabase, so a
