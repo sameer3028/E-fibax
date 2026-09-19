@@ -35,7 +35,11 @@ export function getApiUrl(endpoint, customBase = null) {
 /**
  * Universal safe API fetch that handles HTML fallbacks, non-JSON responses,
  * network disconnects, and CORS errors with clean user-friendly messaging.
- * Automatically attempts a fallback to port 5000 if relative /api returns HTML (web server misconfiguration).
+ *
+ * In LOCAL DEVELOPMENT only, if a relative /api request fails (e.g. running the
+ * built app without Vite's dev proxy), it retries once against port 5000 on
+ * localhost. This fallback is intentionally disabled in production, where the
+ * public port 5000 is never reachable and would only cause connection timeouts.
  */
 export async function apiRequest(endpoint, options = {}) {
   const primaryUrl = getApiUrl(endpoint);
@@ -51,25 +55,29 @@ export async function apiRequest(endpoint, options = {}) {
   // Attempt 1: Using current base URL
   let result = await executeFetch(primaryUrl, options, headers);
 
-  // If the server returned HTML (e.g. Apache/Nginx catch-all returning index.html for /api)
-  // or connection failed and we're in a browser on a non-5000 port, attempt fallback to port 5000:
-  if ((result.htmlError || result.networkError) && typeof window !== 'undefined' && !detectedBaseUrl) {
-    const port = window.location.port;
-    if (port !== '5000') {
-      const fallbackBase = `${window.location.protocol}//${window.location.hostname}:5000`;
-      const fallbackUrl = getApiUrl(endpoint, fallbackBase);
-      console.warn(`[Fibax API] Primary endpoint returned HTML/offline (${primaryUrl}). Retrying on backend port 5000: ${fallbackUrl}`);
+  // Local-dev-only fallback: retry on localhost:5000 if the relative /api call
+  // failed. Never runs in production (only for localhost / 127.0.0.1).
+  const host = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isLocalhost = host === 'localhost' || host === '127.0.0.1';
+  if (
+    (result.htmlError || result.networkError) &&
+    typeof window !== 'undefined' &&
+    !detectedBaseUrl &&
+    isLocalhost &&
+    window.location.port !== '5000'
+  ) {
+    const fallbackBase = `${window.location.protocol}//${window.location.hostname}:5000`;
+    const fallbackUrl = getApiUrl(endpoint, fallbackBase);
+    console.warn(`[Fibax API] Primary endpoint failed (${primaryUrl}). Retrying on local backend: ${fallbackUrl}`);
 
-      try {
-        const fallbackResult = await executeFetch(fallbackUrl, options, headers);
-        if (fallbackResult.success || (!fallbackResult.htmlError && !fallbackResult.networkError)) {
-          console.info(`[Fibax API] Successfully connected to backend at ${fallbackBase}! Persisting API base.`);
-          detectedBaseUrl = fallbackBase;
-          return fallbackResult;
-        }
-      } catch (e) {
-        // Fallback also failed, will return original error
+    try {
+      const fallbackResult = await executeFetch(fallbackUrl, options, headers);
+      if (fallbackResult.success || (!fallbackResult.htmlError && !fallbackResult.networkError)) {
+        detectedBaseUrl = fallbackBase;
+        return fallbackResult;
       }
+    } catch (e) {
+      // Fallback also failed, will return original error
     }
   }
 
