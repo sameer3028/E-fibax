@@ -1319,9 +1319,9 @@ async function bootstrap() {
     await initStore();
     await initShipping();
   } catch (err) {
-    console.error('❌ Failed to initialize storage layer:', err.message);
-    console.error('   Check your STORAGE_DRIVER and DB_* environment variables.');
-    process.exit(1);
+    // initStore already falls back to JSON on DB errors, so reaching here is
+    // unexpected. Log it but still start the server so the site is reachable.
+    console.error('❌ Storage initialization error:', err.message);
   }
 
   app.listen(PORT, () => {

@@ -81,28 +81,42 @@ function writeJsonFile(file, value) {
 
 const DB_DRIVERS = ['mysql', 'postgres'];
 
+function loadFromJsonFiles() {
+  ensureDataDir();
+  for (const name of ARRAY_NAMES) {
+    cache[name] = readJsonFile(FILE_FOR[name], []);
+  }
+  for (const name of SINGLETON_NAMES) {
+    cache[name] = readJsonFile(FILE_FOR[name], null);
+  }
+}
+
 export async function initStore() {
   if (DB_DRIVERS.includes(DRIVER)) {
-    db = await import(DRIVER === 'postgres' ? './pg.js' : './db.js');
-    await db.assertConnection();
-    await db.initSchema();
-    for (const name of ARRAY_NAMES) {
-      cache[name] = await db.loadArray(name);
+    try {
+      db = await import(DRIVER === 'postgres' ? './pg.js' : './db.js');
+      await db.assertConnection();
+      await db.initSchema();
+      for (const name of ARRAY_NAMES) {
+        cache[name] = await db.loadArray(name);
+      }
+      for (const name of SINGLETON_NAMES) {
+        cache[name] = await db.loadSingleton(name);
+      }
+      console.log(`🗄️  Storage driver: ${DRIVER === 'postgres' ? 'PostgreSQL (Supabase)' : 'MySQL'}`);
+      return;
+    } catch (err) {
+      // Do not crash the whole app on a DB problem — fall back to JSON files so
+      // the site stays up, and log loudly so the misconfig is obvious.
+      db = null;
+      console.error(`❌ Database (${DRIVER}) init failed: ${err.message}`);
+      console.error('⚠️  Falling back to JSON file storage so the app stays online.');
+      console.error('   Data will NOT be saved to the database until STORAGE_DRIVER / DATABASE_URL are fixed.');
     }
-    for (const name of SINGLETON_NAMES) {
-      cache[name] = await db.loadSingleton(name);
-    }
-    console.log(`🗄️  Storage driver: ${DRIVER === 'postgres' ? 'PostgreSQL (Supabase)' : 'MySQL'}`);
-  } else {
-    ensureDataDir();
-    for (const name of ARRAY_NAMES) {
-      cache[name] = readJsonFile(FILE_FOR[name], []);
-    }
-    for (const name of SINGLETON_NAMES) {
-      cache[name] = readJsonFile(FILE_FOR[name], null);
-    }
-    console.log('🗄️  Storage driver: JSON files');
   }
+
+  loadFromJsonFiles();
+  console.log('🗄️  Storage driver: JSON files');
 }
 
 export function getArray(name) {
