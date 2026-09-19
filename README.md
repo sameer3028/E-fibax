@@ -43,6 +43,31 @@ npm start
 # Visit http://localhost:5000
 ```
 
+## 🗄️ Data Storage & Database
+
+The backend uses a pluggable storage layer selected by the `STORAGE_DRIVER`
+environment variable:
+
+- `json` (default) — reads/writes local JSON files under `server/data/`.
+  No database required, ideal for local development.
+- `mysql` — persists to a MySQL database (used in production on Hostinger).
+
+For production with MySQL:
+
+```bash
+cd server
+cp .env.example .env          # fill in DB_* credentials + STORAGE_DRIVER=mysql
+npm install
+npm run migrate               # import existing server/data/*.json into MySQL
+npm start
+```
+
+## 🚀 Deploy to Hostinger
+
+See **[docs/HOSTINGER_DEPLOYMENT.md](docs/HOSTINGER_DEPLOYMENT.md)** for a
+step-by-step guide covering the MySQL database, Node.js app setup in hPanel,
+the frontend build, and data migration.
+
 ## 📁 Project Structure
 
 ```

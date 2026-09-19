@@ -1,10 +1,12 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
+import { writeFileSync, existsSync, mkdirSync } from 'fs';
 import crypto from 'crypto';
 import {
+  initShipping,
   getShippingConfig,
   saveShippingConfig,
   checkPincodeServiceability,
@@ -13,6 +15,15 @@ import {
   getTrackingDetails,
   generatePrintableLabel
 } from './shipping.js';
+import {
+  initStore,
+  storageDriver,
+  getArray,
+  setArray,
+  getSingleton,
+  setSingleton,
+  flushStore
+} from './store.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,14 +41,26 @@ const dataDir = join(__dirname, 'data');
 if (!existsSync(dataDir)) {
   mkdirSync(dataDir, { recursive: true });
 }
-const defaultClientUploads = join(__dirname, '..', 'client', 'public', 'uploads');
-const uploadsDir = process.env.UPLOADS_DIR || (existsSync(join(__dirname, '..', 'client')) ? defaultClientUploads : join(__dirname, 'uploads'));
+const possibleUploadDirs = [
+  process.env.UPLOADS_DIR,
+  join(__dirname, 'uploads'),
+  join(__dirname, '..', 'client', 'public', 'uploads'),
+  join(__dirname, '..', 'client', 'dist', 'uploads'),
+  join(__dirname, '..', 'dist', 'uploads'),
+  join(__dirname, '..', 'public_html', 'uploads')
+].filter(Boolean);
+
+let uploadsDir = possibleUploadDirs.find((d) => existsSync(d)) || join(__dirname, 'uploads');
 if (!existsSync(uploadsDir)) {
   mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(uploadsDir));
+// Serve uploaded files statically from all available locations
+possibleUploadDirs.forEach((d) => {
+  if (existsSync(d)) {
+    app.use('/uploads', express.static(d));
+  }
+});
 
 // POST /api/upload - Handle base64 product image uploads
 app.post('/api/upload', (req, res) => {
@@ -78,51 +101,34 @@ app.post('/api/upload', (req, res) => {
   }
 });
 
-const enquiriesFile = join(dataDir, 'enquiries.json');
-const productsFile = join(dataDir, 'products.json');
-const ordersFile = join(dataDir, 'orders.json');
-
-// Initialize files if not exist
-if (!existsSync(enquiriesFile)) {
-  writeFileSync(enquiriesFile, JSON.stringify([], null, 2));
-}
-if (!existsSync(ordersFile)) {
-  writeFileSync(ordersFile, JSON.stringify([], null, 2));
-}
-
-// Helpers
+// Data helpers (backed by the storage layer: JSON files or MySQL)
 function readProducts() {
-  try {
-    if (!existsSync(productsFile)) return [];
-    return JSON.parse(readFileSync(productsFile, 'utf8'));
-  } catch (err) {
-    console.error('Error reading products:', err);
-    return [];
-  }
+  return getArray('products');
 }
 
 function saveProducts(products) {
-  writeFileSync(productsFile, JSON.stringify(products, null, 2), 'utf8');
+  setArray('products', products);
 }
 
 function readOrders() {
-  try {
-    if (!existsSync(ordersFile)) return [];
-    return JSON.parse(readFileSync(ordersFile, 'utf8'));
-  } catch {
-    return [];
-  }
+  return getArray('orders');
 }
 
 function saveOrders(orders) {
-  writeFileSync(ordersFile, JSON.stringify(orders, null, 2), 'utf8');
+  setArray('orders', orders);
+}
+
+function readEnquiries() {
+  return getArray('enquiries');
+}
+
+function saveEnquiries(enquiries) {
+  setArray('enquiries', enquiries);
 }
 
 // ==========================================
 // 0. ADMIN AUTHENTICATION & SECURITY
 // ==========================================
-const adminAuthFile = join(dataDir, 'admin_auth.json');
-
 function hashPassword(password, salt) {
   return crypto.scryptSync(password, salt, 64).toString('hex');
 }
@@ -137,25 +143,20 @@ function verifyPassword(password, salt, storedHash) {
 }
 
 function getAdminConfig() {
-  if (!existsSync(adminAuthFile)) {
-    const defaultSalt = crypto.randomBytes(16).toString('hex');
-    const defaultHash = hashPassword('admin@fibax2026', defaultSalt);
-    const initialConfig = {
-      username: 'admin',
-      salt: defaultSalt,
-      passwordHash: defaultHash,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    writeFileSync(adminAuthFile, JSON.stringify(initialConfig, null, 2), 'utf8');
-    return initialConfig;
-  }
-  try {
-    return JSON.parse(readFileSync(adminAuthFile, 'utf8'));
-  } catch (err) {
-    console.error('Error reading admin auth file:', err);
-    return { username: 'admin' };
-  }
+  const existing = getSingleton('admin_auth');
+  if (existing) return existing;
+
+  const defaultSalt = crypto.randomBytes(16).toString('hex');
+  const defaultHash = hashPassword('admin@fibax2026', defaultSalt);
+  const initialConfig = {
+    username: 'admin',
+    salt: defaultSalt,
+    passwordHash: defaultHash,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  };
+  setSingleton('admin_auth', initialConfig);
+  return initialConfig;
 }
 
 // In-memory active tokens: Map<token, { username, expiresAt }>
@@ -255,7 +256,7 @@ app.post('/api/admin/change-password', (req, res) => {
     }
 
     config.updatedAt = new Date().toISOString();
-    writeFileSync(adminAuthFile, JSON.stringify(config, null, 2), 'utf8');
+    setSingleton('admin_auth', config);
 
     console.log(`🔑 Admin credentials updated for user: ${config.username}`);
     return res.json({
@@ -281,23 +282,12 @@ app.post('/api/admin/logout', (req, res) => {
 // ==========================================
 // 0B. CUSTOMER USER AUTHENTICATION & ACCOUNT
 // ==========================================
-const usersFile = join(dataDir, 'users.json');
-if (!existsSync(usersFile)) {
-  writeFileSync(usersFile, JSON.stringify([], null, 2), 'utf8');
-}
-
 function readUsers() {
-  try {
-    if (!existsSync(usersFile)) return [];
-    return JSON.parse(readFileSync(usersFile, 'utf8'));
-  } catch (err) {
-    console.error('Error reading users:', err);
-    return [];
-  }
+  return getArray('users');
 }
 
 function saveUsers(users) {
-  writeFileSync(usersFile, JSON.stringify(users, null, 2), 'utf8');
+  setArray('users', users);
 }
 
 // In-memory customer sessions: Map<token, { userId, expiresAt }>
@@ -1277,18 +1267,9 @@ app.post('/api/enquiry', (req, res) => {
       ip: clientIp
     };
 
-    let enquiries = [];
-    try {
-      if (existsSync(enquiriesFile)) {
-        const data = readFileSync(enquiriesFile, 'utf8');
-        enquiries = JSON.parse(data);
-      }
-    } catch {
-      enquiries = [];
-    }
-
+    const enquiries = readEnquiries();
     enquiries.push(sanitizedEnquiry);
-    writeFileSync(enquiriesFile, JSON.stringify(enquiries, null, 2));
+    saveEnquiries(enquiries);
 
     console.log(`✅ Secure enquiry logged: ${sanitizedEnquiry.name} (${sanitizedEnquiry.city}) - ${sanitizedEnquiry.phone}`);
 
@@ -1308,8 +1289,7 @@ app.post('/api/enquiry', (req, res) => {
 // GET /api/enquiries
 app.get('/api/enquiries', (req, res) => {
   try {
-    const data = readFileSync(enquiriesFile, 'utf8');
-    const enquiries = JSON.parse(data);
+    const enquiries = readEnquiries();
     res.json({ success: true, count: enquiries.length, data: enquiries });
   } catch {
     res.json({ success: true, count: 0, data: [] });
@@ -1333,12 +1313,23 @@ if (existsSync(clientDist)) {
   });
 }
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`
+// Start server after the storage layer (JSON files or MySQL) is ready
+async function bootstrap() {
+  try {
+    await initStore();
+    await initShipping();
+  } catch (err) {
+    console.error('❌ Failed to initialize storage layer:', err.message);
+    console.error('   Check your STORAGE_DRIVER and DB_* environment variables.');
+    process.exit(1);
+  }
+
+  app.listen(PORT, () => {
+    console.log(`
   🌿 Fibax Pharma Server
   =========================================
   🚀 Server running on: http://localhost:${PORT}
+  🗄️ Storage:           ${storageDriver().toUpperCase()}
   📦 Products API:      GET/POST http://localhost:${PORT}/api/products
   🏷️ Pricing API:       PATCH    http://localhost:${PORT}/api/products/:id/pricing
   📊 Inventory API:     PATCH    http://localhost:${PORT}/api/products/:id/stock
@@ -1346,4 +1337,18 @@ app.listen(PORT, () => {
   🛒 Orders API:        GET/POST http://localhost:${PORT}/api/orders
   =========================================
   `);
-});
+  });
+}
+
+// Flush pending writes on shutdown so nothing is lost.
+async function shutdown() {
+  try {
+    await flushStore();
+  } finally {
+    process.exit(0);
+  }
+}
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);
+
+bootstrap();

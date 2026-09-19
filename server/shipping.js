@@ -1,16 +1,4 @@
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const dataDir = join(__dirname, 'data');
-if (!existsSync(dataDir)) {
-  mkdirSync(dataDir, { recursive: true });
-}
-
-const shippingConfigFile = join(dataDir, 'shipping_config.json');
+import { getSingleton, setSingleton } from './store.js';
 
 export const DEFAULT_SHIPPING_CONFIG = {
   provider: 'delhivery', // 'delhivery' | 'shiprocket' | 'auto'
@@ -42,18 +30,17 @@ export const DEFAULT_SHIPPING_CONFIG = {
   }
 };
 
-export function getShippingConfig() {
-  try {
-    if (!existsSync(shippingConfigFile)) {
-      writeFileSync(shippingConfigFile, JSON.stringify(DEFAULT_SHIPPING_CONFIG, null, 2), 'utf8');
-      return DEFAULT_SHIPPING_CONFIG;
-    }
-    const data = readFileSync(shippingConfigFile, 'utf8');
-    return { ...DEFAULT_SHIPPING_CONFIG, ...JSON.parse(data) };
-  } catch (err) {
-    console.error('Error reading shipping config:', err);
-    return DEFAULT_SHIPPING_CONFIG;
+// Seed the default shipping config on first boot if none is stored yet.
+// Call after the storage layer has been initialized.
+export function initShipping() {
+  if (!getSingleton('shipping_config')) {
+    setSingleton('shipping_config', { ...DEFAULT_SHIPPING_CONFIG });
   }
+}
+
+export function getShippingConfig() {
+  const stored = getSingleton('shipping_config');
+  return { ...DEFAULT_SHIPPING_CONFIG, ...(stored || {}) };
 }
 
 export function saveShippingConfig(newConfig) {
@@ -66,7 +53,7 @@ export function saveShippingConfig(newConfig) {
     warehouse: { ...(current.warehouse || {}), ...(newConfig.warehouse || {}) },
     updatedAt: new Date().toISOString()
   };
-  writeFileSync(shippingConfigFile, JSON.stringify(updated, null, 2), 'utf8');
+  setSingleton('shipping_config', updated);
   return updated;
 }
 
