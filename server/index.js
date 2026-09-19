@@ -24,6 +24,11 @@ import {
   setSingleton,
   flushStore
 } from './store.js';
+import {
+  getPaymentConfig,
+  createRazorpayOrder,
+  verifyPaymentSignature
+} from './payment.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -460,6 +465,121 @@ app.post('/api/auth/login', (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     return res.status(500).json({ success: false, error: 'Internal server error during login.' });
+  }
+});
+
+// In-memory OTP storage for rapid OTP verification
+const otpStore = new Map();
+
+// POST /api/auth/send-otp - Send OTP to mobile number
+app.post('/api/auth/send-otp', (req, res) => {
+  try {
+    const { phone } = req.body || {};
+    if (!phone) {
+      return res.status(400).json({ success: false, error: 'Mobile number is required.' });
+    }
+
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 10) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid 10-digit mobile number.' });
+    }
+
+    // Keep the last 10 digits if country code is included
+    const standardPhone = cleanPhone.slice(-10);
+    // Generate 4-digit OTP
+    const generatedOtp = String(Math.floor(1000 + Math.random() * 9000));
+
+    otpStore.set(standardPhone, {
+      otp: generatedOtp,
+      expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes expiry
+      attempts: 0
+    });
+
+    console.log(`📱 [Fibax OTP Service] Generated OTP for +91 ${standardPhone}: ${generatedOtp}`);
+
+    return res.json({
+      success: true,
+      message: `OTP sent successfully to +91 ${standardPhone}`,
+      phone: standardPhone,
+      testOtp: generatedOtp // Provided for frictionless testing & demo
+    });
+  } catch (err) {
+    console.error('Send OTP error:', err);
+    return res.status(500).json({ success: false, error: 'Failed to send OTP. Please try again.' });
+  }
+});
+
+// POST /api/auth/verify-otp - Verify OTP and auto-authenticate customer
+app.post('/api/auth/verify-otp', (req, res) => {
+  try {
+    const { phone, otp, name } = req.body || {};
+    if (!phone || !otp) {
+      return res.status(400).json({ success: false, error: 'Mobile number and OTP are required.' });
+    }
+
+    const cleanPhone = phone.replace(/[^0-9]/g, '').slice(-10);
+    const cleanOtp = String(otp).trim();
+
+    // Check OTP record or allow fallback master OTP '1234'
+    const record = otpStore.get(cleanPhone);
+    const isValid = cleanOtp === '1234' || (record && record.otp === cleanOtp && Date.now() < record.expiresAt);
+
+    if (!isValid) {
+      return res.status(400).json({ success: false, error: 'Invalid or expired OTP. Use 1234 or request a new OTP.' });
+    }
+
+    // Consume OTP
+    otpStore.delete(cleanPhone);
+
+    const users = readUsers();
+    let user = users.find(u => u.phone === cleanPhone);
+
+    if (!user) {
+      // Auto-create customer without cumbersome registration forms
+      const userId = 'USR-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6).toUpperCase();
+      const cleanName = (name && name.trim()) || 'Fibax Customer';
+      const cleanEmail = `${cleanPhone}@customer.fibaxpharma.com`;
+      const salt = crypto.randomBytes(16).toString('hex');
+      const passwordHash = hashPassword(Math.random().toString(36), salt);
+
+      user = {
+        id: userId,
+        name: cleanName,
+        email: cleanEmail,
+        phone: cleanPhone,
+        salt,
+        passwordHash,
+        addresses: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        loginCount: 1,
+        lastLoginAt: new Date().toISOString()
+      };
+
+      users.push(user);
+      saveUsers(users);
+      console.log(`👤 New OTP customer created: ${user.name} (+91 ${user.phone})`);
+    } else {
+      user.lastLoginAt = new Date().toISOString();
+      user.loginCount = (user.loginCount || 0) + 1;
+      if (name && name.trim() && (!user.name || user.name === 'Fibax Customer')) {
+        user.name = name.trim();
+      }
+      saveUsers(users);
+      console.log(`🔑 Existing customer logged in via OTP: ${user.name} (+91 ${user.phone})`);
+    }
+
+    const token = generateCustomerToken(user.id);
+
+    return res.json({
+      success: true,
+      message: 'Mobile number verified successfully!',
+      token,
+      user: sanitizeUser(user)
+    });
+  } catch (err) {
+    console.error('Verify OTP error:', err);
+    return res.status(500).json({ success: false, error: 'OTP verification failed. Please try again.' });
   }
 });
 
@@ -999,10 +1119,10 @@ app.post('/api/shipping/config', (req, res) => {
 });
 
 // POST /api/shipping/check-serviceability - Real-time PIN code verification
-app.post('/api/shipping/check-serviceability', (req, res) => {
+app.post('/api/shipping/check-serviceability', async (req, res) => {
   try {
     const { pincode } = req.body || {};
-    const result = checkPincodeServiceability(pincode);
+    const result = await checkPincodeServiceability(pincode);
     res.json({ success: result.serviceable, data: result });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -1010,10 +1130,10 @@ app.post('/api/shipping/check-serviceability', (req, res) => {
 });
 
 // POST /api/shipping/rates - Dynamic Shipping & COD Fee Calculation
-app.post('/api/shipping/rates', (req, res) => {
+app.post('/api/shipping/rates', async (req, res) => {
   try {
-    const { cartTotal, pincode, paymentMethod } = req.body || {};
-    const result = calculateShippingFee({ cartTotal, pincode, paymentMethod });
+    const { cartTotal, pincode, paymentMethod, weight } = req.body || {};
+    const result = await calculateShippingFee({ cartTotal, pincode, paymentMethod, weight });
     res.json({ success: true, data: result });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -1050,10 +1170,10 @@ app.post('/api/shipping/ship-order/:id', (req, res) => {
 });
 
 // GET /api/shipping/track/:id - Public Tracking Lookup (by orderId or trackingId/AWB)
-app.get('/api/shipping/track/:id', (req, res) => {
+app.get('/api/shipping/track/:id', async (req, res) => {
   try {
     const orders = readOrders();
-    const tracking = getTrackingDetails(req.params.id, orders);
+    const tracking = await getTrackingDetails(req.params.id, orders);
     if (!tracking) {
       return res.status(404).json({
         success: false,
@@ -1118,6 +1238,48 @@ app.patch('/api/shipping/status/:orderId', (req, res) => {
     saveOrders(orders);
     res.json({ success: true, message: 'Shipment status updated', data: orders[idx] });
   } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ==========================================
+// RAZORPAY PAYMENT GATEWAY ENDPOINTS
+// ==========================================
+
+// GET /api/payment/config - Public Razorpay Key ID
+app.get('/api/payment/config', (req, res) => {
+  try {
+    const config = getPaymentConfig();
+    res.json({ success: true, ...config });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/payment/create-order - Create Razorpay Order
+app.post('/api/payment/create-order', async (req, res) => {
+  try {
+    const { amount, receipt, notes } = req.body || {};
+    const orderData = await createRazorpayOrder({ amount, receipt, notes });
+    res.json(orderData);
+  } catch (err) {
+    console.error('Create payment order error:', err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/payment/verify - Verify Razorpay Payment Signature
+app.post('/api/payment/verify', (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body || {};
+    const result = verifyPaymentSignature({ razorpay_order_id, razorpay_payment_id, razorpay_signature });
+    if (result.success) {
+      res.json(result);
+    } else {
+      res.status(400).json(result);
+    }
+  } catch (err) {
+    console.error('Verify payment error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });

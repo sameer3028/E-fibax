@@ -9,7 +9,8 @@ export function BlogsSection({ onNavigate }) {
     if (onNavigate) {
       onNavigate('blogs');
     } else {
-      window.location.hash = 'blogs';
+      window.history.pushState({}, '', '/blogs');
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 
@@ -17,7 +18,8 @@ export function BlogsSection({ onNavigate }) {
     if (onNavigate) {
       onNavigate('blog-detail', { post: item });
     } else {
-      window.location.hash = `blog/${item.slug || item.id}`;
+      window.history.pushState({}, '', `/blog/${item.slug || item.id}`);
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 

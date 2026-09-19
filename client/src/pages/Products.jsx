@@ -27,58 +27,110 @@ export function Products({
 
   useEffect(() => {
     if (initialCategory) setSelectedCategory(initialCategory);
+  }, [initialCategory]);
+
+  useEffect(() => {
     if (initialConcern) setSelectedConcern(initialConcern);
-  }, [initialCategory, initialConcern]);
+  }, [initialConcern]);
 
   const filteredProducts = useMemo(() => {
     let result = [...products];
 
-    // Filter by Concern
+    // 1. Filter by Health Concern
     if (selectedConcern && selectedConcern !== 'all') {
       result = result.filter(
         (p) =>
+          p.concernId === selectedConcern ||
           p.concernCategory === selectedConcern ||
-          (p.concerns && p.concerns.includes(selectedConcern))
+          (Array.isArray(p.concerns) && p.concerns.includes(selectedConcern))
       );
     }
 
-    // Filter by Category
+    // 2. Filter by Category / Dosage Format
     if (selectedCategory && selectedCategory !== 'all') {
       if (selectedCategory === 'combos') {
         result = result.filter(
           (p) =>
             p.isCombo ||
-            (p.tags && p.tags.includes('combo')) ||
+            (p.multiPacks && p.multiPacks.length > 1) ||
+            p.title?.toLowerCase().includes('combo') ||
+            (Array.isArray(p.tags) && p.tags.includes('combo')) ||
             (p.formatCategory && p.formatCategory.toLowerCase().includes('combo'))
         );
       } else {
-        result = result.filter(
-          (p) =>
-            p.formatCategory === selectedCategory ||
-            (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase()))
-        );
+        result = result.filter((p) => {
+          if (p.categoryId === selectedCategory) return true;
+          const dosage = (p.dosageForm || '').toLowerCase();
+          const title = (p.title || '').toLowerCase();
+          if (selectedCategory === 'syrups') {
+            return dosage.includes('syrup') || title.includes('syrup');
+          }
+          if (selectedCategory === 'capsules') {
+            return (
+              dosage.includes('capsule') ||
+              dosage.includes('tablet') ||
+              title.includes('capsule') ||
+              title.includes('tablet')
+            );
+          }
+          if (selectedCategory === 'juices') {
+            return dosage.includes('juice') || title.includes('juice');
+          }
+          if (selectedCategory === 'powders') {
+            return (
+              dosage.includes('powder') ||
+              dosage.includes('churna') ||
+              title.includes('powder') ||
+              title.includes('churna')
+            );
+          }
+          if (selectedCategory === 'oils') {
+            return dosage.includes('oil') || title.includes('oil');
+          }
+          if (selectedCategory === 'skincare') {
+            return (
+              p.categoryId === 'personal-care' ||
+              p.categoryId === 'skincare' ||
+              dosage.includes('soap') ||
+              dosage.includes('facewash') ||
+              title.includes('soap') ||
+              title.includes('facewash')
+            );
+          }
+          if (p.formatCategory === selectedCategory) return true;
+          if (p.category && p.category.toLowerCase().includes(selectedCategory.toLowerCase())) return true;
+          return false;
+        });
       }
     }
 
-    // Filter by Search Query
+    // 3. Filter by Search Query
     if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
+      const q = searchQuery.toLowerCase().trim();
       result = result.filter(
         (p) =>
           p.title?.toLowerCase().includes(q) ||
           p.subtitle?.toLowerCase().includes(q) ||
-          p.keyBenefits?.some((b) => b.toLowerCase().includes(q)) ||
-          p.ingredients?.some((ing) => ing.name?.toLowerCase().includes(q))
+          p.shortDesc?.toLowerCase().includes(q) ||
+          p.sku?.toLowerCase().includes(q) ||
+          (Array.isArray(p.keyBenefits) &&
+            p.keyBenefits.some((b) => typeof b === 'string' && b.toLowerCase().includes(q))) ||
+          (typeof p.ingredients === 'string' && p.ingredients.toLowerCase().includes(q)) ||
+          (Array.isArray(p.ingredients) &&
+            p.ingredients.some((ing) => (typeof ing === 'string' ? ing : ing.name)?.toLowerCase().includes(q)))
       );
     }
 
-    // Sort
+    // 4. Sort
     if (sortBy === 'price-low') {
       result.sort((a, b) => a.salePrice - b.salePrice);
     } else if (sortBy === 'price-high') {
       result.sort((a, b) => b.salePrice - a.salePrice);
     } else if (sortBy === 'rating') {
-      result.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+      result.sort(
+        (a, b) =>
+          parseFloat(b.ratingAverage || b.rating || 0) - parseFloat(a.ratingAverage || a.rating || 0)
+      );
     } else {
       // featured: bestsellers first
       result.sort((a, b) => (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0));
@@ -87,11 +139,36 @@ export function Products({
     return result;
   }, [products, selectedCategory, selectedConcern, searchQuery, sortBy]);
 
+  const handleSelectCategoryFilter = (slug) => {
+    setSelectedCategory(slug);
+    const params = new URLSearchParams(window.location.search);
+    if (slug !== 'all') {
+      params.set('category', slug);
+    } else {
+      params.delete('category');
+    }
+    const qs = params.toString();
+    window.history.replaceState({}, '', qs ? `/products?${qs}` : '/products');
+  };
+
+  const handleSelectConcernFilter = (slug) => {
+    setSelectedConcern(slug);
+    const params = new URLSearchParams(window.location.search);
+    if (slug !== 'all') {
+      params.set('concern', slug);
+    } else {
+      params.delete('concern');
+    }
+    const qs = params.toString();
+    window.history.replaceState({}, '', qs ? `/products?${qs}` : '/products');
+  };
+
   const handleResetFilters = () => {
     setSelectedCategory('all');
     setSelectedConcern('all');
     setSearchQuery('');
     setSortBy('featured');
+    window.history.replaceState({}, '', '/products');
   };
 
   return (
@@ -139,7 +216,7 @@ export function Products({
               <Package className="h-3.5 w-3.5 text-brand" /> Formats:
             </span>
             <button
-              onClick={() => setSelectedCategory('all')}
+              onClick={() => handleSelectCategoryFilter('all')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all ${
                 selectedCategory === 'all'
                   ? 'bg-forest text-white shadow-xs'
@@ -149,7 +226,7 @@ export function Products({
               All Formats ({products.length})
             </button>
             <button
-              onClick={() => setSelectedCategory('combos')}
+              onClick={() => handleSelectCategoryFilter('combos')}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold flex-shrink-0 transition-all flex items-center gap-1 ${
                 selectedCategory === 'combos'
                   ? 'bg-brand text-white shadow-xs'
@@ -162,7 +239,7 @@ export function Products({
             {CATEGORIES.map((cat) => (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.slug)}
+                onClick={() => handleSelectCategoryFilter(cat.slug)}
                 className={`px-3.5 py-1.5 rounded-full text-xs font-semibold flex-shrink-0 transition-all ${
                   selectedCategory === cat.slug
                     ? 'bg-forest text-white shadow-xs'
@@ -180,7 +257,7 @@ export function Products({
               <ShieldCheck className="h-3.5 w-3.5 text-leaf-dark" /> Concerns:
             </span>
             <button
-              onClick={() => setSelectedConcern('all')}
+              onClick={() => handleSelectConcernFilter('all')}
               className={`px-3 py-1 rounded-lg text-xs font-semibold flex-shrink-0 transition-all ${
                 selectedConcern === 'all'
                   ? 'bg-leaf-dark text-white'
@@ -192,7 +269,7 @@ export function Products({
             {CONCERNS.map((c) => (
               <button
                 key={c.id}
-                onClick={() => setSelectedConcern(c.slug)}
+                onClick={() => handleSelectConcernFilter(c.slug)}
                 className={`px-3 py-1 rounded-lg text-xs font-semibold flex-shrink-0 transition-all flex items-center gap-1.5 ${
                   selectedConcern === c.slug
                     ? 'bg-leaf-dark text-white'

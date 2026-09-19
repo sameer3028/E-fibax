@@ -30,7 +30,8 @@ export function Blogs({ onNavigate }) {
     if (onNavigate) {
       onNavigate('blog-detail', { post });
     } else {
-      window.location.hash = `blog/${post.slug || post.id}`;
+      window.history.pushState({}, '', `/blog/${post.slug || post.id}`);
+      window.dispatchEvent(new PopStateEvent('popstate'));
     }
   };
 

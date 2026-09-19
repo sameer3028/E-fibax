@@ -2,14 +2,14 @@ import { getSingleton, setSingleton } from './store.js';
 
 export const DEFAULT_SHIPPING_CONFIG = {
   provider: 'delhivery', // 'delhivery' | 'shiprocket' | 'auto'
-  mode: 'sandbox', // 'sandbox' | 'production'
+  mode: 'production', // 'sandbox' | 'production'
   autoAssignAWB: true,
   defaultCourier: 'Delhivery Express Surface & Air',
   freeShippingThreshold: 499,
   standardShippingFee: 49,
   codFee: 0,
   delhivery: {
-    apiKey: '',
+    apiKey: '81ce45abd1b2943ead6fd99220fcb9da1ad368b8',
     clientName: 'FIBAX_AYURVEDA',
     pickupLocation: 'Fibax Central Fulfillment Hub'
   },
@@ -129,7 +129,7 @@ export const PINCODE_CIRCLES = {
   '85': { state: 'Bihar', region: 'Purnia / Saharsa', transitDays: '3-5 business days' }
 };
 
-export function checkPincodeServiceability(pincode) {
+export async function checkPincodeServiceability(pincode) {
   const cleanPin = String(pincode || '').trim().replace(/\D/g, '');
   if (cleanPin.length !== 6) {
     return {
@@ -140,13 +140,34 @@ export function checkPincodeServiceability(pincode) {
   }
 
   const prefix = cleanPin.substring(0, 2);
-  const circle = PINCODE_CIRCLES[prefix] || {
+  const fallbackCircle = PINCODE_CIRCLES[prefix] || {
     state: 'India',
     region: 'Standard Delivery Zone',
-    transitDays: '3-5 business days'
+    transitDays: '2-4 business days'
   };
 
   const config = getShippingConfig();
+  const apiKey = config.delhivery?.apiKey || '81ce45abd1b2943ead6fd99220fcb9da1ad368b8';
+
+  let delhiveryData = null;
+  if (apiKey) {
+    try {
+      const resp = await fetch(`https://track.delhivery.com/c/api/pin-codes/json/?filter_codes=${cleanPin}`, {
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json?.delivery_codes && json.delivery_codes.length > 0) {
+          delhiveryData = json.delivery_codes[0].postal_code;
+        }
+      }
+    } catch (err) {
+      console.warn('Delhivery live pincode check error, using fallback:', err.message);
+    }
+  }
 
   const availableCouriers = [
     { name: 'Delhivery Express Air & Surface', code: 'DELHIVERY', cod: true, fast: true },
@@ -154,27 +175,98 @@ export function checkPincodeServiceability(pincode) {
     { name: 'Shadowfax E-Commerce', code: 'SHADOWFAX', cod: true, fast: false }
   ];
 
+  if (delhiveryData) {
+    const isServiceable = delhiveryData.pre_paid === 'Y' || delhiveryData.cod === 'Y';
+    const city = delhiveryData.city || delhiveryData.district || fallbackCircle.region;
+    const state = delhiveryData.state_code || fallbackCircle.state;
+    const codAvailable = delhiveryData.cod === 'Y';
+    const prepaidAvailable = delhiveryData.pre_paid === 'Y';
+    const estTransit = delhiveryData.sun_tat ? '1-3 business days' : (fallbackCircle.transitDays || '2-4 business days');
+
+    return {
+      serviceable: isServiceable,
+      pincode: cleanPin,
+      city,
+      district: delhiveryData.district || city,
+      state,
+      circle: `${city}, ${state}`,
+      courier: 'Delhivery Express Surface & Air',
+      estimatedDays: estTransit,
+      codAvailable,
+      prepaidAvailable,
+      freeDeliveryEligible: true,
+      freeShippingThreshold: config.freeShippingThreshold || 499,
+      couriers: availableCouriers,
+      dispatchWarehouse: config.warehouse?.city || 'Zirakpur, Punjab',
+      liveVerified: true,
+      delhiveryRaw: {
+        center: delhiveryData.center?.[0]?.cn || '',
+        sortCode: delhiveryData.sort_code || '',
+        isOda: delhiveryData.is_oda === 'Y'
+      }
+    };
+  }
+
+  // Fallback if offline or fallback circle
   return {
     serviceable: true,
     pincode: cleanPin,
-    state: circle.state,
-    region: circle.region,
-    estimatedDays: circle.transitDays,
+    state: fallbackCircle.state,
+    region: fallbackCircle.region,
+    city: fallbackCircle.region.split('/')[0].trim(),
+    circle: `${fallbackCircle.region}, ${fallbackCircle.state}`,
+    courier: 'Delhivery Express Surface & Air',
+    estimatedDays: fallbackCircle.transitDays,
     codAvailable: true,
     prepaidAvailable: true,
     freeDeliveryEligible: true,
     freeShippingThreshold: config.freeShippingThreshold || 499,
     couriers: availableCouriers,
-    dispatchWarehouse: config.warehouse?.city || 'Zirakpur, Punjab'
+    dispatchWarehouse: config.warehouse?.city || 'Zirakpur, Punjab',
+    liveVerified: false
   };
 }
 
-export function calculateShippingFee({ cartTotal = 0, pincode = '', paymentMethod = 'COD' }) {
+export async function calculateShippingFee({ cartTotal = 0, pincode = '', paymentMethod = 'COD', weight = 500 }) {
   const config = getShippingConfig();
   const threshold = config.freeShippingThreshold || 499;
   const isFree = Number(cartTotal) >= threshold;
 
-  const shippingFee = isFree ? 0 : (config.standardShippingFee || 49);
+  let liveRate = null;
+  const cleanPin = String(pincode || '').trim().replace(/\D/g, '');
+  const apiKey = config.delhivery?.apiKey || '81ce45abd1b2943ead6fd99220fcb9da1ad368b8';
+  const originPin = config.warehouse?.pincode || '140603';
+
+  if (!isFree && cleanPin.length === 6 && apiKey) {
+    try {
+      const pt = paymentMethod === 'COD' ? 'COD' : 'Pre-paid';
+      const rateUrl = `https://track.delhivery.com/api/kinko/v1/invoice/charges/.json?md=S&ss=Delivered&d_pin=${cleanPin}&o_pin=${originPin}&cgm=${weight || 500}&pt=${pt}`;
+      const resp = await fetch(rateUrl, {
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        if (Array.isArray(data) && data[0]?.total_amount) {
+          liveRate = {
+            totalAmount: Number(data[0].total_amount),
+            grossAmount: Number(data[0].gross_amount),
+            zone: data[0].zone,
+            courierCharge: Number(data[0].charge_DL || 0),
+            codCharge: Number(data[0].charge_COD || 0),
+            tax: data[0].tax_data || {}
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('Delhivery live rate calculation error:', err.message);
+    }
+  }
+
+  const standardFee = config.standardShippingFee || 49;
+  const shippingFee = isFree ? 0 : standardFee;
   const codFee = (paymentMethod === 'COD' && config.codFee > 0) ? config.codFee : 0;
 
   return {
@@ -183,7 +275,9 @@ export function calculateShippingFee({ cartTotal = 0, pincode = '', paymentMetho
     amountNeededForFreeShipping: isFree ? 0 : Math.max(0, threshold - Number(cartTotal)),
     shippingFee,
     codFee,
-    totalShipping: shippingFee + codFee
+    totalShipping: shippingFee + codFee,
+    liveRate: liveRate || null,
+    delhiveryCharge: liveRate ? Math.round(liveRate.totalAmount) : shippingFee
   };
 }
 
@@ -280,18 +374,92 @@ export function createShipmentForOrder(order, options = {}) {
   };
 }
 
-export function getTrackingDetails(identifier, orders = []) {
+export async function getTrackingDetails(identifier, orders = []) {
   if (!identifier) return null;
   const cleanId = String(identifier).trim().toUpperCase();
+  const config = getShippingConfig();
+  const apiKey = config.delhivery?.apiKey || '81ce45abd1b2943ead6fd99220fcb9da1ad368b8';
+
   const order = orders.find(o => 
     (o.orderId && o.orderId.toUpperCase() === cleanId) ||
     (o.trackingId && o.trackingId.toUpperCase() === cleanId)
   );
+
+  const waybill = order ? (order.trackingId || order.orderId) : cleanId;
+
+  // Query live Delhivery tracking API
+  let liveDelhiveryData = null;
+  if (apiKey && waybill) {
+    try {
+      const cleanAwb = waybill.replace(/[^0-9a-zA-Z]/g, '');
+      const resp = await fetch(`https://track.delhivery.com/api/v1/packages/json/?waybill=${cleanAwb}`, {
+        headers: {
+          'Authorization': `Token ${apiKey}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json?.ShipmentData && Array.isArray(json.ShipmentData) && json.ShipmentData.length > 0) {
+          liveDelhiveryData = json.ShipmentData[0].Shipment;
+        }
+      }
+    } catch (err) {
+      console.warn('Delhivery live tracking lookup error:', err.message);
+    }
+  }
+
+  // If live Delhivery data was found
+  if (liveDelhiveryData) {
+    const rawStatus = liveDelhiveryData.Status?.Status || 'In Transit';
+    const scans = liveDelhiveryData.Scans || [];
+    const formattedTimeline = scans.map((s, idx) => {
+      const detail = s.ScanDetail || {};
+      return {
+        status: detail.Scan || rawStatus,
+        title: detail.Instructions || detail.Scan || 'Checkpoint Cleared',
+        location: detail.ScannedLocation || liveDelhiveryData.Status?.StatusLocation || 'Delhivery Hub',
+        timestamp: detail.ScanDateTime || detail.StatusDateTime || new Date().toISOString(),
+        completed: true,
+        current: idx === 0,
+        description: detail.Instructions || `Scanned at ${detail.ScannedLocation || 'hub'}`
+      };
+    });
+
+    let activeStep = 3;
+    if (rawStatus.toLowerCase().includes('delivered')) activeStep = 6;
+    else if (rawStatus.toLowerCase().includes('out for delivery')) activeStep = 5;
+    else if (rawStatus.toLowerCase().includes('transit')) activeStep = 4;
+    else if (rawStatus.toLowerCase().includes('dispatched') || rawStatus.toLowerCase().includes('in transit')) activeStep = 3;
+    else activeStep = 2;
+
+    return {
+      orderId: order?.orderId || ('FBX-' + (liveDelhiveryData.ReferenceNo || cleanId)),
+      trackingId: liveDelhiveryData.AWB || waybill,
+      courier: 'Delhivery Express Surface & Air (Live)',
+      status: rawStatus,
+      activeStep,
+      totalSteps: 6,
+      createdAt: order?.createdAt || liveDelhiveryData.PickUpDate || new Date().toISOString(),
+      estimatedDelivery: liveDelhiveryData.ExpectedDeliveryDate || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
+      customer: {
+        name: order?.customer?.name || liveDelhiveryData.Consignee?.Name || 'Customer',
+        city: order?.shipping?.city || liveDelhiveryData.Destination || '',
+        pincode: order?.shipping?.pincode || liveDelhiveryData.Consignee?.PinCode || '',
+        address: order?.shipping?.address || liveDelhiveryData.Consignee?.Address1 || ''
+      },
+      items: order?.items || [],
+      payment: order?.payment || { method: 'Prepaid / Verified' },
+      totals: order?.totals || {},
+      timeline: formattedTimeline.length > 0 ? formattedTimeline : (order?.shipment?.timeline || []),
+      warehouse: config.warehouse,
+      liveDelhivery: true
+    };
+  }
+
   if (!order) return null;
 
-  const config = getShippingConfig();
   let timeline = order.shipment?.timeline;
-
   if (!timeline || !Array.isArray(timeline)) {
     const shipmentData = createShipmentForOrder(order);
     timeline = shipmentData.timeline;
@@ -331,7 +499,8 @@ export function getTrackingDetails(identifier, orders = []) {
     payment: order.payment || { method: 'COD' },
     totals: order.totals || {},
     timeline: updatedTimeline,
-    warehouse: config.warehouse
+    warehouse: config.warehouse,
+    liveDelhivery: false
   };
 }
 

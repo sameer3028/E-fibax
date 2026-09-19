@@ -290,12 +290,12 @@ export function About({ onNavigate }) {
               <span>Shop All Formulations</span>
               <ArrowRight className="h-4 w-4" />
             </button>
-            <a
-              href="tel:+918872544458"
+            <button
+              onClick={() => onNavigate && onNavigate('contact')}
               className="px-8 py-3.5 rounded-xl bg-white text-forest border border-sand-border font-bold text-sm hover:bg-sand-warm shadow-xs transition-all"
             >
-              Doctor Helpline: +91-8872544458
-            </a>
+              Contact Support &amp; Consultation
+            </button>
           </div>
         </div>
       </section>

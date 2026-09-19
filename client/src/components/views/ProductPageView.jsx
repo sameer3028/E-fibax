@@ -108,18 +108,22 @@ export function ProductPageView({
         method: 'POST',
         body: JSON.stringify({ pincode: cleanPin })
       });
-      if (res.ok && res.data?.serviceable) {
+      const data = res?.data || res;
+      if (res?.success && data?.serviceable) {
+        const livePrefix = data.liveVerified ? 'Delhivery Live Verified' : 'Express Delivery';
+        const locationName = data.city || data.circle || 'your location';
+        const codText = data.codAvailable ? 'COD Available' : 'Prepaid Only';
         setPincodeStatus({
           valid: true,
-          circle: res.data.circle,
-          courier: res.data.courier,
-          etd: res.data.estimatedDays,
-          message: `Delivery in ${res.data.estimatedDays || '2-4'} days to ${res.data.circle || 'your city'} via ${res.data.courier || 'Delhivery Express'}. COD Available!`
+          circle: data.circle,
+          courier: data.courier,
+          etd: data.estimatedDays,
+          message: `${livePrefix}: Delivery in ${data.estimatedDays || '2-4'} days to ${locationName} via Delhivery Express. ${codText}!`
         });
       } else {
         setPincodeStatus({
           valid: false,
-          message: res.data?.error || 'PIN code is currently unserviceable for courier dispatch.'
+          message: data?.error || 'PIN code is currently unserviceable for courier dispatch.'
         });
       }
     } catch {

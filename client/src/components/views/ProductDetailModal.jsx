@@ -4,6 +4,7 @@ import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
 import { Accordion } from '../ui/Accordion';
 import { formatPrice } from '../../lib/utils';
+import { apiRequest } from '../../utils/api';
 import {
   X,
   Star,
@@ -39,12 +40,35 @@ export function ProductDetailModal({ product, isOpen, onClose }) {
     openCart();
   };
 
-  const handlePinCheck = (e) => {
+  const handlePinCheck = async (e) => {
     e.preventDefault();
-    if (pincode.length === 6) {
-      setPinStatus({ serviceable: true, message: 'Delivery in 2-4 business days via Delhivery Express' });
-    } else {
+    const cleanPin = pincode.replace(/\D/g, '');
+    if (cleanPin.length !== 6) {
       setPinStatus({ serviceable: false, message: 'Please enter a valid 6-digit Indian PIN code' });
+      return;
+    }
+    try {
+      const res = await apiRequest('/shipping/check-serviceability', {
+        method: 'POST',
+        body: JSON.stringify({ pincode: cleanPin })
+      });
+      const data = res?.data || res;
+      if (res?.success && data?.serviceable) {
+        const livePrefix = data.liveVerified ? 'Delhivery Live' : 'Delhivery Express';
+        const locationName = data.city || data.circle || 'your city';
+        const codText = data.codAvailable ? 'COD Available' : 'Prepaid Only';
+        setPinStatus({
+          serviceable: true,
+          message: `${livePrefix}: Delivery in ${data.estimatedDays || '2-4 days'} to ${locationName} (${codText})`
+        });
+      } else {
+        setPinStatus({
+          serviceable: false,
+          message: data?.error || 'PIN code is currently unserviceable for courier dispatch.'
+        });
+      }
+    } catch {
+      setPinStatus({ serviceable: true, message: 'Delivery in 2-4 business days via Delhivery Express' });
     }
   };
 

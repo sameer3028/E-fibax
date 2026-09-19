@@ -86,10 +86,16 @@ export function CartProvider({ children }) {
     }
     if (cleanCode === 'AYUSH50') {
       setAppliedCoupon('AYUSH50');
-      setDiscountAmount(50);
+      setDiscountAmount(Math.min(50, subtotal));
       return { success: true, message: '₹50 discount applied!' };
     }
-    return { success: false, message: 'Invalid coupon code' };
+    if (cleanCode === 'FIBAX15') {
+      setAppliedCoupon('FIBAX15');
+      const discount = Math.round(subtotal * 0.15);
+      setDiscountAmount(discount);
+      return { success: true, message: '15% Ayurvedic discount applied!' };
+    }
+    return { success: false, message: 'Invalid coupon code. Try WELCOME10 or AYUSH50.' };
   };
 
   const removeCoupon = () => {

@@ -16,7 +16,10 @@ export function ProductCard({ product, onSelectProduct }) {
     >
       <div>
         {/* Packshot Image Container with Badges */}
-        <div className="relative aspect-square w-full rounded-xl bg-sand/50 p-4 mb-3 overflow-hidden flex items-center justify-center">
+        <div
+          onClick={() => onSelectProduct && onSelectProduct(product)}
+          className="relative aspect-square w-full rounded-xl bg-sand/50 p-4 mb-3 overflow-hidden flex items-center justify-center cursor-pointer"
+        >
           {isOutOfStock ? (
             <span className="absolute top-2.5 left-2.5 bg-charcoal text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider z-10 shadow-xs">
               OUT OF STOCK

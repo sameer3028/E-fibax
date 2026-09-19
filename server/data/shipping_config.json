@@ -1,13 +1,13 @@
 {
   "provider": "delhivery",
-  "mode": "sandbox",
+  "mode": "production",
   "autoAssignAWB": true,
   "defaultCourier": "Delhivery Express Surface & Air",
   "freeShippingThreshold": 499,
   "standardShippingFee": 49,
   "codFee": 0,
   "delhivery": {
-    "apiKey": "f828737d5fc0ed68cb226f2cf83a35cc74d35e8e",
+    "apiKey": "81ce45abd1b2943ead6fd99220fcb9da1ad368b8",
     "clientName": "FIBAX_AYURVEDA",
     "pickupLocation": "Fibax Central Fulfillment Hub"
   },
@@ -26,5 +26,5 @@
     "phone": "+91-8872544458",
     "email": "care@fibaxpharma.com"
   },
-  "updatedAt": "2026-09-18T11:34:27.525Z"
+  "updatedAt": "2026-09-19T13:08:53.906Z"
 }

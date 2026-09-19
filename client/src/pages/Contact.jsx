@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Phone,
   Mail,
   MapPin,
   Clock,
@@ -11,7 +10,12 @@ import {
   Building2,
   RefreshCw,
   ChevronDown,
-  Lock
+  Lock,
+  Headphones,
+  Truck,
+  HelpCircle,
+  MessageSquare,
+  PhoneCall
 } from 'lucide-react';
 import { apiRequest } from '../utils/api';
 
@@ -23,7 +27,7 @@ const PHONE_REGEX = /^[6-9]\d{9}$/;
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const LOCATION_REGEX = /^[a-zA-Z\s,\-']{2,50}$/;
 
-export function Contact() {
+export function Contact({ onOpenCallback }) {
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -272,38 +276,39 @@ export function Contact() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
           <div className="max-w-3xl">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-leaf/20 text-leaf border border-leaf/30 text-xs font-bold uppercase tracking-wider mb-4">
-              <HeartHandshake className="h-3.5 w-3.5" />
-              <span>Direct Customer Care & Support</span>
+              <ShieldCheck className="h-3.5 w-3.5" />
+              <span>Direct Customer Care &amp; Support</span>
             </span>
             <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
-              Contact Us & Ayurvedic Health Consultation
+              Contact Us &amp; Ayurvedic Support
             </h1>
             <p className="mt-4 text-sm sm:text-base text-sand-warm/80 leading-relaxed">
-              Reach out to our certified Ayurvedic consultation team for personalized health advice, dosage inquiries, order tracking, or general customer support. All communications are safeguarded and strictly confidential.
+              Have questions about our formulations, orders, or need dosage advice? Fill out the verified support form below or reach our team via official email. All inquiries receive direct attention from our care specialists.
             </p>
           </div>
         </div>
       </section>
 
-      {/* 2. Contact Cards Strip */}
+      {/* 2. Support Information Cards Strip */}
       <section className="py-10 bg-sand border-b border-sand-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white p-6 rounded-2xl border border-sand-border shadow-subtle flex items-start gap-4">
               <div className="p-3 rounded-xl bg-forest/10 text-forest">
-                <Phone className="h-6 w-6" />
+                <Headphones className="h-6 w-6" />
               </div>
-              <div>
-                <span className="text-xs font-bold text-forest uppercase tracking-wider">Direct Phone Support</span>
-                <div className="mt-1 space-y-0.5">
-                  <a href="tel:+918872544458" className="block text-sm font-bold text-charcoal hover:text-forest">
-                    +91-8872544458
-                  </a>
-                  <a href="tel:+917657963458" className="block text-sm font-bold text-charcoal hover:text-forest">
-                    +91-7657963458
-                  </a>
-                </div>
-                <p className="text-[11px] text-charcoal-subtle mt-1">Mon - Sat: 9:30 AM to 7:00 PM</p>
+              <div className="flex-1">
+                <span className="text-xs font-bold text-forest uppercase tracking-wider">Online Helpdesk</span>
+                <p className="mt-1 text-sm font-bold text-charcoal">
+                  Direct Inquiries &amp; Care
+                </p>
+                <p className="text-xs text-charcoal-muted mt-0.5">
+                  Submit the inquiry form below for prompt assistance
+                </p>
+                <p className="text-[11px] text-charcoal-subtle mt-1.5 flex items-center gap-1">
+                  <Clock className="h-3 w-3 text-leaf-dark" />
+                  <span>Mon - Sat: 9:30 AM – 7:00 PM IST</span>
+                </p>
               </div>
             </div>
 
@@ -312,14 +317,19 @@ export function Contact() {
                 <Mail className="h-6 w-6" />
               </div>
               <div>
-                <span className="text-xs font-bold text-brand uppercase tracking-wider">Email Communication</span>
+                <span className="text-xs font-bold text-brand uppercase tracking-wider">Official Email Support</span>
                 <div className="mt-1 space-y-0.5">
-                  <a href="mailto:fibaxpharma@gmail.com" className="block text-sm font-bold text-charcoal hover:text-brand">
+                  <a href="mailto:info@fibaxpharma.com" className="block text-sm font-bold text-charcoal hover:text-brand transition-colors">
+                    info@fibaxpharma.com
+                  </a>
+                  <a href="mailto:fibaxpharma@gmail.com" className="block text-xs font-medium text-charcoal-muted hover:text-brand transition-colors">
                     fibaxpharma@gmail.com
                   </a>
-                  <p className="text-xs text-charcoal-muted">info@fibaxpharma.com</p>
                 </div>
-                <p className="text-[11px] text-charcoal-subtle mt-1">24-hour response guarantee</p>
+                <p className="text-[11px] text-charcoal-subtle mt-1.5 flex items-center gap-1">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                  <span>Guaranteed response within 24 hours</span>
+                </p>
               </div>
             </div>
 
@@ -332,7 +342,9 @@ export function Contact() {
                 <p className="mt-1 text-xs font-bold text-charcoal leading-relaxed">
                   SCO. 29, Metro Plaza, Zirakpur, Punjab - 140603, India
                 </p>
-                <p className="text-[11px] text-charcoal-subtle mt-1">Near Chandigarh Tricity Pharma Hub</p>
+                <p className="text-[11px] text-charcoal-subtle mt-1.5">
+                  WHO-GMP &amp; AYUSH Licensed Manufacturing
+                </p>
               </div>
             </div>
           </div>
@@ -737,38 +749,51 @@ export function Contact() {
                 <span className="text-xs font-bold uppercase tracking-wider text-amber-300 block mb-2">
                   The Fibax Promise
                 </span>
-                <h3 className="text-lg font-black mb-4">Why Choose Fibax Ayurveda?</h3>
-                <ul className="space-y-3 text-xs text-sand-warm/90">
+                <h3
+                  style={{ color: '#ffffff' }}
+                  className="text-lg font-black text-white !text-white mb-4"
+                >
+                  Why Choose Fibax Ayurveda?
+                </h3>
+                <ul className="space-y-3 text-xs text-white">
                   <li className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>100% Certified WHO-GMP & Ministry of AYUSH Formulations</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-300 flex-shrink-0" />
+                    <span style={{ color: '#ffffff' }} className="text-white !text-white">
+                      100% Certified WHO-GMP &amp; Ministry of AYUSH Formulations
+                    </span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>Pure Himalayan Botanicals & Zero Harmful Chemicals</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-300 flex-shrink-0" />
+                    <span style={{ color: '#ffffff' }} className="text-white !text-white">
+                      Pure Himalayan Botanicals &amp; Zero Harmful Chemicals
+                    </span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>Ayurvedic Doctor Consultations & Dosage Guidance</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-300 flex-shrink-0" />
+                    <span style={{ color: '#ffffff' }} className="text-white !text-white">
+                      Ayurvedic Doctor Consultations &amp; Dosage Guidance
+                    </span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>24-48 Hours Express Dispatch with Live Delhivery Tracking</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-300 flex-shrink-0" />
+                    <span style={{ color: '#ffffff' }} className="text-white !text-white">
+                      24-48 Hours Express Dispatch with Live Delhivery Tracking
+                    </span>
                   </li>
                   <li className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-leaf flex-shrink-0" />
-                    <span>Pan-India Cash on Delivery (COD) & Easy Returns</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-300 flex-shrink-0" />
+                    <span style={{ color: '#ffffff' }} className="text-white !text-white">
+                      Pan-India Cash on Delivery (COD) &amp; Easy Returns
+                    </span>
                   </li>
                 </ul>
 
                 <div className="mt-6 pt-5 border-t border-white/10">
                   <a
-                    href="https://wa.me/917657963458?text=Hello%20Fibax%20Ayurveda,%20I%20would%20like%20to%20consult%20about%20your%20products"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 rounded-xl bg-leaf text-forest-deep font-bold text-xs hover:bg-leaf-light transition-colors text-center block"
+                    href="mailto:info@fibaxpharma.com"
+                    className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-colors text-center block"
                   >
-                    Quick WhatsApp Chat (+91-7657963458)
+                    Email Support Desk (info@fibaxpharma.com)
                   </a>
                 </div>
               </div>

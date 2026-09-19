@@ -113,6 +113,38 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const sendOtp = async (phone) => {
+    try {
+      const res = await apiRequest('/api/auth/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone })
+      });
+      return res;
+    } catch (err) {
+      return { success: false, error: err.message || 'Failed to send OTP.' };
+    }
+  };
+
+  const verifyOtp = async (phone, otp, name = '') => {
+    try {
+      const res = await apiRequest('/api/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone, otp, name })
+      });
+      if (res.success && res.token) {
+        setToken(res.token);
+        setCurrentUser(res.user);
+        localStorage.setItem('fibax_auth_token', res.token);
+        localStorage.setItem('fibax_user', JSON.stringify(res.user));
+        return { success: true, user: res.user, token: res.token };
+      } else {
+        return { success: false, error: res.error || 'OTP verification failed.' };
+      }
+    } catch (err) {
+      return { success: false, error: err.message || 'Verification network error.' };
+    }
+  };
+
   const updateProfile = async (profileData) => {
     if (!token) return { success: false, error: 'Not logged in.' };
     try {
@@ -179,6 +211,8 @@ export function AuthProvider({ children }) {
         isAuthenticated: !!currentUser,
         login,
         register,
+        sendOtp,
+        verifyOtp,
         logout,
         updateProfile,
         userOrders,

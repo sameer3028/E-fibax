@@ -130,27 +130,27 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
             <h5 className="font-heading font-semibold text-white text-sm mb-3">Customer Support</h5>
             <ul className="space-y-2">
               <li>
-                <a href="#track-order" className="hover:text-gold transition-colors">
+                <a href="/track" className="hover:text-gold transition-colors">
                   Track Your Order (Delhivery)
                 </a>
               </li>
               <li>
-                <a href="#shipping-policy" className="hover:text-gold transition-colors">
+                <a href="/contact" className="hover:text-gold transition-colors">
                   Shipping & Free Delivery Policy
                 </a>
               </li>
               <li>
-                <a href="#refund-returns-policy" className="hover:text-gold transition-colors">
+                <a href="/contact" className="hover:text-gold transition-colors">
                   Refund & Return Policy
                 </a>
               </li>
               <li>
-                <a href="#terms-conditions" className="hover:text-gold transition-colors">
+                <a href="/about" className="hover:text-gold transition-colors">
                   Terms & Conditions
                 </a>
               </li>
               <li>
-                <a href="#privacy-policy" className="hover:text-gold transition-colors">
+                <a href="/about" className="hover:text-gold transition-colors">
                   Privacy Policy
                 </a>
               </li>

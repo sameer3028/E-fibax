@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { ChevronDown, Menu, X, Sparkles, Phone, ShieldCheck, Globe, Building2, Package, ArrowRight, User, Truck } from 'lucide-react';
+import { ChevronDown, Menu, X, Sparkles, PhoneCall, ShieldCheck, Globe, Building2, Package, ArrowRight, User, Truck, Headphones } from 'lucide-react';
 import { CATEGORIES } from '../data/categories';
 import { CONCERNS } from '../data/concerns';
 
@@ -10,7 +10,8 @@ export function Navbar({
   onSelectCategory,
   onSelectConcern,
   onOpenSearch,
-  onOpenTrackOrder
+  onOpenTrackOrder,
+  onOpenCallback
 }) {
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
@@ -162,16 +163,7 @@ export function Navbar({
             </button>
           </div>
 
-          {/* Quick Contact / Ayurvedic Helpline Pill */}
-          <div className="hidden md:flex items-center gap-3">
-            <a
-              href="tel:+918872544458"
-              className="flex items-center gap-2 text-xs font-semibold text-forest-deep bg-sand px-3 py-1.5 rounded-full border border-sand-border hover:bg-sand-warm transition-colors"
-            >
-              <Phone className="h-3.5 w-3.5 text-forest" />
-              <span>Ayurvedic Care: <strong className="text-forest">+91-8872544458</strong></span>
-            </a>
-          </div>
+
 
           {/* Mobile Menu Trigger Button */}
           <div className="flex lg:hidden w-full justify-between items-center py-2">
@@ -278,15 +270,17 @@ export function Navbar({
             </div>
 
             <div className="pt-2 text-center">
-              <a
-                href="https://wa.me/917657963458?text=Hello%20Fibax%20Ayurveda,%20I%20have%20an%20inquiry%20about%20your%20products"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 w-full py-2 px-3 rounded-xl bg-leaf-soft text-forest text-xs font-bold border border-leaf-border hover:bg-leaf/20 transition-colors"
+              <button
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  if (onOpenCallback) onOpenCallback();
+                  else handleNavClick('contact');
+                }}
+                className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl bg-forest text-white text-xs font-bold shadow-xs hover:bg-forest-dark transition-colors cursor-pointer"
               >
-                <Phone className="h-3.5 w-3.5 text-forest" />
-                <span>Chat on WhatsApp (+91-7657963458)</span>
-              </a>
+                <PhoneCall className="h-3.5 w-3.5 text-leaf" />
+                <span>Request a Call Back</span>
+              </button>
             </div>
           </div>
         )}

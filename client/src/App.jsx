@@ -13,19 +13,22 @@ import { Contact } from './pages/Contact';
 import { Blogs } from './pages/Blogs';
 import { BlogDetail } from './pages/BlogDetail';
 import { BLOG_POSTS } from './data/blogs';
+import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 import { CartDrawer } from './components/common/Cart/CartDrawer';
 import { CheckoutModal } from './components/views/CheckoutModal';
+import { CheckoutCustom } from './pages/CheckoutCustom';
 import { SearchModal } from './components/sections/SearchModal';
 import { AdminLayout } from './components/admin/AdminLayout';
 import { AuthModal } from './components/auth/AuthModal';
 import { AccountModal } from './components/auth/AccountModal';
 import { TrackOrderModal } from './components/common/TrackOrderModal';
+import { CallbackModal } from './components/common/CallbackModal';
 import { BrandLoader } from './components/common/BrandLoader';
 
 function StorefrontApp() {
   const { products } = useProducts();
   const [currentPage, setCurrentPage] = useState('home'); 
-  // 'home' | 'about' | 'products' | 'product-detail' | 'industries' | 'global-reach' | 'contact' | 'admin'
+  // 'home' | 'about' | 'products' | 'product-detail' | 'blogs' | 'blog-detail' | 'contact' | 'admin'
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedBlogPost, setSelectedBlogPost] = useState(null);
   const [activeCategory, setActiveCategory] = useState('all');
@@ -34,61 +37,131 @@ function StorefrontApp() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isTrackOrderOpen, setIsTrackOrderOpen] = useState(false);
   const [trackInitialId, setTrackInitialId] = useState('');
+  const [isCallbackOpen, setIsCallbackOpen] = useState(false);
+  const [callbackDefaultConcern, setCallbackDefaultConcern] = useState('');
 
-  // Sync hash routing e.g. #home, #about, #products, #industries, #global-reach, #contact, #admin, #product/:id
+  const handleOpenCallback = (concern = '') => {
+    setCallbackDefaultConcern(concern || '');
+    setIsCallbackOpen(true);
+  };
+
+  // Helper to push/replace browser history state cleanly without page reload
+  const navigateTo = (url, replace = false) => {
+    const current = window.location.pathname + window.location.search;
+    if (current !== url) {
+      if (replace) {
+        window.history.replaceState({}, '', url);
+      } else {
+        window.history.pushState({}, '', url);
+      }
+    }
+  };
+
+  // Sync clean HTML5 path routing (e.g. /, /about, /products, /product/:slug, /blogs, /blog/:slug, /contact, /admin, /track)
   useEffect(() => {
-    const handleHashRouting = () => {
-      const hash = window.location.hash.replace(/^#\/?/, '').toLowerCase();
+    const handlePathRouting = () => {
+      // 1. Auto-migrate legacy hash URLs if present (e.g. #/product/xyz -> /product/xyz)
+      if (window.location.hash) {
+        const rawHash = window.location.hash.replace(/^#\/?/, '').trim();
+        let migratedPath = null;
+        if (!rawHash || rawHash === 'home') migratedPath = '/';
+        else if (rawHash === 'about' || rawHash === 'industries' || rawHash === 'global-reach' || rawHash === 'global') migratedPath = '/about';
+        else if (rawHash === 'products' || rawHash === 'shop') migratedPath = '/products';
+        else if (rawHash.startsWith('product/')) migratedPath = `/${rawHash}`;
+        else if (rawHash === 'blogs' || rawHash === 'journal') migratedPath = '/blogs';
+        else if (rawHash.startsWith('blog/')) migratedPath = `/${rawHash}`;
+        else if (rawHash === 'contact') migratedPath = '/contact';
+        else if (rawHash === 'admin') migratedPath = '/admin';
+        else if (rawHash === 'checkout' || rawHash === 'checkout-custom') migratedPath = '/checkout-custom';
+        else if (rawHash === 'track' || rawHash.startsWith('track/')) migratedPath = `/${rawHash}`;
 
-      if (!hash || hash === 'home') {
+        if (migratedPath) {
+          window.history.replaceState({}, '', migratedPath);
+        }
+      }
+
+      // 2. Parse current pathname
+      let pathname = window.location.pathname || '/';
+      if (pathname.length > 1 && pathname.endsWith('/')) {
+        pathname = pathname.slice(0, -1);
+      }
+      const searchParams = new URLSearchParams(window.location.search);
+
+      if (pathname === '/' || pathname === '') {
         setCurrentPage('home');
-      } else if (hash === 'about') {
+        document.title = 'Fibax Pharma — Pure Herbal Formulations & Ayurvedic Excellence';
+      } else if (pathname === '/about' || pathname === '/industries' || pathname === '/global-reach') {
         setCurrentPage('about');
-      } else if (hash === 'products' || hash === 'shop') {
+        document.title = 'About Us | Fibax Pharma';
+      } else if (pathname === '/products' || pathname === '/shop') {
+        const cat = searchParams.get('category');
+        const con = searchParams.get('concern');
+        if (cat) setActiveCategory(cat);
+        if (con) setActiveConcern(con);
         setCurrentPage('products');
-      } else if (hash === 'industries' || hash === 'global-reach' || hash === 'global') {
-        setCurrentPage('about');
-      } else if (hash === 'blogs' || hash === 'journal') {
+        document.title = 'Ayurvedic Formulations & Products | Fibax Pharma';
+      } else if (pathname.startsWith('/product/')) {
+        const identifier = decodeURIComponent(pathname.replace(/^\/product\//, '')).trim();
+        const catalog = (products && products.length > 0) ? products : INITIAL_PRODUCTS;
+        const found = catalog.find(
+          (p) => (p.slug && p.slug.toLowerCase() === identifier.toLowerCase()) || String(p.id) === identifier
+        );
+        if (found) {
+          setSelectedProduct(found);
+          setCurrentPage('product-detail');
+          document.title = `${found.title} | Fibax Pharma`;
+        } else {
+          const fallback = INITIAL_PRODUCTS.find(
+            (p) => (p.slug && p.slug.toLowerCase() === identifier.toLowerCase()) || String(p.id) === identifier
+          );
+          if (fallback) {
+            setSelectedProduct(fallback);
+            setCurrentPage('product-detail');
+            document.title = `${fallback.title} | Fibax Pharma`;
+          } else {
+            setSelectedProduct(null);
+            setCurrentPage('product-detail');
+            document.title = 'Product Catalog | Fibax Pharma';
+          }
+        }
+      } else if (pathname === '/blogs' || pathname === '/journal') {
         setCurrentPage('blogs');
-      } else if (hash.startsWith('blog/')) {
-        const identifier = decodeURIComponent(hash.replace('blog/', ''));
+        document.title = 'Ayurvedic Health Journal | Fibax Pharma';
+      } else if (pathname.startsWith('/blog/')) {
+        const identifier = decodeURIComponent(pathname.replace(/^\/blog\//, '')).trim();
         const found = BLOG_POSTS.find(
           (b) => (b.slug && b.slug.toLowerCase() === identifier.toLowerCase()) || String(b.id) === identifier
         );
         if (found) {
           setSelectedBlogPost(found);
           setCurrentPage('blog-detail');
+          document.title = `${found.title} | Fibax Pharma`;
         } else {
           setCurrentPage('blogs');
+          document.title = 'Ayurvedic Health Journal | Fibax Pharma';
         }
-      } else if (hash === 'contact') {
+      } else if (pathname === '/contact') {
         setCurrentPage('contact');
-      } else if (hash === 'track' || hash.startsWith('track/')) {
-        const id = hash.startsWith('track/') ? decodeURIComponent(hash.replace('track/', '')) : '';
+        document.title = 'Contact Us | Fibax Pharma';
+      } else if (pathname === '/admin') {
+        setCurrentPage('admin');
+        document.title = 'Admin Console | Fibax Pharma';
+      } else if (pathname === '/checkout' || pathname === '/checkout-custom') {
+        setCurrentPage('checkout');
+        document.title = 'Checkout | Fibax Ayurveda';
+      } else if (pathname === '/track' || pathname.startsWith('/track/')) {
+        const id = pathname.startsWith('/track/') ? decodeURIComponent(pathname.replace(/^\/track\//, '')).trim() : '';
         setTrackInitialId(id);
         setIsTrackOrderOpen(true);
-      } else if (hash === 'admin' || window.location.pathname === '/admin') {
-        setCurrentPage('admin');
-      } else if (hash.startsWith('product/')) {
-        const identifier = decodeURIComponent(hash.replace('product/', ''));
-        const found = products.find(
-          (p) => (p.slug && p.slug.toLowerCase() === identifier.toLowerCase()) || String(p.id) === identifier
-        );
-        if (found) {
-          setSelectedProduct(found);
-          setCurrentPage('product-detail');
-        } else {
-          setCurrentPage('products');
-        }
       }
     };
 
-    handleHashRouting();
-    window.addEventListener('hashchange', handleHashRouting);
-    return () => window.removeEventListener('hashchange', handleHashRouting);
+    handlePathRouting();
+    window.addEventListener('popstate', handlePathRouting);
+    return () => window.removeEventListener('popstate', handlePathRouting);
   }, [products]);
 
-  // Master navigation handler
+  // Master navigation handler with clean URLs
   const handleNavigate = (pageId, params = null) => {
     if (params) {
       if (params.category) setActiveCategory(params.category);
@@ -100,45 +173,113 @@ function StorefrontApp() {
     if (pageId === 'track') {
       setTrackInitialId(params?.trackingId || '');
       setIsTrackOrderOpen(true);
+      navigateTo('/track');
       return;
     }
 
-    if (pageId === 'product-detail' && params?.product) {
+    let targetUrl = '/';
+    if (pageId === 'home') {
+      targetUrl = '/';
+      setCurrentPage('home');
+      document.title = 'Fibax Pharma — Pure Herbal Formulations & Ayurvedic Excellence';
+    } else if (pageId === 'about') {
+      targetUrl = '/about';
+      setCurrentPage('about');
+      document.title = 'About Us | Fibax Pharma';
+    } else if (pageId === 'products') {
+      const searchParams = new URLSearchParams();
+      const cat = params?.category !== undefined ? params.category : activeCategory;
+      const con = params?.concern !== undefined ? params.concern : activeConcern;
+      if (cat && cat !== 'all') searchParams.set('category', cat);
+      if (con && con !== 'all') searchParams.set('concern', con);
+      const qs = searchParams.toString();
+      targetUrl = qs ? `/products?${qs}` : '/products';
+      setCurrentPage('products');
+      document.title = 'Ayurvedic Formulations & Products | Fibax Pharma';
+    } else if (pageId === 'product-detail' && params?.product) {
       setSelectedProduct(params.product);
-      window.location.hash = `product/${params.product.slug || params.product.id}`;
+      targetUrl = `/product/${params.product.slug || params.product.id}`;
+      setCurrentPage('product-detail');
+      document.title = `${params.product.title} | Fibax Pharma`;
+    } else if (pageId === 'blogs') {
+      targetUrl = '/blogs';
+      setCurrentPage('blogs');
+      document.title = 'Ayurvedic Health Journal | Fibax Pharma';
     } else if (pageId === 'blog-detail' && params?.post) {
       setSelectedBlogPost(params.post);
-      window.location.hash = `blog/${params.post.slug || params.post.id}`;
-    } else {
-      window.location.hash = pageId === 'home' ? '' : pageId;
+      targetUrl = `/blog/${params.post.slug || params.post.id}`;
+      setCurrentPage('blog-detail');
+      document.title = `${params.post.title} | Fibax Pharma`;
+    } else if (pageId === 'contact') {
+      targetUrl = '/contact';
+      setCurrentPage('contact');
+      document.title = 'Contact Us | Fibax Pharma';
+    } else if (pageId === 'admin') {
+      targetUrl = '/admin';
+      setCurrentPage('admin');
+      document.title = 'Admin Console | Fibax Pharma';
+    } else if (pageId === 'checkout' || pageId === 'checkout-custom') {
+      targetUrl = '/checkout-custom';
+      setCurrentPage('checkout');
+      document.title = 'Checkout | Fibax Ayurveda';
     }
 
-    setCurrentPage(pageId);
+    navigateTo(targetUrl);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectProduct = (product) => {
     setSelectedProduct(product);
     setCurrentPage('product-detail');
-    window.location.hash = `product/${product.slug || product.id}`;
+    document.title = `${product.title} | Fibax Pharma`;
+    navigateTo(`/product/${product.slug || product.id}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectCategory = (categorySlug) => {
-    setActiveCategory(categorySlug || 'all');
+    const cat = categorySlug || 'all';
+    setActiveCategory(cat);
     setActiveConcern('all');
     setCurrentPage('products');
-    window.location.hash = 'products';
+    const url = cat !== 'all' ? `/products?category=${encodeURIComponent(cat)}` : '/products';
+    navigateTo(url);
+    document.title = 'Ayurvedic Formulations & Products | Fibax Pharma';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleSelectConcern = (concernSlug) => {
-    setActiveConcern(concernSlug || 'all');
+    const con = concernSlug || 'all';
+    setActiveConcern(con);
     setActiveCategory('all');
     setCurrentPage('products');
-    window.location.hash = 'products';
+    const url = con !== 'all' ? `/products?concern=${encodeURIComponent(con)}` : '/products';
+    navigateTo(url);
+    document.title = 'Ayurvedic Formulations & Products | Fibax Pharma';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // If Dedicated Kapiva-style Checkout page is active, render directly without storefront noise
+  if (currentPage === 'checkout') {
+    return (
+      <>
+        <BrandLoader />
+        <CheckoutCustom
+          onNavigate={handleNavigate}
+          onOpenTrackOrder={(id) => {
+            setTrackInitialId(id || '');
+            setIsTrackOrderOpen(true);
+          }}
+        />
+        <TrackOrderModal
+          isOpen={isTrackOrderOpen}
+          onClose={() => setIsTrackOrderOpen(false)}
+          initialTrackingId={trackInitialId}
+        />
+        <AuthModal />
+        <AccountModal />
+      </>
+    );
+  }
 
   // If Admin view is active, render Admin console directly
   if (currentPage === 'admin') {
@@ -165,6 +306,7 @@ function StorefrontApp() {
           setTrackInitialId(id || '');
           setIsTrackOrderOpen(true);
         }}
+        onOpenCallback={handleOpenCallback}
       />
 
       {/* 2. Main Page Render */}
@@ -213,7 +355,7 @@ function StorefrontApp() {
                 allProducts={products}
                 onBack={() => handleNavigate('products')}
                 onSelectProduct={handleSelectProduct}
-                onCheckout={() => setIsCheckoutOpen(true)}
+                onCheckout={() => handleNavigate('checkout')}
                 onSelectConcern={handleSelectConcern}
                 onNavigate={handleNavigate}
               />
@@ -233,7 +375,7 @@ function StorefrontApp() {
             )}
 
             {currentPage === 'contact' && (
-              <Contact />
+              <Contact onOpenCallback={handleOpenCallback} />
             )}
           </motion.div>
         </AnimatePresence>
@@ -248,10 +390,11 @@ function StorefrontApp() {
           setTrackInitialId(id || '');
           setIsTrackOrderOpen(true);
         }}
+        onOpenCallback={handleOpenCallback}
       />
 
       {/* 4. Slide-over Cart Drawer */}
-      <CartDrawer onCheckout={() => setIsCheckoutOpen(true)} />
+      <CartDrawer onCheckout={() => handleNavigate('checkout')} />
 
       {/* 5. 3-Step Checkout Modal */}
       <CheckoutModal
@@ -288,6 +431,13 @@ function StorefrontApp() {
         isOpen={isTrackOrderOpen}
         onClose={() => setIsTrackOrderOpen(false)}
         initialTrackingId={trackInitialId}
+      />
+
+      {/* 10. Ayurvedic Care Call Back Request Modal */}
+      <CallbackModal
+        isOpen={isCallbackOpen}
+        onClose={() => setIsCallbackOpen(false)}
+        defaultConcern={callbackDefaultConcern}
       />
     </div>
   );

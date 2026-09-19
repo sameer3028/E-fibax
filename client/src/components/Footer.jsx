@@ -17,7 +17,7 @@ import {
 import { CATEGORIES } from '../data/categories';
 import { CONCERNS } from '../data/concerns';
 
-export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTrackOrder }) {
+export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTrackOrder, onOpenCallback }) {
   const handleNav = (pageId, param = null) => {
     if (onNavigate) {
       onNavigate(pageId, param);
@@ -207,9 +207,9 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
                 </span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="h-4 w-4 text-leaf flex-shrink-0" />
-                <a href="tel:+918872544458" className="hover:text-white">
-                  +91-8872544458 / +91-7657963458
+                <Mail className="h-4 w-4 text-leaf flex-shrink-0" />
+                <a href="mailto:info@fibaxpharma.com" className="hover:text-white">
+                  info@fibaxpharma.com
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
@@ -226,10 +226,10 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
 
             <div className="mt-4 pt-3 border-t border-white/10">
               <button
-                onClick={() => handleNav('contact')}
-                className="w-full py-2 px-3 rounded-xl bg-brand text-white font-bold text-xs hover:bg-brand-hover transition-colors shadow-xs text-center"
+                onClick={() => onOpenCallback ? onOpenCallback() : handleNav('contact')}
+                className="w-full py-2.5 px-3 rounded-xl bg-brand text-white font-bold text-xs hover:bg-brand-hover transition-colors shadow-xs text-center cursor-pointer"
               >
-                Consult Ayurvedic Doctor
+                Request Doctor Call Back
               </button>
             </div>
           </div>
@@ -250,11 +250,11 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
               <Truck className="h-3 w-3 inline" /> Track Order
             </button>
             <span>•</span>
-            <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Privacy Policy</a>
+            <button onClick={() => handleNav('about')} className="hover:underline">Privacy Policy</button>
             <span>•</span>
-            <a href="#about" onClick={() => handleNav('about')} className="hover:underline">Terms of Service</a>
+            <button onClick={() => handleNav('about')} className="hover:underline">Terms of Service</button>
             <span>•</span>
-            <a href="#contact" onClick={() => handleNav('contact')} className="hover:underline">Shipping & Return Policy</a>
+            <button onClick={() => handleNav('contact')} className="hover:underline">Shipping & Return Policy</button>
           </div>
         </div>
         <p className="text-[10px] text-sand-warm/40 mt-3 text-center sm:text-left leading-relaxed">

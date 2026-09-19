@@ -7,6 +7,7 @@ import {
   ShoppingBag,
   Search,
   PhoneCall,
+  HelpCircle,
   ShieldCheck,
   Truck,
   Sparkles,
@@ -20,7 +21,8 @@ export function Header({
   onSelectConcern,
   onSelectCategory,
   onOpenSearch,
-  onOpenTrackOrder
+  onOpenTrackOrder,
+  onOpenCallback
 }) {
   const { totalItemsCount, openCart } = useCart();
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
@@ -60,13 +62,13 @@ export function Header({
               <span>Track Order</span>
             </button>
             <span className="text-white/40">|</span>
-            <a
-              href="tel:+918872544458"
-              className="hover:text-leaf transition-colors font-semibold flex items-center gap-1 text-sand-warm"
+            <button
+              onClick={() => onNavigate && onNavigate('contact')}
+              className="hover:text-emerald-300 transition-colors font-semibold flex items-center gap-1 text-sand-warm cursor-pointer"
             >
-              <PhoneCall className="h-3 w-3 text-leaf" />
-              <span>Doctor Helpline: +91-8872544458</span>
-            </a>
+              <HelpCircle className="h-3 w-3 text-leaf" />
+              <span>Contact Support</span>
+            </button>
           </div>
         </div>
       </div>
@@ -196,6 +198,7 @@ export function Header({
         onSelectConcern={onSelectConcern}
         onOpenSearch={onOpenSearch}
         onOpenTrackOrder={onOpenTrackOrder}
+        onOpenCallback={onOpenCallback}
       />
     </header>
   );

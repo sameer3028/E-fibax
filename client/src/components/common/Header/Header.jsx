@@ -139,7 +139,7 @@ export function Header({ onSelectConcern, onSelectCategory, onNavigateHome, onOp
             </button>
 
             <a
-              href="#about"
+              href="/about"
               className="px-3.5 py-2 text-sm font-semibold text-charcoal hover:text-forest transition-colors rounded-xl hover:bg-sand"
             >
               Our Purity

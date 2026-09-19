@@ -145,19 +145,33 @@ export function TrackOrderModal({ isOpen, onClose, initialTrackingId = '' }) {
                   </span>
                 </div>
 
-                <span className="text-[11px] text-charcoal-muted flex items-center gap-1">
-                  <Calendar className="h-3.5 w-3.5 text-brand" />
-                  <span>
-                    Est. Delivery:{' '}
-                    <strong className="text-forest">
-                      {new Date(trackingData.estimatedDelivery).toLocaleDateString('en-IN', {
-                        weekday: 'short',
-                        month: 'short',
-                        day: 'numeric'
-                      })}
-                    </strong>
+                <div className="flex items-center gap-3">
+                  <span className="text-[11px] text-charcoal-muted flex items-center gap-1">
+                    <Calendar className="h-3.5 w-3.5 text-brand" />
+                    <span>
+                      Est. Delivery:{' '}
+                      <strong className="text-forest">
+                        {new Date(trackingData.estimatedDelivery).toLocaleDateString('en-IN', {
+                          weekday: 'short',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </strong>
+                    </span>
                   </span>
-                </span>
+
+                  {trackingData.trackingId && (
+                    <a
+                      href={`https://www.delhivery.com/track/package/${trackingData.trackingId.replace(/[^0-9a-zA-Z]/g, '')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[11px] font-bold text-forest hover:text-brand hover:underline bg-forest/5 px-2 py-0.5 rounded-md"
+                    >
+                      <span>Delhivery Portal</span>
+                      <ExternalLink className="h-3 w-3" />
+                    </a>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-[11px] pt-1 border-t border-sand-border/60">
