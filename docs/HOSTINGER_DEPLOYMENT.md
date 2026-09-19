@@ -11,6 +11,14 @@ single Node server serves both the REST API and the built React frontend.
 > The storage layer is pluggable. Set `STORAGE_DRIVER=postgres` for Supabase,
 > `mysql` for a MySQL database, or `json` for local development (no DB).
 
+> **Single-domain model.** One Node.js app serves BOTH the React frontend and
+> the `/api` backend on `fibaxpharma.com`. Do **not** also run Hostinger's
+> static "git deploy" on the same domain — it would take over the domain and
+> the backend `/api` would not be reachable. Because frontend and API share the
+> same origin, you do **not** set `VITE_API_URL` (the app calls relative `/api`).
+> If you previously created a static deployment for this domain, remove/disable
+> it so the Node.js app owns the domain.
+
 ---
 
 ## 0. Prerequisites
