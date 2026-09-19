@@ -50,15 +50,16 @@ environment variable:
 
 - `json` (default) — reads/writes local JSON files under `server/data/`.
   No database required, ideal for local development.
-- `mysql` — persists to a MySQL database (used in production on Hostinger).
+- `postgres` — persists to a Supabase / PostgreSQL database (production).
+- `mysql` — persists to a MySQL database (alternative).
 
-For production with MySQL:
+For production with Supabase (PostgreSQL):
 
 ```bash
 cd server
-cp .env.example .env          # fill in DB_* credentials + STORAGE_DRIVER=mysql
+cp .env.example .env          # set STORAGE_DRIVER=postgres + DATABASE_URL
 npm install
-npm run migrate               # import existing server/data/*.json into MySQL
+npm run migrate               # import existing server/data/*.json into the DB
 npm start
 ```
 

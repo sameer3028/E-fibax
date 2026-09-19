@@ -1,12 +1,15 @@
-# Deploying Fibax Pharma to Hostinger (Node.js + MySQL)
+# Deploying Fibax Pharma to Hostinger (Node.js + Supabase/PostgreSQL)
 
 This guide deploys the full app on a Hostinger **"Unlimited"** shared plan using
-hPanel's **Node.js** app tool and a **MySQL** database. The single Node server
-serves both the REST API and the built React frontend.
+hPanel's **Node.js** app tool and a **Supabase (PostgreSQL)** database. The
+single Node server serves both the REST API and the built React frontend.
 
 - Frontend: React (Vite) → built into `client/dist`
 - Backend: Node.js / Express (`server/index.js`)
-- Database: MySQL (via the `STORAGE_DRIVER=mysql` storage layer)
+- Database: Supabase / PostgreSQL (via the `STORAGE_DRIVER=postgres` storage layer)
+
+> The storage layer is pluggable. Set `STORAGE_DRIVER=postgres` for Supabase,
+> `mysql` for a MySQL database, or `json` for local development (no DB).
 
 ---
 
@@ -15,19 +18,21 @@ serves both the REST API and the built React frontend.
 - A Hostinger plan that lists **Node.js** under "Build with" (your Unlimited plan does).
 - A domain pointed at the hosting account.
 - SSH access enabled (hPanel → Advanced → SSH Access). Recommended.
+- A free **Supabase** account: https://supabase.com
 - Git repo: `https://github.com/sameer3028/E-fibax`.
 
 ---
 
-## 1. Create the MySQL database
+## 1. Create the Supabase database
 
-hPanel → **Databases → Management**:
-
-1. Create a new MySQL database, e.g. `uXXXXXXXX_fibax`.
-2. Create a database user with a strong password and grant it **all privileges**
-   on that database.
-3. Note the **host** (usually `localhost`), **database name**, **user**, and
-   **password** — you'll put these in `server/.env`.
+1. In Supabase, create a **New project** and set a strong database password
+   (save it somewhere safe).
+2. Go to **Project Settings → Database → Connection string → URI**.
+3. Copy the **Connection pooling** URI (Transaction mode, port `6543`). It looks
+   like:
+   `postgresql://postgres.<ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres`
+4. You'll paste this into `DATABASE_URL` in `server/.env`. The app creates its
+   table automatically on first run — no manual SQL needed.
 
 ---
 
@@ -59,14 +64,13 @@ Set at least:
 ```env
 PORT=5000
 NODE_ENV=production
-STORAGE_DRIVER=mysql
-DB_HOST=localhost
-DB_PORT=3306
-DB_NAME=uXXXXXXXX_fibax
-DB_USER=uXXXXXXXX_fibax
-DB_PASSWORD=your_strong_password
+STORAGE_DRIVER=postgres
+DATABASE_URL=
+DB_POOL_LIMIT=5
 ```
 
+Paste the Supabase **Connection pooling** URI from step 1 as the value of
+`DATABASE_URL` (it already contains the host, user, and password).
 `.env` is git-ignored and never committed.
 
 ---
@@ -83,10 +87,10 @@ automatically in production.
 
 ---
 
-## 5. Migrate existing data into MySQL
+## 5. Migrate existing data into Supabase
 
 This imports the current `server/data/*.json` (products, orders, users,
-enquiries, admin login, shipping config) into the MySQL `collections` table.
+enquiries, admin login, shipping config) into the Supabase `collections` table.
 Safe to re-run — each collection is fully replaced.
 
 ```bash
@@ -110,10 +114,10 @@ hPanel → **Advanced → Node.js** → **Create application**:
 
 Add the same environment variables from your `.env` in the Node.js app's
 **Environment variables** section (hPanel runs the app via Passenger, which reads
-these). Keep `STORAGE_DRIVER=mysql` and the `DB_*` values.
+these). Keep `STORAGE_DRIVER=postgres` and `DATABASE_URL`.
 
 > Set the application to run a **single instance** (default for this tool). The
-> storage layer keeps an in-memory cache that writes through to MySQL, so a
+> storage layer keeps an in-memory cache that writes through to Supabase, so a
 > single Passenger instance guarantees consistency.
 
 Click **Create**, then **Restart** the application.
@@ -141,8 +145,8 @@ cd ../server && npm install --omit=dev
 ```
 
 Only re-run `npm run migrate` if you intend to overwrite the database with the
-JSON files again (normally you do **not** after go-live, since MySQL is now the
-source of truth).
+JSON files again (normally you do **not** after go-live, since Supabase is now
+the source of truth).
 
 ---
 

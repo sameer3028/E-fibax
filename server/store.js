@@ -19,7 +19,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const DRIVER = (process.env.STORAGE_DRIVER || 'json').toLowerCase();
+// Normalize driver aliases: json | mysql | postgres
+function normalizeDriver(raw) {
+  const d = (raw || 'json').toLowerCase();
+  if (d === 'supabase' || d === 'pg' || d === 'postgresql') return 'postgres';
+  return d;
+}
+const DRIVER = normalizeDriver(process.env.STORAGE_DRIVER);
 
 const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries'];
 const SINGLETON_NAMES = ['admin_auth', 'shipping_config'];
@@ -73,9 +79,11 @@ function writeJsonFile(file, value) {
   }
 }
 
+const DB_DRIVERS = ['mysql', 'postgres'];
+
 export async function initStore() {
-  if (DRIVER === 'mysql') {
-    db = await import('./db.js');
+  if (DB_DRIVERS.includes(DRIVER)) {
+    db = await import(DRIVER === 'postgres' ? './pg.js' : './db.js');
     await db.assertConnection();
     await db.initSchema();
     for (const name of ARRAY_NAMES) {
@@ -84,7 +92,7 @@ export async function initStore() {
     for (const name of SINGLETON_NAMES) {
       cache[name] = await db.loadSingleton(name);
     }
-    console.log('🗄️  Storage driver: MySQL');
+    console.log(`🗄️  Storage driver: ${DRIVER === 'postgres' ? 'PostgreSQL (Supabase)' : 'MySQL'}`);
   } else {
     ensureDataDir();
     for (const name of ARRAY_NAMES) {
@@ -103,7 +111,7 @@ export function getArray(name) {
 
 export function setArray(name, arr) {
   cache[name] = Array.isArray(arr) ? arr : [];
-  if (DRIVER === 'mysql') {
+  if (db) {
     db.saveArray(name, cache[name]);
   } else {
     writeJsonFile(FILE_FOR[name], cache[name]);
@@ -117,7 +125,7 @@ export function getSingleton(name) {
 
 export function setSingleton(name, value) {
   cache[name] = value;
-  if (DRIVER === 'mysql') {
+  if (db) {
     db.saveSingleton(name, value);
   } else {
     writeJsonFile(FILE_FOR[name], value);
@@ -125,9 +133,16 @@ export function setSingleton(name, value) {
   return cache[name];
 }
 
-// Wait for any pending async writes (mysql only). No-op for JSON.
+// Wait for any pending async writes (database backends only). No-op for JSON.
 export async function flushStore() {
-  if (DRIVER === 'mysql' && db) {
+  if (db) {
     await db.flush();
+  }
+}
+
+// Close the underlying DB pool (used by scripts so the process can exit).
+export async function closeStore() {
+  if (db && typeof db.closePool === 'function') {
+    await db.closePool();
   }
 }
