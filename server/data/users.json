@@ -1,0 +1,44 @@
+[
+  {
+    "id": "USR-mu400hxkBB0D",
+    "name": "Sameer Sharma",
+    "email": "sameer@fibaxpharma.com",
+    "phone": "9876543210",
+    "salt": "0e0fe52412aa5c21412b8c6af7d7212e",
+    "passwordHash": "d6433b57840337bacaccb1831e53b20e11944a7bb6dee05e9fef0979259080316f640a079d15350b5066c71ef1f1ea2b4e75a9f666ef58eb357b6f0940541bdf",
+    "addresses": [
+      {
+        "id": "addr_1789556968136",
+        "address": "Flat 402, Green Valley",
+        "city": "Zirakpur",
+        "pincode": "140603",
+        "isDefault": true
+      }
+    ],
+    "createdAt": "2026-09-16T11:09:28.136Z",
+    "updatedAt": "2026-09-16T11:09:28.137Z",
+    "lastLoginAt": "2026-09-19T12:52:59.164Z",
+    "loginCount": 1
+  },
+  {
+    "id": "USR-mu40b6c3YJSQ",
+    "name": "Ajay",
+    "email": "sk0402688@gmail.com",
+    "phone": "9878283028",
+    "salt": "beb6933b0b0a973a5c6d60ea8b189a35",
+    "passwordHash": "713bcf9d3872a167749342af531ceae87012a5b38a83805b00999bd3e822bae3663dd518518b978c278f9117d5bf8402dac42041f518c1fd1dc872da855fa89e",
+    "addresses": [
+      {
+        "id": "addr_1789557466323",
+        "address": "zirakpur",
+        "city": "Chandigarh",
+        "pincode": "140507",
+        "isDefault": true
+      }
+    ],
+    "createdAt": "2026-09-16T11:17:46.323Z",
+    "updatedAt": "2026-09-16T11:17:46.323Z",
+    "lastLoginAt": "2026-09-19T13:12:37.453Z",
+    "loginCount": 3
+  }
+]

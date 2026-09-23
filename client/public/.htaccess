@@ -1,0 +1,42 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 1. Block direct web access to sensitive config & repository files
+  RewriteRule ^(\.git|\.env|package\.json|package-lock\.json|server\.log) - [F,L]
+  RewriteCond %{REQUEST_URI} \.(json|md|lock)$
+  RewriteRule ^ - [F,L]
+
+  # 2. Serve real existing static files or directories directly (HTML, CSS, JS, images, uploads, banners)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # 3. Reverse Proxy: Forward all /api requests to Node.js backend on port 5000
+  RewriteRule ^api/(.*)$ http://127.0.0.1:5000/api/$1 [P,L]
+  RewriteRule ^api$ http://127.0.0.1:5000/api [P,L]
+
+  # 4. Fallback for newly uploaded dynamic images not yet on frontend disk: forward to Node.js
+  RewriteRule ^uploads/(.*)$ http://127.0.0.1:5000/uploads/$1 [P,L]
+
+  # 5. React Single Page App (SPA) fallback
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Performance & Security Headers
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+  # Cache static assets for speed
+  <FilesMatch "\.(css|js|webp|png|jpg|jpeg|svg|woff2|ico)$">
+    Header set Cache-Control "max-age=31536000, public, immutable"
+  </FilesMatch>
+
+  # Do not cache index.html so updates reflect immediately
+  <FilesMatch "^index\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>

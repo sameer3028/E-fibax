@@ -1,0 +1,244 @@
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { apiRequest } from '../utils/api';
+
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('fibax_user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch {
+      return null;
+    }
+  });
+
+  const [token, setToken] = useState(() => {
+    return localStorage.getItem('fibax_auth_token') || null;
+  });
+
+  const [userOrders, setUserOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState('login'); // 'login' | 'register'
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
+  const [accountModalTab, setAccountModalTab] = useState('orders'); // 'orders' | 'profile' | 'addresses'
+
+  // Verify session on mount
+  useEffect(() => {
+    if (token) {
+      apiRequest('/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then((res) => {
+          if (res.success && res.user) {
+            setCurrentUser(res.user);
+            localStorage.setItem('fibax_user', JSON.stringify(res.user));
+          } else if (res.status === 401) {
+            // Token expired or invalid
+            logout();
+          }
+        })
+        .catch(() => {
+          // Network offline or failed; keep local cache
+        });
+    }
+  }, [token]);
+
+  // Fetch orders whenever user is authenticated or opens account
+  const fetchUserOrders = async () => {
+    if (!token) return [];
+    setLoadingOrders(true);
+    try {
+      const res = await apiRequest('/api/user/orders', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.success && Array.isArray(res.data)) {
+        setUserOrders(res.data);
+        return res.data;
+      }
+    } catch (err) {
+      console.error('Failed to fetch user orders:', err);
+    } finally {
+      setLoadingOrders(false);
+    }
+    return [];
+  };
+
+  useEffect(() => {
+    if (currentUser && token) {
+      fetchUserOrders();
+    }
+  }, [currentUser?.id, token]);
+
+  const login = async (identifier, password) => {
+    try {
+      const res = await apiRequest('/api/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({ identifier, password })
+      });
+      if (res.success) {
+        setToken(res.token);
+        setCurrentUser(res.user);
+        localStorage.setItem('fibax_auth_token', res.token);
+        localStorage.setItem('fibax_user', JSON.stringify(res.user));
+        setIsAuthModalOpen(false);
+        return { success: true, user: res.user };
+      } else {
+        return { success: false, error: res.error || 'Login failed.' };
+      }
+    } catch (err) {
+      return { success: false, error: err.message || 'Network error. Please try again.' };
+    }
+  };
+
+  const register = async (userData) => {
+    try {
+      const res = await apiRequest('/api/auth/register', {
+        method: 'POST',
+        body: JSON.stringify(userData)
+      });
+      if (res.success) {
+        setToken(res.token);
+        setCurrentUser(res.user);
+        localStorage.setItem('fibax_auth_token', res.token);
+        localStorage.setItem('fibax_user', JSON.stringify(res.user));
+        setIsAuthModalOpen(false);
+        return { success: true, user: res.user };
+      } else {
+        return { success: false, error: res.error || 'Registration failed.' };
+      }
+    } catch (err) {
+      return { success: false, error: err.message || 'Network error. Please try again.' };
+    }
+  };
+
+  const sendOtp = async (phone) => {
+    try {
+      const res = await apiRequest('/api/auth/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone })
+      });
+      return res;
+    } catch (err) {
+      return { success: false, error: err.message || 'Failed to send OTP.' };
+    }
+  };
+
+  const verifyOtp = async (phone, otp, name = '') => {
+    try {
+      const res = await apiRequest('/api/auth/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ phone, otp, name })
+      });
+      if (res.success && res.token) {
+        setToken(res.token);
+        setCurrentUser(res.user);
+        localStorage.setItem('fibax_auth_token', res.token);
+        localStorage.setItem('fibax_user', JSON.stringify(res.user));
+        return { success: true, user: res.user, token: res.token };
+      } else {
+        return { success: false, error: res.error || 'OTP verification failed.' };
+      }
+    } catch (err) {
+      return { success: false, error: err.message || 'Verification network error.' };
+    }
+  };
+
+  const updateProfile = async (profileData) => {
+    if (!token) return { success: false, error: 'Not logged in.' };
+    try {
+      const res = await apiRequest('/api/auth/profile', {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(profileData)
+      });
+      if (res.success) {
+        setCurrentUser(res.user);
+        localStorage.setItem('fibax_user', JSON.stringify(res.user));
+        return { success: true, user: res.user };
+      } else {
+        return { success: false, error: res.error || 'Update failed.' };
+      }
+    } catch (err) {
+      return { success: false, error: err.message || 'Network error.' };
+    }
+  };
+
+  const logout = () => {
+    if (token) {
+      apiRequest('/api/auth/logout', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(() => {});
+    }
+    setToken(null);
+    setCurrentUser(null);
+    setUserOrders([]);
+    localStorage.removeItem('fibax_auth_token');
+    localStorage.removeItem('fibax_user');
+    setIsAccountModalOpen(false);
+  };
+
+  const openAuthModal = (tab = 'login') => {
+    setAuthModalTab(tab);
+    setIsAuthModalOpen(true);
+  };
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false);
+  };
+
+  const openAccountModal = (tab = 'orders') => {
+    setAccountModalTab(tab);
+    setIsAccountModalOpen(true);
+    if (currentUser) {
+      fetchUserOrders();
+    }
+  };
+
+  const closeAccountModal = () => {
+    setIsAccountModalOpen(false);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        currentUser,
+        token,
+        isAuthenticated: !!currentUser,
+        login,
+        register,
+        sendOtp,
+        verifyOtp,
+        logout,
+        updateProfile,
+        userOrders,
+        loadingOrders,
+        fetchUserOrders,
+        isAuthModalOpen,
+        authModalTab,
+        setAuthModalTab,
+        openAuthModal,
+        closeAuthModal,
+        isAccountModalOpen,
+        accountModalTab,
+        setAccountModalTab,
+        openAccountModal,
+        closeAccountModal
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
+}
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "banner_default",
+    "title": "Default About Us Hero",
+    "enabled": true,
+    "status": "published",
+    "sortOrder": 1,
+    "desktopImage": "",
+    "mobileImage": "",
+    "badgeText": "AUTHENTIC AYURVEDIC HERITAGE",
+    "heading": "Pioneering Pure Ayurvedic Healthcare & Natural Wellness",
+    "description": "Fibax Ayurveda is a premier herbal wellness brand dedicated to formulating authentic, research-driven botanical remedies. Backed by WHO-GMP certified infrastructure, we deliver pure, chemical-free healthcare solutions directly to households across India.",
+    "primaryBtnText": "Browse 250+ Formulations",
+    "primaryBtnUrl": "products",
+    "secondaryBtnText": "Contact Us",
+    "secondaryBtnUrl": "contact",
+    "trustPoints": [
+      "Pure & Natural Ingredients",
+      "WHO-GMP Certified",
+      "Safe & Effective Formulations",
+      "Made for Healthier India"
+    ],
+    "createdAt": "2026-09-23T07:53:21.136Z",
+    "updatedAt": "2026-09-23T08:28:36.204Z"
+  }
+]

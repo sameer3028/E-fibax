@@ -1,0 +1,159 @@
+// Centralized API configuration and resilient request utility for Fibax Pharma
+
+// Base URL detection:
+// 1. Use VITE_API_URL environment variable if defined (e.g. in .env)
+// 2. Otherwise default to relative path ''
+let detectedBaseUrl = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
+/**
+ * Returns the currently active API base URL.
+ */
+export function getApiBase() {
+  return detectedBaseUrl;
+}
+
+/**
+ * Overrides the active API base URL at runtime if needed.
+ */
+export function setApiBase(url) {
+  detectedBaseUrl = (url || '').replace(/\/$/, '');
+}
+
+/**
+ * Resolves an API path (e.g. '/api/admin/login' or 'products') to a full URL.
+ */
+export function getApiUrl(endpoint, customBase = null) {
+  if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+    return endpoint;
+  }
+  const base = customBase !== null ? customBase : detectedBaseUrl;
+  const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  const fullEndpoint = cleanEndpoint.startsWith('/api') ? cleanEndpoint : `/api${cleanEndpoint}`;
+  return `${base}${fullEndpoint}`;
+}
+
+/**
+ * Universal safe API fetch that handles HTML fallbacks, non-JSON responses,
+ * network disconnects, and CORS errors with clean user-friendly messaging.
+ *
+ * In LOCAL DEVELOPMENT only, if a relative /api request fails (e.g. running the
+ * built app without Vite's dev proxy), it retries once against port 5050 on
+ * localhost. This fallback is intentionally disabled in production, where the
+ * public port 5050 is never reachable and would only cause connection timeouts.
+ */
+export async function apiRequest(endpoint, options = {}) {
+  const primaryUrl = getApiUrl(endpoint);
+  const headers = {
+    'Content-Type': 'application/json',
+    ...(options.headers || {})
+  };
+
+  if (options.body instanceof FormData) {
+    delete headers['Content-Type'];
+  }
+
+  // Attempt 1: Using current base URL
+  let result = await executeFetch(primaryUrl, options, headers);
+
+  // Local-dev-only fallback: retry on localhost:5050 if the relative /api call
+  // failed. Never runs in production (only for localhost / 127.0.0.1).
+  const host = typeof window !== 'undefined' ? window.location.hostname : '';
+  const isLocalhost = host === 'localhost' || host === '127.0.0.1';
+  if (
+    (result.htmlError || result.networkError) &&
+    typeof window !== 'undefined' &&
+    !detectedBaseUrl &&
+    isLocalhost &&
+    window.location.port !== '5000'
+  ) {
+    const fallbackBase = `${window.location.protocol}//${window.location.hostname}:5050`;
+    const fallbackUrl = getApiUrl(endpoint, fallbackBase);
+    console.warn(`[Fibax API] Primary endpoint failed (${primaryUrl}). Retrying on local backend: ${fallbackUrl}`);
+
+    try {
+      const fallbackResult = await executeFetch(fallbackUrl, options, headers);
+      if (fallbackResult.success || (!fallbackResult.htmlError && !fallbackResult.networkError)) {
+        detectedBaseUrl = fallbackBase;
+        return fallbackResult;
+      }
+    } catch (e) {
+      // Fallback also failed, will return original error
+    }
+  }
+
+  return result;
+}
+
+async function executeFetch(url, options, headers) {
+  let res;
+  try {
+    res = await fetch(url, {
+      ...options,
+      headers
+    });
+  } catch (netErr) {
+    console.error(`[API Network Error] ${url}:`, netErr);
+    return {
+      success: false,
+      error: 'Unable to connect to server. Please check your internet connection or verify the backend server is running.',
+      networkError: true
+    };
+  }
+
+  const contentType = res.headers.get('content-type') || '';
+  let text = '';
+  try {
+    text = await res.text();
+  } catch (readErr) {
+    return {
+      success: false,
+      status: res.status,
+      error: 'Failed to read response from server.'
+    };
+  }
+
+  // Check if response is HTML (web server returning index.html or 404 HTML page)
+  const isHtml = contentType.includes('text/html') ||
+    text.trim().startsWith('<!DOCTYPE') ||
+    text.trim().startsWith('<html') ||
+    text.trim().startsWith('<head');
+
+  if (isHtml) {
+    console.error(`[API Error] ${url} returned HTML instead of JSON:`, text.slice(0, 200));
+    return {
+      success: false,
+      status: res.status,
+      error: 'Backend API service is not reachable or not running on this server. The web server returned an HTML page instead of API JSON. Please make sure the Node.js backend server (port 5050) is running.',
+      htmlError: true
+    };
+  }
+
+  let data = {};
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch (parseErr) {
+    console.error(`[API Parse Error] ${url}:`, text);
+    return {
+      success: false,
+      status: res.status,
+      error: 'Server returned an invalid response format.',
+      rawText: text
+    };
+  }
+
+  if (!res.ok || data.success === false) {
+    return {
+      success: false,
+      status: res.status,
+      error: data.error || data.message || `Request failed with status ${res.status}`,
+      ...data
+    };
+  }
+
+  return {
+    success: true,
+    status: res.status,
+    ...data
+  };
+}
+
