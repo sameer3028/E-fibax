@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { formatPrice } from '../../lib/utils';
+import { apiRequest } from '../../utils/api';
 import {
   X,
   Package,
@@ -15,18 +16,23 @@ import {
   Edit2,
   Save,
   ShoppingBag,
-  ArrowRight
+  ArrowRight,
+  XCircle,
+  AlertCircle,
+  RefreshCw
 } from 'lucide-react';
 
 export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
   const {
     currentUser,
+    token,
     isAccountModalOpen,
     closeAccountModal,
     accountModalTab,
     setAccountModalTab,
     userOrders,
     loadingOrders,
+    fetchUserOrders,
     updateProfile,
     logout
   } = useAuth();
@@ -39,6 +45,13 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
   const [editCity, setEditCity] = useState(currentUser?.addresses?.[0]?.city || '');
   const [editPincode, setEditPincode] = useState(currentUser?.addresses?.[0]?.pincode || '');
   const [profileMessage, setProfileMessage] = useState('');
+
+  // Cancellation Modal state
+  const [cancelModalOrder, setCancelModalOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState('Changed my mind');
+  const [isCancelling, setIsCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState('');
+  const [cancelSuccess, setCancelSuccess] = useState('');
 
   if (!isAccountModalOpen || !currentUser) return null;
 
@@ -59,8 +72,51 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
     }
   };
 
+  const isCancellable = (order) => {
+    if (!order || order.status === 'Cancelled') return false;
+    const s = (order.status || '').toLowerCase();
+    return !['in transit', 'dispatched', 'out for delivery', 'delivered', 'rto', 'shipped'].includes(s);
+  };
+
+  const handleConfirmCancel = async () => {
+    if (!cancelModalOrder) return;
+    setIsCancelling(true);
+    setCancelError('');
+    setCancelSuccess('');
+
+    try {
+      const res = await apiRequest(`/api/orders/${cancelModalOrder.orderId}/cancel`, {
+        method: 'POST',
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: JSON.stringify({ reason: cancelReason })
+      });
+
+      if (res.success) {
+        setCancelSuccess(`Order #${cancelModalOrder.orderId} cancelled successfully.`);
+        if (fetchUserOrders) await fetchUserOrders();
+        setTimeout(() => {
+          setCancelModalOrder(null);
+          setCancelSuccess('');
+          setCancelReason('Changed my mind');
+        }, 1500);
+      } else {
+        setCancelError(res.error || 'Failed to cancel order.');
+      }
+    } catch (err) {
+      setCancelError('Error cancelling order: ' + err.message);
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
     switch (status?.toLowerCase()) {
+      case 'cancelled':
+        return (
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-800">
+            <XCircle className="h-3 w-3" /> Order Cancelled
+          </span>
+        );
       case 'delivered':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
@@ -68,6 +124,8 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
           </span>
         );
       case 'shipped':
+      case 'in transit':
+      case 'dispatched':
         return (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-800">
             <Truck className="h-3 w-3" /> In Transit
@@ -223,7 +281,7 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
                             <span className="text-forest font-mono font-bold text-[11px] bg-sand px-2 py-0.5 rounded border border-sand-border">
                               AWB: {order.trackingId || 'Generated'}
                             </span>
-                            {onOpenTrackOrder && (
+                            {onOpenTrackOrder && order.status !== 'Cancelled' && (
                               <button
                                 onClick={() => {
                                   closeAccountModal();
@@ -233,6 +291,20 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
                               >
                                 <ExternalLink className="h-2.5 w-2.5" />
                                 Track
+                              </button>
+                            )}
+                            {isCancellable(order) && (
+                              <button
+                                onClick={() => {
+                                  setCancelModalOrder(order);
+                                  setCancelReason('Changed my mind');
+                                  setCancelError('');
+                                  setCancelSuccess('');
+                                }}
+                                className="px-2.5 py-1 rounded-lg bg-rose-600 text-white font-bold text-[11px] hover:bg-rose-700 transition-colors flex items-center gap-1 shadow-xs"
+                              >
+                                <XCircle className="h-2.5 w-2.5" />
+                                Cancel Order
                               </button>
                             )}
                           </div>
@@ -266,12 +338,19 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
                           ))}
                         </div>
 
-                        {/* Shipping Destination */}
-                        {order.shipping?.address && (
-                          <div className="text-[11px] text-charcoal-muted pt-2 border-t border-sand-border/60">
-                            Deliver to: {order.shipping.address}, {order.shipping.city} - {order.shipping.pincode}
-                          </div>
-                        )}
+                        {/* Shipping Destination & Cancelled note */}
+                        <div className="pt-2 border-t border-sand-border/60 flex flex-wrap items-center justify-between gap-2 text-[11px]">
+                          {order.shipping?.address && (
+                            <span className="text-charcoal-muted">
+                              Deliver to: {order.shipping.address}, {order.shipping.city} - {order.shipping.pincode}
+                            </span>
+                          )}
+                          {order.status === 'Cancelled' && (
+                            <span className="text-rose-700 font-semibold bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                              Order cancelled successfully.
+                            </span>
+                          )}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -459,6 +538,92 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
               </div>
             )}
           </div>
+
+          {/* Cancellation Confirmation Dialog Overlay */}
+          {cancelModalOrder && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+              <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-sand-border animate-scaleIn space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-sand-border">
+                  <div className="flex items-center gap-2 text-rose-600 font-bold text-base">
+                    <AlertCircle className="h-5 w-5" />
+                    <span>Cancel Order #{cancelModalOrder.orderId}</span>
+                  </div>
+                  <button
+                    disabled={isCancelling}
+                    onClick={() => setCancelModalOrder(null)}
+                    className="p-1 rounded-lg text-charcoal-subtle hover:text-charcoal hover:bg-sand"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                <p className="text-xs text-charcoal-muted leading-relaxed">
+                  Are you sure you want to cancel Order <strong>#{cancelModalOrder.orderId}</strong>? Once cancelled, this order cannot be shipped and any active courier dispatch will be revoked.
+                </p>
+
+                {/* Reason Selector */}
+                <div>
+                  <label className="block text-xs font-bold text-charcoal mb-1.5">
+                    Reason for Cancellation (Optional):
+                  </label>
+                  <select
+                    value={cancelReason}
+                    onChange={(e) => setCancelReason(e.target.value)}
+                    className="w-full px-3 py-2 bg-sand border border-sand-border rounded-xl text-xs font-medium text-charcoal focus:outline-none focus:ring-2 focus:ring-forest/20"
+                  >
+                    <option value="Changed my mind">Changed my mind</option>
+                    <option value="Ordered by mistake">Ordered by mistake</option>
+                    <option value="Delivery taking too long">Delivery taking too long</option>
+                    <option value="Found a better option">Found a better option</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+
+                {cancelError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+                    <XCircle className="h-4 w-4 text-rose-600 flex-shrink-0" />
+                    <span>{cancelError}</span>
+                  </div>
+                )}
+
+                {cancelSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                    <span>{cancelSuccess}</span>
+                  </div>
+                )}
+
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-sand-border">
+                  <button
+                    type="button"
+                    disabled={isCancelling}
+                    onClick={() => setCancelModalOrder(null)}
+                    className="px-4 py-2 rounded-xl border border-sand-border text-xs font-bold text-charcoal hover:bg-sand transition-colors"
+                  >
+                    Keep Order
+                  </button>
+                  <button
+                    type="button"
+                    disabled={isCancelling}
+                    onClick={handleConfirmCancel}
+                    className="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition-colors flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+                  >
+                    {isCancelling ? (
+                      <>
+                        <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                        Cancelling...
+                      </>
+                    ) : (
+                      <>
+                        <XCircle className="h-3.5 w-3.5" />
+                        Cancel Order
+                      </>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

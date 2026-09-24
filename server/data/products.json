@@ -844,7 +844,7 @@
     "mrp": 235,
     "salePrice": 229,
     "discountPercent": 3,
-    "stockQuantity": 51,
+    "stockQuantity": 50,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/livupchar.png",

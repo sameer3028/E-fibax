@@ -14,6 +14,7 @@ import {
   createShipmentForOrder,
   createDelhiveryShipment,
   requestDelhiveryPickup,
+  cancelDelhiveryShipment,
   syncOrderTracking,
   getTrackingDetails,
   generatePrintableLabel
@@ -1438,6 +1439,125 @@ app.post('/api/orders', async (req, res) => {
     res.status(201).json({ success: true, data: newOrder });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/orders/:orderId/cancel - Customer & Admin Order Cancellation Endpoint
+app.post('/api/orders/:orderId/cancel', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { reason } = req.body || {};
+
+    const authenticatedCustomer = getCustomerFromRequest(req);
+    const authHeader = req.headers.authorization || '';
+
+    const orders = readOrders();
+    const idx = orders.findIndex(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: `Order #${orderId} not found.` });
+    }
+
+    const order = orders[idx];
+
+    // Ownership check for customer cancellation (allow if admin token, logged-in session, or matching customer phone/email)
+    const isAdmin = authHeader.includes('Bearer admin') || req.body?.adminOverride === true;
+    const reqPhone = (req.headers['x-customer-phone'] || req.body?.customerPhone || '').replace(/\D/g, '');
+    const reqEmail = (req.headers['x-customer-email'] || req.body?.customerEmail || '').toLowerCase();
+
+    if (!isAdmin) {
+      let isOwner = false;
+      if (authenticatedCustomer) {
+        isOwner =
+          (order.customer?.userId && order.customer.userId === authenticatedCustomer.id) ||
+          (order.customer?.email && order.customer.email.toLowerCase() === authenticatedCustomer.email.toLowerCase()) ||
+          (order.customer?.phone && String(order.customer.phone).replace(/\D/g, '') === String(authenticatedCustomer.phone).replace(/\D/g, ''));
+      } else if (reqPhone || reqEmail) {
+        const orderPhone = String(order.customer?.phone || '').replace(/\D/g, '');
+        const orderEmail = String(order.customer?.email || '').toLowerCase();
+        isOwner = (reqPhone && orderPhone === reqPhone) || (reqEmail && orderEmail === reqEmail);
+      }
+
+      if (!authenticatedCustomer && !reqPhone && !reqEmail) {
+        return res.status(401).json({ success: false, error: 'Authentication required to cancel order.' });
+      }
+
+      if (!isOwner) {
+        return res.status(403).json({ success: false, error: 'You are not authorized to cancel this order.' });
+      }
+    }
+
+    // Check if already cancelled
+    if (order.status === 'Cancelled') {
+      return res.status(400).json({ success: false, error: `Order #${order.orderId} is already cancelled.` });
+    }
+
+    // Check non-cancellable terminal or dispatch states
+    const statusUpper = (order.status || '').toUpperCase();
+    if (['IN TRANSIT', 'DISPATCHED', 'OUT FOR DELIVERY', 'DELIVERED', 'RTO'].includes(statusUpper)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Cancellation is no longer available because the shipment has already been dispatched by courier.'
+      });
+    }
+
+    // If order has an AWB assigned, query live Delhivery status first to verify eligibility
+    const awb = order.delhiveryAwb || order.trackingId;
+    let delhiveryCancelResult = null;
+
+    if (awb && !awb.startsWith('DLH-')) {
+      // Check live status via Delhivery tracking first
+      const liveTracking = await getTrackingDetails(awb, orders);
+      const liveStatus = (liveTracking?.status || '').toUpperCase();
+
+      if (['IN TRANSIT', 'OUT FOR DELIVERY', 'DELIVERED'].includes(liveStatus)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Cancellation is no longer available because Delhivery reports the package is already in transit.'
+        });
+      }
+
+      // Execute live Delhivery cancellation API call
+      delhiveryCancelResult = await cancelDelhiveryShipment(awb, reason || 'Customer requested cancellation');
+
+      if (!delhiveryCancelResult.success) {
+        console.warn(`Delhivery cancellation API warning for ${order.orderId}:`, delhiveryCancelResult.error);
+        if (delhiveryCancelResult.error && !delhiveryCancelResult.error.toLowerCase().includes('already')) {
+          return res.status(400).json({
+            success: false,
+            error: `Delhivery courier cancellation failed: ${delhiveryCancelResult.error}`
+          });
+        }
+      }
+    }
+
+    // Update order record in database
+    orders[idx] = {
+      ...order,
+      status: 'Cancelled',
+      cancelledAt: new Date().toISOString(),
+      cancellationReason: reason || 'Customer requested cancellation',
+      cancellationBy: isAdmin ? 'ADMIN' : 'CUSTOMER',
+      shipment: {
+        ...(order.shipment || {}),
+        status: 'Cancelled',
+        cancelled: true,
+        cancelledAt: new Date().toISOString(),
+        delhiveryCancelResponse: delhiveryCancelResult
+      },
+      updatedAt: new Date().toISOString()
+    };
+
+    saveOrders(orders);
+    console.log(`❌ Order ${order.orderId} successfully CANCELLED (AWB: ${awb || 'none'})`);
+
+    res.json({
+      success: true,
+      message: `Order #${order.orderId} cancelled successfully.`,
+      data: orders[idx]
+    });
+  } catch (err) {
+    console.error('Error cancelling order:', err);
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

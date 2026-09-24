@@ -1,5 +1,457 @@
 [
   {
+    "orderId": "FBX-438471-E9B",
+    "createdAt": "2026-09-24T17:20:38.963Z",
+    "customer": {
+      "name": "test 2",
+      "email": "devilsidhu444@gmail.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "1",
+        "title": "Livupchar Ayurvedic Liver Care Syrup 200ml",
+        "price": 229,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "teacher colony, qq",
+      "city": "gidderbaha",
+      "pincode": "152101",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 229,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 319
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-406345-L72",
+    "createdAt": "2026-09-24T17:20:06.686Z",
+    "customer": {
+      "name": "Priya Singh",
+      "email": "priya@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "2",
+        "title": "Livupchar Syrup",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Zirakpur Hub",
+      "city": "Zirakpur",
+      "pincode": "140603",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-405667-GO1",
+    "createdAt": "2026-09-24T17:20:06.325Z",
+    "customer": {
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "1",
+        "title": "Triphala Juice",
+        "price": 299,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Phase 7",
+      "city": "Mohali",
+      "pincode": "160055",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 299,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 388
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T17:20:06.338Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T17:20:06.338Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T17:20:06.338Z"
+  },
+  {
+    "orderId": "FBX-266137-OYL",
+    "createdAt": "2026-09-24T17:17:46.510Z",
+    "customer": {
+      "name": "Priya Singh",
+      "email": "priya@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "2",
+        "title": "Livupchar Syrup",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Zirakpur Hub",
+      "city": "Zirakpur",
+      "pincode": "140603",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-265399-A0R",
+    "createdAt": "2026-09-24T17:17:45.956Z",
+    "customer": {
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "1",
+        "title": "Triphala Juice",
+        "price": 299,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Phase 7",
+      "city": "Mohali",
+      "pincode": "160055",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 299,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 388
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-079049-O4T",
+    "createdAt": "2026-09-24T17:14:39.362Z",
+    "customer": {
+      "name": "Priya Singh",
+      "email": "priya@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "2",
+        "title": "Livupchar Syrup",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Zirakpur Hub",
+      "city": "Zirakpur",
+      "pincode": "140603",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-078347-R49",
+    "createdAt": "2026-09-24T17:14:38.844Z",
+    "customer": {
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "1",
+        "title": "Triphala Juice",
+        "price": 299,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Phase 7",
+      "city": "Mohali",
+      "pincode": "160055",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 299,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 388
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-966757-0SA",
+    "createdAt": "2026-09-24T17:12:47.230Z",
+    "customer": {
+      "name": "Priya Singh",
+      "email": "priya@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p2",
+        "title": "Livupchar Syrup",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Zirakpur Hub",
+      "city": "Zirakpur",
+      "pincode": "140603",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-966246-V60",
+    "createdAt": "2026-09-24T17:12:46.745Z",
+    "customer": {
+      "name": "Rahul Sharma",
+      "email": "rahul@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Triphala Juice",
+        "price": 299,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Phase 7",
+      "city": "Mohali",
+      "pincode": "160055",
+      "state": "Punjab"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 299,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 388
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-840860-BI6",
+    "createdAt": "2026-09-24T16:54:01.265Z",
+    "customer": {
+      "name": "new test 10:23",
+      "phone": "8872544458",
+      "email": "devilsidhu444@gmail.com",
+      "userId": "USR-mufdp3ukOBI6"
+    },
+    "items": [
+      {
+        "id": "3413",
+        "title": "Livupchar Ayurvedic Liver Care Syrup 200ml",
+        "price": 229,
+        "quantity": 1,
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/livupchar.png"
+      }
+    ],
+    "shipping": {
+      "address": "teacher colony, qq",
+      "houseFlat": "teacher colony",
+      "area": "qq",
+      "landmark": "",
+      "city": "gidderbaha",
+      "state": "Punjab",
+      "pincode": "152101"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 229,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 319
+    },
+    "trackingId": "43067410000733",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": "43067410000733",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000733",
+      "waybill": "43067410000733",
+      "shipmentId": "UPL2324972880987377266",
+      "status": "Cancelled",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-840860-BI6",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T16:54:58.163Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T17:21:19.776Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000733",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000733",
+          "order_id": "FBX-840860-BI6",
+          "remark": "Shipment has been cancelled."
+        }
+      }
+    },
+    "updatedAt": "2026-09-24T17:21:19.776Z",
+    "cancelledAt": "2026-09-24T17:21:19.776Z",
+    "cancellationReason": "Customer changed mind - automated test",
+    "cancellationBy": "CUSTOMER"
+  },
+  {
     "orderId": "FBX-582932-EH2",
     "createdAt": "2026-09-24T16:49:43.452Z",
     "customer": {

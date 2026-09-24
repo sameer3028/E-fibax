@@ -467,6 +467,11 @@ export function createFallbackShipment(order, options = {}) {
 export const createShipmentForOrder = createFallbackShipment;
 
 export async function createDelhiveryShipment(order, options = {}) {
+  // CANCELLED GUARD: Do not ship cancelled orders
+  if (order.status === 'Cancelled' || order.shipment?.cancelled === true) {
+    return { success: false, error: 'Cancelled orders cannot be shipped' };
+  }
+
   const config = getShippingConfig();
   const apiKey = config.delhivery?.apiKey;
   const mode = config.mode || 'production';
@@ -617,7 +622,66 @@ export async function createDelhiveryShipment(order, options = {}) {
   }
 }
 
+// Real Delhivery Order Cancellation API
+export async function cancelDelhiveryShipment(awb, reason = 'Customer requested cancellation') {
+  if (!awb) return { success: false, error: 'No AWB provided for cancellation' };
+
+  const config = getShippingConfig();
+  const apiKey = config.delhivery?.apiKey;
+  const mode = config.mode || 'production';
+  const baseUrl = mode === 'sandbox'
+    ? 'https://staging-express.delhivery.com'
+    : 'https://track.delhivery.com';
+
+  const cleanAwb = String(awb).replace(/[^0-9a-zA-Z]/g, '');
+
+  try {
+    const url = `${baseUrl}/api/p/edit`;
+    console.log(`❌ Cancelling Delhivery shipment AWB ${cleanAwb}...`);
+
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${apiKey}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({
+        waybill: cleanAwb,
+        cancellation: 'true',
+        cancellation_reason: reason
+      })
+    });
+
+    const text = await resp.text();
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { text };
+    }
+
+    console.log(`   Delhivery Cancellation Status: HTTP ${resp.status}`, data);
+
+    if (resp.ok && (data.status === true || data.success === true || data.status === 'SUCCESS' || data.remark?.toLowerCase().includes('cancel'))) {
+      return { success: true, awb: cleanAwb, remark: data.remark || 'Shipment has been cancelled.', rawResponse: data };
+    } else {
+      const msg = data.remark || data.error || data.message || data.detail || `HTTP ${resp.status}`;
+      return { success: false, error: msg, rawResponse: data };
+    }
+  } catch (err) {
+    console.error('Delhivery cancellation error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
 export async function requestDelhiveryPickup(order, config = null) {
+  // PICKUP PROTECTION: Never add cancelled orders to a pickup request
+  if (order.status === 'Cancelled' || order.shipment?.cancelled === true) {
+    console.log(`⛔ Pickup request skipped for cancelled order ${order.orderId}`);
+    return { success: false, error: 'Cancelled orders cannot be added to a pickup request' };
+  }
+
   config = config || getShippingConfig();
   const apiKey = config.delhivery?.apiKey;
   const mode = config.mode || 'production';
@@ -625,7 +689,7 @@ export async function requestDelhiveryPickup(order, config = null) {
     ? 'https://staging-express.delhivery.com'
     : 'https://track.delhivery.com';
   const pickupLocation = config.delhivery?.pickupLocation || 'Fibax Central Fulfillment Hub';
-  
+
   const now = new Date();
   const pickupDate = now.toISOString().split('T')[0];
   const pickupTime = `${String(now.getHours() + 2).padStart(2, '0')}:00:00`;
