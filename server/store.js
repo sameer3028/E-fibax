@@ -136,6 +136,9 @@ export async function initStore() {
 }
 
 export function getArray(name) {
+  if (!db && FILE_FOR[name]) {
+    cache[name] = readJsonFile(FILE_FOR[name], cache[name] || []);
+  }
   return cache[name] || [];
 }
 
@@ -150,6 +153,9 @@ export function setArray(name, arr) {
 }
 
 export function getSingleton(name) {
+  if (!db && FILE_FOR[name]) {
+    cache[name] = readJsonFile(FILE_FOR[name], cache[name] || null);
+  }
   return cache[name];
 }
 

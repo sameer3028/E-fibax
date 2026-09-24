@@ -49,7 +49,7 @@ import {
 } from './reviews.js';
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5050;
 
 // Middleware
 app.use(cors());

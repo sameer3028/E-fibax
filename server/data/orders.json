@@ -1,221 +1,267 @@
 [
   {
-    "orderId": "FBX-550945-7JM",
-    "createdAt": "2026-09-24T15:59:11.437Z",
+    "orderId": "FBX-514695-ZTK",
+    "createdAt": "2026-09-24T15:41:55.276Z",
     "customer": {
-      "name": "Sunil Verma",
-      "email": "sunil.verma@example.com",
+      "name": "minntu new test",
       "phone": "8872544458",
-      "userId": null
+      "email": "devilsidhu444@gmail.com",
+      "userId": "USR-mufdp3ukOBI6"
     },
     "items": [
       {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion and Detox",
+        "id": "3430",
+        "title": "Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support",
+        "price": 345,
         "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/multivitamin.png"
       }
     ],
     "shipping": {
-      "address": "House No 102, Sector 22-B, Opp Main Market",
-      "city": "Chandigarh",
+      "address": "teacher colony, malout road , Landmark: DAV school",
+      "houseFlat": "teacher colony",
+      "area": "malout road ",
+      "landmark": "DAV school",
+      "city": "gidderbaha",
       "state": "Punjab",
-      "pincode": "160022"
+      "pincode": "152101"
     },
     "payment": {
       "method": "COD",
       "status": "Pending"
     },
     "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
+      "subtotal": 345,
+      "discountAmount": 35,
+      "couponCode": "WELCOME10",
+      "shippingFee": 90,
       "codFee": 0,
-      "grandTotal": 588
+      "grandTotal": 400
     },
-    "trackingId": "43067410000291",
+    "trackingId": "DLH-498984246",
     "courier": "Delhivery Express Surface & Air",
     "status": "Manifested",
-    "delhiveryAwb": "43067410000291",
     "shipment": {
-      "success": true,
-      "awb": "43067410000291",
-      "waybill": "43067410000291",
-      "shipmentId": "UPL6050835377291937255",
-      "status": "Success",
-      "remarks": [
-        ""
-      ],
-      "refnum": "FBX-550945-7JM",
+      "orderId": "FBX-514695-ZTK",
+      "trackingId": "DLH-498984246",
       "courier": "Delhivery Express Surface & Air",
       "provider": "delhivery",
-      "pickupLocation": "Fibax Central Fulfillment Hub",
-      "mode": "production",
-      "createdAt": "2026-09-24T15:59:11.869Z",
-      "rawResponse": {
-        "success": true,
-        "cash_pickups": 0,
-        "packages_count": 1
-      }
+      "status": "Manifested",
+      "shippedAt": "2026-09-24T15:42:17.732Z",
+      "estimatedDelivery": "2026-09-27T15:42:17.732Z",
+      "pickupWarehouse": {
+        "name": "Fibax Ayurveda Central Logistics Hub",
+        "address": "Office no. 316, 3rd Floor, CCC, VIP Road",
+        "city": "Zirakpur",
+        "state": "Punjab",
+        "pincode": "140603",
+        "phone": "+91-8872544458",
+        "email": "care@fibaxpharma.com"
+      },
+      "destination": {
+        "name": "minntu new test",
+        "phone": "8872544458",
+        "address": "teacher colony, malout road , Landmark: DAV school",
+        "city": "gidderbaha",
+        "pincode": "152101"
+      },
+      "payment": {
+        "method": "COD",
+        "collectableAmount": 400
+      },
+      "timeline": [
+        {
+          "status": "Order Placed",
+          "title": "Order Confirmed & Verified",
+          "location": "Fibax Digital Storefront",
+          "timestamp": "2026-09-24T15:41:55.276Z",
+          "completed": true,
+          "description": "Customer order placed successfully. Payment: COD"
+        },
+        {
+          "status": "Manifested",
+          "title": "Packed & Manifest Generated",
+          "location": "Zirakpur Hub",
+          "timestamp": "2026-09-24T15:42:17.732Z",
+          "completed": true,
+          "description": "AWB DLH-498984246 generated. Formulations securely packed with tamper-evident seal."
+        },
+        {
+          "status": "Dispatched",
+          "title": "Handed Over to Courier",
+          "location": "Delhivery Express Surface & Air Tricity Sorting Center",
+          "timestamp": "2026-09-24T21:42:17.732Z",
+          "completed": false,
+          "description": "Package handed to Delhivery Express Surface & Air dispatch executive."
+        },
+        {
+          "status": "In Transit",
+          "title": "In Transit to Destination Hub",
+          "location": "National Highway Express Route",
+          "timestamp": "2026-09-25T15:42:17.732Z",
+          "completed": false,
+          "description": "Air/Surface cargo en route to regional delivery hub."
+        },
+        {
+          "status": "Out for Delivery",
+          "title": "Out for Doorstep Delivery",
+          "location": "gidderbaha Hub",
+          "timestamp": "2026-09-26T15:42:17.732Z",
+          "completed": false,
+          "description": "Delivery associate assigned for doorstep handover."
+        },
+        {
+          "status": "Delivered",
+          "title": "Delivered to Consignee",
+          "location": "teacher colony, malout road , Landmark: DAV school",
+          "timestamp": "2026-09-27T15:42:17.732Z",
+          "completed": false,
+          "description": "Package delivered safely. OTP verified."
+        },
+        {
+          "status": "Manifested",
+          "title": "Manifested",
+          "location": "Zirakpur",
+          "timestamp": "2026-09-24T15:49:10.245Z",
+          "completed": true,
+          "description": "Shipment marked as Manifested"
+        }
+      ]
     },
-    "updatedAt": "2026-09-24T15:59:12.114Z"
+    "updatedAt": "2026-09-24T15:49:10.245Z"
   },
   {
-    "orderId": "FBX-630601-JPL",
-    "createdAt": "2026-09-24T15:27:11.066Z",
+    "orderId": "FBX-151998-BSH",
+    "createdAt": "2026-09-24T15:19:12.571Z",
     "customer": {
-      "name": "Ramesh Kumar",
-      "email": "ramesh.kumar@gmail.com",
+      "name": "Mintu sidhu",
       "phone": "8872544458",
-      "userId": null
+      "email": "devilsidhu444@gmail.com",
+      "userId": "USR-mufdp3ukOBI6"
     },
     "items": [
       {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion",
+        "id": "3430",
+        "title": "Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support",
+        "price": 345,
         "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/multivitamin.png"
       }
     ],
     "shipping": {
-      "address": "Plot No 45, Sector 17, Main Market Road",
-      "city": "Chandigarh",
+      "address": "teacher colony, malout road near dav school",
+      "houseFlat": "teacher colony",
+      "area": "malout road near dav school",
+      "landmark": "",
+      "city": "gidderbaha",
       "state": "Punjab",
-      "pincode": "160017"
+      "pincode": "152101"
     },
     "payment": {
       "method": "COD",
       "status": "Pending"
     },
     "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
+      "subtotal": 345,
+      "discountAmount": 35,
+      "couponCode": "WELCOME10",
+      "shippingFee": 90,
       "codFee": 0,
-      "grandTotal": 588
+      "grandTotal": 400
     },
-    "trackingId": "43067410000280",
+    "trackingId": "DLH-373626242",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
-    "delhiveryAwb": "43067410000280",
+    "status": "Dispatched",
     "shipment": {
-      "success": true,
-      "awb": "43067410000280",
-      "waybill": "43067410000280",
-      "shipmentId": "UPL10480069300264584661",
-      "status": "Success",
-      "remarks": [
-        ""
-      ],
-      "refnum": "FBX-630601-JPL",
+      "orderId": "FBX-151998-BSH",
+      "trackingId": "DLH-373626242",
       "courier": "Delhivery Express Surface & Air",
       "provider": "delhivery",
-      "pickupLocation": "Fibax Central Fulfillment Hub",
-      "mode": "production",
-      "createdAt": "2026-09-24T15:27:11.490Z",
-      "rawResponse": {
-        "success": true,
-        "cash_pickups": 0,
-        "packages_count": 1
-      }
-    },
-    "updatedAt": "2026-09-24T15:27:11.667Z"
-  },
-  {
-    "orderId": "FBX-587220-FXV",
-    "createdAt": "2026-09-24T15:26:27.721Z",
-    "customer": {
-      "name": "Test Customer",
-      "email": "test@example.com",
-      "phone": "9876543210",
-      "userId": null
-    },
-    "items": [
-      {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion",
-        "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
+      "status": "Dispatched",
+      "shippedAt": "2026-09-24T15:20:08.762Z",
+      "estimatedDelivery": "2026-09-27T15:20:08.762Z",
+      "pickupWarehouse": {
+        "name": "Fibax Ayurveda Central Logistics Hub",
+        "address": "Office no. 316, 3rd Floor, CCC, VIP Road",
+        "city": "Zirakpur",
+        "state": "Punjab",
+        "pincode": "140603",
+        "phone": "+91-8872544458",
+        "email": "care@fibaxpharma.com"
+      },
+      "destination": {
+        "name": "Mintu sidhu",
+        "phone": "8872544458",
+        "address": "teacher colony, malout road near dav school",
+        "city": "gidderbaha",
+        "pincode": "152101"
+      },
+      "payment": {
+        "method": "COD",
+        "collectableAmount": 400
+      },
+      "timeline": [
+        {
+          "status": "Order Placed",
+          "title": "Order Confirmed & Verified",
+          "location": "Fibax Digital Storefront",
+          "timestamp": "2026-09-24T15:19:12.571Z",
+          "completed": true,
+          "description": "Customer order placed successfully. Payment: COD"
+        },
+        {
+          "status": "Manifested",
+          "title": "Packed & Manifest Generated",
+          "location": "Zirakpur Hub",
+          "timestamp": "2026-09-24T15:20:08.762Z",
+          "completed": true,
+          "description": "AWB DLH-373626242 generated. Formulations securely packed with tamper-evident seal."
+        },
+        {
+          "status": "Dispatched",
+          "title": "Handed Over to Courier",
+          "location": "Delhivery Express Surface & Air Tricity Sorting Center",
+          "timestamp": "2026-09-24T21:20:08.762Z",
+          "completed": false,
+          "description": "Package handed to Delhivery Express Surface & Air dispatch executive."
+        },
+        {
+          "status": "In Transit",
+          "title": "In Transit to Destination Hub",
+          "location": "National Highway Express Route",
+          "timestamp": "2026-09-25T15:20:08.762Z",
+          "completed": false,
+          "description": "Air/Surface cargo en route to regional delivery hub."
+        },
+        {
+          "status": "Out for Delivery",
+          "title": "Out for Doorstep Delivery",
+          "location": "gidderbaha Hub",
+          "timestamp": "2026-09-26T15:20:08.762Z",
+          "completed": false,
+          "description": "Delivery associate assigned for doorstep handover."
+        },
+        {
+          "status": "Delivered",
+          "title": "Delivered to Consignee",
+          "location": "teacher colony, malout road near dav school",
+          "timestamp": "2026-09-27T15:20:08.762Z",
+          "completed": false,
+          "description": "Package delivered safely. OTP verified."
+        },
+        {
+          "status": "Dispatched",
+          "title": "Dispatched",
+          "location": "Zirakpur",
+          "timestamp": "2026-09-24T15:21:16.364Z",
+          "completed": true,
+          "description": "Shipment marked as Dispatched"
         }
-      }
-    ],
-    "shipping": {
-      "address": "House 123, Model Town",
-      "city": "Chandigarh",
-      "state": "Punjab",
-      "pincode": "160002"
+      ]
     },
-    "payment": {
-      "method": "COD",
-      "status": "Pending"
-    },
-    "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
-      "codFee": 0,
-      "grandTotal": 588
-    },
-    "trackingId": null,
-    "courier": "Delhivery Express Surface & Air",
-    "status": "Processing",
-    "delhiveryAwb": null,
-    "shipment": null
-  },
-  {
-    "orderId": "FBX-429232-3V9",
-    "createdAt": "2026-09-24T15:23:49.811Z",
-    "customer": {
-      "name": "Test Customer",
-      "email": "test@example.com",
-      "phone": "9876543210",
-      "userId": null
-    },
-    "items": [
-      {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion",
-        "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
-      }
-    ],
-    "shipping": {
-      "address": "House 123, Model Town",
-      "city": "Chandigarh",
-      "state": "Punjab",
-      "pincode": "160002"
-    },
-    "payment": {
-      "method": "COD",
-      "status": "Pending"
-    },
-    "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
-      "codFee": 0,
-      "grandTotal": 588
-    },
-    "trackingId": null,
-    "courier": "Delhivery Express Surface & Air",
-    "status": "Processing",
-    "delhiveryAwb": null,
-    "shipment": null
+    "updatedAt": "2026-09-24T15:21:16.364Z"
   },
   {
     "orderId": "FBX-032645-4HO",
@@ -448,5 +494,223 @@
       ]
     },
     "updatedAt": "2026-09-18T11:33:47.387Z"
+  },
+  {
+    "orderId": "FBX-550945-7JM",
+    "createdAt": "2026-09-24T15:59:11.437Z",
+    "customer": {
+      "name": "Sunil Verma",
+      "email": "sunil.verma@example.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion and Detox",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House No 102, Sector 22-B, Opp Main Market",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160022"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": "43067410000291",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000291",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000291",
+      "waybill": "43067410000291",
+      "shipmentId": "UPL6050835377291937255",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-550945-7JM",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T15:59:11.869Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T15:59:12.114Z"
+  },
+  {
+    "orderId": "FBX-630601-JPL",
+    "createdAt": "2026-09-24T15:27:11.066Z",
+    "customer": {
+      "name": "Ramesh Kumar",
+      "email": "ramesh.kumar@gmail.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "Plot No 45, Sector 17, Main Market Road",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": "43067410000280",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000280",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000280",
+      "waybill": "43067410000280",
+      "shipmentId": "UPL10480069300264584661",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-630601-JPL",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T15:27:11.490Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T15:27:11.667Z"
+  },
+  {
+    "orderId": "FBX-587220-FXV",
+    "createdAt": "2026-09-24T15:26:27.721Z",
+    "customer": {
+      "name": "Test Customer",
+      "email": "test@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House 123, Model Town",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160002"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-429232-3V9",
+    "createdAt": "2026-09-24T15:23:49.811Z",
+    "customer": {
+      "name": "Test Customer",
+      "email": "test@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House 123, Model Town",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160002"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
   }
 ]
