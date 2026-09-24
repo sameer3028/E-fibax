@@ -12,6 +12,9 @@ import {
   checkPincodeServiceability,
   calculateShippingFee,
   createShipmentForOrder,
+  createDelhiveryShipment,
+  requestDelhiveryPickup,
+  syncOrderTracking,
   getTrackingDetails,
   generatePrintableLabel
 } from './shipping.js';
@@ -1383,16 +1386,16 @@ app.post('/api/orders', async (req, res) => {
       }
     };
 
-    const shipmentData = createShipmentForOrder(tempOrder);
-    const trackingId = shipmentData.trackingId;
-    const courier = shipmentData.courier;
+    const config = getShippingConfig();
+    const courierName = config.defaultCourier || 'Delhivery Express';
 
     const newOrder = {
       ...tempOrder,
-      trackingId,
-      courier,
+      trackingId: null, // AWB assigned only after admin ships via Delhivery
+      courier: courierName,
       status: 'Processing',
-      shipment: shipmentData
+      delhiveryAwb: null,
+      shipment: null
     };
 
     // If customer is logged in and has no saved address, auto-save this address
@@ -1431,7 +1434,7 @@ app.post('/api/orders', async (req, res) => {
     orders.unshift(newOrder);
     saveOrders(orders);
 
-    console.log(`📦 New Order placed: ${orderId} with tracking ${trackingId} (${courier})`);
+    console.log(`📦 New Order placed: ${orderId} — ${courierName} (AWB pending admin dispatch)`);
     res.status(201).json({ success: true, data: newOrder });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -1805,8 +1808,8 @@ app.delete('/api/admin/reviews/:id/media', (req, res) => {
   }
 });
 
-// POST /api/shipping/ship-order/:id - 1-Click Order Fulfillment / AWB Assignment
-app.post('/api/shipping/ship-order/:id', (req, res) => {
+// POST /api/shipping/ship-order/:id - 1-Click Order Fulfillment / Real Delhivery AWB Creation
+app.post('/api/shipping/ship-order/:id', async (req, res) => {
   try {
     const orders = readOrders();
     const idx = orders.findIndex(o => o.orderId === req.params.id);
@@ -1815,21 +1818,41 @@ app.post('/api/shipping/ship-order/:id', (req, res) => {
     }
 
     const order = orders[idx];
-    const shipmentData = createShipmentForOrder(order, req.body || {});
+
+    // Call real Delhivery shipment creation API
+    const delhiveryResult = await createDelhiveryShipment(order, req.body || {});
+
+    if (!delhiveryResult.success) {
+      return res.status(400).json({
+        success: false,
+        error: delhiveryResult.error || 'Failed to create Delhivery shipment'
+      });
+    }
+
+    const awb = delhiveryResult.awb || delhiveryResult.waybill;
+
+    // Optional: Auto-trigger pickup request
+    try {
+      await requestDelhiveryPickup(order);
+    } catch (pickupErr) {
+      console.warn('Auto pickup request failed (non-blocking):', pickupErr.message);
+    }
 
     orders[idx] = {
       ...order,
       status: 'Manifested',
-      trackingId: shipmentData.trackingId,
-      courier: shipmentData.courier,
-      shipment: shipmentData,
+      trackingId: awb,
+      delhiveryAwb: awb,
+      courier: delhiveryResult.courier || 'Delhivery Express',
+      shipment: delhiveryResult,
       updatedAt: new Date().toISOString()
     };
 
     saveOrders(orders);
-    console.log(`🚚 Shipment manifested for ${order.orderId}: AWB ${shipmentData.trackingId} (${shipmentData.courier})`);
-    res.json({ success: true, message: 'Shipment created successfully', data: orders[idx] });
+    console.log(`🚚 Delhivery Shipment Created & Manifested for ${order.orderId}: AWB ${awb}`);
+    res.json({ success: true, message: 'Shipment created successfully with Delhivery AWB ' + awb, data: orders[idx] });
   } catch (err) {
+    console.error('Ship order error:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 });

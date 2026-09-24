@@ -371,7 +371,7 @@ export async function calculateShippingFee({ cartTotal = 0, pincode = '', paymen
   };
 }
 
-export function createShipmentForOrder(order, options = {}) {
+export function createFallbackShipment(order, options = {}) {
   const config = getShippingConfig();
   const provider = options.provider || config.provider || 'delhivery';
   const courierName = options.courier || config.defaultCourier || 'Delhivery Express';
@@ -462,6 +462,279 @@ export function createShipmentForOrder(order, options = {}) {
     },
     timeline: initialTimeline
   };
+}
+
+export const createShipmentForOrder = createFallbackShipment;
+
+export async function createDelhiveryShipment(order, options = {}) {
+  const config = getShippingConfig();
+  const apiKey = config.delhivery?.apiKey;
+  const mode = config.mode || 'production';
+  const pickupLocation = config.delhivery?.pickupLocation || 'Fibax Central Fulfillment Hub';
+  
+  // Determine endpoint based on mode
+  const baseUrl = mode === 'sandbox' 
+    ? 'https://staging-express.delhivery.com'
+    : 'https://track.delhivery.com';
+  
+  // IDEMPOTENCY CHECK: If order already has a real Delhivery AWB, don't create again
+  if (order.delhiveryAwb || (order.trackingId && !order.trackingId.startsWith('DLH-'))) {
+    return { success: false, error: 'Shipment already created', existingAwb: order.delhiveryAwb || order.trackingId };
+  }
+  
+  // Build shipment payload from actual order data
+  const isCod = order.payment?.method === 'COD';
+  const codAmount = isCod ? (order.totals?.grandTotal || 0) : 0;
+  
+  // Calculate total weight from order items
+  let totalWeightGrams = 0;
+  (order.items || []).forEach(item => {
+    const pkg = item.shippingPackage || item.product?.shippingPackage || {};
+    const wg = Number(pkg.weightGrams || item.packageWeightGrams || 0);
+    const qty = Number(item.quantity || 1);
+    totalWeightGrams += wg * qty;
+  });
+  if (totalWeightGrams <= 0) totalWeightGrams = 500; // Default 500g if missing
+  
+  const productDesc = (order.items || []).map(it => `${it.quantity}x ${it.title}`).join(', ') || 'Ayurvedic Formulations';
+  
+  const shipment = {
+    name: order.customer?.name || 'Customer',
+    add: order.shipping?.address || '',
+    pin: String(order.shipping?.pincode || ''),
+    city: order.shipping?.city || '',
+    state: order.shipping?.state || '',
+    country: 'India',
+    phone: String(order.customer?.phone || '').replace(/[^0-9]/g, ''),
+    order: order.orderId,
+    payment_mode: isCod ? 'COD' : 'Prepaid',
+    return_pin: config.warehouse?.pincode || '140603',
+    return_city: config.warehouse?.city || 'Zirakpur',
+    return_phone: String(config.warehouse?.phone || '').replace(/[^0-9]/g, ''),
+    return_add: config.warehouse?.address || '',
+    return_state: config.warehouse?.state || 'Punjab',
+    return_country: 'India',
+    return_name: config.warehouse?.name || 'Fibax Ayurveda',
+    products_desc: productDesc,
+    hsn_code: '',
+    cod_amount: String(codAmount),
+    order_date: order.createdAt ? new Date(order.createdAt).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+    total_amount: String(order.totals?.grandTotal || 0),
+    seller_add: config.warehouse?.address || '',
+    seller_name: config.warehouse?.name || 'Fibax Ayurveda',
+    seller_inv: order.orderId,
+    quantity: String((order.items || []).reduce((sum, it) => sum + (Number(it.quantity) || 1), 0)),
+    weight: String(totalWeightGrams),
+    waybill: '',
+    shipment_width: '',
+    shipment_height: '',
+    shipment_length: ''
+  };
+  
+  const payload = {
+    shipments: [shipment],
+    pickup_location: { name: pickupLocation }
+  };
+  
+  try {
+    const url = `${baseUrl}/api/cmu/create.json`;
+    const body = `format=json&data=${encodeURIComponent(JSON.stringify(payload))}`;
+    
+    console.log(`🚚 Creating Delhivery shipment for order ${order.orderId}...`);
+    console.log(`   Endpoint: ${url}`);
+    console.log(`   Mode: ${mode}`);
+    console.log(`   Payment: ${isCod ? 'COD ₹' + codAmount : 'Prepaid'}`);
+    console.log(`   Weight: ${totalWeightGrams}g`);
+    console.log(`   Destination: ${order.shipping?.city} - ${order.shipping?.pincode}`);
+    
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${apiKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json'
+      },
+      body
+    });
+    
+    const responseText = await resp.text();
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+    } catch {
+      console.error('Delhivery API returned non-JSON response:', responseText.substring(0, 500));
+      return { success: false, error: 'Delhivery API returned an invalid response. Please check credentials and try again.' };
+    }
+    
+    console.log(`   Delhivery HTTP Status: ${resp.status}`);
+    console.log(`   Response success: ${responseData.success}`);
+    
+    if (!resp.ok) {
+      const errorMsg = responseData.rmk || responseData.error || responseData.message || `HTTP ${resp.status}`;
+      console.error(`   ❌ Delhivery shipment creation failed: ${errorMsg}`);
+      return { success: false, error: `Delhivery API error: ${errorMsg}`, httpStatus: resp.status };
+    }
+    
+    const packages = responseData.packages || [];
+    const uploadWbn = responseData.upload_wbn || '';
+    
+    if (packages.length > 0) {
+      const pkg = packages[0];
+      const awb = pkg.waybill || '';
+      const pkgStatus = pkg.status || '';
+      const remarks = pkg.remarks || [];
+      
+      if (awb) {
+        console.log(`   ✅ Delhivery AWB assigned: ${awb}`);
+        return {
+          success: true,
+          awb,
+          waybill: awb,
+          shipmentId: uploadWbn,
+          status: pkgStatus || 'Manifested',
+          remarks,
+          refnum: pkg.refnum || order.orderId,
+          courier: config.defaultCourier || 'Delhivery Express',
+          provider: 'delhivery',
+          pickupLocation,
+          mode,
+          createdAt: new Date().toISOString(),
+          rawResponse: { success: responseData.success, cash_pickups: responseData.cash_pickups, packages_count: packages.length }
+        };
+      } else {
+        const reasonStr = remarks.join('; ') || pkgStatus || 'Unknown reason';
+        console.error(`   ❌ No AWB assigned. Reason: ${reasonStr}`);
+        return { success: false, error: `Delhivery did not assign AWB: ${reasonStr}`, remarks };
+      }
+    } else {
+      const rmk = responseData.rmk || 'No packages returned in response';
+      console.error(`   ❌ No packages in Delhivery response: ${rmk}`);
+      return { success: false, error: `Delhivery response error: ${rmk}` };
+    }
+  } catch (err) {
+    console.error(`   ❌ Delhivery API call failed:`, err.message);
+    return { success: false, error: `Delhivery API connection error: ${err.message}` };
+  }
+}
+
+export async function requestDelhiveryPickup(order, config = null) {
+  config = config || getShippingConfig();
+  const apiKey = config.delhivery?.apiKey;
+  const mode = config.mode || 'production';
+  const baseUrl = mode === 'sandbox'
+    ? 'https://staging-express.delhivery.com'
+    : 'https://track.delhivery.com';
+  const pickupLocation = config.delhivery?.pickupLocation || 'Fibax Central Fulfillment Hub';
+  
+  const now = new Date();
+  const pickupDate = now.toISOString().split('T')[0];
+  const pickupTime = `${String(now.getHours() + 2).padStart(2, '0')}:00:00`;
+  
+  try {
+    const body = new URLSearchParams({
+      pickup_time: pickupTime,
+      pickup_date: pickupDate,
+      pickup_location: pickupLocation,
+      expected_package_count: '1'
+    });
+    
+    const resp = await fetch(`${baseUrl}/fm/request/new/`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${apiKey}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: body.toString()
+    });
+    
+    const data = await resp.json().catch(() => ({}));
+    console.log(`📦 Pickup request for ${order.orderId}: HTTP ${resp.status}`, data);
+    return { success: resp.ok, pickupData: data };
+  } catch (err) {
+    console.warn('Pickup request error (non-critical):', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+const DELHIVERY_STATUS_MAP = {
+  'Manifested': 'Manifested',
+  'In Transit': 'In Transit',
+  'Dispatched': 'In Transit',
+  'Pending': 'Processing',
+  'Out for Delivery': 'Out for Delivery',
+  'Out For Delivery': 'Out for Delivery',
+  'Delivered': 'Delivered',
+  'RTO Initiated': 'RTO',
+  'Returned': 'Returned',
+  'Not Picked': 'Ready to Ship',
+  'Picked Up': 'In Transit'
+};
+
+export function mapDelhiveryStatus(rawStatus) {
+  if (!rawStatus) return 'Processing';
+  const normalized = rawStatus.trim();
+  if (DELHIVERY_STATUS_MAP[normalized]) return DELHIVERY_STATUS_MAP[normalized];
+  const lower = normalized.toLowerCase();
+  if (lower.includes('delivered')) return 'Delivered';
+  if (lower.includes('out for delivery')) return 'Out for Delivery';
+  if (lower.includes('transit') || lower.includes('dispatched')) return 'In Transit';
+  if (lower.includes('rto') || lower.includes('return')) return 'RTO';
+  if (lower.includes('manifest')) return 'Manifested';
+  if (lower.includes('picked')) return 'In Transit';
+  return 'In Transit';
+}
+
+export async function syncOrderTracking(order) {
+  const awb = order.delhiveryAwb || order.trackingId;
+  if (!awb) return { success: false, error: 'No AWB to track' };
+  
+  const config = getShippingConfig();
+  const apiKey = config.delhivery?.apiKey;
+  if (!apiKey) return { success: false, error: 'No API key configured' };
+  
+  const cleanAwb = awb.replace(/[^0-9a-zA-Z]/g, '');
+  
+  try {
+    const resp = await fetch(`https://track.delhivery.com/api/v1/packages/json/?waybill=${cleanAwb}`, {
+      headers: {
+        'Authorization': `Token ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
+    });
+    
+    if (!resp.ok) return { success: false, error: `Tracking API HTTP ${resp.status}` };
+    
+    const json = await resp.json();
+    if (!json?.ShipmentData?.length) return { success: false, error: 'No tracking data found' };
+    
+    const shipment = json.ShipmentData[0].Shipment;
+    const rawStatus = shipment?.Status?.Status || '';
+    const mappedStatus = mapDelhiveryStatus(rawStatus);
+    const scans = shipment?.Scans || [];
+    
+    const trackingEvents = scans.map(s => {
+      const d = s.ScanDetail || {};
+      return {
+        status: d.Scan || rawStatus,
+        location: d.ScannedLocation || '',
+        remark: d.Instructions || '',
+        timestamp: d.ScanDateTime || '',
+        source: 'DELHIVERY'
+      };
+    });
+    
+    return {
+      success: true,
+      status: mappedStatus,
+      rawStatus,
+      location: shipment?.Status?.StatusLocation || '',
+      estimatedDelivery: shipment?.ExpectedDeliveryDate || null,
+      trackingEvents,
+      lastSyncedAt: new Date().toISOString()
+    };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
 }
 
 export async function getTrackingDetails(identifier, orders = []) {

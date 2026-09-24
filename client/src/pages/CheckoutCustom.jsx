@@ -287,11 +287,11 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
 
       if (data.success && data.data) {
         setOrderNumber(data.data.orderId);
-        setTrackingNumber(data.data.trackingId);
+        setTrackingNumber(data.data.trackingId || null);
       } else {
         const genOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
         setOrderNumber(genOrder);
-        setTrackingNumber('DLH-' + Math.floor(100000000 + Math.random() * 900000000));
+        setTrackingNumber(null);
       }
 
       if (currentUser && fetchUserOrders) {
@@ -300,7 +300,7 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
     } catch {
       const genOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
       setOrderNumber(genOrder);
-      setTrackingNumber('DLH-' + Math.floor(100000000 + Math.random() * 900000000));
+      setTrackingNumber(null);
     } finally {
       setIsSubmitting(false);
       setOrderConfirmed(true);
@@ -445,7 +445,9 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
             <div className="p-5 rounded-2xl bg-[#F8F6F0] border border-sand-border text-xs sm:text-sm max-w-lg mx-auto text-left space-y-3 text-charcoal">
               <div className="flex justify-between items-center pb-3 border-b border-sand-border">
                 <span className="text-charcoal-muted">Delhivery AWB Tracking:</span>
-                <span className="font-mono text-forest font-bold text-base">{trackingNumber}</span>
+                <span className="font-mono text-forest font-bold text-sm">
+                  {trackingNumber || 'Pending Admin Dispatch'}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-charcoal-muted">Courier Partner:</span>
