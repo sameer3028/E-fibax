@@ -14,15 +14,106 @@ import {
   Sliders,
   DollarSign,
   AlertCircle,
-  XCircle
+  XCircle,
+  Calendar
 } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
+
+// Date range filtering logic (uses local timezone boundaries)
+function isDateInRange(orderCreatedAt, preset, startDateStr, endDateStr) {
+  if (!orderCreatedAt) return false;
+  const orderDate = new Date(orderCreatedAt);
+  if (isNaN(orderDate.getTime())) return false;
+
+  const now = new Date();
+  const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+  const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+
+  if (preset === 'all' || !preset) return true;
+
+  if (preset === 'today') {
+    return orderDate >= startOfToday && orderDate <= endOfToday;
+  }
+
+  if (preset === 'yesterday') {
+    const startOfYesterday = new Date(startOfToday);
+    startOfYesterday.setDate(startOfYesterday.getDate() - 1);
+    const endOfYesterday = new Date(endOfToday);
+    endOfYesterday.setDate(endOfYesterday.getDate() - 1);
+    return orderDate >= startOfYesterday && orderDate <= endOfYesterday;
+  }
+
+  const getNDaysAgoRange = (days) => {
+    const start = new Date(startOfToday);
+    start.setDate(start.getDate() - (days - 1));
+    return { start, end: endOfToday };
+  };
+
+  if (preset === '3days') {
+    const { start, end } = getNDaysAgoRange(3);
+    return orderDate >= start && orderDate <= end;
+  }
+  if (preset === '7days') {
+    const { start, end } = getNDaysAgoRange(7);
+    return orderDate >= start && orderDate <= end;
+  }
+  if (preset === '14days') {
+    const { start, end } = getNDaysAgoRange(14);
+    return orderDate >= start && orderDate <= end;
+  }
+  if (preset === '30days') {
+    const { start, end } = getNDaysAgoRange(30);
+    return orderDate >= start && orderDate <= end;
+  }
+  if (preset === '90days') {
+    const { start, end } = getNDaysAgoRange(90);
+    return orderDate >= start && orderDate <= end;
+  }
+  if (preset === '180days') {
+    const { start, end } = getNDaysAgoRange(180);
+    return orderDate >= start && orderDate <= end;
+  }
+  if (preset === '365days') {
+    const { start, end } = getNDaysAgoRange(365);
+    return orderDate >= start && orderDate <= end;
+  }
+
+  if (preset === 'custom') {
+    if (!startDateStr && !endDateStr) return true;
+
+    let startLimit = new Date(0);
+    let endLimit = new Date(8640000000000000);
+
+    if (startDateStr) {
+      const [y, m, d] = startDateStr.split('-').map(Number);
+      if (y && m && d) {
+        startLimit = new Date(y, m - 1, d, 0, 0, 0, 0);
+      }
+    }
+
+    if (endDateStr) {
+      const [y, m, d] = endDateStr.split('-').map(Number);
+      if (y && m && d) {
+        endLimit = new Date(y, m - 1, d, 23, 59, 59, 999);
+      }
+    }
+
+    return orderDate >= startLimit && orderDate <= endLimit;
+  }
+
+  return true;
+}
 
 export function ShippingView() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+
+  // Date Filter state
+  const [dateFilterPreset, setDateFilterPreset] = useState('all');
+  const [customStartDate, setCustomStartDate] = useState('');
+  const [customEndDate, setCustomEndDate] = useState('');
 
   // Modals state
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -138,15 +229,23 @@ export function ShippingView() {
 
   // Filter calculations
   const totalShipments = orders.length;
-  const unfulfilledCount = orders.filter(o => o.status !== 'Cancelled' && (o.status === 'Processing' || !o.trackingId)).length;
-  const inTransitCount = orders.filter(o => o.status !== 'Cancelled' && (o.status === 'Manifested' || o.status === 'Dispatched' || o.status === 'In Transit')).length;
-  const deliveredCount = orders.filter(o => o.status === 'Delivered').length;
-  const cancelledCount = orders.filter(o => o.status === 'Cancelled').length;
-  const totalCodPending = orders
+
+  // 1. Date Filter Step
+  const dateFilteredOrders = orders.filter(order =>
+    isDateInRange(order.createdAt, dateFilterPreset, customStartDate, customEndDate)
+  );
+
+  // 2. Status Counts derived from dateFilteredOrders
+  const unfulfilledCount = dateFilteredOrders.filter(o => o.status !== 'Cancelled' && (o.status === 'Processing' || !o.trackingId)).length;
+  const inTransitCount = dateFilteredOrders.filter(o => o.status !== 'Cancelled' && (o.status === 'Manifested' || o.status === 'Dispatched' || o.status === 'In Transit')).length;
+  const deliveredCount = dateFilteredOrders.filter(o => o.status === 'Delivered').length;
+  const cancelledCount = dateFilteredOrders.filter(o => o.status === 'Cancelled').length;
+  const totalCodPending = dateFilteredOrders
     .filter(o => o.payment?.method === 'COD' && o.status !== 'Delivered' && o.status !== 'Cancelled')
     .reduce((acc, o) => acc + (o.totals?.grandTotal || 0), 0);
 
-  const filteredOrders = orders.filter(order => {
+  // 3. Status & Search Filter Step for Table Display
+  const filteredOrders = dateFilteredOrders.filter(order => {
     const matchesSearch =
       (order.orderId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (order.trackingId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -250,39 +349,121 @@ export function ShippingView() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 sm:p-4 rounded-2xl border border-sand-border shadow-xs">
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
-          {[
-            { id: 'all', label: `All (${orders.length})` },
-            { id: 'unfulfilled', label: `Awaiting Fulfillment (${unfulfilledCount})` },
-            { id: 'in-transit', label: `In Transit (${inTransitCount})` },
-            { id: 'delivered', label: `Delivered (${deliveredCount})` },
-            { id: 'cancelled', label: `Cancelled (${cancelledCount})` }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setStatusFilter(tab.id)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                statusFilter === tab.id
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'text-charcoal-muted hover:bg-sand'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+      <div className="flex flex-col gap-3 bg-white p-3 sm:p-4 rounded-2xl border border-sand-border shadow-xs">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          {/* Status Filter Tabs */}
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full lg:w-auto scrollbar-none">
+            {[
+              { id: 'all', label: `All (${dateFilteredOrders.length})` },
+              { id: 'unfulfilled', label: `Awaiting Fulfillment (${unfulfilledCount})` },
+              { id: 'in-transit', label: `In Transit (${inTransitCount})` },
+              { id: 'delivered', label: `Delivered (${deliveredCount})` },
+              { id: 'cancelled', label: `Cancelled (${cancelledCount})` }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setStatusFilter(tab.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  statusFilter === tab.id
+                    ? 'bg-forest text-white shadow-xs'
+                    : 'text-charcoal-muted hover:bg-sand'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Right Controls: Date Filter & Search Bar */}
+          <div className="flex flex-wrap items-center gap-2 w-full lg:w-auto">
+            {/* Order Date Filter Dropdown */}
+            <div className="relative flex items-center gap-1.5 bg-sand px-3 py-1.5 rounded-xl border border-sand-border text-xs text-charcoal shadow-2xs">
+              <Calendar className="h-3.5 w-3.5 text-forest flex-shrink-0" />
+              <select
+                value={dateFilterPreset}
+                onChange={(e) => setDateFilterPreset(e.target.value)}
+                className="bg-transparent font-semibold text-charcoal text-xs focus:outline-none cursor-pointer pr-1"
+              >
+                <option value="all">All Dates</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="3days">Last 3 Days</option>
+                <option value="7days">Last 7 Days</option>
+                <option value="14days">Last 14 Days</option>
+                <option value="30days">Last 30 Days</option>
+                <option value="90days">Last 90 Days</option>
+                <option value="180days">Last 180 Days</option>
+                <option value="365days">Last 365 Days</option>
+                <option value="custom">Custom Date Range</option>
+              </select>
+              {dateFilterPreset !== 'all' && (
+                <button
+                  onClick={() => {
+                    setDateFilterPreset('all');
+                    setCustomStartDate('');
+                    setCustomEndDate('');
+                  }}
+                  title="Clear Date Filter"
+                  className="p-0.5 rounded-full hover:bg-sand-border text-charcoal-subtle hover:text-rose-600 transition-colors ml-0.5"
+                >
+                  <X className="h-3.5 w-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Search Input */}
+            <div className="relative flex-1 sm:w-64 min-w-[180px]">
+              <Search className="h-4 w-4 absolute left-3 top-2.5 text-charcoal-subtle" />
+              <input
+                type="text"
+                placeholder="Search Order ID, AWB, Phone, PIN..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:bg-white focus:outline-none"
+              />
+            </div>
+          </div>
         </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search className="h-4 w-4 absolute left-3 top-2.5 text-charcoal-subtle" />
-          <input
-            type="text"
-            placeholder="Search Order ID, AWB, Phone, PIN..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-4 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:bg-white focus:outline-none"
-          />
-        </div>
+        {/* Custom Date Range Picker Sub-Bar */}
+        {dateFilterPreset === 'custom' && (
+          <div className="flex flex-wrap items-center gap-3 pt-2.5 border-t border-sand-border/80 text-xs animate-fadeIn">
+            <span className="font-bold text-forest text-xs flex items-center gap-1">
+              <Calendar className="h-3.5 w-3.5" />
+              <span>Select Range:</span>
+            </span>
+            <div className="flex items-center gap-1.5">
+              <label className="text-charcoal-muted text-[11px] font-medium">From:</label>
+              <input
+                type="date"
+                value={customStartDate}
+                onChange={(e) => setCustomStartDate(e.target.value)}
+                className="px-2.5 py-1 bg-sand border border-sand-border rounded-lg text-xs font-semibold text-charcoal focus:bg-white focus:border-forest focus:outline-none"
+              />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <label className="text-charcoal-muted text-[11px] font-medium">To:</label>
+              <input
+                type="date"
+                value={customEndDate}
+                onChange={(e) => setCustomEndDate(e.target.value)}
+                className="px-2.5 py-1 bg-sand border border-sand-border rounded-lg text-xs font-semibold text-charcoal focus:bg-white focus:border-forest focus:outline-none"
+              />
+            </div>
+            {(customStartDate || customEndDate) && (
+              <button
+                onClick={() => {
+                  setCustomStartDate('');
+                  setCustomEndDate('');
+                }}
+                className="px-2.5 py-1 bg-rose-50 text-rose-700 font-bold rounded-lg border border-rose-200 hover:bg-rose-100 transition-colors flex items-center gap-1 text-[11px]"
+              >
+                <X className="h-3 w-3" />
+                <span>Clear Range</span>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Shipments Table */}
