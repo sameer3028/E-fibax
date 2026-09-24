@@ -49,6 +49,7 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
   // Cancellation Modal state
   const [cancelModalOrder, setCancelModalOrder] = useState(null);
   const [cancelReason, setCancelReason] = useState('Changed my mind');
+  const [customReason, setCustomReason] = useState('');
   const [isCancelling, setIsCancelling] = useState(false);
   const [cancelError, setCancelError] = useState('');
   const [cancelSuccess, setCancelSuccess] = useState('');
@@ -84,11 +85,15 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
     setCancelError('');
     setCancelSuccess('');
 
+    const effectiveReason = cancelReason === 'Other'
+      ? (customReason.trim() || 'Other')
+      : cancelReason;
+
     try {
       const res = await apiRequest(`/api/orders/${cancelModalOrder.orderId}/cancel`, {
         method: 'POST',
         headers: token ? { Authorization: `Bearer ${token}` } : {},
-        body: JSON.stringify({ reason: cancelReason })
+        body: JSON.stringify({ reason: effectiveReason })
       });
 
       if (res.success) {
@@ -98,6 +103,7 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
           setCancelModalOrder(null);
           setCancelSuccess('');
           setCancelReason('Changed my mind');
+          setCustomReason('');
         }, 1500);
       } else {
         setCancelError(res.error || 'Failed to cancel order.');
@@ -568,7 +574,12 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
                   </label>
                   <select
                     value={cancelReason}
-                    onChange={(e) => setCancelReason(e.target.value)}
+                    onChange={(e) => {
+                      setCancelReason(e.target.value);
+                      if (e.target.value !== 'Other') {
+                        setCustomReason('');
+                      }
+                    }}
                     className="w-full px-3 py-2 bg-sand border border-sand-border rounded-xl text-xs font-medium text-charcoal focus:outline-none focus:ring-2 focus:ring-forest/20"
                   >
                     <option value="Changed my mind">Changed my mind</option>
@@ -577,6 +588,21 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder }) {
                     <option value="Found a better option">Found a better option</option>
                     <option value="Other">Other</option>
                   </select>
+
+                  {cancelReason === 'Other' && (
+                    <div className="mt-2.5">
+                      <label className="block text-xs font-medium text-charcoal mb-1">
+                        Please tell us the reason:
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Price is too high"
+                        value={customReason}
+                        onChange={(e) => setCustomReason(e.target.value)}
+                        className="w-full px-3 py-2 bg-white border border-sand-border rounded-xl text-xs font-medium text-charcoal focus:outline-none focus:ring-2 focus:ring-forest/20"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 {cancelError && (

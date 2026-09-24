@@ -1,5 +1,311 @@
 [
   {
+    "orderId": "FBX-571617-2VY",
+    "createdAt": "2026-09-24T18:29:31.942Z",
+    "customer": {
+      "name": "Reason Test 3",
+      "email": "reasontest3@example.com",
+      "phone": "9876543210",
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:29:31.946Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T18:29:31.946Z",
+    "cancellationReason": "Price is too high",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T18:29:31.946Z"
+  },
+  {
+    "orderId": "FBX-571280-794",
+    "createdAt": "2026-09-24T18:29:31.603Z",
+    "customer": {
+      "name": "Reason Test 2",
+      "email": "reasontest2@example.com",
+      "phone": "9876543210",
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:29:31.612Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T18:29:31.612Z",
+    "cancellationReason": "Delivery taking too long",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T18:29:31.612Z"
+  },
+  {
+    "orderId": "FBX-570397-QTJ",
+    "createdAt": "2026-09-24T18:29:31.231Z",
+    "customer": {
+      "name": "Reason Test 1",
+      "email": "reasontest1@example.com",
+      "phone": "9876543210",
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:29:31.256Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T18:29:31.256Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T18:29:31.256Z"
+  },
+  {
+    "orderId": "FBX-549657-Q9Y",
+    "createdAt": "2026-09-24T18:29:09.995Z",
+    "customer": {
+      "name": "Reason Test 3",
+      "email": "reasontest3@example.com",
+      "phone": "9876543210",
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:29:09.999Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T18:29:09.999Z",
+    "cancellationReason": "Price is too high",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T18:29:09.999Z"
+  },
+  {
+    "orderId": "FBX-549356-5BW",
+    "createdAt": "2026-09-24T18:29:09.647Z",
+    "customer": {
+      "name": "Reason Test 2",
+      "email": "reasontest2@example.com",
+      "phone": "9876543210",
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:29:09.652Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T18:29:09.652Z",
+    "cancellationReason": "Delivery taking too long",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T18:29:09.652Z"
+  },
+  {
+    "orderId": "FBX-548890-DZA",
+    "createdAt": "2026-09-24T18:29:09.343Z",
+    "customer": {
+      "name": "Reason Test 1",
+      "email": "reasontest1@example.com",
+      "phone": "9876543210",
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "123 Test St",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": null,
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:29:09.350Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T18:29:09.350Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T18:29:09.350Z"
+  },
+  {
     "orderId": "FBX-438471-E9B",
     "createdAt": "2026-09-24T17:20:38.963Z",
     "customer": {
@@ -500,14 +806,14 @@
     },
     "trackingId": "43067410000722",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "delhiveryAwb": "43067410000722",
     "shipment": {
       "success": true,
       "awb": "43067410000722",
       "waybill": "43067410000722",
       "shipmentId": "UPL8839333910500230914",
-      "status": "Success",
+      "status": "Cancelled",
       "remarks": [
         ""
       ],
@@ -521,9 +827,25 @@
         "success": true,
         "cash_pickups": 0,
         "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:10:15.761Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000722",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000722",
+          "order_id": "FBX-582932-EH2",
+          "remark": "Shipment has been cancelled."
+        }
       }
     },
-    "updatedAt": "2026-09-24T16:49:44.056Z"
+    "updatedAt": "2026-09-24T18:10:15.761Z",
+    "cancelledAt": "2026-09-24T18:10:15.761Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-193973-0BV",
@@ -567,14 +889,14 @@
     },
     "trackingId": "43067410000700",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "delhiveryAwb": "43067410000700",
     "shipment": {
       "success": true,
       "awb": "43067410000700",
       "waybill": "43067410000700",
       "shipmentId": "UPL6311238689313342637",
-      "status": "Success",
+      "status": "Cancelled",
       "remarks": [
         ""
       ],
@@ -588,9 +910,25 @@
         "success": true,
         "cash_pickups": 0,
         "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:10:21.943Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000700",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000700",
+          "order_id": "FBX-193973-0BV",
+          "remark": "Shipment has been cancelled."
+        }
       }
     },
-    "updatedAt": "2026-09-24T16:46:09.849Z"
+    "updatedAt": "2026-09-24T18:10:21.943Z",
+    "cancelledAt": "2026-09-24T18:10:21.943Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-944115-YLL",
@@ -717,14 +1055,14 @@
     },
     "trackingId": "43067410000302",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "delhiveryAwb": "43067410000302",
     "shipment": {
       "success": true,
       "awb": "43067410000302",
       "waybill": "43067410000302",
       "shipmentId": "UPL16896665490366612916",
-      "status": "Success",
+      "status": "Cancelled",
       "remarks": [
         ""
       ],
@@ -738,9 +1076,25 @@
         "success": true,
         "cash_pickups": 0,
         "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:10:33.737Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000302",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000302",
+          "order_id": "FBX-515280-ZV5",
+          "remark": "Shipment has been cancelled."
+        }
       }
     },
-    "updatedAt": "2026-09-24T16:32:54.831Z"
+    "updatedAt": "2026-09-24T18:10:33.737Z",
+    "cancelledAt": "2026-09-24T18:10:33.737Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-514695-ZTK",
@@ -784,13 +1138,13 @@
     },
     "trackingId": "DLH-498984246",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "shipment": {
       "orderId": "FBX-514695-ZTK",
       "trackingId": "DLH-498984246",
       "courier": "Delhivery Express Surface & Air",
       "provider": "delhivery",
-      "status": "Manifested",
+      "status": "Cancelled",
       "shippedAt": "2026-09-24T15:42:17.732Z",
       "estimatedDelivery": "2026-09-27T15:42:17.732Z",
       "pickupWarehouse": {
@@ -870,9 +1224,15 @@
           "completed": true,
           "description": "Shipment marked as Manifested"
         }
-      ]
+      ],
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:10:27.091Z",
+      "delhiveryCancelResponse": null
     },
-    "updatedAt": "2026-09-24T15:49:10.245Z"
+    "updatedAt": "2026-09-24T18:10:27.091Z",
+    "cancelledAt": "2026-09-24T18:10:27.091Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-151998-BSH",

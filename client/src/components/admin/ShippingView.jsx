@@ -15,7 +15,9 @@ import {
   DollarSign,
   AlertCircle,
   XCircle,
-  Calendar
+  Calendar,
+  Eye,
+  User
 } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
 
@@ -121,6 +123,7 @@ export function ShippingView() {
   const [shippingConfig, setShippingConfig] = useState(null);
   const [configSaving, setConfigSaving] = useState(false);
   const [statusModalOrder, setStatusModalOrder] = useState(null);
+  const [viewOrderModal, setViewOrderModal] = useState(null);
   const [newStatus, setNewStatus] = useState('In Transit');
   const [statusRemark, setStatusRemark] = useState('');
   const [statusLocation, setStatusLocation] = useState('');
@@ -271,7 +274,8 @@ export function ShippingView() {
         (order.customer?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (order.customer?.phone || '').includes(searchQuery) ||
         (order.shipping?.city || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (order.shipping?.pincode || '').includes(searchQuery);
+        (order.shipping?.pincode || '').includes(searchQuery) ||
+        (order.cancellationReason || '').toLowerCase().includes(searchQuery.toLowerCase());
 
       if (!matchesSearch) return false;
       if (statusFilter === 'all') return true;
@@ -587,12 +591,26 @@ export function ShippingView() {
                           )}
                           <span>{order.status || 'Processing'}</span>
                         </span>
+                        {isCancelled && (
+                          <div className="mt-1 text-[11px] text-charcoal font-medium max-w-[190px] leading-tight">
+                            <span className="text-charcoal-muted font-normal">Reason:</span>{' '}
+                            <span className="font-semibold text-rose-900">
+                              {order.cancellationReason || 'Not recorded'}
+                            </span>
+                          </div>
+                        )}
                       </td>
 
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
                           {isCancelled ? (
-                            <span className="text-[11px] font-semibold text-charcoal-subtle italic">Cancelled</span>
+                            <button
+                              onClick={() => setViewOrderModal(order)}
+                              className="px-2.5 py-1.5 rounded-lg border border-sand-border hover:bg-sand text-[11px] font-semibold text-charcoal transition-colors flex items-center gap-1 ml-auto"
+                            >
+                              <Eye className="h-3.5 w-3.5 text-forest" />
+                              <span>Details</span>
+                            </button>
                           ) : !hasAwb || order.status === 'Processing' ? (
                             <button
                               onClick={() => handleShipOrder(order.orderId)}
@@ -939,6 +957,133 @@ export function ShippingView() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Order & Cancellation Details Modal */}
+      {viewOrderModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-card border border-sand-border space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-3 border-b border-sand-border">
+              <div>
+                <h4 className="font-heading text-base font-bold text-forest-deep flex items-center gap-2">
+                  <Package className="h-4 w-4 text-brand" />
+                  <span>Order #{viewOrderModal.orderId}</span>
+                </h4>
+                <p className="text-[11px] text-charcoal-muted mt-0.5">
+                  Placed on {new Date(viewOrderModal.createdAt).toLocaleString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </p>
+              </div>
+              <button
+                onClick={() => setViewOrderModal(null)}
+                className="p-1 rounded-lg text-charcoal-subtle hover:bg-sand"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Telecalling-Friendly Cancellation Details Card (if Cancelled) */}
+            {viewOrderModal.status === 'Cancelled' && (
+              <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200/90 space-y-2.5 shadow-xs">
+                <div className="flex items-center justify-between border-b border-amber-200/70 pb-2">
+                  <div className="flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
+                    <XCircle className="h-4 w-4 text-rose-600 flex-shrink-0" />
+                    <span>Cancellation Details</span>
+                  </div>
+                  <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full uppercase">
+                    Telecalling Review
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-0.5">
+                  <div className="sm:col-span-2">
+                    <span className="text-amber-900/70 block text-[11px] font-medium">Cancellation Reason:</span>
+                    <strong className="text-amber-950 font-bold text-sm">
+                      {viewOrderModal.cancellationReason || 'Not recorded'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-amber-900/70 block text-[11px] font-medium">Cancelled By:</span>
+                    <strong className="text-amber-950 font-semibold capitalize">
+                      {viewOrderModal.cancelledBy || viewOrderModal.cancellationBy || 'Customer'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span className="text-amber-900/70 block text-[11px] font-medium">Cancelled At:</span>
+                    <strong className="text-amber-950 font-semibold">
+                      {viewOrderModal.cancelledAt
+                        ? new Date(viewOrderModal.cancelledAt).toLocaleString('en-IN', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })
+                        : 'N/A'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Customer Contact Information */}
+            <div className="bg-sand/40 p-3.5 rounded-2xl text-xs space-y-1.5 border border-sand-border">
+              <span className="font-bold text-forest block text-xs flex items-center gap-1.5">
+                <User className="h-3.5 w-3.5 text-brand" /> Customer Contact Information
+              </span>
+              <div className="grid grid-cols-2 gap-2 text-charcoal">
+                <div>
+                  <span className="text-charcoal-muted block text-[11px]">Name</span>
+                  <strong className="font-semibold">{viewOrderModal.customer?.name || 'Customer'}</strong>
+                </div>
+                <div>
+                  <span className="text-charcoal-muted block text-[11px]">Phone</span>
+                  <strong className="font-semibold">{viewOrderModal.customer?.phone || 'N/A'}</strong>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-charcoal-muted block text-[11px]">Delivery Destination</span>
+                  <p className="text-charcoal text-[11px]">
+                    {viewOrderModal.shipping?.address || viewOrderModal.customer?.address || ''},{' '}
+                    {viewOrderModal.shipping?.city || ''} - {viewOrderModal.shipping?.pincode || ''}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            <div className="space-y-2 text-xs">
+              <span className="font-bold text-forest block">Purchased Items</span>
+              <div className="divide-y divide-sand-border border border-sand-border rounded-2xl p-3 bg-white space-y-1 max-h-40 overflow-y-auto">
+                {(viewOrderModal.items || []).map((it, idx) => (
+                  <div key={idx} className="flex justify-between py-1.5 text-charcoal">
+                    <span>
+                      <strong className="text-forest">{it.quantity}x</strong> {it.title}
+                    </span>
+                    <span className="font-mono font-medium">{formatPrice((it.price || 0) * (it.quantity || 1))}</span>
+                  </div>
+                ))}
+                <div className="flex justify-between pt-2.5 text-xs font-bold text-forest border-t border-sand-border">
+                  <span>Grand Total</span>
+                  <span className="font-mono">{formatPrice(viewOrderModal.totals?.grandTotal || 0)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="pt-2 flex justify-end">
+              <button
+                onClick={() => setViewOrderModal(null)}
+                className="px-5 py-2.5 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold transition-colors shadow-xs"
+              >
+                Close Details
+              </button>
+            </div>
           </div>
         </div>
       )}

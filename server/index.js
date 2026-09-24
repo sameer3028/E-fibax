@@ -1536,7 +1536,8 @@ app.post('/api/orders/:orderId/cancel', async (req, res) => {
       status: 'Cancelled',
       cancelledAt: new Date().toISOString(),
       cancellationReason: reason || 'Customer requested cancellation',
-      cancellationBy: isAdmin ? 'ADMIN' : 'CUSTOMER',
+      cancelledBy: isAdmin ? 'ADMIN' : 'customer',
+      cancellationBy: isAdmin ? 'ADMIN' : 'customer',
       shipment: {
         ...(order.shipment || {}),
         status: 'Cancelled',
