@@ -1,5 +1,271 @@
 [
   {
+    "orderId": "FBX-582932-EH2",
+    "createdAt": "2026-09-24T16:49:43.452Z",
+    "customer": {
+      "name": "Simranjeet Kaur",
+      "email": "simran.kaur@example.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House 78, Ward No 4, Main Road",
+      "city": "Gidderbaha",
+      "state": "Punjab",
+      "pincode": "152101"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 589
+    },
+    "trackingId": "43067410000722",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000722",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000722",
+      "waybill": "43067410000722",
+      "shipmentId": "UPL8839333910500230914",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-582932-EH2",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T16:49:43.880Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T16:49:44.056Z"
+  },
+  {
+    "orderId": "FBX-193973-0BV",
+    "createdAt": "2026-09-24T16:43:14.317Z",
+    "customer": {
+      "name": "test 6",
+      "phone": "8872544458",
+      "email": "devilsidhu444@gmail.com",
+      "userId": "USR-mufdp3ukOBI6"
+    },
+    "items": [
+      {
+        "id": "3413",
+        "title": "Livupchar Ayurvedic Liver Care Syrup 200ml",
+        "price": 229,
+        "quantity": 1,
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/livupchar.png"
+      }
+    ],
+    "shipping": {
+      "address": "teacher colony, lk",
+      "houseFlat": "teacher colony",
+      "area": "lk",
+      "landmark": "",
+      "city": "gidderbaha",
+      "state": "Punjab",
+      "pincode": "152101"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 229,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 319
+    },
+    "trackingId": "43067410000700",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000700",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000700",
+      "waybill": "43067410000700",
+      "shipmentId": "UPL6311238689313342637",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-193973-0BV",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T16:46:09.639Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T16:46:09.849Z"
+  },
+  {
+    "orderId": "FBX-944115-YLL",
+    "createdAt": "2026-09-24T16:39:04.537Z",
+    "customer": {
+      "name": "test 5",
+      "phone": "8872544458",
+      "email": "devilsidhu444@gmail.com",
+      "userId": "USR-mufdp3ukOBI6"
+    },
+    "items": [
+      {
+        "id": "3416",
+        "title": "Nariupchar Women Syrup 200ml – Ayurvedic Hormonal & Menstrual Health Tonic",
+        "price": 180,
+        "quantity": 1,
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/nariupchar.png"
+      }
+    ],
+    "shipping": {
+      "address": "teacher colony, local area ",
+      "houseFlat": "teacher colony",
+      "area": "local area ",
+      "landmark": "",
+      "city": "gidderbaha",
+      "state": "Punjab",
+      "pincode": "152101"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 180,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 270
+    },
+    "trackingId": "43067410000711",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000711",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000711",
+      "waybill": "43067410000711",
+      "shipmentId": "UPL549443778064174833",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-944115-YLL",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T16:47:19.426Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T16:47:19.649Z"
+  },
+  {
+    "orderId": "FBX-515280-ZV5",
+    "createdAt": "2026-09-24T16:31:55.591Z",
+    "customer": {
+      "name": "test no 4",
+      "phone": "8872544458",
+      "email": "devilsidhu444@gmail.com",
+      "userId": "USR-mufdp3ukOBI6"
+    },
+    "items": [
+      {
+        "id": "3430",
+        "title": "Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support",
+        "price": 345,
+        "quantity": 1,
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/multivitamin.png"
+      }
+    ],
+    "shipping": {
+      "address": "teacher colony, li",
+      "houseFlat": "teacher colony",
+      "area": "li",
+      "landmark": "",
+      "city": "gidderbaha",
+      "state": "Punjab",
+      "pincode": "152101"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 345,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 435
+    },
+    "trackingId": "43067410000302",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000302",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000302",
+      "waybill": "43067410000302",
+      "shipmentId": "UPL16896665490366612916",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-515280-ZV5",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T16:32:54.605Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T16:32:54.831Z"
+  },
+  {
     "orderId": "FBX-514695-ZTK",
     "createdAt": "2026-09-24T15:41:55.276Z",
     "customer": {

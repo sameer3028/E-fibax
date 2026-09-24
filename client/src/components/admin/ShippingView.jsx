@@ -32,6 +32,8 @@ export function ShippingView() {
   const [statusRemark, setStatusRemark] = useState('');
   const [statusLocation, setStatusLocation] = useState('');
 
+  const [shippingOrderId, setShippingOrderId] = useState(null);
+
   // Load orders & shipping configuration
   const loadData = async () => {
     try {
@@ -60,6 +62,8 @@ export function ShippingView() {
 
   // 1-Click Ship via Delhivery/Shiprocket
   const handleShipOrder = async (orderId) => {
+    if (!orderId) return;
+    setShippingOrderId(orderId);
     try {
       const res = await apiRequest(`/api/shipping/ship-order/${orderId}`, {
         method: 'POST',
@@ -69,11 +73,16 @@ export function ShippingView() {
         })
       });
 
-      if (res.success) {
-        setOrders(prev => prev.map(o => (o.orderId === orderId ? res.data : o)));
+      if (res.success && res.data) {
+        setOrders(prev => prev.map(o => (String(o.orderId) === String(orderId) ? res.data : o)));
+        await loadData();
+      } else {
+        alert('Shipment creation failed: ' + (res.error || res.message || 'Unknown server error'));
       }
     } catch (err) {
       alert('Failed to manifest shipment: ' + err.message);
+    } finally {
+      setShippingOrderId(null);
     }
   };
 
@@ -374,10 +383,20 @@ export function ShippingView() {
                           {!hasAwb || order.status === 'Processing' ? (
                             <button
                               onClick={() => handleShipOrder(order.orderId)}
-                              className="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all"
+                              disabled={shippingOrderId === order.orderId}
+                              className="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all disabled:opacity-50"
                             >
-                              <Truck className="h-3 w-3" />
-                              <span>Ship Now</span>
+                              {shippingOrderId === order.orderId ? (
+                                <>
+                                  <RefreshCw className="h-3 w-3 animate-spin" />
+                                  <span>Shipping...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Truck className="h-3 w-3" />
+                                  <span>Ship Now</span>
+                                </>
+                              )}
                             </button>
                           ) : (
                             <>
