@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { formatPrice } from '../../lib/utils';
 import {
   Truck,
@@ -25,17 +25,18 @@ function isDateInRange(orderCreatedAt, preset, startDateStr, endDateStr) {
   const orderDate = new Date(orderCreatedAt);
   if (isNaN(orderDate.getTime())) return false;
 
+  const normPreset = (preset || 'all').toString().toLowerCase().trim();
+  if (normPreset === 'all' || normPreset === 'all dates' || normPreset === '') return true;
+
   const now = new Date();
   const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
   const endOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
 
-  if (preset === 'all' || !preset) return true;
-
-  if (preset === 'today') {
+  if (normPreset === 'today' || normPreset === '1d') {
     return orderDate >= startOfToday && orderDate <= endOfToday;
   }
 
-  if (preset === 'yesterday') {
+  if (normPreset === 'yesterday') {
     const startOfYesterday = new Date(startOfToday);
     startOfYesterday.setDate(startOfYesterday.getDate() - 1);
     const endOfYesterday = new Date(endOfToday);
@@ -49,52 +50,52 @@ function isDateInRange(orderCreatedAt, preset, startDateStr, endDateStr) {
     return { start, end: endOfToday };
   };
 
-  if (preset === '3days') {
+  if (normPreset === '3days' || normPreset === '3d' || normPreset === 'last 3 days') {
     const { start, end } = getNDaysAgoRange(3);
     return orderDate >= start && orderDate <= end;
   }
-  if (preset === '7days') {
+  if (normPreset === '7days' || normPreset === '7d' || normPreset === 'last 7 days') {
     const { start, end } = getNDaysAgoRange(7);
     return orderDate >= start && orderDate <= end;
   }
-  if (preset === '14days') {
+  if (normPreset === '14days' || normPreset === '14d' || normPreset === 'last 14 days') {
     const { start, end } = getNDaysAgoRange(14);
     return orderDate >= start && orderDate <= end;
   }
-  if (preset === '30days') {
+  if (normPreset === '30days' || normPreset === '30d' || normPreset === 'last 30 days') {
     const { start, end } = getNDaysAgoRange(30);
     return orderDate >= start && orderDate <= end;
   }
-  if (preset === '90days') {
+  if (normPreset === '90days' || normPreset === '90d' || normPreset === 'last 90 days') {
     const { start, end } = getNDaysAgoRange(90);
     return orderDate >= start && orderDate <= end;
   }
-  if (preset === '180days') {
+  if (normPreset === '180days' || normPreset === '180d' || normPreset === 'last 180 days') {
     const { start, end } = getNDaysAgoRange(180);
     return orderDate >= start && orderDate <= end;
   }
-  if (preset === '365days') {
+  if (normPreset === '365days' || normPreset === '365d' || normPreset === 'last 365 days') {
     const { start, end } = getNDaysAgoRange(365);
     return orderDate >= start && orderDate <= end;
   }
 
-  if (preset === 'custom') {
+  if (normPreset === 'custom') {
     if (!startDateStr && !endDateStr) return true;
 
     let startLimit = new Date(0);
     let endLimit = new Date(8640000000000000);
 
     if (startDateStr) {
-      const [y, m, d] = startDateStr.split('-').map(Number);
-      if (y && m && d) {
-        startLimit = new Date(y, m - 1, d, 0, 0, 0, 0);
+      const parts = startDateStr.split('-').map(Number);
+      if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
+        startLimit = new Date(parts[0], parts[1] - 1, parts[2], 0, 0, 0, 0);
       }
     }
 
     if (endDateStr) {
-      const [y, m, d] = endDateStr.split('-').map(Number);
-      if (y && m && d) {
-        endLimit = new Date(y, m - 1, d, 23, 59, 59, 999);
+      const parts = endDateStr.split('-').map(Number);
+      if (parts.length === 3 && parts[0] && parts[1] && parts[2]) {
+        endLimit = new Date(parts[0], parts[1] - 1, parts[2], 23, 59, 59, 999);
       }
     }
 
@@ -230,38 +231,57 @@ export function ShippingView() {
   // Filter calculations
   const totalShipments = orders.length;
 
-  // 1. Date Filter Step
-  const dateFilteredOrders = orders.filter(order =>
-    isDateInRange(order.createdAt, dateFilterPreset, customStartDate, customEndDate)
-  );
+  // 1. Date Filter Step (Memoized)
+  const dateFilteredOrders = useMemo(() => {
+    return orders.filter(order => {
+      const rawDate = order.createdAt || order.orderDate || order.created_at || order.date;
+      return isDateInRange(rawDate, dateFilterPreset, customStartDate, customEndDate);
+    });
+  }, [orders, dateFilterPreset, customStartDate, customEndDate]);
 
   // 2. Status Counts derived from dateFilteredOrders
-  const unfulfilledCount = dateFilteredOrders.filter(o => o.status !== 'Cancelled' && (o.status === 'Processing' || !o.trackingId)).length;
-  const inTransitCount = dateFilteredOrders.filter(o => o.status !== 'Cancelled' && (o.status === 'Manifested' || o.status === 'Dispatched' || o.status === 'In Transit')).length;
-  const deliveredCount = dateFilteredOrders.filter(o => o.status === 'Delivered').length;
-  const cancelledCount = dateFilteredOrders.filter(o => o.status === 'Cancelled').length;
-  const totalCodPending = dateFilteredOrders
-    .filter(o => o.payment?.method === 'COD' && o.status !== 'Delivered' && o.status !== 'Cancelled')
-    .reduce((acc, o) => acc + (o.totals?.grandTotal || 0), 0);
+  const unfulfilledCount = useMemo(() => {
+    return dateFilteredOrders.filter(o => o.status !== 'Cancelled' && (o.status === 'Processing' || !o.trackingId)).length;
+  }, [dateFilteredOrders]);
 
-  // 3. Status & Search Filter Step for Table Display
-  const filteredOrders = dateFilteredOrders.filter(order => {
-    const matchesSearch =
-      (order.orderId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (order.trackingId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (order.customer?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (order.customer?.phone || '').includes(searchQuery) ||
-      (order.shipping?.city || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (order.shipping?.pincode || '').includes(searchQuery);
+  const inTransitCount = useMemo(() => {
+    return dateFilteredOrders.filter(o => o.status !== 'Cancelled' && (o.status === 'Manifested' || o.status === 'Dispatched' || o.status === 'In Transit')).length;
+  }, [dateFilteredOrders]);
 
-    if (!matchesSearch) return false;
-    if (statusFilter === 'all') return true;
-    if (statusFilter === 'unfulfilled') return order.status !== 'Cancelled' && (order.status === 'Processing' || !order.trackingId);
-    if (statusFilter === 'in-transit') return order.status !== 'Cancelled' && (order.status === 'Manifested' || order.status === 'Dispatched' || order.status === 'In Transit');
-    if (statusFilter === 'delivered') return order.status === 'Delivered';
-    if (statusFilter === 'cancelled') return order.status === 'Cancelled';
-    return true;
-  });
+  const deliveredCount = useMemo(() => {
+    return dateFilteredOrders.filter(o => o.status === 'Delivered').length;
+  }, [dateFilteredOrders]);
+
+  const cancelledCount = useMemo(() => {
+    return dateFilteredOrders.filter(o => o.status === 'Cancelled').length;
+  }, [dateFilteredOrders]);
+
+  const totalCodPending = useMemo(() => {
+    return dateFilteredOrders
+      .filter(o => o.payment?.method === 'COD' && o.status !== 'Delivered' && o.status !== 'Cancelled')
+      .reduce((acc, o) => acc + (o.totals?.grandTotal || 0), 0);
+  }, [dateFilteredOrders]);
+
+  // 3. Status & Search Filter Step for Table Display (Memoized)
+  const filteredOrders = useMemo(() => {
+    return dateFilteredOrders.filter(order => {
+      const matchesSearch =
+        (order.orderId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (order.trackingId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (order.customer?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (order.customer?.phone || '').includes(searchQuery) ||
+        (order.shipping?.city || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (order.shipping?.pincode || '').includes(searchQuery);
+
+      if (!matchesSearch) return false;
+      if (statusFilter === 'all') return true;
+      if (statusFilter === 'unfulfilled') return order.status !== 'Cancelled' && (order.status === 'Processing' || !order.trackingId);
+      if (statusFilter === 'in-transit') return order.status !== 'Cancelled' && (order.status === 'Manifested' || order.status === 'Dispatched' || order.status === 'In Transit');
+      if (statusFilter === 'delivered') return order.status === 'Delivered';
+      if (statusFilter === 'cancelled') return order.status === 'Cancelled';
+      return true;
+    });
+  }, [dateFilteredOrders, searchQuery, statusFilter]);
 
   return (
     <div className="space-y-6">
