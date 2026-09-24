@@ -285,11 +285,11 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
 
       if (data.success && data.data) {
         setOrderNumber(data.data.orderId);
-        setTrackingNumber(data.data.trackingId);
+        setTrackingNumber(data.data.trackingId || null);
       } else {
         const genOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
         setOrderNumber(genOrder);
-        setTrackingNumber('DLH-' + Math.floor(100000000 + Math.random() * 900000000));
+        setTrackingNumber(null);
       }
 
       if (currentUser && fetchUserOrders) {
@@ -298,7 +298,7 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
     } catch {
       const genOrder = 'FBX-' + Math.floor(100000 + Math.random() * 900000);
       setOrderNumber(genOrder);
-      setTrackingNumber('DLH-' + Math.floor(100000000 + Math.random() * 900000000));
+      setTrackingNumber(null);
     } finally {
       setIsSubmitting(false);
       setOrderConfirmed(true);

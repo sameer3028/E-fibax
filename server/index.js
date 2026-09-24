@@ -1823,9 +1823,13 @@ app.post('/api/shipping/ship-order/:id', async (req, res) => {
     const delhiveryResult = await createDelhiveryShipment(order, req.body || {});
 
     if (!delhiveryResult.success) {
+      const errorMsg = delhiveryResult.existingAwb
+        ? `Shipment already created — AWB: ${delhiveryResult.existingAwb}`
+        : (delhiveryResult.error || 'Failed to create Delhivery shipment');
       return res.status(400).json({
         success: false,
-        error: delhiveryResult.error || 'Failed to create Delhivery shipment'
+        error: errorMsg,
+        existingAwb: delhiveryResult.existingAwb || null
       });
     }
 

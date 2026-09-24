@@ -845,7 +845,7 @@ export async function getTrackingDetails(identifier, orders = []) {
 
   return {
     orderId: order.orderId,
-    trackingId: order.trackingId || ('DLH-' + Math.floor(100000000 + Math.random() * 900000000)),
+    trackingId: order.trackingId || order.delhiveryAwb || null,
     courier: order.courier || config.defaultCourier || 'Delhivery Express',
     status: order.status || 'Processing',
     activeStep,
@@ -869,7 +869,7 @@ export async function getTrackingDetails(identifier, orders = []) {
 
 export function generatePrintableLabel(order) {
   const config = getShippingConfig();
-  const awb = order.trackingId || 'DLH-' + Date.now().toString().slice(-9);
+  const awb = order.trackingId || order.delhiveryAwb || order.orderId;
   const orderId = order.orderId || 'FBX-ORDER';
   const isCod = order.payment?.method === 'COD';
   const codAmount = isCod ? (order.totals?.grandTotal || 0) : 0;

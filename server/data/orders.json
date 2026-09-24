@@ -1,5 +1,70 @@
 [
   {
+    "orderId": "FBX-550945-7JM",
+    "createdAt": "2026-09-24T15:59:11.437Z",
+    "customer": {
+      "name": "Sunil Verma",
+      "email": "sunil.verma@example.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion and Detox",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House No 102, Sector 22-B, Opp Main Market",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160022"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": "43067410000291",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Manifested",
+    "delhiveryAwb": "43067410000291",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000291",
+      "waybill": "43067410000291",
+      "shipmentId": "UPL6050835377291937255",
+      "status": "Success",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-550945-7JM",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T15:59:11.869Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      }
+    },
+    "updatedAt": "2026-09-24T15:59:12.114Z"
+  },
+  {
     "orderId": "FBX-630601-JPL",
     "createdAt": "2026-09-24T15:27:11.066Z",
     "customer": {
