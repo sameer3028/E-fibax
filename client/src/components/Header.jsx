@@ -24,7 +24,7 @@ export function Header({
   onOpenTrackOrder,
   onOpenCallback
 }) {
-  const { totalItemsCount, openCart } = useCart();
+  const { totalItemsCount, openCart, freeShippingThreshold } = useCart();
   const { currentUser, openAuthModal, openAccountModal } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -49,7 +49,7 @@ export function Header({
             <span className="hidden md:inline text-white/40">|</span>
             <span className="hidden md:flex items-center gap-1.5 text-sand-warm font-normal">
               <Truck className="h-3.5 w-3.5 text-brand-light" />
-              <span>Free Express Delivery Above ₹499 Across India</span>
+              <span>Free Express Delivery Above ₹{freeShippingThreshold || 499} Across India</span>
             </span>
           </div>
 

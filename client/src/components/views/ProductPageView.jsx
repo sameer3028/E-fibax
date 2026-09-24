@@ -28,6 +28,8 @@ import {
   Loader2
 } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
+import CustomerReviewsSection from '../reviews/CustomerReviewsSection';
+import { useProductRating } from '../../hooks/useProductRating';
 
 export function ProductPageView({
   product,
@@ -47,14 +49,24 @@ export function ProductPageView({
   const [copiedLink, setCopiedLink] = useState(false);
   const [activeTab, setActiveTab] = useState('overview'); // overview, ingredients, howToUse, labResults
 
+  const galleryImages = (Array.isArray(product?.images) && product.images.length > 0)
+    ? product.images.map(img => typeof img === 'string' ? img : (img?.url || '')).filter(Boolean)
+    : [product?.featuredImage || product?.image || 'https://fibaxpharma.com/wp-content/uploads/2025/11/fp-enzyme.png'];
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const reviewSummary = useProductRating(product);
+
   // Scroll to top when product changes
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setSelectedPackIndex(0);
+    setSelectedImageIndex(0);
     setQuantity(1);
   }, [product?.id]);
 
   if (!product) return null;
+
+  const activeMainImage = galleryImages[selectedImageIndex] || galleryImages[0] || product?.featuredImage || product?.image;
 
   const isOutOfStock = product.inStock === false || product.stockQuantity === undefined || product.stockQuantity === null || Number(product.stockQuantity) <= 0;
 
@@ -275,39 +287,66 @@ export function ProductPageView({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-white rounded-3xl p-6 sm:p-8 border border-sand-border shadow-card mb-12">
           {/* Left Column: Product Gallery */}
           <div className="lg:col-span-5 space-y-4">
-            <div className="relative aspect-square w-full rounded-2xl bg-sand/40 border border-sand-border p-6 flex items-center justify-center overflow-hidden group">
-              {/* Badges */}
-              <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
-                {isOutOfStock && (
-                  <span className="bg-charcoal text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
-                    <span>OUT OF STOCK</span>
-                  </span>
-                )}
-                {product.isBestseller && (!isOutOfStock) && (
-                  <span className="bg-brand text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" />
-                    <span>BESTSELLER</span>
-                  </span>
-                )}
-                {product.discountPercent > 0 && (
-                  <span className="bg-forest text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
-                    SAVE {product.discountPercent}%
-                  </span>
-                )}
-              </div>
+            <div className="flex flex-col-reverse sm:flex-row gap-3">
+              {/* Thumbnails list (vertical on sm+, horizontal scroll on mobile) */}
+              {galleryImages.length > 1 && (
+                <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[420px] flex-shrink-0 py-1 sm:py-0 scrollbar-none">
+                  {galleryImages.map((imgUrl, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`w-14 h-14 sm:w-16 sm:h-16 rounded-xl border-2 p-1 bg-white overflow-hidden flex items-center justify-center transition-all flex-shrink-0 ${
+                        selectedImageIndex === idx
+                          ? 'border-forest ring-2 ring-forest/20 shadow-xs'
+                          : 'border-sand-border opacity-70 hover:opacity-100 hover:border-forest/50'
+                      }`}
+                    >
+                      <img
+                        src={imgUrl}
+                        alt={`${product.title} - view ${idx + 1}`}
+                        className="w-full h-full object-contain"
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
 
-              <div className="absolute top-3 right-3 z-10">
-                <span className="bg-white/90 backdrop-blur-xs border border-sand-border text-forest text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
-                  <ShieldCheck className="h-3.5 w-3.5 text-forest" />
-                  <span>100% AYURVEDIC</span>
-                </span>
-              </div>
+              {/* Main Active Image Box */}
+              <div className="relative aspect-square flex-1 rounded-2xl bg-sand/40 border border-sand-border p-6 flex items-center justify-center overflow-hidden group">
+                {/* Badges */}
+                <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
+                  {isOutOfStock && (
+                    <span className="bg-charcoal text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                      <span>OUT OF STOCK</span>
+                    </span>
+                  )}
+                  {product.isBestseller && (!isOutOfStock) && (
+                    <span className="bg-brand text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm flex items-center gap-1">
+                      <Sparkles className="h-3 w-3" />
+                      <span>BESTSELLER</span>
+                    </span>
+                  )}
+                  {product.discountPercent > 0 && (
+                    <span className="bg-forest text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
+                      SAVE {product.discountPercent}%
+                    </span>
+                  )}
+                </div>
 
-              <img
-                src={product.featuredImage}
-                alt={product.title}
-                className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300"
-              />
+                <div className="absolute top-3 right-3 z-10">
+                  <span className="bg-white/90 backdrop-blur-xs border border-sand-border text-forest text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs">
+                    <ShieldCheck className="h-3.5 w-3.5 text-forest" />
+                    <span>100% AYURVEDIC</span>
+                  </span>
+                </div>
+
+                <img
+                  src={activeMainImage}
+                  alt={product.title}
+                  className="w-full h-full object-contain transform group-hover:scale-105 transition-transform duration-300"
+                />
+              </div>
             </div>
 
             {/* Thumbnail Carousel / Trust Features */}
@@ -355,17 +394,26 @@ export function ProductPageView({
 
               {/* Star Ratings & Verified Badge */}
               <div className="flex items-center gap-3 pt-1">
-                <div className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 text-amber-900 text-xs font-bold">
-                  <div className="flex text-amber-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-3.5 w-3.5 fill-current" />
+                <a href="#reviews" className="flex items-center gap-1 bg-amber-50 px-2.5 py-1 rounded-lg border border-amber-200 text-amber-900 text-xs font-bold hover:bg-amber-100 transition-colors">
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-3.5 w-3.5 ${
+                          reviewSummary.count > 0 && star <= Math.round(reviewSummary.average)
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'fill-gray-100 text-gray-300'
+                        }`}
+                      />
                     ))}
                   </div>
-                  <span className="ml-1">{product.ratingAverage || '4.9'}</span>
-                </div>
-                <span className="text-xs text-charcoal-muted font-medium">
-                  ({product.ratingCount || 342} verified customer reviews)
-                </span>
+                  <span className="ml-1">
+                    {reviewSummary.count > 0 ? (Number(reviewSummary.average) || 0).toFixed(1) : '0.0'}
+                  </span>
+                </a>
+                <a href="#reviews" className="text-xs text-charcoal-muted font-medium hover:text-emerald-800 transition-colors">
+                  ({reviewSummary.count} verified customer review{reviewSummary.count !== 1 ? 's' : ''})
+                </a>
                 <span className="text-xs font-semibold text-forest flex items-center gap-1">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   <span>Verified Purchase</span>
@@ -392,7 +440,7 @@ export function ProductPageView({
                 )}
 
                 <span className="text-xs text-charcoal-muted ml-auto">
-                  Inclusive of all taxes & free shipping
+                  Inclusive of all taxes
                 </span>
               </div>
 
@@ -809,84 +857,8 @@ export function ProductPageView({
             </div>
           </div>
 
-          {/* A+ Section 5: Doctor Vaidya Endorsement & Reviews */}
-          <div className="bg-sand-warm/60 rounded-3xl p-8 sm:p-10 border border-sand-border shadow-card">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div className="lg:col-span-5 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-14 h-14 rounded-2xl bg-forest text-white flex items-center justify-center shadow-md">
-                    <Stethoscope className="h-7 w-7" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading font-bold text-lg text-forest-deep">
-                      Dr. Vaidya Ramanathan (B.A.M.S.)
-                    </h3>
-                    <p className="text-xs text-charcoal-muted font-medium">
-                      Senior Ayurvedic Physician • 24+ Years Clinical Practice
-                    </p>
-                  </div>
-                </div>
-
-                <p className="text-xs text-charcoal leading-relaxed italic bg-white p-4 rounded-2xl border border-sand-border">
-                  "In modern clinical practice, metabolic disorders and chronic inflammation stem from weak digestive fire and toxic accumulation. Fibax’s formulation honors the classical Caraka Samhita principles while maintaining rigorous standardization. I frequently recommend this course for sustainable, non-habit-forming patient care."
-                </p>
-
-                <div className="flex items-center gap-4 text-xs font-bold text-forest">
-                  <span className="flex items-center gap-1">
-                    <Award className="h-4 w-4 text-gold" />
-                    <span>Free Doctor Consultation</span>
-                  </span>
-                  <a
-                    href="https://wa.me/917657963458?text=Hello%20Doctor,%20I%20have%20questions%20regarding%20Fibax%20formulation"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-brand hover:underline font-bold"
-                  >
-                    Chat with Ayurvedic Vaidya →
-                  </a>
-                </div>
-              </div>
-
-              {/* Rating Metrics Card */}
-              <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-sand-border space-y-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <div className="text-3xl font-extrabold text-forest-deep">{product.ratingAverage || '4.9'} / 5.0</div>
-                    <p className="text-xs text-charcoal-muted">Based on 1,420+ real customer verified ratings</p>
-                  </div>
-                  <div className="flex text-amber-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-5 w-5 fill-current" />
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-2 text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="w-12 text-charcoal font-semibold">5 Star</span>
-                    <div className="flex-1 h-2 rounded-full bg-sand-border overflow-hidden">
-                      <div className="w-[88%] h-full bg-emerald-600 rounded-full" />
-                    </div>
-                    <span className="w-8 text-right text-charcoal-muted font-mono">88%</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-12 text-charcoal font-semibold">4 Star</span>
-                    <div className="flex-1 h-2 rounded-full bg-sand-border overflow-hidden">
-                      <div className="w-[9%] h-full bg-emerald-500 rounded-full" />
-                    </div>
-                    <span className="w-8 text-right text-charcoal-muted font-mono">9%</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="w-12 text-charcoal font-semibold">3 Star</span>
-                    <div className="flex-1 h-2 rounded-full bg-sand-border overflow-hidden">
-                      <div className="w-[2%] h-full bg-amber-400 rounded-full" />
-                    </div>
-                    <span className="w-8 text-right text-charcoal-muted font-mono">2%</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* A+ Section 5: Customer Reviews System */}
+          <CustomerReviewsSection product={product} />
 
           {/* A+ Section 6: Interactive Frequently Asked Questions */}
           <div className="bg-white rounded-3xl p-8 sm:p-10 border border-sand-border shadow-card">

@@ -11,11 +11,13 @@ export function ProductDetail({
   onSelectConcern,
   onNavigate
 }) {
+  const activeProduct = product || (allProducts && allProducts.length > 0 ? allProducts[0] : null);
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [product?.id]);
+  }, [activeProduct?.id]);
 
-  if (!product) {
+  if (!activeProduct) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-sand">
         <div className="w-16 h-16 rounded-2xl bg-white border border-sand-border flex items-center justify-center text-forest mb-4 shadow-subtle">
@@ -42,7 +44,7 @@ export function ProductDetail({
   return (
     <div className="w-full bg-white">
       <ProductPageView
-        product={product}
+        product={activeProduct}
         allProducts={allProducts}
         onBack={() => {
           if (onBack) onBack();

@@ -40,5 +40,58 @@
     "updatedAt": "2026-09-16T11:17:46.323Z",
     "lastLoginAt": "2026-09-19T13:12:37.453Z",
     "loginCount": 3
+  },
+  {
+    "id": "USR-mue2ogr75MPE",
+    "name": "Mintu Sidhu",
+    "email": "9056344458@customer.fibaxpharma.com",
+    "phone": "9056344458",
+    "salt": "d3c742414d6fe0fee1ce1caa9b5b3822",
+    "passwordHash": "3c4b2ffba9cb541f2cd0a8c471b09e3825e2d5bc428f724fdc904311e5f07c883cb85e1050a830f826c6be3768c198b55619ba017fcabe002dec2d8e7b074dca",
+    "addresses": [
+      {
+        "id": "addr_1790235310407",
+        "address": "Teacher colony, Gidderbaha",
+        "city": "Gidderbaha",
+        "pincode": "140603",
+        "isDefault": true
+      }
+    ],
+    "createdAt": "2026-09-23T12:21:47.393Z",
+    "updatedAt": "2026-09-24T07:35:31.555Z",
+    "loginCount": 3,
+    "lastLoginAt": "2026-09-24T07:29:42.180Z"
+  },
+  {
+    "id": "USR-mufas8oj5MOA",
+    "name": "test",
+    "email": "royalsidhu444@gmail.com",
+    "phone": "9056044458",
+    "salt": "6cbd408ad00b11da5f2d8519224e111f",
+    "passwordHash": "d82bd2c5447ea71e0330b6b2bad0d6e736577a12278de90947c7192b46e530646ecf2a6be76773da6678c5266daa9b14ec625341e7821c2d8e0a7e0f8df29766",
+    "addresses": [],
+    "createdAt": "2026-09-24T08:56:26.611Z",
+    "updatedAt": "2026-09-24T08:56:26.611Z"
+  },
+  {
+    "id": "USR-mufdp3ukOBI6",
+    "name": "test 2",
+    "email": "devilsidhu444@gmail.com",
+    "phone": "8872544458",
+    "salt": "6dfc7ee787ce7c6f98c21cc320ef3002",
+    "passwordHash": "f7a63b4a31438e8be244a84ade3a7748640ea7c1760aefa477e926e2388d6772c601af3aa6a283d1b7afa2626b6bc5f0096483d5357deb87b87a5a844db49f0f",
+    "addresses": [
+      {
+        "id": "addr_1790245079228",
+        "address": "teacher colony",
+        "city": "gidderbaha",
+        "pincode": "152101",
+        "isDefault": true
+      }
+    ],
+    "createdAt": "2026-09-24T10:17:59.228Z",
+    "updatedAt": "2026-09-24T10:17:59.228Z",
+    "lastLoginAt": "2026-09-24T11:54:40.290Z",
+    "loginCount": 2
   }
 ]

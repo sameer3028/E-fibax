@@ -3,10 +3,25 @@ import { motion } from 'framer-motion';
 import { useCart } from '../../../context/CartContext';
 import { formatPrice } from '../../../lib/utils';
 import { Star, ShoppingBag, AlertCircle } from 'lucide-react';
+import { useProductRating } from '../../../hooks/useProductRating';
 
 export function ProductCard({ product, onSelectProduct }) {
   const { addToCart } = useCart();
   const isOutOfStock = !product.inStock || product.stockQuantity === 0;
+  const { average, count } = useProductRating(product);
+
+  const renderStars = (avg) => {
+    return [1, 2, 3, 4, 5].map((star) => (
+      <Star
+        key={star}
+        className={`h-3.5 w-3.5 ${
+          star <= Math.round(avg)
+            ? 'fill-amber-400 text-amber-400'
+            : 'fill-gray-100 text-gray-300'
+        }`}
+      />
+    ));
+  };
 
   return (
     <motion.div 
@@ -58,15 +73,30 @@ export function ProductCard({ product, onSelectProduct }) {
             {product.title}
           </h4>
 
-          {/* Star Rating */}
-          <div className="flex items-center gap-1 text-gold text-xs pt-0.5">
-            <div className="flex">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-current" />
-              ))}
-            </div>
-            <span className="font-bold text-charcoal text-xs ml-0.5">{product.ratingAverage}</span>
-            <span className="text-[11px] text-charcoal-subtle">({product.ratingCount})</span>
+          {/* Star Rating from Single Source of Truth */}
+          <div className="flex items-center gap-1 text-xs pt-0.5 min-h-[1.5rem]">
+            {count > 0 ? (
+              <>
+                <div className="flex items-center gap-0.5">
+                  {renderStars(average)}
+                </div>
+                <span className="font-bold text-charcoal text-xs ml-0.5">
+                  {average.toFixed(1)}
+                </span>
+                <span className="text-[11px] text-charcoal-subtle">
+                  ({count})
+                </span>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-0.5">
+                  {renderStars(0)}
+                </div>
+                <span className="text-[11px] text-charcoal-subtle ml-0.5">
+                  No reviews
+                </span>
+              </>
+            )}
           </div>
 
           {/* Price: Bold Deep Green with MRP strikethrough */}

@@ -1,13 +1,10 @@
-﻿import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { ProductCard } from '../components/common/ProductCard/ProductCard';
 import { CATEGORIES } from '../data/categories';
 import { CONCERNS } from '../data/concerns';
 import { isProductInCategory } from '../utils/categoryUtils';
 import {
-  Search,
-  Filter,
   SlidersHorizontal,
-  X,
   Package,
   ShieldCheck,
   RotateCcw,
@@ -49,17 +46,7 @@ export function Products({
 
     // 2. Filter by Category / Dosage Format
     if (selectedCategory && selectedCategory !== 'all') {
-      if (selectedCategory === 'combos') {
-        result = result.filter(
-          (p) =>
-            p.isCombo ||
-            (p.multiPacks && p.multiPacks.length > 1) ||
-            p.categoryId === 'combos' ||
-            (Array.isArray(p.categoryIds) && p.categoryIds.includes('combos'))
-        );
-      } else {
-        result = result.filter((p) => isProductInCategory(p, selectedCategory));
-      }
+      result = result.filter((p) => isProductInCategory(p, selectedCategory));
     }
 
     // 3. Filter by Search Query
@@ -133,45 +120,11 @@ export function Products({
 
   return (
     <div className="bg-sand-warm min-h-screen pb-16">
-      {/* 1. Header Banner & Filters */}
-      <section className="bg-white border-b border-sand-border py-8 sm:py-12">
+      {/* 1. Filter Tabs */}
+      <section className="bg-white border-b border-sand-border py-4 sm:py-5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-              <span className="text-xs font-bold text-sage uppercase tracking-widest block mb-1">
-                Fibax Herbal Dispensary
-              </span>
-              <h1 className="font-heading text-2xl sm:text-4xl font-bold text-forest-deep tracking-tight">
-                Authentic Ayurvedic Formulations
-              </h1>
-              <p className="text-xs sm:text-sm text-charcoal-muted mt-1">
-                Explore our comprehensive range of herbal syrups, tablets, capsules, juices, churnas, and vitality oils.
-              </p>
-            </div>
-
-            {/* In-page live search */}
-            <div className="w-full md:w-80 relative">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search products or ingredients..."
-                className="w-full pl-10 pr-10 py-2.5 bg-sand border border-sand-border rounded-xl text-xs sm:text-sm text-charcoal focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand"
-              />
-              <Search className="h-4 w-4 text-charcoal-subtle absolute left-3.5 top-3" />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-3 text-charcoal-subtle hover:text-charcoal"
-                >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
-            </div>
-          </div>
-
           {/* Format / Category Filter Chips */}
-          <div className="mt-8 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
             <span className="text-xs font-bold text-forest uppercase tracking-wider flex-shrink-0 flex items-center gap-1 mr-2">
               <Package className="h-3.5 w-3.5 text-brand" /> Formats:
             </span>

@@ -102,27 +102,30 @@ function StorefrontApp() {
         document.title = 'Ayurvedic Formulations & Products | Fibax Pharma';
       } else if (pathname.startsWith('/product/')) {
         const identifier = decodeURIComponent(pathname.replace(/^\/product\//, '')).trim();
-        const catalog = (products && products.length > 0) ? products : INITIAL_PRODUCTS;
-        const found = catalog.find(
-          (p) => (p.slug && p.slug.toLowerCase() === identifier.toLowerCase()) || String(p.id) === identifier
-        );
+        const allAvailable = [...(products || []), ...INITIAL_PRODUCTS];
+        const matchProduct = (p) => {
+          if (!p) return false;
+          const cleanId = String(p.id || '').toLowerCase();
+          const cleanSlug = String(p.slug || '').toLowerCase();
+          const cleanTitle = String(p.title || '').toLowerCase().replace(/[^a-z0-9]+/g, '-');
+          const cleanIdent = identifier.toLowerCase();
+          return cleanId === cleanIdent || cleanSlug === cleanIdent || cleanTitle === cleanIdent;
+        };
+
+        const found = allAvailable.find(matchProduct);
+
         if (found) {
           setSelectedProduct(found);
           setCurrentPage('product-detail');
           document.title = `${found.title} | Fibax Pharma`;
-        } else {
-          const fallback = INITIAL_PRODUCTS.find(
-            (p) => (p.slug && p.slug.toLowerCase() === identifier.toLowerCase()) || String(p.id) === identifier
-          );
-          if (fallback) {
-            setSelectedProduct(fallback);
-            setCurrentPage('product-detail');
-            document.title = `${fallback.title} | Fibax Pharma`;
-          } else {
-            setSelectedProduct(null);
-            setCurrentPage('product-detail');
-            document.title = 'Product Catalog | Fibax Pharma';
-          }
+        } else if (selectedProduct) {
+          // Keep existing selectedProduct if already set
+          setCurrentPage('product-detail');
+          document.title = `${selectedProduct.title} | Fibax Pharma`;
+        } else if (allAvailable.length > 0) {
+          setSelectedProduct(allAvailable[0]);
+          setCurrentPage('product-detail');
+          document.title = `${allAvailable[0].title} | Fibax Pharma`;
         }
       } else if (pathname === '/blogs' || pathname === '/journal') {
         setCurrentPage('blogs');

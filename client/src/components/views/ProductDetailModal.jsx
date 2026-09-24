@@ -5,6 +5,7 @@ import { Badge } from '../ui/Badge';
 import { Accordion } from '../ui/Accordion';
 import { formatPrice } from '../../lib/utils';
 import { apiRequest } from '../../utils/api';
+import { useProductRating } from '../../hooks/useProductRating';
 import {
   X,
   Star,
@@ -22,8 +23,17 @@ export function ProductDetailModal({ product, isOpen, onClose }) {
   const [selectedPack, setSelectedPack] = useState('pack-1');
   const [pincode, setPincode] = useState('');
   const [pinStatus, setPinStatus] = useState(null);
+  const { average, count } = useProductRating(product);
+
+  const galleryImages = (Array.isArray(product?.images) && product.images.length > 0)
+    ? product.images.map(img => typeof img === 'string' ? img : (img?.url || '')).filter(Boolean)
+    : [product?.featuredImage || product?.image || 'https://fibaxpharma.com/wp-content/uploads/2025/11/fp-enzyme.png'];
+
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   if (!isOpen || !product) return null;
+
+  const activeMainImage = galleryImages[selectedImageIndex] || galleryImages[0] || product?.featuredImage || product?.image;
 
   const isOutOfStock = product.inStock === false || product.stockQuantity === undefined || product.stockQuantity === null || Number(product.stockQuantity) <= 0;
 
@@ -138,12 +148,30 @@ export function ProductDetailModal({ product, isOpen, onClose }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
             {/* Gallery Image */}
             <div className="space-y-3">
-              <div className="aspect-square rounded-2xl bg-sand/70 p-6 flex items-center justify-center border border-sand-border">
-                <img
-                  src={product.featuredImage}
-                  alt={product.title}
-                  className="max-h-72 object-contain drop-shadow-md"
-                />
+              <div className="flex flex-col-reverse sm:flex-row gap-3">
+                {galleryImages.length > 1 && (
+                  <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[300px] flex-shrink-0">
+                    {galleryImages.map((imgUrl, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedImageIndex(idx)}
+                        className={`w-12 h-12 rounded-lg border p-1 bg-white flex items-center justify-center flex-shrink-0 ${
+                          selectedImageIndex === idx ? 'border-forest ring-2 ring-forest/20' : 'border-sand-border opacity-70 hover:opacity-100'
+                        }`}
+                      >
+                        <img src={imgUrl} alt="Thumbnail" className="w-full h-full object-contain" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <div className="aspect-square flex-1 rounded-2xl bg-sand/70 p-6 flex items-center justify-center border border-sand-border">
+                  <img
+                    src={activeMainImage}
+                    alt={product.title}
+                    className="max-h-72 object-contain drop-shadow-md"
+                  />
+                </div>
               </div>
               <div className="flex items-center justify-center gap-4 text-xs font-semibold text-forest">
                 <span className="flex items-center gap-1">
@@ -180,13 +208,26 @@ export function ProductDetailModal({ product, isOpen, onClose }) {
                 </p>
 
                 <div className="flex items-center gap-2 mt-2">
-                  <div className="flex text-gold">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="h-4 w-4 fill-current" />
+                  <div className="flex">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={`h-4 w-4 ${
+                          count > 0 && star <= Math.round(average)
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'fill-gray-100 text-gray-300'
+                        }`}
+                      />
                     ))}
                   </div>
-                  <span className="text-xs font-bold text-charcoal">{product.ratingAverage}</span>
-                  <span className="text-xs text-charcoal-subtle">({product.ratingCount} verified reviews)</span>
+                  {count > 0 ? (
+                    <>
+                      <span className="text-xs font-bold text-charcoal">{average.toFixed(1)}</span>
+                      <span className="text-xs text-charcoal-subtle">({count} verified review{count !== 1 ? 's' : ''})</span>
+                    </>
+                  ) : (
+                    <span className="text-xs text-charcoal-subtle">No reviews yet</span>
+                  )}
                 </div>
               </div>
 
@@ -206,7 +247,7 @@ export function ProductDetailModal({ product, isOpen, onClose }) {
                   )}
                 </div>
                 <p className="text-[11px] text-emerald-800 font-semibold mt-0.5">
-                  Inclusive of all taxes. Free shipping applied on orders ₹499+.
+                  Inclusive of all taxes
                 </p>
               </div>
 

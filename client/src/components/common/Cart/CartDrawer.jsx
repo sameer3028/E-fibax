@@ -29,6 +29,7 @@ export function CartDrawer({ onCheckout }) {
     amountNeededForFreeShipping,
     freeShippingProgress,
     totalItemsCount,
+    shippingFee
   } = useCart();
 
   const activeIsOpen = isOpen ?? isCartOpen;
@@ -194,7 +195,7 @@ export function CartDrawer({ onCheckout }) {
               <div className="flex items-center justify-between text-xs text-charcoal-muted">
                 <span>Shipping</span>
                 <span className="text-xs font-bold text-forest">
-                  {activeAmountNeeded === 0 ? 'FREE' : '₹49 (Delhivery)'}
+                  {activeAmountNeeded === 0 ? 'FREE' : (shippingFee > 0 ? `${formatPrice(shippingFee)} (Delhivery)` : 'Calculated at Checkout')}
                 </span>
               </div>
 

@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { useProducts } from '../../context/ProductContext';
 import { formatPrice } from '../../lib/utils';
 import { 
@@ -142,9 +142,28 @@ export function ProductsTable({ onAddNew, onEditProduct }) {
                                 </span>
                               )}
                             </div>
-                            <span className="text-[10px] text-charcoal-subtle">
-                              {product.volumeWeight}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] text-charcoal-subtle">
+                                {product.volumeWeight}
+                              </span>
+                              {(() => {
+                                const sp = product.shippingPackage || {};
+                                const w = Number(sp.weightGrams ?? product.packageWeightGrams ?? 0);
+                                const l = Number(sp.lengthCm ?? product.packageLengthCm ?? 0);
+                                const wi = Number(sp.widthCm ?? product.packageWidthCm ?? 0);
+                                const h = Number(sp.heightCm ?? product.packageHeightCm ?? 0);
+                                const hasShippingConfig = w > 0 && l > 0 && wi > 0 && h > 0;
+                                return hasShippingConfig ? (
+                                  <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.2 rounded border border-emerald-200" title={`Package Weight: ${w}g, ${l}x${wi}x${h} cm`}>
+                                    Shipping: ✓ Configured
+                                  </span>
+                                ) : (
+                                  <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200" title="Missing weight/dimensions for live freight calculation">
+                                    Shipping: ⚠ Missing details
+                                  </span>
+                                );
+                              })()}
+                            </div>
                           </div>
                         </div>
                       </td>

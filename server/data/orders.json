@@ -1,5 +1,122 @@
 [
   {
+    "orderId": "FBX-032645-4HO",
+    "createdAt": "2026-09-23T14:17:13.138Z",
+    "customer": {
+      "name": "Test User",
+      "phone": "9876543210",
+      "email": "test@example.com",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "3413",
+        "title": "Livupchar Syrup",
+        "salePrice": 229,
+        "quantity": 2
+      }
+    ],
+    "shipping": {
+      "address": "123 Main St",
+      "city": "Mumbai",
+      "state": "Maharashtra",
+      "pincode": "400001"
+    },
+    "payment": {
+      "method": "Prepaid"
+    },
+    "totals": {
+      "subtotal": 458,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 69,
+      "codFee": 0,
+      "grandTotal": 527
+    },
+    "trackingId": "DLH-837917611",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "shipment": {
+      "orderId": "FBX-032645-4HO",
+      "trackingId": "DLH-837917611",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "status": "Manifested",
+      "shippedAt": "2026-09-23T14:17:13.138Z",
+      "estimatedDelivery": "2026-09-26T14:17:13.138Z",
+      "pickupWarehouse": {
+        "name": "Fibax Ayurveda Central Logistics Hub",
+        "address": "Office no. 316, 3rd Floor, CCC, VIP Road",
+        "city": "Zirakpur",
+        "state": "Punjab",
+        "pincode": "140603",
+        "phone": "+91-8872544458",
+        "email": "care@fibaxpharma.com"
+      },
+      "destination": {
+        "name": "Test User",
+        "phone": "9876543210",
+        "address": "123 Main St",
+        "city": "Mumbai",
+        "pincode": "400001"
+      },
+      "payment": {
+        "method": "Prepaid",
+        "collectableAmount": 0
+      },
+      "timeline": [
+        {
+          "status": "Order Placed",
+          "title": "Order Confirmed & Verified",
+          "location": "Fibax Digital Storefront",
+          "timestamp": "2026-09-23T14:17:13.138Z",
+          "completed": true,
+          "description": "Customer order placed successfully. Payment: Prepaid"
+        },
+        {
+          "status": "Manifested",
+          "title": "Packed & Manifest Generated",
+          "location": "Zirakpur Hub",
+          "timestamp": "2026-09-23T14:17:13.138Z",
+          "completed": true,
+          "description": "AWB DLH-837917611 generated. Formulations securely packed with tamper-evident seal."
+        },
+        {
+          "status": "Dispatched",
+          "title": "Handed Over to Courier",
+          "location": "Delhivery Express Surface & Air Tricity Sorting Center",
+          "timestamp": "2026-09-23T20:17:13.138Z",
+          "completed": false,
+          "description": "Package handed to Delhivery Express Surface & Air dispatch executive."
+        },
+        {
+          "status": "In Transit",
+          "title": "In Transit to Destination Hub",
+          "location": "National Highway Express Route",
+          "timestamp": "2026-09-24T14:17:13.138Z",
+          "completed": false,
+          "description": "Air/Surface cargo en route to regional delivery hub."
+        },
+        {
+          "status": "Out for Delivery",
+          "title": "Out for Doorstep Delivery",
+          "location": "Mumbai Hub",
+          "timestamp": "2026-09-25T14:17:13.138Z",
+          "completed": false,
+          "description": "Delivery associate assigned for doorstep handover."
+        },
+        {
+          "status": "Delivered",
+          "title": "Delivered to Consignee",
+          "location": "123 Main St",
+          "timestamp": "2026-09-26T14:17:13.138Z",
+          "completed": false,
+          "description": "Package delivered safely. OTP verified."
+        }
+      ]
+    }
+  },
+  {
     "orderId": "FBX-227338-7MJ",
     "createdAt": "2026-09-18T11:00:27.338Z",
     "customer": {

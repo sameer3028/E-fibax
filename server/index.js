@@ -33,13 +33,25 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+import {
+  getReviewsForProduct,
+  submitReview,
+  getAdminReviews,
+  updateReviewStatus,
+  bulkUpdateReviewStatus,
+  deleteReviewPermanently,
+  markReviewHelpful,
+  reportReview,
+  removeReviewMedia
+} from './reviews.js';
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Ensure data & upload directories exist
 const dataDir = join(__dirname, 'data');
@@ -67,42 +79,75 @@ possibleUploadDirs.forEach((d) => {
   }
 });
 
-// POST /api/upload - Handle base64 product image uploads
+// POST /api/upload - Handle base64 product image and video uploads
 app.post('/api/upload', (req, res) => {
   try {
-    const { image, filename } = req.body;
-    if (!image) {
-      return res.status(400).json({ success: false, error: 'No image data provided' });
+    const { image, file, filename } = req.body;
+    const mediaData = image || file;
+    if (!mediaData) {
+      return res.status(400).json({ success: false, error: 'No media data provided' });
     }
 
-    const matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    const matches = mediaData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
     let buffer;
     let ext = 'jpg';
+    let isVideo = false;
 
     if (matches && matches.length === 3) {
-      const mime = matches[1];
-      if (mime.includes('png')) ext = 'png';
-      else if (mime.includes('webp')) ext = 'webp';
-      else if (mime.includes('svg')) ext = 'svg';
+      const mime = matches[1].toLowerCase();
+      const allowedImageMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      const allowedVideoMimes = ['video/mp4', 'video/webm', 'video/quicktime', 'video/mov', 'video/x-matroska'];
+      
+      if (!allowedImageMimes.includes(mime) && !allowedVideoMimes.includes(mime)) {
+        return res.status(400).json({ success: false, error: 'Supported formats: JPG, PNG, WebP for photos, and MP4, WebM, MOV for video.' });
+      }
+
+      if (allowedVideoMimes.includes(mime)) {
+        isVideo = true;
+        if (mime.includes('mp4')) ext = 'mp4';
+        else if (mime.includes('webm')) ext = 'webm';
+        else if (mime.includes('quicktime') || mime.includes('mov')) ext = 'mov';
+        else ext = 'mp4';
+      } else {
+        if (mime.includes('png')) ext = 'png';
+        else if (mime.includes('webp')) ext = 'webp';
+        else ext = 'jpg';
+      }
       buffer = Buffer.from(matches[2], 'base64');
     } else {
-      buffer = Buffer.from(image, 'base64');
+      buffer = Buffer.from(mediaData, 'base64');
     }
 
-    const cleanBase = filename ? filename.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_') : 'prod';
+    // Size check: 5 MB max for images, 50 MB max for videos
+    const maxSize = isVideo ? 50 * 1024 * 1024 : 5 * 1024 * 1024;
+    if (buffer.length > maxSize) {
+      const limitMb = isVideo ? '50 MB' : '5 MB';
+      return res.status(400).json({ success: false, error: `File size must be ${limitMb} or smaller.` });
+    }
+
+    const cleanBase = filename ? filename.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_') : (isVideo ? 'video' : 'img');
     const safeName = `${cleanBase}-${Date.now()}.${ext}`;
     const filePath = join(uploadsDir, safeName);
     writeFileSync(filePath, buffer);
 
-    console.log(`📸 Image uploaded successfully: ${safeName}`);
-    res.json({
+    // Also write to client/public/uploads if dir exists for dev environment sync
+    const clientPublicUploadsDir = join(__dirname, '..', 'client', 'public', 'uploads');
+    if (existsSync(clientPublicUploadsDir)) {
+      try {
+        writeFileSync(join(clientPublicUploadsDir, safeName), buffer);
+      } catch (e) {}
+    }
+
+    console.log(`📸 Media uploaded successfully (${isVideo ? 'Video' : 'Photo'}): ${safeName}`);
+    return res.json({
       success: true,
       url: `/uploads/${safeName}`,
-      filename: safeName
+      filename: safeName,
+      isVideo
     });
-  } catch (error) {
-    console.error('Upload error:', error);
-    res.status(500).json({ success: false, error: error.message });
+  } catch (err) {
+    console.error('Error handling media upload:', err);
+    return res.status(500).json({ success: false, error: 'Internal server upload error' });
   }
 });
 
@@ -736,8 +781,194 @@ app.post('/api/auth/logout', (req, res) => {
 });
 
 // ==========================================
+// 0C. COUPONS & DISCOUNT OFFERS API
+// ==========================================
+function readCoupons() {
+  return getArray('coupons');
+}
+
+function saveCoupons(coupons) {
+  setArray('coupons', coupons);
+}
+
+// GET /api/coupons - List all promo coupons (for Admin Portal)
+app.get('/api/coupons', (req, res) => {
+  try {
+    const coupons = readCoupons();
+    res.json({ success: true, count: coupons.length, data: coupons });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/coupons/active - List active customer-visible coupons (for Checkout & Cart)
+app.get('/api/coupons/active', (req, res) => {
+  try {
+    const coupons = readCoupons();
+    const activeCoupons = coupons.filter(c => c.isActive !== false);
+    res.json({ success: true, count: activeCoupons.length, data: activeCoupons });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/coupons/validate - Backend Authoritative Coupon Validation Endpoint
+app.post('/api/coupons/validate', (req, res) => {
+  try {
+    const { code, cartTotal } = req.body || {};
+    if (!code || !String(code).trim()) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid coupon code.' });
+    }
+
+    const cleanCode = String(code).trim().toUpperCase();
+    const coupons = readCoupons();
+    const coupon = coupons.find(c => String(c.code).toUpperCase() === cleanCode);
+
+    if (!coupon || coupon.isActive === false) {
+      return res.status(400).json({ success: false, error: `Coupon code "${cleanCode}" is invalid or inactive.` });
+    }
+
+    const subtotal = Number(cartTotal) || 0;
+    const minOrder = Number(coupon.minOrder) || 0;
+
+    if (minOrder > 0 && subtotal < minOrder) {
+      const needed = minOrder - subtotal;
+      return res.status(400).json({
+        success: false,
+        error: `Minimum order value for ${cleanCode} is ₹${minOrder}. Add ₹${needed} more items to use this offer!`
+      });
+    }
+
+    let discount = 0;
+    if (coupon.type === 'percent') {
+      discount = Math.round((subtotal * Number(coupon.value)) / 100);
+      if (coupon.maxDiscount !== null && coupon.maxDiscount !== undefined && coupon.maxDiscount !== '' && Number(coupon.maxDiscount) > 0) {
+        discount = Math.min(discount, Number(coupon.maxDiscount));
+      }
+    } else {
+      discount = Math.min(Number(coupon.value), subtotal);
+    }
+
+    return res.json({
+      success: true,
+      code: coupon.code,
+      discountAmount: discount,
+      type: coupon.type,
+      value: coupon.value,
+      minOrder: coupon.minOrder,
+      maxDiscount: coupon.maxDiscount,
+      description: coupon.description,
+      message: `Coupon ${coupon.code} applied! Saved ₹${discount}.`
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// POST /api/coupons - Create new coupon code
+app.post('/api/coupons', (req, res) => {
+  try {
+    const coupons = readCoupons();
+    const { code, type, value, minOrder, maxDiscount, description, isActive } = req.body || {};
+
+    if (!code || !code.trim()) {
+      return res.status(400).json({ success: false, error: 'Coupon code is required.' });
+    }
+
+    const cleanCode = code.trim().toUpperCase();
+    if (coupons.some(c => c.code.toUpperCase() === cleanCode)) {
+      return res.status(400).json({ success: false, error: `Coupon code "${cleanCode}" already exists.` });
+    }
+
+    const newCoupon = {
+      id: 'c_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6),
+      code: cleanCode,
+      type: type === 'flat' ? 'flat' : 'percent',
+      value: Number(value) || 0,
+      minOrder: Number(minOrder) || 0,
+      maxDiscount: maxDiscount !== undefined && maxDiscount !== '' && maxDiscount !== null ? Number(maxDiscount) : null,
+      description: (description || '').trim(),
+      isActive: isActive !== undefined ? !!isActive : true,
+      createdAt: new Date().toISOString()
+    };
+
+    coupons.unshift(newCoupon);
+    saveCoupons(coupons);
+
+    console.log(`🎟️ New coupon created: ${newCoupon.code} (${newCoupon.type === 'percent' ? newCoupon.value + '%' : '₹' + newCoupon.value})`);
+    return res.status(201).json({ success: true, message: 'Coupon offer created successfully!', data: newCoupon });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// PUT /api/coupons/:id - Update existing coupon
+app.put('/api/coupons/:id', (req, res) => {
+  try {
+    const coupons = readCoupons();
+    const idx = coupons.findIndex(c => String(c.id) === String(req.params.id));
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Coupon not found.' });
+    }
+
+    const { code, type, value, minOrder, maxDiscount, description, isActive } = req.body || {};
+
+    if (code && code.trim()) {
+      const cleanCode = code.trim().toUpperCase();
+      if (coupons.some(c => String(c.id) !== String(req.params.id) && c.code.toUpperCase() === cleanCode)) {
+        return res.status(400).json({ success: false, error: `Coupon code "${cleanCode}" already exists.` });
+      }
+      coupons[idx].code = cleanCode;
+    }
+
+    if (type) coupons[idx].type = type === 'flat' ? 'flat' : 'percent';
+    if (value !== undefined) coupons[idx].value = Number(value);
+    if (minOrder !== undefined) coupons[idx].minOrder = Number(minOrder);
+    if (maxDiscount !== undefined) coupons[idx].maxDiscount = maxDiscount !== null && maxDiscount !== '' ? Number(maxDiscount) : null;
+    if (description !== undefined) coupons[idx].description = description.trim();
+    if (isActive !== undefined) coupons[idx].isActive = !!isActive;
+    coupons[idx].updatedAt = new Date().toISOString();
+
+    saveCoupons(coupons);
+    console.log(`🎟️ Coupon updated: ${coupons[idx].code}`);
+    return res.json({ success: true, message: 'Coupon offer updated successfully!', data: coupons[idx] });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// DELETE /api/coupons/:id - Delete coupon
+app.delete('/api/coupons/:id', (req, res) => {
+  try {
+    let coupons = readCoupons();
+    const target = coupons.find(c => String(c.id) === String(req.params.id));
+    if (!target) {
+      return res.status(404).json({ success: false, error: 'Coupon not found.' });
+    }
+    coupons = coupons.filter(c => String(c.id) !== String(req.params.id));
+    saveCoupons(coupons);
+    console.log(`🗑️ Coupon deleted: ${target.code}`);
+    return res.json({ success: true, message: 'Coupon deleted successfully.' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==========================================
 // 1. PRODUCTS REST API (CRUD + OFFERS + STOCK)
 // ==========================================
+
+// Helper to attach dynamic approved review statistics
+function attachReviewStatsToProduct(p) {
+  if (!p) return p;
+  const stats = getReviewsForProduct(p.id);
+  const totalCount = stats.totalApprovedCount || 0;
+  return {
+    ...p,
+    ratingAverage: totalCount > 0 ? stats.averageRating : 0,
+    ratingCount: totalCount
+  };
+}
 
 // GET /api/products - Get all products with optional filters
 app.get('/api/products', (req, res) => {
@@ -762,10 +993,12 @@ app.get('/api/products', (req, res) => {
       products = products.filter(p => p.inStock);
     }
 
+    const enrichedProducts = products.map(attachReviewStatsToProduct);
+
     res.json({
       success: true,
-      count: products.length,
-      data: products
+      count: enrichedProducts.length,
+      data: enrichedProducts
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -780,7 +1013,8 @@ app.get('/api/products/:id', (req, res) => {
     if (!product) {
       return res.status(404).json({ success: false, error: 'Product not found' });
     }
-    res.json({ success: true, data: product });
+    const enrichedProduct = attachReviewStatsToProduct(product);
+    res.json({ success: true, data: enrichedProduct });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -803,6 +1037,12 @@ app.post('/api/products', (req, res) => {
     const discountPercent = Math.round(((mrp - salePrice) / mrp) * 100);
     const stockQuantity = Number(body.stockQuantity) || 50;
 
+    const pkgInput = body.shippingPackage || {};
+    const weightGrams = Number(pkgInput.weightGrams !== undefined ? pkgInput.weightGrams : (body.packageWeightGrams || 0));
+    const lengthCm = Number(pkgInput.lengthCm !== undefined ? pkgInput.lengthCm : (body.packageLengthCm || 0));
+    const widthCm = Number(pkgInput.widthCm !== undefined ? pkgInput.widthCm : (body.packageWidthCm || 0));
+    const heightCm = Number(pkgInput.heightCm !== undefined ? pkgInput.heightCm : (body.packageHeightCm || 0));
+
     const newProduct = {
       id: newId,
       title: body.title.trim(),
@@ -817,11 +1057,22 @@ app.post('/api/products', (req, res) => {
       stockQuantity: stockQuantity,
       lowStockThreshold: Number(body.lowStockThreshold) || 15,
       inStock: stockQuantity > 0,
-      featuredImage: body.featuredImage || 'https://fibaxpharma.com/wp-content/uploads/2025/11/front.webp',
+      featuredImage: body.featuredImage || (Array.isArray(body.images) && body.images[0]) || 'https://fibaxpharma.com/wp-content/uploads/2025/11/front.webp',
+      images: Array.isArray(body.images) && body.images.length > 0 ? body.images : (body.featuredImage ? [body.featuredImage] : []),
       ratingAverage: body.ratingAverage || '4.8',
       ratingCount: Number(body.ratingCount) || 1,
       isBestseller: !!body.isBestseller,
       volumeWeight: body.volumeWeight || '200 ml',
+      shippingPackage: {
+        weightGrams: weightGrams > 0 ? weightGrams : 0,
+        lengthCm: lengthCm > 0 ? lengthCm : 0,
+        widthCm: widthCm > 0 ? widthCm : 0,
+        heightCm: heightCm > 0 ? heightCm : 0
+      },
+      packageWeightGrams: weightGrams > 0 ? weightGrams : 0,
+      packageLengthCm: lengthCm > 0 ? lengthCm : 0,
+      packageWidthCm: widthCm > 0 ? widthCm : 0,
+      packageHeightCm: heightCm > 0 ? heightCm : 0,
       shortDesc: body.shortDesc || 'Authentic Ayurvedic formulation by Fibax Pharma.',
       keyBenefits: body.keyBenefits || [
         'Natural herbal recovery and daily wellness',
@@ -867,6 +1118,14 @@ app.put('/api/products/:id', (req, res) => {
     const discountPercent = Math.round(((mrp - salePrice) / mrp) * 100);
     const stockQuantity = body.stockQuantity !== undefined ? Number(body.stockQuantity) : current.stockQuantity;
 
+    const currentPkg = current.shippingPackage || {};
+    const bodyPkg = body.shippingPackage || {};
+
+    const weightGrams = Number(bodyPkg.weightGrams !== undefined ? bodyPkg.weightGrams : (body.packageWeightGrams !== undefined ? body.packageWeightGrams : (currentPkg.weightGrams !== undefined ? currentPkg.weightGrams : (current.packageWeightGrams || 0))));
+    const lengthCm = Number(bodyPkg.lengthCm !== undefined ? bodyPkg.lengthCm : (body.packageLengthCm !== undefined ? body.packageLengthCm : (currentPkg.lengthCm !== undefined ? currentPkg.lengthCm : (current.packageLengthCm || 0))));
+    const widthCm = Number(bodyPkg.widthCm !== undefined ? bodyPkg.widthCm : (body.packageWidthCm !== undefined ? body.packageWidthCm : (currentPkg.widthCm !== undefined ? currentPkg.widthCm : (current.packageWidthCm || 0))));
+    const heightCm = Number(bodyPkg.heightCm !== undefined ? bodyPkg.heightCm : (body.packageHeightCm !== undefined ? body.packageHeightCm : (currentPkg.heightCm !== undefined ? currentPkg.heightCm : (current.packageHeightCm || 0))));
+
     const updated = {
       ...current,
       ...body,
@@ -875,6 +1134,16 @@ app.put('/api/products/:id', (req, res) => {
       discountPercent,
       stockQuantity,
       inStock: stockQuantity > 0,
+      shippingPackage: {
+        weightGrams: weightGrams > 0 ? weightGrams : 0,
+        lengthCm: lengthCm > 0 ? lengthCm : 0,
+        widthCm: widthCm > 0 ? widthCm : 0,
+        heightCm: heightCm > 0 ? heightCm : 0
+      },
+      packageWeightGrams: weightGrams > 0 ? weightGrams : 0,
+      packageLengthCm: lengthCm > 0 ? lengthCm : 0,
+      packageWidthCm: widthCm > 0 ? widthCm : 0,
+      packageHeightCm: heightCm > 0 ? heightCm : 0,
       treatmentCourseConfig: body.treatmentCourseConfig !== undefined ? body.treatmentCourseConfig : {
         enabled: false,
         heading: "SELECT TREATMENT COURSE / VALUE PACK:",
@@ -1016,17 +1285,82 @@ app.get('/api/orders', (req, res) => {
 });
 
 // POST /api/orders - Place order and auto-deduct inventory
-app.post('/api/orders', (req, res) => {
+app.post('/api/orders', async (req, res) => {
   try {
     const orders = readOrders();
     const products = readProducts();
+    const productsMap = {};
+    products.forEach(p => { productsMap[String(p.id)] = p; });
+
     const { customer, items, shipping, payment, totals } = req.body || {};
     const authenticatedCustomer = getCustomerFromRequest(req);
     const resolvedUserId = authenticatedCustomer?.id || customer?.userId || null;
     const resolvedEmail = authenticatedCustomer?.email || customer?.email || '';
 
     const orderId = 'FBX-' + Date.now().toString().slice(-6) + '-' + Math.random().toString(36).substring(2, 5).toUpperCase();
-    
+
+    // 1. Calculate item weights and server-side subtotal
+    let cartWeight = 0;
+    const itemsList = Array.isArray(items) ? items : [];
+    const calculatedSubtotal = itemsList.reduce((acc, item) => {
+      const pId = String(item.id || item.product?.id || '');
+      const p = productsMap[pId];
+      const price = Number(item.price || item.salePrice || p?.salePrice || 0);
+      const qty = Number(item.quantity) || 1;
+
+      let itemWeight = 250;
+      const vol = item.volumeWeight || p?.volumeWeight;
+      if (vol) {
+        const m = String(vol).match(/(\d+)\s*(ml|gm|g|kg|l)?/i);
+        if (m) {
+          let val = parseInt(m[1], 10);
+          const u = (m[2] || 'gm').toLowerCase();
+          if (u === 'kg' || u === 'l') val *= 1000;
+          if (val > 0) itemWeight = val;
+        }
+      }
+      cartWeight += itemWeight * qty;
+      return acc + (price * qty);
+    }, 0);
+
+    if (cartWeight <= 0) cartWeight = 500;
+
+    // 2. Server-side validation of Delhivery shipping fee
+    const paymentMode = payment?.method?.includes('COD') ? 'COD' : (payment?.method || 'Prepaid');
+    const shippingCalc = await calculateShippingFee({
+      cartTotal: calculatedSubtotal,
+      pincode: shipping?.pincode,
+      paymentMethod: paymentMode,
+      weight: cartWeight
+    });
+
+    if (shippingCalc.calculationFailed && shippingCalc.rateMode === 'live') {
+      return res.status(400).json({
+        success: false,
+        error: shippingCalc.error || 'Unable to calculate live Delhivery shipping rate for the destination PIN code. Order placement blocked.'
+      });
+    }
+
+    const verifiedShippingFee = Number(shippingCalc.shippingFee || 0);
+    const verifiedCodFee = Number(shippingCalc.codFee || 0);
+    let verifiedDiscount = 0;
+    if (totals?.couponCode) {
+      const coupons = readCoupons();
+      const cleanCode = String(totals.couponCode).trim().toUpperCase();
+      const coupon = coupons.find(c => String(c.code).toUpperCase() === cleanCode);
+      if (coupon && coupon.isActive !== false && calculatedSubtotal >= (Number(coupon.minOrder) || 0)) {
+        if (coupon.type === 'percent') {
+          verifiedDiscount = Math.round((calculatedSubtotal * Number(coupon.value)) / 100);
+          if (coupon.maxDiscount !== null && coupon.maxDiscount !== undefined && coupon.maxDiscount !== '' && Number(coupon.maxDiscount) > 0) {
+            verifiedDiscount = Math.min(verifiedDiscount, Number(coupon.maxDiscount));
+          }
+        } else {
+          verifiedDiscount = Math.min(Number(coupon.value), calculatedSubtotal);
+        }
+      }
+    }
+    const verifiedGrandTotal = Math.max(0, calculatedSubtotal - verifiedDiscount + verifiedShippingFee + verifiedCodFee);
+
     // Auto-generate rich shipment data with tracking
     const tempOrder = {
       orderId,
@@ -1036,10 +1370,17 @@ app.post('/api/orders', (req, res) => {
         userId: resolvedUserId,
         email: resolvedEmail || customer?.email || ''
       },
-      items: items || [],
+      items: itemsList,
       shipping: shipping || {},
       payment: payment || { method: 'COD', status: 'Pending' },
-      totals: totals || {}
+      totals: {
+        subtotal: calculatedSubtotal,
+        discountAmount: verifiedDiscount,
+        couponCode: totals?.couponCode || null,
+        shippingFee: verifiedShippingFee,
+        codFee: verifiedCodFee,
+        grandTotal: verifiedGrandTotal
+      }
     };
 
     const shipmentData = createShipmentForOrder(tempOrder);
@@ -1296,11 +1637,171 @@ app.post('/api/shipping/check-serviceability', async (req, res) => {
 // POST /api/shipping/rates - Dynamic Shipping & COD Fee Calculation
 app.post('/api/shipping/rates', async (req, res) => {
   try {
-    const { cartTotal, pincode, paymentMethod, weight } = req.body || {};
-    const result = await calculateShippingFee({ cartTotal, pincode, paymentMethod, weight });
+    const { cartTotal, pincode, paymentMethod, weight, items } = req.body || {};
+    const productsList = readProducts();
+    const result = await calculateShippingFee({
+      cartTotal,
+      pincode,
+      paymentMethod,
+      weight,
+      items,
+      productsList,
+      combosList: productsList.filter(p => p.isCombo || p.categoryId === 'combos')
+    });
     res.json({ success: true, data: result });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// ====================================================
+// REVIEWS & RATINGS SYSTEM API ENDPOINTS
+// ====================================================
+
+// GET /api/reviews/product/:productId - Get approved public reviews & stats for a product
+app.get('/api/reviews/product/:productId', (req, res) => {
+  try {
+    const { productId } = req.params;
+    const data = getReviewsForProduct(productId);
+    return res.json({ success: true, data });
+  } catch (err) {
+    console.error('Error fetching product reviews:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/reviews - Customer Review Submission (Forces status = PENDING)
+app.post('/api/reviews', (req, res) => {
+  try {
+    const {
+      productId,
+      rating,
+      title,
+      content,
+      images,
+      video,
+      customerId,
+      customerName,
+      customerEmail,
+      customerPhone
+    } = req.body || {};
+
+    const newReview = submitReview({
+      productId,
+      rating,
+      title,
+      content,
+      images,
+      video,
+      customerId,
+      customerName,
+      customerEmail,
+      customerPhone
+    });
+
+    return res.json({
+      success: true,
+      data: newReview,
+      message: 'Thank you! Your review has been submitted and is awaiting approval.'
+    });
+  } catch (err) {
+    console.error('Error submitting customer review:', err);
+    return res.status(400).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/reviews/:id/helpful - Increment review helpful count
+app.post('/api/reviews/:id/helpful', (req, res) => {
+  try {
+    const ok = markReviewHelpful(req.params.id);
+    if (!ok) return res.status(404).json({ success: false, error: 'Review not found' });
+    return res.json({ success: true });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/reviews/:id/report - Report review
+app.post('/api/reviews/:id/report', (req, res) => {
+  try {
+    const ok = reportReview(req.params.id);
+    if (!ok) return res.status(404).json({ success: false, error: 'Review not found' });
+    return res.json({ success: true, message: 'Review reported for administrative review.' });
+  } catch (err) {
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/admin/reviews - Admin Review Dashboard List & Stats
+app.get('/api/admin/reviews', (req, res) => {
+  try {
+    const { status, rating, verified, media, reported, search } = req.query || {};
+    const result = getAdminReviews({ status, rating, verified, media, reported, search });
+    return res.json({ success: true, data: result });
+  } catch (err) {
+    console.error('Error fetching admin reviews:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/admin/reviews/:id/status - Approve, Reject, or Remove Review
+app.put('/api/admin/reviews/:id/status', (req, res) => {
+  try {
+    const { status, adminNote } = req.body || {};
+    if (!status) {
+      return res.status(400).json({ success: false, error: 'Status is required.' });
+    }
+    const updated = updateReviewStatus(req.params.id, status, adminNote);
+    return res.json({ success: true, data: updated, message: `Review status updated to ${status}.` });
+  } catch (err) {
+    console.error('Error updating review status:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/reviews/bulk-status - Bulk Approve, Reject, or Remove Reviews
+app.post('/api/admin/reviews/bulk-status', (req, res) => {
+  try {
+    const { ids, status } = req.body || {};
+    if (!Array.isArray(ids) || ids.length === 0 || !status) {
+      return res.status(400).json({ success: false, error: 'Review IDs array and target status are required.' });
+    }
+    const result = bulkUpdateReviewStatus(ids, status);
+    return res.json({ success: true, data: result, message: `Bulk updated ${result.updatedCount} reviews to ${status}.` });
+  } catch (err) {
+    console.error('Error bulk updating review status:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/admin/reviews/:id - Remove / Delete Review
+app.delete('/api/admin/reviews/:id', (req, res) => {
+  try {
+    const { permanent } = req.query || {};
+    if (permanent === 'true') {
+      deleteReviewPermanently(req.params.id);
+      return res.json({ success: true, message: 'Review permanently deleted.' });
+    }
+    const updated = updateReviewStatus(req.params.id, 'REMOVED', 'Removed by admin');
+    return res.json({ success: true, data: updated, message: 'Review safely removed.' });
+  } catch (err) {
+    console.error('Error removing review:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/admin/reviews/:id/media - Remove individual photo or video from a review
+app.delete('/api/admin/reviews/:id/media', (req, res) => {
+  try {
+    const { mediaUrl } = req.body || req.query || {};
+    if (!mediaUrl) {
+      return res.status(400).json({ success: false, error: 'mediaUrl is required.' });
+    }
+    const updated = removeReviewMedia(req.params.id, mediaUrl);
+    return res.json({ success: true, data: updated, message: 'Media item successfully removed from review.' });
+  } catch (err) {
+    console.error('Error removing review media:', err);
+    return res.status(500).json({ success: false, error: err.message });
   }
 });
 

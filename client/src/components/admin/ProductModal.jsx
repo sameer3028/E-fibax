@@ -7,9 +7,14 @@ import {
   Image as ImageIcon, 
   RefreshCw, 
   Trash2, 
-  Link as LinkIcon, 
-  FileUp,
-  Barcode
+  Barcode,
+  Plus,
+  ArrowLeft,
+  ArrowRight,
+  Star,
+  AlertCircle,
+  CheckCircle2,
+  Package
 } from 'lucide-react';
 import { CATEGORIES } from '../../data/categories';
 import { CONCERNS } from '../../data/concerns';
@@ -24,9 +29,11 @@ const PRESET_IMAGES = [
 ];
 
 export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
-  const fileInputRef = useRef(null);
-  const [uploadMode, setUploadMode] = useState('file'); // 'file' | 'url'
-  const [isUploading, setIsUploading] = useState(false);
+  const multiFileInputRef = useRef(null);
+  const slotReplaceInputRef = useRef(null);
+  const [replacingSlotIndex, setReplacingSlotIndex] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(false);
+  const [uploadError, setUploadError] = useState('');
 
   const [formData, setFormData] = useState({
     title: '',
@@ -40,21 +47,29 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
     salePrice: 249,
     stockQuantity: 50,
     lowStockThreshold: 15,
-    featuredImage: '/uploads/fibax-hero-product.jpg',
+    featuredImage: '',
+    images: [],
     isBestseller: false,
     ayushCertified: true,
     shortDesc: '',
     ingredients: 'Standardized herbal extracts, purified botanical decoctions',
     dosage: '10-15 ml twice daily with warm water after meals',
-        treatmentCourseConfig: {
-          enabled: false,
-          heading: 'SELECT TREATMENT COURSE / VALUE PACK:',
-          recommendationText: 'Recommended 90-Day Course for Best Results',
-          packs: []
-        },
+    shippingPackage: {
+      weightGrams: '',
+      lengthCm: '',
+      widthCm: '',
+      heightCm: ''
+    },
+    treatmentCourseConfig: {
+      enabled: false,
+      heading: 'SELECT TREATMENT COURSE / VALUE PACK:',
+      recommendationText: 'Recommended 90-Day Course for Best Results',
+      packs: []
+    },
   });
 
   useEffect(() => {
+    setUploadError('');
     if (productToEdit) {
       const mappedCat = productToEdit.categoryId || (
         productToEdit.dosageForm === 'Capsules' ? 'capsules' :
@@ -64,6 +79,17 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
         (productToEdit.dosageForm === 'Soap' || productToEdit.dosageForm === 'Facewash') ? 'skincare' :
         'syrups'
       );
+
+      const initialImages = Array.isArray(productToEdit.images) && productToEdit.images.length > 0
+        ? productToEdit.images.map(img => typeof img === 'string' ? img : img.url).filter(Boolean)
+        : (productToEdit.featuredImage ? [productToEdit.featuredImage] : []);
+
+      const sp = productToEdit.shippingPackage || {};
+      const initWeight = sp.weightGrams ?? productToEdit.packageWeightGrams ?? '';
+      const initLength = sp.lengthCm ?? productToEdit.packageLengthCm ?? '';
+      const initWidth = sp.widthCm ?? productToEdit.packageWidthCm ?? '';
+      const initHeight = sp.heightCm ?? productToEdit.packageHeightCm ?? '';
+
       setFormData({
         title: productToEdit.title || '',
         slug: productToEdit.slug || '',
@@ -76,12 +102,19 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
         salePrice: productToEdit.salePrice || 249,
         stockQuantity: productToEdit.stockQuantity !== undefined ? productToEdit.stockQuantity : 50,
         lowStockThreshold: productToEdit.lowStockThreshold || 15,
-        featuredImage: productToEdit.featuredImage || 'https://fibaxpharma.com/wp-content/uploads/2025/11/front.webp',
+        featuredImage: productToEdit.featuredImage || initialImages[0] || '',
+        images: initialImages,
         isBestseller: !!productToEdit.isBestseller,
         ayushCertified: productToEdit.ayushCertified !== false,
         shortDesc: productToEdit.shortDesc || '',
         ingredients: productToEdit.ingredients || '',
         dosage: productToEdit.dosage || '',
+        shippingPackage: {
+          weightGrams: initWeight,
+          lengthCm: initLength,
+          widthCm: initWidth,
+          heightCm: initHeight
+        },
         treatmentCourseConfig: productToEdit.treatmentCourseConfig || {
           enabled: false,
           heading: 'SELECT TREATMENT COURSE / VALUE PACK:',
@@ -102,12 +135,25 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
         salePrice: 249,
         stockQuantity: 50,
         lowStockThreshold: 15,
-        featuredImage: 'https://fibaxpharma.com/wp-content/uploads/2025/11/front.webp',
+        featuredImage: '',
+        images: [],
         isBestseller: false,
         ayushCertified: true,
         shortDesc: '',
         ingredients: 'Standardized herbal extracts, purified botanical decoctions',
         dosage: '10-15 ml twice daily with warm water after meals',
+        shippingPackage: {
+          weightGrams: '',
+          lengthCm: '',
+          widthCm: '',
+          heightCm: ''
+        },
+        treatmentCourseConfig: {
+          enabled: false,
+          heading: 'SELECT TREATMENT COURSE / VALUE PACK:',
+          recommendationText: 'Recommended 90-Day Course for Best Results',
+          packs: []
+        },
       });
     }
   }, [productToEdit, isOpen]);
@@ -115,6 +161,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
   if (!isOpen) return null;
 
   const discountPercent = Math.round(((formData.mrp - formData.salePrice) / formData.mrp) * 100);
+  const currentImageCount = formData.images ? formData.images.length : 0;
 
   // Auto-generate standardized SKU (e.g. FBX-ASHWA-200ML)
     const handleAddPack = () => {
@@ -205,20 +252,98 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
     setFormData(prev => ({ ...prev, sku: generated }));
   };
 
-  // Handle local image file upload
-  const handleFileUpload = (e) => {
+  // Multi-image Bulk File Upload handler
+  const handleBulkFileUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    setUploadError('');
+    const validFiles = [];
+
+    for (const file of files) {
+      if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'].includes(file.type)) {
+        setUploadError('Please upload a valid JPG, PNG, or WebP image.');
+        return;
+      }
+      if (file.size > 5 * 1024 * 1024) {
+        setUploadError('Image must be 5 MB or smaller.');
+        return;
+      }
+      validFiles.push(file);
+    }
+
+    setUploadProgress(true);
+
+    try {
+      const uploadedUrls = [];
+      for (const file of validFiles) {
+        const base64Content = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result);
+          reader.readAsDataURL(file);
+        });
+
+        try {
+          const res = await apiRequest('/api/upload', {
+            method: 'POST',
+            body: JSON.stringify({
+              image: base64Content,
+              filename: file.name
+            })
+          });
+          if (res.success && res.url) {
+            uploadedUrls.push(res.url);
+          } else {
+            uploadedUrls.push(base64Content);
+          }
+        } catch {
+          uploadedUrls.push(base64Content);
+        }
+      }
+
+      setFormData(prev => {
+        const updatedImages = [...(prev.images || []), ...uploadedUrls];
+        return {
+          ...prev,
+          images: updatedImages,
+          featuredImage: prev.featuredImage || updatedImages[0] || ''
+        };
+      });
+    } catch (err) {
+      console.error('Error uploading images:', err);
+      setUploadError('Failed to upload image. Please try again.');
+    } finally {
+      setUploadProgress(false);
+      if (multiFileInputRef.current) multiFileInputRef.current.value = '';
+    }
+  };
+
+  // Slot Replace Upload handler
+  const handleSlotReplaceUpload = async (e) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || replacingSlotIndex === null) return;
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64Content = reader.result;
-      // Immediate local preview
-      setFormData(prev => ({ ...prev, featuredImage: base64Content }));
+    setUploadError('');
+    if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'].includes(file.type)) {
+      setUploadError('Please upload a valid JPG, PNG, or WebP image.');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Image must be 5 MB or smaller.');
+      return;
+    }
 
-      // Upload to backend API
+    setUploadProgress(true);
+
+    try {
+      const base64Content = await new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.readAsDataURL(file);
+      });
+
+      let finalUrl = base64Content;
       try {
-        setIsUploading(true);
         const res = await apiRequest('/api/upload', {
           method: 'POST',
           body: JSON.stringify({
@@ -227,15 +352,76 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
           })
         });
         if (res.success && res.url) {
-          setFormData(prev => ({ ...prev, featuredImage: res.url }));
+          finalUrl = res.url;
         }
       } catch (err) {
-        console.warn('Server upload fallback (using base64 preview):', err);
-      } finally {
-        setIsUploading(false);
+        console.warn('Server upload fallback:', err);
       }
-    };
-    reader.readAsDataURL(file);
+
+      setFormData(prev => {
+        const newImages = [...(prev.images || [])];
+        newImages[replacingSlotIndex] = finalUrl;
+        return {
+          ...prev,
+          images: newImages,
+          featuredImage: replacingSlotIndex === 0 ? finalUrl : (prev.featuredImage || newImages[0] || '')
+        };
+      });
+    } catch (err) {
+      setUploadError('Failed to replace image.');
+    } finally {
+      setUploadProgress(false);
+      setReplacingSlotIndex(null);
+      if (slotReplaceInputRef.current) slotReplaceInputRef.current.value = '';
+    }
+  };
+
+  const handleSetPrimaryImage = (index) => {
+    setFormData(prev => {
+      const currentImages = [...(prev.images || [])];
+      if (index <= 0 || index >= currentImages.length) return prev;
+      const targetImg = currentImages[index];
+      currentImages.splice(index, 1);
+      currentImages.unshift(targetImg);
+      return {
+        ...prev,
+        images: currentImages,
+        featuredImage: currentImages[0]
+      };
+    });
+  };
+
+  const handleMoveImage = (index, direction) => {
+    setFormData(prev => {
+      const currentImages = [...(prev.images || [])];
+      const targetIndex = direction === 'left' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= currentImages.length) return prev;
+      const temp = currentImages[index];
+      currentImages[index] = currentImages[targetIndex];
+      currentImages[targetIndex] = temp;
+      return {
+        ...prev,
+        images: currentImages,
+        featuredImage: currentImages[0]
+      };
+    });
+  };
+
+  const handleDeleteImage = (index) => {
+    setFormData(prev => {
+      const currentImages = [...(prev.images || [])];
+      currentImages.splice(index, 1);
+      if (currentImages.length < 5) {
+        setUploadError('Product has fewer than 5 images.');
+      } else {
+        setUploadError('');
+      }
+      return {
+        ...prev,
+        images: currentImages,
+        featuredImage: currentImages[0] || ''
+      };
+    });
   };
 
   const handleSubmit = (e) => {
@@ -276,13 +462,56 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
       }
     }
 
+    const sp = formData.shippingPackage || {};
+    const w = Number(sp.weightGrams);
+    const l = Number(sp.lengthCm);
+    const wi = Number(sp.widthCm);
+    const h = Number(sp.heightCm);
+
+    const hasWeight = sp.weightGrams !== '' && sp.weightGrams !== null && !isNaN(w);
+    const hasLength = sp.lengthCm !== '' && sp.lengthCm !== null && !isNaN(l);
+    const hasWidth = sp.widthCm !== '' && sp.widthCm !== null && !isNaN(wi);
+    const hasHeight = sp.heightCm !== '' && sp.heightCm !== null && !isNaN(h);
+
+    if (!productToEdit) {
+      if (!hasWeight || w <= 0 || !hasLength || l <= 0 || !hasWidth || wi <= 0 || !hasHeight || h <= 0) {
+        alert('Required for accurate courier shipping calculation. Please enter positive numeric values for Package Weight (grams) and Dimensions (Length, Width, Height in cm).');
+        return;
+      }
+    } else {
+      if ((hasWeight && w <= 0) || (hasLength && l <= 0) || (hasWidth && wi <= 0) || (hasHeight && h <= 0)) {
+        alert('Package weight and dimensions must be positive numeric values greater than 0.');
+        return;
+      }
+    }
+
     // Default SKU if empty
     const finalSku = formData.sku.trim() || `FBX-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const finalImages = formData.images && formData.images.length > 0 ? formData.images : (formData.featuredImage ? [formData.featuredImage] : []);
+    const primaryImg = finalImages[0] || formData.featuredImage || '';
+
+    const finalWeight = hasWeight && w > 0 ? w : 0;
+    const finalLength = hasLength && l > 0 ? l : 0;
+    const finalWidth = hasWidth && wi > 0 ? wi : 0;
+    const finalHeight = hasHeight && h > 0 ? h : 0;
 
     onSave({
       ...formData,
       sku: finalSku,
-      title: formData.title.trim()
+      title: formData.title.trim(),
+      featuredImage: primaryImg,
+      images: finalImages,
+      shippingPackage: {
+        weightGrams: finalWeight,
+        lengthCm: finalLength,
+        widthCm: finalWidth,
+        heightCm: finalHeight
+      },
+      packageWeightGrams: finalWeight,
+      packageLengthCm: finalLength,
+      packageWidthCm: finalWidth,
+      packageHeightCm: finalHeight
     });
   };
 
@@ -314,6 +543,25 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+          {/* Hidden inputs for file uploads */}
+          <input
+            id="product-multi-file-input"
+            type="file"
+            ref={multiFileInputRef}
+            accept="image/jpeg,image/png,image/webp,image/jpg,image/svg+xml"
+            multiple
+            onChange={handleBulkFileUpload}
+            className="hidden"
+          />
+          <input
+            id="product-slot-replace-input"
+            type="file"
+            ref={slotReplaceInputRef}
+            accept="image/jpeg,image/png,image/webp,image/jpg,image/svg+xml"
+            onChange={handleSlotReplaceUpload}
+            className="hidden"
+          />
+
           {/* 1. Title & SKU Section */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-4">
             <div className="sm:col-span-7 space-y-1">
@@ -357,127 +605,191 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
             </div>
           </div>
 
-          {/* 2. Product Image & Upload / Change Section */}
-          <div className="bg-sand/30 p-4 rounded-2xl border border-sand-border space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-xs font-bold text-forest uppercase tracking-wider flex items-center gap-1.5">
-                <ImageIcon className="h-4 w-4 text-forest" />
-                <span>Product Packshot / Image</span>
-              </label>
+          {/* 2. PRODUCT IMAGES / GALLERY SECTION */}
+          <div className="bg-sand/30 p-4 rounded-2xl border border-sand-border space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <label className="text-xs font-bold text-forest uppercase tracking-wider flex items-center gap-1.5">
+                  <ImageIcon className="h-4 w-4 text-forest" />
+                  <span>PRODUCT IMAGES / GALLERY</span>
+                </label>
 
-              {/* Mode Toggle: File Upload vs URL */}
-              <div className="flex items-center rounded-lg bg-sand p-0.5 border border-sand-border text-xs">
-                <button
-                  type="button"
-                  onClick={() => setUploadMode('file')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors flex items-center gap-1 ${
-                    uploadMode === 'file' ? 'bg-white text-forest shadow-xs' : 'text-charcoal-muted hover:text-charcoal'
-                  }`}
-                >
-                  <FileUp className="h-3 w-3" />
-                  <span>Upload File</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setUploadMode('url')}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-bold transition-colors flex items-center gap-1 ${
-                    uploadMode === 'url' ? 'bg-white text-forest shadow-xs' : 'text-charcoal-muted hover:text-charcoal'
-                  }`}
-                >
-                  <LinkIcon className="h-3 w-3" />
-                  <span>Image URL</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Hidden native file input */}
-            <input
-              type="file"
-              ref={fileInputRef}
-              accept="image/*"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-
-            {/* Visual Image Uploader Container */}
-            <div className="flex flex-col sm:flex-row items-center gap-4 bg-white p-3.5 rounded-xl border border-sand-border">
-              {/* Thumbnail Preview */}
-              <div className="relative w-24 h-24 rounded-xl bg-sand/60 border border-sand-border flex-shrink-0 flex items-center justify-center p-1.5 overflow-hidden shadow-xs group">
-                {formData.featuredImage ? (
-                  <>
-                    <img
-                      src={formData.featuredImage}
-                      alt="Preview"
-                      className="w-full h-full object-contain transform group-hover:scale-105 transition-transform"
-                    />
-                    {isUploading && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center text-white text-[10px] font-bold">
-                        Uploading...
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <ImageIcon className="h-8 w-8 text-charcoal-muted" />
-                )}
-              </div>
-
-              {/* Actions & Input */}
-              <div className="flex-1 w-full space-y-2">
-                {uploadMode === 'file' ? (
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="px-4 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5"
-                      >
-                        <Upload className="h-3.5 w-3.5" />
-                        <span>{formData.featuredImage ? 'Change Image' : 'Upload Image from Computer'}</span>
-                      </button>
-
-                      {formData.featuredImage && (
-                        <button
-                          type="button"
-                          onClick={() => setFormData({ ...formData, featuredImage: '' })}
-                          className="p-2 rounded-xl border border-sand-border text-charcoal-muted hover:text-red-600 hover:bg-sand transition-colors"
-                          title="Remove Image"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      )}
-                    </div>
-                    <p className="text-[11px] text-charcoal-muted">
-                      Select PNG, JPG, WebP, or SVG from your device. Auto-optimized for high-resolution packshots.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-1">
-                    <input
-                      type="url"
-                      value={formData.featuredImage}
-                      onChange={(e) => setFormData({ ...formData, featuredImage: e.target.value })}
-                      placeholder="https://fibaxpharma.com/wp-content/uploads/image.webp"
-                      className="w-full px-3 py-2 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest focus:outline-none text-xs"
-                    />
-                    <p className="text-[10px] text-charcoal-muted">Paste any public image or CDN URL.</p>
-                  </div>
-                )}
-
-                {/* Preset Suggestions */}
-                <div className="flex items-center gap-1.5 pt-1 overflow-x-auto">
-                  <span className="text-[10px] font-bold text-charcoal-muted uppercase">Sample Presets:</span>
-                  {PRESET_IMAGES.map((preset) => (
-                    <button
-                      key={preset.name}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, featuredImage: preset.url })}
-                      className="text-[10px] px-2 py-0.5 rounded-md bg-sand hover:bg-sand-border text-charcoal hover:text-forest transition-colors whitespace-nowrap"
-                    >
-                      {preset.name}
-                    </button>
-                  ))}
+                {/* Counter Badge */}
+                <div className={`px-2.5 py-0.5 rounded-full text-xs font-bold flex items-center gap-1 border ${
+                  currentImageCount >= 5 
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}>
+                  {currentImageCount >= 5 ? <CheckCircle2 className="h-3 w-3" /> : <AlertCircle className="h-3 w-3" />}
+                  <span>Images: {currentImageCount}/5</span>
+                  {currentImageCount >= 5 ? <span>✓</span> : <span className="text-[10px] text-amber-600 font-normal">(Min 5 recommended)</span>}
                 </div>
               </div>
+
+              {/* Bulk Upload Button */}
+              <label
+                htmlFor="product-multi-file-input"
+                className="px-4 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-xs transition-colors flex items-center justify-center gap-1.5 self-start sm:self-auto cursor-pointer select-none"
+              >
+                {uploadProgress ? (
+                  <>
+                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                    <span>Uploading...</span>
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" />
+                    <span>+ Upload Images</span>
+                  </>
+                )}
+              </label>
+            </div>
+
+            <p className="text-[11px] text-charcoal-muted">
+              Select multiple product images at once (Minimum 5 recommended). First image is automatically designated as <strong className="text-forest">PRIMARY</strong>. Supported formats: JPG, PNG, WebP (Max 5MB).
+            </p>
+
+            {uploadError && (
+              <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs font-semibold flex items-center gap-2">
+                <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0" />
+                <span>{uploadError}</span>
+              </div>
+            )}
+
+            {/* Gallery Grid */}
+            {currentImageCount > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 pt-1">
+                {formData.images.map((imgUrl, index) => {
+                  const isPrimary = index === 0;
+                  return (
+                    <div 
+                      key={`${imgUrl}-${index}`}
+                      className={`relative bg-white rounded-xl border p-2 flex flex-col justify-between shadow-xs transition-all ${
+                        isPrimary ? 'border-forest ring-2 ring-forest/20' : 'border-sand-border hover:border-forest/40'
+                      }`}
+                    >
+                      {/* Image Preview */}
+                      <div className="relative w-full h-28 rounded-lg bg-sand/40 border border-sand-border overflow-hidden flex items-center justify-center mb-2">
+                        <img
+                          src={imgUrl}
+                          alt={`Product Image ${index + 1}`}
+                          className="w-full h-full object-contain p-1"
+                        />
+
+                        {/* Order & Primary Badge */}
+                        <div className="absolute top-1 left-1 flex flex-col gap-1 z-10">
+                          {isPrimary ? (
+                            <span className="px-1.5 py-0.5 rounded-md bg-forest text-white text-[9px] font-extrabold uppercase tracking-wider flex items-center gap-0.5 shadow-xs">
+                              <Star className="h-2.5 w-2.5 fill-white" />
+                              PRIMARY
+                            </span>
+                          ) : (
+                            <span className="px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-xs text-white text-[9px] font-bold">
+                              Image {index + 1}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Controls */}
+                      <div className="space-y-1.5">
+                        {!isPrimary && (
+                          <button
+                            type="button"
+                            onClick={() => handleSetPrimaryImage(index)}
+                            className="w-full py-1 px-1.5 rounded-md bg-sand/80 hover:bg-forest hover:text-white text-forest text-[10px] font-bold transition-colors flex items-center justify-center gap-1"
+                          >
+                            <Star className="h-2.5 w-2.5" />
+                            <span>Set Primary</span>
+                          </button>
+                        )}
+
+                        <div className="flex items-center justify-between gap-1 border-t border-sand-border/60 pt-1.5">
+                          {/* Reorder Left/Right */}
+                          <div className="flex items-center gap-0.5">
+                            <button
+                              type="button"
+                              disabled={index === 0}
+                              onClick={() => handleMoveImage(index, 'left')}
+                              className="p-1 rounded bg-sand hover:bg-sand-border text-charcoal disabled:opacity-30 disabled:hover:bg-sand text-[10px]"
+                              title="Move Left"
+                            >
+                              <ArrowLeft className="h-3 w-3" />
+                            </button>
+                            <button
+                              type="button"
+                              disabled={index === currentImageCount - 1}
+                              onClick={() => handleMoveImage(index, 'right')}
+                              className="p-1 rounded bg-sand hover:bg-sand-border text-charcoal disabled:opacity-30 disabled:hover:bg-sand text-[10px]"
+                              title="Move Right"
+                            >
+                              <ArrowRight className="h-3 w-3" />
+                            </button>
+                          </div>
+
+                          {/* Replace & Delete */}
+                          <div className="flex items-center gap-1">
+                            <label
+                              htmlFor="product-slot-replace-input"
+                              onClick={() => setReplacingSlotIndex(index)}
+                              className="px-1.5 py-0.5 rounded bg-sand hover:bg-sand-border text-forest text-[10px] font-bold cursor-pointer"
+                              title="Replace this image"
+                            >
+                              Replace
+                            </label>
+
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteImage(index)}
+                              className="p-1 rounded bg-red-50 hover:bg-red-100 text-red-600 text-[10px]"
+                              title="Delete Image"
+                            >
+                              <Trash2 className="h-3 w-3" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              /* Empty state */
+              <label 
+                htmlFor="product-multi-file-input"
+                className="border-2 border-dashed border-sand-border rounded-xl p-6 text-center hover:border-forest/50 transition-colors cursor-pointer bg-white block"
+              >
+                <ImageIcon className="h-8 w-8 text-charcoal-muted mx-auto mb-2" />
+                <p className="text-xs font-bold text-forest">No product images uploaded yet</p>
+                <p className="text-[11px] text-charcoal-muted mt-0.5">
+                  Click here or press <strong>+ Upload Images</strong> above to select minimum 5 product images.
+                </p>
+              </label>
+            )}
+
+            {/* Presets Row */}
+            <div className="flex items-center gap-1.5 pt-1 overflow-x-auto">
+              <span className="text-[10px] font-bold text-charcoal-muted uppercase whitespace-nowrap">Add Sample Presets:</span>
+              {PRESET_IMAGES.map((preset) => (
+                <button
+                  key={preset.name}
+                  type="button"
+                  onClick={() => {
+                    setFormData(prev => {
+                      const updated = [...(prev.images || []), preset.url];
+                      return {
+                        ...prev,
+                        images: updated,
+                        featuredImage: prev.featuredImage || updated[0] || ''
+                      };
+                    });
+                  }}
+                  className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-sand-border hover:bg-sand text-charcoal hover:text-forest transition-colors whitespace-nowrap flex items-center gap-1"
+                >
+                  <Plus className="h-2.5 w-2.5" />
+                  <span>{preset.name}</span>
+                </button>
+              ))}
             </div>
           </div>
 
@@ -576,6 +888,169 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
               />
             </div>
           </div>
+
+          {/* 3.4 SHIPPING PACKAGE DETAILS SECTION */}
+          {(() => {
+            const sp = formData.shippingPackage || {};
+            const w = Number(sp.weightGrams);
+            const l = Number(sp.lengthCm);
+            const wi = Number(sp.widthCm);
+            const h = Number(sp.heightCm);
+            const isConfigured = !isNaN(w) && w > 0 && !isNaN(l) && l > 0 && !isNaN(wi) && wi > 0 && !isNaN(h) && h > 0;
+
+            return (
+              <div className="bg-sand/30 p-4 rounded-2xl border border-sand-border space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <div>
+                    <h4 className="text-xs font-bold text-forest uppercase tracking-wider flex items-center gap-1.5 flex-wrap">
+                      <Package className="h-4 w-4 text-forest" />
+                      <span>SHIPPING PACKAGE DETAILS</span>
+                      {isConfigured ? (
+                        <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                          <span>✓ Used for courier freight calculation</span>
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-bold text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <AlertCircle className="h-3 w-3 text-amber-600" />
+                          <span>⚠ Package dimensions and weight not configured.</span>
+                        </span>
+                      )}
+                    </h4>
+                    <p className="text-[11px] text-charcoal-muted mt-0.5">
+                      Enter the final packed parcel weight and outer package dimensions used for courier shipping.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
+                  {/* Package Weight */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-charcoal">
+                      PACKAGE WEIGHT *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        placeholder="e.g. 320"
+                        value={formData.shippingPackage?.weightGrams ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormData(prev => ({
+                            ...prev,
+                            shippingPackage: {
+                              ...prev.shippingPackage,
+                              weightGrams: val === '' ? '' : val
+                            }
+                          }));
+                        }}
+                        className="w-full px-3 py-2 pr-12 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest text-xs font-bold bg-white"
+                      />
+                      <span className="absolute right-3 top-2 text-[11px] font-semibold text-charcoal-muted pointer-events-none">
+                        grams
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Package Length */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-charcoal">
+                      PACKAGE LENGTH *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        placeholder="e.g. 15"
+                        value={formData.shippingPackage?.lengthCm ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormData(prev => ({
+                            ...prev,
+                            shippingPackage: {
+                              ...prev.shippingPackage,
+                              lengthCm: val === '' ? '' : val
+                            }
+                          }));
+                        }}
+                        className="w-full px-3 py-2 pr-8 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest text-xs font-bold bg-white"
+                      />
+                      <span className="absolute right-3 top-2 text-[11px] font-semibold text-charcoal-muted pointer-events-none">
+                        cm
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Package Width */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-charcoal">
+                      PACKAGE WIDTH *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        placeholder="e.g. 8"
+                        value={formData.shippingPackage?.widthCm ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormData(prev => ({
+                            ...prev,
+                            shippingPackage: {
+                              ...prev.shippingPackage,
+                              widthCm: val === '' ? '' : val
+                            }
+                          }));
+                        }}
+                        className="w-full px-3 py-2 pr-8 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest text-xs font-bold bg-white"
+                      />
+                      <span className="absolute right-3 top-2 text-[11px] font-semibold text-charcoal-muted pointer-events-none">
+                        cm
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Package Height */}
+                  <div className="space-y-1">
+                    <label className="block text-xs font-bold text-charcoal">
+                      PACKAGE HEIGHT *
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="number"
+                        step="any"
+                        min="0.1"
+                        placeholder="e.g. 6"
+                        value={formData.shippingPackage?.heightCm ?? ''}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setFormData(prev => ({
+                            ...prev,
+                            shippingPackage: {
+                              ...prev.shippingPackage,
+                              heightCm: val === '' ? '' : val
+                            }
+                          }));
+                        }}
+                        className="w-full px-3 py-2 pr-8 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest text-xs font-bold bg-white"
+                      />
+                      <span className="absolute right-3 top-2 text-[11px] font-semibold text-charcoal-muted pointer-events-none">
+                        cm
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[10px] text-charcoal-muted italic">
+                  * Required for accurate courier shipping calculation. Outer package dimensions are used for parcel shipping.
+                </p>
+              </div>
+            );
+          })()}
 
           {/* 3.5 TREATMENT COURSE / VALUE PACK SECTION */}
           <div className="bg-sand/30 p-4 rounded-2xl border border-sand-border space-y-4">

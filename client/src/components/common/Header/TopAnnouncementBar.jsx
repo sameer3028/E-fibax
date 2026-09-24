@@ -1,7 +1,9 @@
 import React from 'react';
 import { Truck, ShieldCheck, Sparkles } from 'lucide-react';
+import { useCart } from '../../../context/CartContext';
 
 export function TopAnnouncementBar() {
+  const { freeShippingThreshold } = useCart();
   return (
     <div className="bg-forest-deep text-white text-xs py-2 px-4 border-b border-forest-dark/40">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -17,7 +19,7 @@ export function TopAnnouncementBar() {
         <div className="flex-1 md:flex-none text-center flex items-center justify-center gap-2 font-medium text-[11px]">
           <Truck className="h-3.5 w-3.5 text-leaf-light" />
           <span>
-            <strong className="text-brand-light font-bold">FREE Delivery</strong> on orders above <span className="underline decoration-brand-light font-bold text-brand-light">₹499</span>
+            <strong className="text-brand-light font-bold">FREE Delivery</strong> on orders above <span className="underline decoration-brand-light font-bold text-brand-light">₹{freeShippingThreshold || 499}</span>
           </span>
           <span className="hidden sm:inline text-white/30">|</span>
           <span className="hidden sm:inline text-white/80">Express Delhivery Tracking</span>

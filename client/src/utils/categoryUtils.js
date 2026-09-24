@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Utility functions for product category mapping and filtering across the entire application.
  * 
  * SINGLE SOURCE OF TRUTH:
@@ -18,7 +18,30 @@ export function isProductInCategory(product, targetCategory) {
 
   const target = String(targetCategory).trim().toLowerCase();
 
-  // Get saved categories from product object
+  // 1. If target category is 'combos' or 'combo'
+  if (target === 'combos' || target === 'combo') {
+    return Boolean(
+      product.isCombo === true ||
+      product.categoryId === 'combos' ||
+      product.category === 'combos' ||
+      (Array.isArray(product.categoryIds) && product.categoryIds.includes('combos')) ||
+      (Array.isArray(product.categories) && product.categories.includes('combos'))
+    );
+  }
+
+  // 2. If target is a specific format (e.g. syrups, powders), exclude explicit Combo products
+  const isComboProduct = Boolean(
+    product.isCombo === true ||
+    product.categoryId === 'combos' ||
+    product.category === 'combos' ||
+    (Array.isArray(product.categoryIds) && product.categoryIds.includes('combos')) ||
+    (Array.isArray(product.categories) && product.categories.includes('combos'))
+  );
+  if (isComboProduct) {
+    return false;
+  }
+
+  // 3. Get saved categories from product object
   const pCatId = product.categoryId ? String(product.categoryId).trim().toLowerCase() : '';
   const pCat = product.category ? String(product.category).trim().toLowerCase() : '';
 

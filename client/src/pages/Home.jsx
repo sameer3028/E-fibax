@@ -163,6 +163,7 @@ export function Home({
       <div id="combo-deals">
         <FadeInWhenVisible>
           <ComboDealsSection
+            onSelectProduct={onSelectProduct}
             onExploreCombos={() => {
               if (onNavigate) onNavigate('products', { category: 'combos' });
             }}

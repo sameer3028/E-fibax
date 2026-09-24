@@ -1,5 +1,122 @@
 [
   {
+    "id": "1790178767568",
+    "title": "joint conbo pack",
+    "slug": "joint-conbo-pack",
+    "sku": "FBX-COMBO-329",
+    "dosageForm": "Combo Pack",
+    "categoryId": "combos",
+    "concernId": "joint-pain-care",
+    "mrp": 999,
+    "salePrice": 799,
+    "discountPercent": 20,
+    "stockQuantity": 50,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/Untitled-1-1790179478381.jpg",
+    "ratingAverage": "4.8",
+    "ratingCount": 1,
+    "isBestseller": true,
+    "volumeWeight": "Full Course Pack",
+    "shortDesc": "Ayurvedic multi-product value course formulation bundle.",
+    "keyBenefits": [
+      "Natural herbal recovery and daily wellness",
+      "Standardized pure botanical extracts"
+    ],
+    "ingredients": "100% Herbal Extracts & Pure Formulations",
+    "dosage": "Follow individual product dosage instructions.",
+    "ayushCertified": true,
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    },
+    "createdAt": "2026-09-23T15:52:47.568Z",
+    "updatedAt": "2026-09-23T18:16:08.921Z",
+    "isCombo": true,
+    "images": [
+      "/uploads/Untitled-1-1790179478381.jpg",
+      "/uploads/Untitled-2-1790187354554.jpg",
+      "/uploads/Untitled-3-1790187354627.jpg",
+      "/uploads/Untitled-4-1790187354668.jpg",
+      "/uploads/Untitled-5-1790187354731.jpg"
+    ]
+  },
+  {
+    "id": "1790173325139",
+    "title": "Liver Care Combo",
+    "slug": "liver-care-combo",
+    "sku": "FBX-LIVUPCHA-3413/FBX-STONUPCH-96",
+    "dosageForm": "Combo Pack",
+    "categoryId": "combos",
+    "concernId": "liver-care-detox",
+    "mrp": 999,
+    "salePrice": 799,
+    "discountPercent": 20,
+    "stockQuantity": 50,
+    "lowStockThreshold": 15,
+    "inStock": true,
+    "featuredImage": "/uploads/piles-kit.png",
+    "ratingAverage": "4.8",
+    "ratingCount": 1,
+    "isBestseller": true,
+    "volumeWeight": "Full Course Pack",
+    "shortDesc": "Ayurvedic multi-product value course formulation bundle.",
+    "keyBenefits": [
+      "Natural herbal recovery and daily wellness",
+      "Standardized pure botanical extracts"
+    ],
+    "ingredients": "100% Herbal Extracts & Pure Formulations",
+    "dosage": "Follow individual product dosage instructions.",
+    "ayushCertified": true,
+    "treatmentCourseConfig": {
+      "enabled": true,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": [
+        {
+          "id": 1790175378167,
+          "name": "1 Unit (Standard)",
+          "quantity": 1,
+          "duration": "",
+          "price": 799,
+          "discountPercent": 0,
+          "promotionalLabel": "STANDARD",
+          "sortOrder": 1
+        },
+        {
+          "id": 1790175378168,
+          "name": "2 Units (Value Pack)",
+          "quantity": 2,
+          "duration": "",
+          "price": 1438,
+          "discountPercent": 10,
+          "promotionalLabel": "10% OFF",
+          "sortOrder": 2
+        }
+      ]
+    },
+    "createdAt": "2026-09-23T14:22:05.140Z",
+    "updatedAt": "2026-09-24T06:47:14.470Z",
+    "isCombo": true,
+    "images": [
+      "/uploads/piles-kit.png",
+      "/uploads/PILES_COMBO_copy-1790232430556.jpg",
+      "/uploads/PILES_COMBO_copy-1790232430587.png"
+    ],
+    "shippingPackage": {
+      "weightGrams": 320,
+      "lengthCm": 6,
+      "widthCm": 6,
+      "heightCm": 18
+    },
+    "packageWeightGrams": 320,
+    "packageLengthCm": 6,
+    "packageWidthCm": 6,
+    "packageHeightCm": 18
+  },
+  {
     "id": "3632",
     "title": "Fibax Safed Musli Powder 100gm",
     "slug": "fibax-safed-musli-powder",
@@ -367,14 +484,14 @@
     "mrp": 350,
     "salePrice": 345,
     "discountPercent": 1,
-    "stockQuantity": 0,
+    "stockQuantity": 5,
     "lowStockThreshold": 15,
-    "inStock": false,
+    "inStock": true,
     "featuredImage": "/uploads/multivitamin.png",
     "ratingAverage": "4.9",
     "ratingCount": 77,
     "isBestseller": true,
-    "volumeWeight": "30 Capsules",
+    "volumeWeight": "500ml",
     "shortDesc": "Ayurvedic multivitamin tonic that supports recovery from weakness, anemia, and post-fever fatigue while enhancing immunity and vitality.",
     "keyBenefits": [
       "Promotes balanced wellness and natural recovery",
@@ -405,7 +522,62 @@
       }
     ],
     "createdAt": "2026-09-03T10:43:10.577Z",
-    "updatedAt": "2026-09-22T09:18:02.755Z"
+    "updatedAt": "2026-09-24T12:00:07.242Z",
+    "images": [
+      "/uploads/multivitamin.png",
+      "/uploads/1-1790251081532.png",
+      "/uploads/2-1790251081709.png",
+      "/uploads/3-1790251081821.png",
+      "/uploads/4-1790251081909.png",
+      "/uploads/5-1790251082072.png"
+    ],
+    "shippingPackage": {
+      "weightGrams": 540,
+      "lengthCm": 18,
+      "widthCm": 10,
+      "heightCm": 9
+    },
+    "treatmentCourseConfig": {
+      "enabled": true,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": [
+        {
+          "id": 1790251177327,
+          "name": "1 Unit (Standard)",
+          "quantity": 1,
+          "duration": "",
+          "price": 345,
+          "discountPercent": 0,
+          "promotionalLabel": "STANDARD",
+          "sortOrder": 1
+        },
+        {
+          "id": 1790251177328,
+          "name": "2 Units (Value Pack)",
+          "quantity": 2,
+          "duration": "",
+          "price": 621,
+          "discountPercent": 10,
+          "promotionalLabel": "10% OFF",
+          "sortOrder": 2
+        },
+        {
+          "id": 1790251177329,
+          "name": "3-Month Course (Best Value)",
+          "quantity": 3,
+          "duration": "3 Months",
+          "price": 880,
+          "discountPercent": 15,
+          "promotionalLabel": "BEST VALUE",
+          "sortOrder": 3
+        }
+      ]
+    },
+    "packageWeightGrams": 540,
+    "packageLengthCm": 18,
+    "packageWidthCm": 10,
+    "packageHeightCm": 9
   },
   {
     "id": "3428",
@@ -609,7 +781,57 @@
       }
     ],
     "createdAt": "2026-08-30T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-09-24T07:27:12.235Z",
+    "images": [
+      "/uploads/nariupchar.png"
+    ],
+    "shippingPackage": {
+      "weightGrams": 232,
+      "lengthCm": 18,
+      "widthCm": 10,
+      "heightCm": 9
+    },
+    "treatmentCourseConfig": {
+      "enabled": true,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": [
+        {
+          "id": 1790234819678,
+          "name": "1 Unit (Standard)",
+          "quantity": 1,
+          "duration": "",
+          "price": 180,
+          "discountPercent": 0,
+          "promotionalLabel": "STANDARD",
+          "sortOrder": 1
+        },
+        {
+          "id": 1790234819679,
+          "name": "2 Units (Value Pack)",
+          "quantity": 2,
+          "duration": "",
+          "price": 324,
+          "discountPercent": 10,
+          "promotionalLabel": "10% OFF",
+          "sortOrder": 2
+        },
+        {
+          "id": 1790234819680,
+          "name": "3-Month Course (Best Value)",
+          "quantity": 3,
+          "duration": "3 Months",
+          "price": 459,
+          "discountPercent": 15,
+          "promotionalLabel": "BEST VALUE",
+          "sortOrder": 3
+        }
+      ]
+    },
+    "packageWeightGrams": 232,
+    "packageLengthCm": 18,
+    "packageWidthCm": 10,
+    "packageHeightCm": 9
   },
   {
     "id": "3413",
@@ -622,7 +844,7 @@
     "mrp": 235,
     "salePrice": 229,
     "discountPercent": 3,
-    "stockQuantity": 54,
+    "stockQuantity": 52,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/livupchar.png",
@@ -660,7 +882,17 @@
       }
     ],
     "createdAt": "2026-08-29T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-09-11T13:13:59.939Z",
+    "shippingPackage": {
+      "weightGrams": 320,
+      "lengthCm": 6,
+      "widthCm": 6,
+      "heightCm": 18
+    },
+    "packageWeightGrams": 320,
+    "packageLengthCm": 6,
+    "packageWidthCm": 6,
+    "packageHeightCm": 18
   },
   {
     "id": "3410",
@@ -813,57 +1045,6 @@
       }
     ],
     "createdAt": "2026-08-26T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
-  },
-  {
-    "id": "3397",
-    "title": "Piles Back Combo Kit – Ayurvedic Capsules and Syrup for Piles Relief",
-    "slug": "piles-back-combo-kit-ayurvedic-capsules-and-syrup-for-piles-relief",
-    "sku": "FBX-PILESBA-3397",
-    "dosageForm": "Capsule",
-    "categoryId": "capsules",
-    "concernId": "digestive-gut-health",
-    "mrp": 499,
-    "salePrice": 485,
-    "discountPercent": 3,
-    "stockQuantity": 82,
-    "lowStockThreshold": 15,
-    "inStock": true,
-    "featuredImage": "/uploads/piles-kit.png",
-    "ratingAverage": "4.6",
-    "ratingCount": 140,
-    "isBestseller": false,
-    "volumeWeight": "30 Capsules",
-    "shortDesc": "Piles Back Combo Kit combines Ayurvedic capsules and syrup for piles relief, supporting digestion and natural healing.",
-    "keyBenefits": [
-      "Promotes balanced wellness and natural recovery",
-      "Formulated with AYUSH-approved botanical ingredients",
-      "No artificial chemicals, heavy metals, or added sugar"
-    ],
-    "ingredients": "Standardized herbal extracts, purified botanical decoctions, traditional herbs",
-    "dosage": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician.",
-    "ayushCertified": true,
-    "multiPacks": [
-      {
-        "name": "1 Unit (Standard)",
-        "quantity": 1,
-        "price": 485,
-        "savings": 0
-      },
-      {
-        "name": "2 Units (Value Pack)",
-        "quantity": 2,
-        "price": 873,
-        "savings": "10% OFF"
-      },
-      {
-        "name": "3-Month Course (Max Results)",
-        "quantity": 3,
-        "price": 1237,
-        "savings": "15% OFF"
-      }
-    ],
-    "createdAt": "2026-08-25T10:43:10.577Z",
     "updatedAt": "2026-09-11T13:13:59.939Z"
   },
   {
@@ -1170,7 +1351,44 @@
       }
     ],
     "createdAt": "2026-08-19T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-09-23T16:13:44.944Z",
+    "treatmentCourseConfig": {
+      "enabled": true,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": [
+        {
+          "id": 1790180018680,
+          "name": "1 Unit (Standard)",
+          "quantity": 1,
+          "duration": "",
+          "price": 260,
+          "discountPercent": 0,
+          "promotionalLabel": "STANDARD",
+          "sortOrder": 1
+        },
+        {
+          "id": 1790180018681,
+          "name": "2 Units (Value Pack)",
+          "quantity": 2,
+          "duration": "",
+          "price": 468,
+          "discountPercent": 10,
+          "promotionalLabel": "10% OFF",
+          "sortOrder": 2
+        },
+        {
+          "id": 1790180018682,
+          "name": "3-Month Course (Best Value)",
+          "quantity": 3,
+          "duration": "3 Months",
+          "price": 663,
+          "discountPercent": 15,
+          "promotionalLabel": "BEST VALUE",
+          "sortOrder": 3
+        }
+      ]
+    }
   },
   {
     "id": "103",
@@ -1282,16 +1500,16 @@
     "dosageForm": "Capsule",
     "categoryId": "capsules",
     "concernId": "joint-pain-relief",
-    "mrp": 385,
-    "salePrice": 380,
-    "discountPercent": 1,
+    "mrp": 450,
+    "salePrice": 425,
+    "discountPercent": 6,
     "stockQuantity": 80,
     "lowStockThreshold": 15,
     "inStock": true,
-    "featuredImage": "/uploads/axe-ortho-capsuple.png",
+    "featuredImage": "/uploads/Axe_Ortho_Plus-1790187581049.jpg",
     "ratingAverage": "4.7",
     "ratingCount": 203,
-    "isBestseller": false,
+    "isBestseller": true,
     "volumeWeight": "30 Capsules",
     "shortDesc": "Axe Ortho Ayurvedic Capsules relieve joint and back pain naturally. Herbal blend of Ashwagandha, Shallaki &amp; Guggul for flexibility &amp; mobility.",
     "keyBenefits": [
@@ -1323,7 +1541,48 @@
       }
     ],
     "createdAt": "2026-08-16T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-09-23T18:20:41.895Z",
+    "images": [
+      "/uploads/Axe_Ortho_Plus-1790187581049.jpg",
+      "/uploads/Axe_Ortho_Plus_Compo-1790187575966.jpg"
+    ],
+    "treatmentCourseConfig": {
+      "enabled": true,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": [
+        {
+          "id": 1790187609253,
+          "name": "1 Unit (Standard)",
+          "quantity": 1,
+          "duration": "",
+          "price": 425,
+          "discountPercent": 0,
+          "promotionalLabel": "STANDARD",
+          "sortOrder": 1
+        },
+        {
+          "id": 1790187609254,
+          "name": "2 Units (Value Pack)",
+          "quantity": 2,
+          "duration": "",
+          "price": 765,
+          "discountPercent": 10,
+          "promotionalLabel": "10% OFF",
+          "sortOrder": 2
+        },
+        {
+          "id": 1790187609255,
+          "name": "3-Month Course (Best Value)",
+          "quantity": 3,
+          "duration": "3 Months",
+          "price": 1084,
+          "discountPercent": 15,
+          "promotionalLabel": "BEST VALUE",
+          "sortOrder": 3
+        }
+      ]
+    }
   },
   {
     "id": "100",
@@ -1432,8 +1691,8 @@
     "title": "Incredible Musli Gold Capsules – 30 Capsules",
     "slug": "incredible-musli-gold",
     "sku": "FBX-INCREDIB-98",
-    "dosageForm": "Syrup",
-    "categoryId": "syrups",
+    "dosageForm": "Capsules",
+    "categoryId": "capsules",
     "concernId": "mens-wellness-stamina",
     "mrp": 275,
     "salePrice": 269,
@@ -1476,7 +1735,13 @@
       }
     ],
     "createdAt": "2026-08-13T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-09-23T16:27:27.739Z",
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    }
   },
   {
     "id": "97",
@@ -1527,7 +1792,17 @@
       }
     ],
     "createdAt": "2026-08-12T10:43:10.577Z",
-    "updatedAt": "2026-09-21T20:18:27.602Z"
+    "updatedAt": "2026-09-21T20:18:27.602Z",
+    "shippingPackage": {
+      "weightGrams": 320,
+      "lengthCm": 6,
+      "widthCm": 6,
+      "heightCm": 18
+    },
+    "packageWeightGrams": 320,
+    "packageLengthCm": 6,
+    "packageWidthCm": 6,
+    "packageHeightCm": 18
   },
   {
     "id": "96",
@@ -1680,7 +1955,17 @@
       }
     ],
     "createdAt": "2026-08-09T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-09-23T18:17:25.284Z",
+    "images": [
+      "/uploads/moonkind.png",
+      "/uploads/Moonkind_Shilajit-1790187442078.jpg"
+    ],
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    }
   },
   {
     "id": "77",

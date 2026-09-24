@@ -3,10 +3,11 @@ import { getSingleton, setSingleton } from './store.js';
 export const DEFAULT_SHIPPING_CONFIG = {
   provider: 'delhivery', // 'delhivery' | 'shiprocket' | 'auto'
   mode: 'production', // 'sandbox' | 'production'
+  shippingRateMode: 'live', // 'live' | 'manual'
   autoAssignAWB: true,
   defaultCourier: 'Delhivery Express Surface & Air',
   freeShippingThreshold: 499,
-  standardShippingFee: 49,
+  standardShippingFee: 59,
   codFee: 0,
   delhivery: {
     apiKey: '81ce45abd1b2943ead6fd99220fcb9da1ad368b8',
@@ -227,20 +228,85 @@ export async function checkPincodeServiceability(pincode) {
   };
 }
 
-export async function calculateShippingFee({ cartTotal = 0, pincode = '', paymentMethod = 'COD', weight = 500 }) {
+export async function calculateShippingFee({ cartTotal = 0, pincode = '', paymentMethod = 'COD', weight = 500, items = [], productsList = [], combosList = [] }) {
   const config = getShippingConfig();
   const threshold = config.freeShippingThreshold || 499;
   const isFree = Number(cartTotal) >= threshold;
+  const shippingRateMode = config.shippingRateMode || 'live'; // 'live' | 'manual'
 
   let liveRate = null;
+  let rateError = null;
   const cleanPin = String(pincode || '').trim().replace(/\D/g, '');
   const apiKey = config.delhivery?.apiKey || '81ce45abd1b2943ead6fd99220fcb9da1ad368b8';
   const originPin = config.warehouse?.pincode || '140603';
 
-  if (!isFree && cleanPin.length === 6 && apiKey) {
+  // Authoritative item package validation and total weight calculation
+  let calculatedWeightGrams = 0;
+  let missingItemName = null;
+
+  if (Array.isArray(items) && items.length > 0) {
+    const allProducts = Array.isArray(productsList) ? productsList : [];
+    const allCombos = Array.isArray(combosList) ? combosList : [];
+
+    for (const item of items) {
+      const qty = Number(item.quantity) || 1;
+      const itemId = String(item.id || item.product?.id || '');
+
+      let itemData = null;
+      if (item.isCombo || item.categoryId === 'combos') {
+        itemData = allCombos.find(c => String(c.id) === itemId) || allProducts.find(p => String(p.id) === itemId);
+      } else {
+        itemData = allProducts.find(p => String(p.id) === itemId) || item.product;
+      }
+
+      const title = itemData?.title || item.title || item.name || 'product';
+
+      const pkg = itemData?.shippingPackage || {};
+      const wGrams = Number(pkg.weightGrams !== undefined ? pkg.weightGrams : (itemData?.packageWeightGrams || 0));
+      const lCm = Number(pkg.lengthCm !== undefined ? pkg.lengthCm : (itemData?.packageLengthCm || 0));
+      const wCm = Number(pkg.widthCm !== undefined ? pkg.widthCm : (itemData?.packageWidthCm || 0));
+      const hCm = Number(pkg.heightCm !== undefined ? pkg.heightCm : (itemData?.packageHeightCm || 0));
+
+      // Missing data check: All 4 package fields must be positive numbers (> 0)
+      if (wGrams <= 0 || lCm <= 0 || wCm <= 0 || hCm <= 0) {
+        missingItemName = title;
+        break;
+      }
+
+      let packMultiplier = 1;
+      if (item.selectedPackQty && Number(item.selectedPackQty) > 0) {
+        packMultiplier = Number(item.selectedPackQty);
+      }
+
+      calculatedWeightGrams += (wGrams * packMultiplier) * qty;
+    }
+  }
+
+  // If any item in cart is missing valid package weight/dimensions
+  if (missingItemName) {
+    return {
+      cartTotal: Number(cartTotal),
+      isFreeShipping: isFree,
+      amountNeededForFreeShipping: isFree ? 0 : Math.max(0, threshold - Number(cartTotal)),
+      shippingFee: 0,
+      codFee: 0,
+      totalShipping: 0,
+      liveRate: null,
+      delhiveryCharge: 0,
+      rateMode: shippingRateMode,
+      calculationFailed: true,
+      missingShippingData: true,
+      affectedProduct: missingItemName,
+      error: `Shipping package details are missing for "${missingItemName}". Please configure package weight and dimensions in Admin.`
+    };
+  }
+
+  const finalShipmentWeightGrams = calculatedWeightGrams > 0 ? calculatedWeightGrams : Number(weight || 500);
+
+  if (!isFree && cleanPin.length === 6 && apiKey && shippingRateMode === 'live') {
     try {
       const pt = paymentMethod === 'COD' ? 'COD' : 'Pre-paid';
-      const rateUrl = `https://track.delhivery.com/api/kinko/v1/invoice/charges/.json?md=S&ss=Delivered&d_pin=${cleanPin}&o_pin=${originPin}&cgm=${weight || 500}&pt=${pt}`;
+      const rateUrl = `https://track.delhivery.com/api/kinko/v1/invoice/charges/.json?md=S&ss=Delivered&d_pin=${cleanPin}&o_pin=${originPin}&cgm=${finalShipmentWeightGrams}&pt=${pt}`;
       const resp = await fetch(rateUrl, {
         headers: {
           'Authorization': `Token ${apiKey}`,
@@ -249,35 +315,59 @@ export async function calculateShippingFee({ cartTotal = 0, pincode = '', paymen
       });
       if (resp.ok) {
         const data = await resp.json();
-        if (Array.isArray(data) && data[0]?.total_amount) {
+        const itemsList = Array.isArray(data) ? data : (data?.value && Array.isArray(data.value) ? data.value : []);
+        if (itemsList.length > 0 && (itemsList[0]?.total_amount !== undefined && itemsList[0]?.total_amount !== null)) {
+          const item = itemsList[0];
           liveRate = {
-            totalAmount: Number(data[0].total_amount),
-            grossAmount: Number(data[0].gross_amount),
-            zone: data[0].zone,
-            courierCharge: Number(data[0].charge_DL || 0),
-            codCharge: Number(data[0].charge_COD || 0),
-            tax: data[0].tax_data || {}
+            totalAmount: Number(item.total_amount),
+            grossAmount: Number(item.gross_amount || item.total_amount),
+            zone: item.zone || 'Standard',
+            courierCharge: Number(item.charge_DL || 0),
+            codCharge: Number(item.charge_COD || 0),
+            tax: item.tax_data || {}
           };
+        } else {
+          rateError = 'Delhivery rate API did not return valid rate data.';
         }
+      } else {
+        rateError = `Delhivery rate API returned HTTP status ${resp.status}.`;
       }
     } catch (err) {
       console.warn('Delhivery live rate calculation error:', err.message);
+      rateError = err.message;
     }
   }
 
-  const standardFee = config.standardShippingFee || 49;
-  const shippingFee = isFree ? 0 : standardFee;
+  let finalShippingFee = 0;
+  let calculationFailed = false;
+
+  if (isFree) {
+    finalShippingFee = 0;
+  } else if (liveRate) {
+    // Exact rounded Delhivery live calculated rate
+    finalShippingFee = Math.round(liveRate.totalAmount);
+  } else if (shippingRateMode === 'manual') {
+    finalShippingFee = config.standardShippingFee || 59;
+  } else {
+    // Live rate calculation attempted but failed or PIN not provided yet
+    calculationFailed = true;
+    finalShippingFee = 0;
+  }
+
   const codFee = (paymentMethod === 'COD' && config.codFee > 0) ? config.codFee : 0;
 
   return {
     cartTotal: Number(cartTotal),
     isFreeShipping: isFree,
     amountNeededForFreeShipping: isFree ? 0 : Math.max(0, threshold - Number(cartTotal)),
-    shippingFee,
+    shippingFee: finalShippingFee,
     codFee,
-    totalShipping: shippingFee + codFee,
+    totalShipping: finalShippingFee + codFee,
     liveRate: liveRate || null,
-    delhiveryCharge: liveRate ? Math.round(liveRate.totalAmount) : shippingFee
+    delhiveryCharge: liveRate ? Math.round(liveRate.totalAmount) : (isFree ? 0 : (config.standardShippingFee || 59)),
+    rateMode: shippingRateMode,
+    calculationFailed,
+    error: calculationFailed ? (rateError || 'Unable to calculate live shipping rate for PIN code.') : null
   };
 }
 

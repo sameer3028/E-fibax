@@ -1,0 +1,59 @@
+[
+  {
+    "id": "c_mue753tq8ruw",
+    "code": "TEST001",
+    "type": "percent",
+    "value": 1,
+    "minOrder": 499,
+    "maxDiscount": 100,
+    "description": "test 001",
+    "isActive": true,
+    "createdAt": "2026-09-23T14:26:42.206Z",
+    "updatedAt": "2026-09-23T14:53:11.245Z"
+  },
+  {
+    "id": "c_mue1u8vg7a4g",
+    "code": "FESTIVE25",
+    "type": "percent",
+    "value": 25,
+    "minOrder": 599,
+    "maxDiscount": null,
+    "description": "25% Festival discount",
+    "isActive": true,
+    "createdAt": "2026-09-23T11:58:17.452Z"
+  },
+  {
+    "id": "c1",
+    "code": "WELCOME10",
+    "type": "percent",
+    "value": 10,
+    "minOrder": 0,
+    "maxDiscount": 500,
+    "description": "10% discount on your first order",
+    "isActive": true,
+    "createdAt": "2026-09-23T00:00:00.000Z"
+  },
+  {
+    "id": "c2",
+    "code": "AYUSH5",
+    "type": "flat",
+    "value": 5,
+    "minOrder": 499,
+    "maxDiscount": 5,
+    "description": "Flat ₹50 discount on Ayurvedic range",
+    "isActive": true,
+    "createdAt": "2026-09-23T00:00:00.000Z",
+    "updatedAt": "2026-09-23T14:54:10.634Z"
+  },
+  {
+    "id": "c3",
+    "code": "FIBAX15",
+    "type": "percent",
+    "value": 15,
+    "minOrder": 999,
+    "maxDiscount": 1000,
+    "description": "15% discount on all formulations",
+    "isActive": true,
+    "createdAt": "2026-09-23T00:00:00.000Z"
+  }
+]

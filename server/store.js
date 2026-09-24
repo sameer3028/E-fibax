@@ -27,7 +27,7 @@ function normalizeDriver(raw) {
 }
 const DRIVER = normalizeDriver(process.env.STORAGE_DRIVER);
 
-const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries'];
+const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries', 'coupons'];
 const SINGLETON_NAMES = ['admin_auth', 'shipping_config'];
 
 const dataDir = join(__dirname, 'data');
@@ -36,6 +36,7 @@ const FILE_FOR = {
   orders: join(dataDir, 'orders.json'),
   users: join(dataDir, 'users.json'),
   enquiries: join(dataDir, 'enquiries.json'),
+  coupons: join(dataDir, 'coupons.json'),
   admin_auth: join(dataDir, 'admin_auth.json'),
   shipping_config: join(dataDir, 'shipping_config.json')
 };
@@ -46,6 +47,7 @@ const cache = {
   orders: [],
   users: [],
   enquiries: [],
+  coupons: [],
   admin_auth: null,
   shipping_config: null
 };

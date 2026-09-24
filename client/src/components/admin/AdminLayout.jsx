@@ -8,6 +8,7 @@ import { InventoryTable } from './InventoryTable';
 import { ShippingView } from './ShippingView';
 import { UsersView } from './UsersView';
 import { WebsiteContentManager } from './WebsiteContentManager';
+import { ReviewManager } from './ReviewManager';
 import { AdminLogin } from './AdminLogin';
 import { ChangeCredentialsModal } from './ChangeCredentialsModal';
 import {
@@ -24,7 +25,8 @@ import {
   LogOut,
   UserCheck,
   Users,
-  Globe
+  Globe,
+  Star
 } from 'lucide-react';
 
 export function AdminLayout({ onExitAdmin }) {
@@ -259,6 +261,18 @@ export function AdminLayout({ onExitAdmin }) {
           </button>
 
           <button
+            onClick={() => setActiveTab('reviews')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              activeTab === 'reviews'
+                ? 'bg-forest text-white shadow-xs'
+                : 'text-charcoal hover:bg-sand text-charcoal-muted'
+            }`}
+          >
+            <Star className="h-4 w-4 text-amber-400 fill-current" />
+            <span>Reviews &amp; Ratings</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('users')}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === 'users'
@@ -292,6 +306,7 @@ export function AdminLayout({ onExitAdmin }) {
         {activeTab === 'offers' && <OffersManager />}
         {activeTab === 'inventory' && <InventoryTable />}
         {activeTab === 'orders' && <ShippingView />}
+        {activeTab === 'reviews' && <ReviewManager />}
         {activeTab === 'users' && <UsersView />}
         {activeTab === 'website-content' && <WebsiteContentManager />}
       </main>
