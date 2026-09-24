@@ -13,7 +13,8 @@ import {
   X,
   Sliders,
   DollarSign,
-  AlertCircle
+  AlertCircle,
+  XCircle
 } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
 
@@ -137,11 +138,12 @@ export function ShippingView() {
 
   // Filter calculations
   const totalShipments = orders.length;
-  const unfulfilledCount = orders.filter(o => o.status === 'Processing' || !o.trackingId).length;
-  const inTransitCount = orders.filter(o => o.status === 'Manifested' || o.status === 'Dispatched' || o.status === 'In Transit').length;
+  const unfulfilledCount = orders.filter(o => o.status !== 'Cancelled' && (o.status === 'Processing' || !o.trackingId)).length;
+  const inTransitCount = orders.filter(o => o.status !== 'Cancelled' && (o.status === 'Manifested' || o.status === 'Dispatched' || o.status === 'In Transit')).length;
   const deliveredCount = orders.filter(o => o.status === 'Delivered').length;
+  const cancelledCount = orders.filter(o => o.status === 'Cancelled').length;
   const totalCodPending = orders
-    .filter(o => o.payment?.method === 'COD' && o.status !== 'Delivered')
+    .filter(o => o.payment?.method === 'COD' && o.status !== 'Delivered' && o.status !== 'Cancelled')
     .reduce((acc, o) => acc + (o.totals?.grandTotal || 0), 0);
 
   const filteredOrders = orders.filter(order => {
@@ -149,14 +151,16 @@ export function ShippingView() {
       (order.orderId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (order.trackingId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (order.customer?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (order.customer?.phone || '').includes(searchQuery) ||
       (order.shipping?.city || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (order.shipping?.pincode || '').includes(searchQuery);
 
     if (!matchesSearch) return false;
     if (statusFilter === 'all') return true;
-    if (statusFilter === 'unfulfilled') return order.status === 'Processing' || !order.trackingId;
-    if (statusFilter === 'in-transit') return order.status === 'Manifested' || order.status === 'Dispatched' || order.status === 'In Transit';
+    if (statusFilter === 'unfulfilled') return order.status !== 'Cancelled' && (order.status === 'Processing' || !order.trackingId);
+    if (statusFilter === 'in-transit') return order.status !== 'Cancelled' && (order.status === 'Manifested' || order.status === 'Dispatched' || order.status === 'In Transit');
     if (statusFilter === 'delivered') return order.status === 'Delivered';
+    if (statusFilter === 'cancelled') return order.status === 'Cancelled';
     return true;
   });
 
@@ -252,7 +256,8 @@ export function ShippingView() {
             { id: 'all', label: `All (${orders.length})` },
             { id: 'unfulfilled', label: `Awaiting Fulfillment (${unfulfilledCount})` },
             { id: 'in-transit', label: `In Transit (${inTransitCount})` },
-            { id: 'delivered', label: `Delivered (${deliveredCount})` }
+            { id: 'delivered', label: `Delivered (${deliveredCount})` },
+            { id: 'cancelled', label: `Cancelled (${cancelledCount})` }
           ].map(tab => (
             <button
               key={tab.id}
@@ -305,6 +310,7 @@ export function ShippingView() {
               ) : (
                 filteredOrders.map(order => {
                   const hasAwb = !!order.trackingId;
+                  const isCancelled = order.status === 'Cancelled';
                   return (
                     <tr key={order.orderId} className="hover:bg-sand/30 transition-colors">
                       <td className="py-3 px-4">
@@ -361,7 +367,9 @@ export function ShippingView() {
 
                       <td className="py-3 px-4">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                          order.status === 'Delivered'
+                          isCancelled
+                            ? 'bg-rose-100 text-rose-800'
+                            : order.status === 'Delivered'
                             ? 'bg-emerald-100 text-emerald-800'
                             : order.status === 'In Transit' || order.status === 'Dispatched'
                             ? 'bg-blue-100 text-blue-800'
@@ -369,7 +377,9 @@ export function ShippingView() {
                             ? 'bg-purple-100 text-purple-800'
                             : 'bg-amber-100 text-amber-800'
                         }`}>
-                          {order.status === 'Delivered' ? (
+                          {isCancelled ? (
+                            <XCircle className="h-3 w-3 text-rose-600" />
+                          ) : order.status === 'Delivered' ? (
                             <CheckCircle2 className="h-3 w-3 text-emerald-600" />
                           ) : (
                             <Clock className="h-3 w-3" />
@@ -380,7 +390,9 @@ export function ShippingView() {
 
                       <td className="py-3 px-4 text-right">
                         <div className="flex items-center justify-end gap-1.5">
-                          {!hasAwb || order.status === 'Processing' ? (
+                          {isCancelled ? (
+                            <span className="text-[11px] font-semibold text-charcoal-subtle italic">Cancelled</span>
+                          ) : !hasAwb || order.status === 'Processing' ? (
                             <button
                               onClick={() => handleShipOrder(order.orderId)}
                               disabled={shippingOrderId === order.orderId}

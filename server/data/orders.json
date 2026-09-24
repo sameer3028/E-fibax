@@ -35,9 +35,18 @@
     },
     "trackingId": null,
     "courier": "Delhivery Express Surface & Air",
-    "status": "Processing",
+    "status": "Cancelled",
     "delhiveryAwb": null,
-    "shipment": null
+    "shipment": {
+      "status": "Cancelled",
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T17:25:29.345Z",
+      "delhiveryCancelResponse": null
+    },
+    "cancelledAt": "2026-09-24T17:25:29.345Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER",
+    "updatedAt": "2026-09-24T17:25:29.345Z"
   },
   {
     "orderId": "FBX-406345-L72",
@@ -625,14 +634,14 @@
     },
     "trackingId": "43067410000711",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "delhiveryAwb": "43067410000711",
     "shipment": {
       "success": true,
       "awb": "43067410000711",
       "waybill": "43067410000711",
       "shipmentId": "UPL549443778064174833",
-      "status": "Success",
+      "status": "Cancelled",
       "remarks": [
         ""
       ],
@@ -646,9 +655,25 @@
         "success": true,
         "cash_pickups": 0,
         "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T17:26:32.755Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000711",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000711",
+          "order_id": "FBX-944115-YLL",
+          "remark": "Shipment has been cancelled."
+        }
       }
     },
-    "updatedAt": "2026-09-24T16:47:19.649Z"
+    "updatedAt": "2026-09-24T17:26:32.755Z",
+    "cancelledAt": "2026-09-24T17:26:32.755Z",
+    "cancellationReason": "Changed my mind",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-515280-ZV5",
