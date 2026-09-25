@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "orderConfirmationEnabled": true,
+  "senderName": "Fibax Ayurveda",
+  "senderEmail": "orders@fibaxpharma.com",
+  "replyToEmail": "care@fibaxpharma.com",
+  "supportEmail": "care@fibaxpharma.com",
+  "smtpHost": "",
+  "smtpPort": 587,
+  "smtpSecure": false,
+  "smtpUser": "",
+  "smtpPassword": ""
+}

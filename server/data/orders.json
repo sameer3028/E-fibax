@@ -1,5 +1,315 @@
 [
   {
+    "orderId": "FBX-193635-YJW",
+    "createdAt": "2026-09-25T05:29:54.126Z",
+    "customer": {
+      "name": "No Email Customer",
+      "email": "",
+      "phone": "9888877777",
+      "address": "Plot 12, Industrial Area",
+      "city": "Mohali",
+      "pincode": "160055",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice",
+        "price": 499,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "Plot 12, Industrial Area",
+      "city": "Mohali",
+      "pincode": "160055"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "SKIPPED_NO_EMAIL",
+    "updatedAt": "2026-09-25T05:29:54.129Z"
+  },
+  {
+    "orderId": "FBX-192099-TCU",
+    "createdAt": "2026-09-25T05:29:52.099Z",
+    "customer": {
+      "name": "Simranjeet Kaur",
+      "email": "testcustomer@fibaxpharma.com",
+      "phone": "9876543210",
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice for Digestion",
+        "price": 499,
+        "quantity": 1,
+        "variant": "500ml"
+      },
+      {
+        "id": "p2",
+        "title": "Fibax Livupchar Ayurvedic Syrup",
+        "price": 319,
+        "quantity": 2,
+        "variant": "200ml"
+      }
+    ],
+    "shipping": {
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 1137,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 1137
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": true,
+    "orderConfirmationEmailSentAt": "2026-09-25T05:29:53.628Z",
+    "orderConfirmationEmailStatus": "SENT",
+    "orderConfirmationEmailError": null,
+    "updatedAt": "2026-09-25T05:29:53.629Z"
+  },
+  {
+    "orderId": "FBX-151512-NGH",
+    "createdAt": "2026-09-25T05:29:11.514Z",
+    "customer": {
+      "name": "Simranjeet Kaur",
+      "email": "testcustomer@fibaxpharma.com",
+      "phone": "9876543210",
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice for Digestion",
+        "price": 499,
+        "quantity": 1,
+        "variant": "500ml"
+      },
+      {
+        "id": "p2",
+        "title": "Fibax Livupchar Ayurvedic Syrup",
+        "price": 319,
+        "quantity": 2,
+        "variant": "200ml"
+      }
+    ],
+    "shipping": {
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 1137,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 1137
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": true,
+    "orderConfirmationEmailSentAt": "2026-09-25T05:29:13.042Z",
+    "orderConfirmationEmailStatus": "SENT",
+    "orderConfirmationEmailError": null,
+    "updatedAt": "2026-09-25T05:29:13.043Z"
+  },
+  {
+    "orderId": "FBX-062773-I48",
+    "createdAt": "2026-09-25T05:27:42.774Z",
+    "customer": {
+      "name": "Simranjeet Kaur",
+      "email": "testcustomer@fibaxpharma.com",
+      "phone": "9876543210",
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice for Digestion",
+        "price": 499,
+        "quantity": 1,
+        "variant": "500ml"
+      },
+      {
+        "id": "p2",
+        "title": "Fibax Livupchar Ayurvedic Syrup",
+        "price": 319,
+        "quantity": 2,
+        "variant": "200ml"
+      }
+    ],
+    "shipping": {
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 1137,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 1137
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": true,
+    "orderConfirmationEmailSentAt": "2026-09-25T05:27:47.245Z",
+    "orderConfirmationEmailStatus": "SENT",
+    "orderConfirmationEmailError": null,
+    "updatedAt": "2026-09-25T05:27:47.247Z"
+  },
+  {
+    "orderId": "FBX-963252-0FT",
+    "createdAt": "2026-09-25T05:26:03.253Z",
+    "customer": {
+      "name": "Simranjeet Kaur",
+      "email": "testcustomer@fibaxpharma.com",
+      "phone": "9876543210",
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice for Digestion",
+        "price": 499,
+        "quantity": 1,
+        "variant": "500ml"
+      },
+      {
+        "id": "p2",
+        "title": "Fibax Livupchar Ayurvedic Syrup",
+        "price": 319,
+        "quantity": 2,
+        "variant": "200ml"
+      }
+    ],
+    "shipping": {
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 1137,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 1137
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-917962-XE7",
+    "createdAt": "2026-09-25T05:25:17.963Z",
+    "customer": {
+      "name": "Simranjeet Kaur",
+      "email": "testcustomer@fibaxpharma.com",
+      "phone": "9876543210",
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "p1",
+        "title": "Fibax Triphala Juice for Digestion",
+        "price": 499,
+        "quantity": 1,
+        "variant": "500ml"
+      },
+      {
+        "id": "p2",
+        "title": "Fibax Livupchar Ayurvedic Syrup",
+        "price": 319,
+        "quantity": 2,
+        "variant": "200ml"
+      }
+    ],
+    "shipping": {
+      "address": "SCO 45, Sector 17",
+      "city": "Chandigarh",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD"
+    },
+    "totals": {
+      "subtotal": 1137,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 1137
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
     "orderId": "FBX-571617-2VY",
     "createdAt": "2026-09-24T18:29:31.942Z",
     "customer": {
@@ -1638,14 +1948,14 @@
     },
     "trackingId": "43067410000291",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "delhiveryAwb": "43067410000291",
     "shipment": {
       "success": true,
       "awb": "43067410000291",
       "waybill": "43067410000291",
       "shipmentId": "UPL6050835377291937255",
-      "status": "Success",
+      "status": "Cancelled",
       "remarks": [
         ""
       ],
@@ -1659,9 +1969,25 @@
         "success": true,
         "cash_pickups": 0,
         "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:31:54.045Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000291",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000291",
+          "order_id": "FBX-550945-7JM",
+          "remark": "Shipment has been cancelled."
+        }
       }
     },
-    "updatedAt": "2026-09-24T15:59:12.114Z"
+    "updatedAt": "2026-09-24T18:31:54.045Z",
+    "cancelledAt": "2026-09-24T18:31:54.045Z",
+    "cancellationReason": "Ordered by mistake",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-630601-JPL",
@@ -1703,14 +2029,14 @@
     },
     "trackingId": "43067410000280",
     "courier": "Delhivery Express Surface & Air",
-    "status": "Manifested",
+    "status": "Cancelled",
     "delhiveryAwb": "43067410000280",
     "shipment": {
       "success": true,
       "awb": "43067410000280",
       "waybill": "43067410000280",
       "shipmentId": "UPL10480069300264584661",
-      "status": "Success",
+      "status": "Cancelled",
       "remarks": [
         ""
       ],
@@ -1724,9 +2050,25 @@
         "success": true,
         "cash_pickups": 0,
         "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:32:32.117Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000280",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000280",
+          "order_id": "FBX-630601-JPL",
+          "remark": "Shipment has been cancelled."
+        }
       }
     },
-    "updatedAt": "2026-09-24T15:27:11.667Z"
+    "updatedAt": "2026-09-24T18:32:32.117Z",
+    "cancelledAt": "2026-09-24T18:32:32.117Z",
+    "cancellationReason": "Delivery taking too long",
+    "cancellationBy": "CUSTOMER"
   },
   {
     "orderId": "FBX-587220-FXV",

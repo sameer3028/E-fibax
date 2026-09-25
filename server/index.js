@@ -48,6 +48,13 @@ import {
   reportReview,
   removeReviewMedia
 } from './reviews.js';
+import {
+  sendOrderConfirmationEmail,
+  readEmailConfig,
+  saveEmailConfig,
+  sendTestEmail,
+  readEmailLogs
+} from './services/emailService.js';
 
 const app = express();
 const PORT = process.env.PORT || 5050;
@@ -1436,6 +1443,12 @@ app.post('/api/orders', async (req, res) => {
     saveOrders(orders);
 
     console.log(`📦 New Order placed: ${orderId} — ${courierName} (AWB pending admin dispatch)`);
+
+    // Trigger customer order confirmation email automatically after successful order creation
+    sendOrderConfirmationEmail(newOrder).catch(err => {
+      console.error(`Non-blocking email alert error for order #${orderId}:`, err.message);
+    });
+
     res.status(201).json({ success: true, data: newOrder });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -1742,6 +1755,86 @@ app.post('/api/shipping/config', (req, res) => {
   try {
     const updated = saveShippingConfig(req.body || {});
     res.json({ success: true, message: 'Shipping platform configuration saved', data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/email/config - Get email configuration (password masked)
+app.get('/api/email/config', (req, res) => {
+  try {
+    const config = readEmailConfig();
+    const maskedConfig = {
+      ...config,
+      smtpPassword: config.smtpPassword ? '••••••••' : ''
+    };
+    res.json({ success: true, data: maskedConfig });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/email/config - Save email configuration
+app.post('/api/email/config', (req, res) => {
+  try {
+    const existing = readEmailConfig();
+    const newConfig = { ...existing, ...(req.body || {}) };
+    if (req.body?.smtpPassword === '••••••••') {
+      newConfig.smtpPassword = existing.smtpPassword;
+    }
+    const saved = saveEmailConfig(newConfig);
+    if (!saved) return res.status(500).json({ success: false, error: 'Failed to save email configuration.' });
+
+    const maskedConfig = {
+      ...newConfig,
+      smtpPassword: newConfig.smtpPassword ? '••••••••' : ''
+    };
+    res.json({ success: true, message: 'Email configuration saved successfully.', data: maskedConfig });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/email/test - Send test email (Admin helper)
+app.post('/api/email/test', async (req, res) => {
+  try {
+    const { toEmail } = req.body || {};
+    if (!toEmail) {
+      return res.status(400).json({ success: false, error: 'Recipient email address is required.' });
+    }
+    const result = await sendTestEmail(toEmail);
+    res.json({ success: true, message: `Test email sent successfully to ${toEmail}.`, data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/email/logs - Get email delivery execution logs
+app.get('/api/email/logs', (req, res) => {
+  try {
+    const logs = readEmailLogs();
+    res.json({ success: true, data: logs });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/orders/:orderId/resend-email - Admin manual resend order confirmation email
+app.post('/api/orders/:orderId/resend-email', async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const orders = readOrders();
+    const order = orders.find(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+    if (!order) {
+      return res.status(404).json({ success: false, error: `Order #${orderId} not found.` });
+    }
+
+    const result = await sendOrderConfirmationEmail(order, true);
+    if (result.success) {
+      res.json({ success: true, message: `Order confirmation email resent successfully for #${order.orderId}.`, data: result });
+    } else {
+      res.status(400).json({ success: false, error: result.error || result.reason || 'Failed to send confirmation email.' });
+    }
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
   }

@@ -17,7 +17,13 @@ import {
   XCircle,
   Calendar,
   Eye,
-  User
+  User,
+  Mail,
+  Send,
+  Check,
+  RotateCcw,
+  FileText,
+  Sparkles
 } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
 
@@ -130,13 +136,24 @@ export function ShippingView() {
 
   const [shippingOrderId, setShippingOrderId] = useState(null);
 
-  // Load orders & shipping configuration
+  // Email Notification State
+  const [emailConfig, setEmailConfig] = useState(null);
+  const [emailConfigSaving, setEmailConfigSaving] = useState(false);
+  const [settingsTab, setSettingsTab] = useState('shipping'); // 'shipping' | 'email'
+  const [testEmailRecipient, setTestEmailRecipient] = useState('');
+  const [testEmailStatus, setTestEmailStatus] = useState(null);
+  const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
+  const [isResendingEmail, setIsResendingEmail] = useState(false);
+  const [resendMessage, setResendMessage] = useState('');
+
+  // Load orders & shipping configuration & email configuration
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const [ordersRes, configRes] = await Promise.all([
+      const [ordersRes, configRes, emailConfigRes] = await Promise.all([
         apiRequest('/api/orders'),
-        apiRequest('/api/shipping/config')
+        apiRequest('/api/shipping/config'),
+        apiRequest('/api/email/config')
       ]);
 
       if (ordersRes.success && Array.isArray(ordersRes.data)) {
@@ -144,6 +161,9 @@ export function ShippingView() {
       }
       if (configRes.success && configRes.data) {
         setShippingConfig(configRes.data);
+      }
+      if (emailConfigRes.success && emailConfigRes.data) {
+        setEmailConfig(emailConfigRes.data);
       }
     } catch (err) {
       console.error('Error loading shipping data:', err);
@@ -155,6 +175,73 @@ export function ShippingView() {
   useEffect(() => {
     loadData();
   }, []);
+
+  const handleSaveEmailConfig = async (e) => {
+    e.preventDefault();
+    if (!emailConfig) return;
+    setEmailConfigSaving(true);
+    try {
+      const res = await apiRequest('/api/email/config', {
+        method: 'POST',
+        body: JSON.stringify(emailConfig)
+      });
+      if (res.success && res.data) {
+        setEmailConfig(res.data);
+        alert('Email Notification settings saved successfully.');
+      } else {
+        alert(res.error || 'Failed to save email settings.');
+      }
+    } catch (err) {
+      alert('Error saving email settings: ' + err.message);
+    } finally {
+      setEmailConfigSaving(false);
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    if (!testEmailRecipient || !testEmailRecipient.includes('@')) {
+      setTestEmailStatus({ success: false, error: 'Please enter a valid recipient email address.' });
+      return;
+    }
+    setIsSendingTestEmail(true);
+    setTestEmailStatus(null);
+    try {
+      const res = await apiRequest('/api/email/test', {
+        method: 'POST',
+        body: JSON.stringify({ toEmail: testEmailRecipient })
+      });
+      if (res.success) {
+        setTestEmailStatus({ success: true, message: `Test email sent to ${testEmailRecipient}.` });
+      } else {
+        setTestEmailStatus({ success: false, error: res.error || 'Failed to send test email.' });
+      }
+    } catch (err) {
+      setTestEmailStatus({ success: false, error: err.message });
+    } finally {
+      setIsSendingTestEmail(false);
+    }
+  };
+
+  const handleResendConfirmationEmail = async (orderId) => {
+    if (!orderId) return;
+    setIsResendingEmail(true);
+    setResendMessage('');
+    try {
+      const res = await apiRequest(`/api/orders/${orderId}/resend-email`, {
+        method: 'POST'
+      });
+      if (res.success) {
+        setResendMessage(`Confirmation email resent successfully.`);
+        await loadData();
+      } else {
+        setResendMessage(`Error: ${res.error || 'Failed to resend email.'}`);
+      }
+    } catch (err) {
+      setResendMessage(`Error: ${err.message}`);
+    } finally {
+      setIsResendingEmail(false);
+    }
+  };
 
   // 1-Click Ship via Delhivery/Shiprocket
   const handleShipOrder = async (orderId) => {
@@ -743,14 +830,14 @@ export function ShippingView() {
         </div>
       )}
 
-      {/* 2. Shipping Platform Settings Modal */}
+      {/* 2. Platform Settings Modal */}
       {isSettingsOpen && shippingConfig && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn overflow-y-auto">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-card border border-sand-border space-y-5 my-8">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 shadow-card border border-sand-border space-y-4 my-8">
             <div className="flex items-center justify-between pb-3 border-b border-sand-border">
               <h4 className="font-heading text-lg font-bold text-forest-deep flex items-center gap-2">
                 <Settings className="h-5 w-5 text-forest" />
-                <span>Shipping Platform Settings</span>
+                <span>Admin Platform Settings</span>
               </h4>
               <button
                 onClick={() => setIsSettingsOpen(false)}
@@ -760,203 +847,401 @@ export function ShippingView() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveConfig} className="space-y-4">
-              {/* Provider Selection */}
-              <div>
-                <label className="block text-xs font-bold text-charcoal mb-1">
-                  Active Shipping Platform Provider
-                </label>
-                <select
-                  value={shippingConfig.provider}
-                  onChange={(e) => setShippingConfig({ ...shippingConfig, provider: e.target.value })}
-                  className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal font-semibold border border-transparent focus:border-forest focus:outline-none"
-                >
-                  <option value="delhivery">Delhivery One Direct (B2C Express & Surface)</option>
-                  <option value="shiprocket">Shiprocket API (Multi-Carrier Aggregator)</option>
-                  <option value="auto">Automated Fulfillment Engine (Simulated Live Tracking)</option>
-                </select>
-              </div>
+            {/* Settings Tab Navigation */}
+            <div className="flex border-b border-sand-border gap-2 pb-2">
+              <button
+                type="button"
+                onClick={() => setSettingsTab('shipping')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  settingsTab === 'shipping'
+                    ? 'bg-forest text-white shadow-xs'
+                    : 'bg-sand text-charcoal hover:bg-sand-border'
+                }`}
+              >
+                <Truck className="h-3.5 w-3.5" />
+                <span>Shipping & Logistics</span>
+              </button>
 
-              {/* Mode Toggle */}
-              <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setSettingsTab('email')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                  settingsTab === 'email'
+                    ? 'bg-forest text-white shadow-xs'
+                    : 'bg-sand text-charcoal hover:bg-sand-border'
+                }`}
+              >
+                <Mail className="h-3.5 w-3.5" />
+                <span>Email Notifications</span>
+              </button>
+            </div>
+
+            {settingsTab === 'shipping' && (
+              <form onSubmit={handleSaveConfig} className="space-y-4">
+                {/* Provider Selection */}
                 <div>
-                  <label className="block text-xs font-bold text-charcoal mb-1">Environment Mode</label>
+                  <label className="block text-xs font-bold text-charcoal mb-1">
+                    Active Shipping Platform Provider
+                  </label>
                   <select
-                    value={shippingConfig.mode}
-                    onChange={(e) => setShippingConfig({ ...shippingConfig, mode: e.target.value })}
-                    className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    value={shippingConfig.provider}
+                    onChange={(e) => setShippingConfig({ ...shippingConfig, provider: e.target.value })}
+                    className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal font-semibold border border-transparent focus:border-forest focus:outline-none"
                   >
-                    <option value="sandbox">Sandbox / Test Mode</option>
-                    <option value="production">Production / Live Mode</option>
+                    <option value="delhivery">Delhivery One Direct (B2C Express & Surface)</option>
+                    <option value="shiprocket">Shiprocket API (Multi-Carrier Aggregator)</option>
+                    <option value="auto">Automated Fulfillment Engine (Simulated Live Tracking)</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-bold text-charcoal mb-1">Default Courier</label>
+                {/* Mode Toggle */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-charcoal mb-1">Environment Mode</label>
+                    <select
+                      value={shippingConfig.mode}
+                      onChange={(e) => setShippingConfig({ ...shippingConfig, mode: e.target.value })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    >
+                      <option value="sandbox">Sandbox / Test Mode</option>
+                      <option value="production">Production / Live Mode</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-charcoal mb-1">Default Courier</label>
+                    <input
+                      type="text"
+                      value={shippingConfig.defaultCourier || ''}
+                      onChange={(e) => setShippingConfig({ ...shippingConfig, defaultCourier: e.target.value })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Threshold & Charges */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-charcoal mb-1">Free Delivery Min (₹)</label>
+                    <input
+                      type="number"
+                      value={shippingConfig.freeShippingThreshold || 499}
+                      onChange={(e) => setShippingConfig({ ...shippingConfig, freeShippingThreshold: Number(e.target.value) })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-charcoal mb-1">Standard Fee (₹)</label>
+                    <input
+                      type="number"
+                      value={shippingConfig.standardShippingFee || 49}
+                      onChange={(e) => setShippingConfig({ ...shippingConfig, standardShippingFee: Number(e.target.value) })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-charcoal mb-1">Extra COD Fee (₹)</label>
+                    <input
+                      type="number"
+                      value={shippingConfig.codFee || 0}
+                      onChange={(e) => setShippingConfig({ ...shippingConfig, codFee: Number(e.target.value) })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                {/* Carrier API Credentials */}
+                <div className="p-3.5 bg-sand/60 rounded-2xl border border-sand-border space-y-2.5">
+                  <div className="text-xs font-bold text-forest flex items-center gap-1.5">
+                    <Sliders className="h-3.5 w-3.5" />
+                    <span>
+                      {shippingConfig.provider === 'shiprocket' ? 'Shiprocket API Credentials' : 'Delhivery API Credentials'}
+                    </span>
+                  </div>
+
+                  {shippingConfig.provider === 'shiprocket' ? (
+                    <div className="grid grid-cols-2 gap-2">
+                      <input
+                        type="text"
+                        placeholder="Shiprocket Login Email"
+                        value={shippingConfig.shiprocket?.email || ''}
+                        onChange={(e) => setShippingConfig({
+                          ...shippingConfig,
+                          shiprocket: { ...(shippingConfig.shiprocket || {}), email: e.target.value }
+                        })}
+                        className="px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
+                      />
+                      <input
+                        type="password"
+                        placeholder="Shiprocket Password / Token"
+                        value={shippingConfig.shiprocket?.password || ''}
+                        onChange={(e) => setShippingConfig({
+                          ...shippingConfig,
+                          shiprocket: { ...(shippingConfig.shiprocket || {}), password: e.target.value }
+                        })}
+                        className="px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
+                      />
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <input
+                        type="password"
+                        placeholder="Delhivery Client API Token"
+                        value={shippingConfig.delhivery?.apiKey || ''}
+                        onChange={(e) => setShippingConfig({
+                          ...shippingConfig,
+                          delhivery: { ...(shippingConfig.delhivery || {}), apiKey: e.target.value }
+                        })}
+                        className="w-full px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Warehouse Pickup Address */}
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-charcoal block">Central Dispatch Warehouse Address</span>
                   <input
                     type="text"
-                    value={shippingConfig.defaultCourier || ''}
-                    onChange={(e) => setShippingConfig({ ...shippingConfig, defaultCourier: e.target.value })}
-                    className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    placeholder="Facility Name"
+                    value={shippingConfig.warehouse?.name || ''}
+                    onChange={(e) => setShippingConfig({
+                      ...shippingConfig,
+                      warehouse: { ...(shippingConfig.warehouse || {}), name: e.target.value }
+                    })}
+                    className="w-full px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
                   />
-                </div>
-              </div>
-
-              {/* Threshold & Charges */}
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <label className="block text-[11px] font-bold text-charcoal mb-1">Free Delivery Min (₹)</label>
                   <input
-                    type="number"
-                    value={shippingConfig.freeShippingThreshold || 499}
-                    onChange={(e) => setShippingConfig({ ...shippingConfig, freeShippingThreshold: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    type="text"
+                    placeholder="Street / SCO Address"
+                    value={shippingConfig.warehouse?.address || ''}
+                    onChange={(e) => setShippingConfig({
+                      ...shippingConfig,
+                      warehouse: { ...(shippingConfig.warehouse || {}), address: e.target.value }
+                    })}
+                    className="w-full px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
                   />
+                  <div className="grid grid-cols-3 gap-2">
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={shippingConfig.warehouse?.city || ''}
+                      onChange={(e) => setShippingConfig({
+                        ...shippingConfig,
+                        warehouse: { ...(shippingConfig.warehouse || {}), city: e.target.value }
+                      })}
+                      className="px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                    <input
+                      type="text"
+                      placeholder="State"
+                      value={shippingConfig.warehouse?.state || ''}
+                      onChange={(e) => setShippingConfig({
+                        ...shippingConfig,
+                        warehouse: { ...(shippingConfig.warehouse || {}), state: e.target.value }
+                      })}
+                      className="px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Pincode"
+                      value={shippingConfig.warehouse?.pincode || ''}
+                      onChange={(e) => setShippingConfig({
+                        ...shippingConfig,
+                        warehouse: { ...(shippingConfig.warehouse || {}), pincode: e.target.value }
+                      })}
+                      className="px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
                 </div>
 
-                <div>
-                  <label className="block text-[11px] font-bold text-charcoal mb-1">Standard Fee (₹)</label>
-                  <input
-                    type="number"
-                    value={shippingConfig.standardShippingFee || 49}
-                    onChange={(e) => setShippingConfig({ ...shippingConfig, standardShippingFee: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                  />
+                <div className="flex gap-2 pt-2 border-t border-sand-border">
+                  <button
+                    type="button"
+                    onClick={() => setIsSettingsOpen(false)}
+                    className="flex-1 py-2.5 rounded-xl border border-sand-border text-xs font-bold text-charcoal hover:bg-sand"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={configSaving}
+                    className="flex-1 py-2.5 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-xs"
+                  >
+                    {configSaving ? 'Saving...' : 'Save Configuration'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {settingsTab === 'email' && emailConfig && (
+              <form onSubmit={handleSaveEmailConfig} className="space-y-4">
+                {/* Toggles Grid */}
+                <div className="grid grid-cols-2 gap-3 p-3 bg-sand/50 rounded-2xl border border-sand-border">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-charcoal">
+                    <input
+                      type="checkbox"
+                      checked={emailConfig.enabled !== false}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, enabled: e.target.checked })}
+                      className="w-4 h-4 text-forest rounded focus:ring-forest/20"
+                    />
+                    <span>Email Notifications [ON/OFF]</span>
+                  </label>
+
+                  <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-charcoal">
+                    <input
+                      type="checkbox"
+                      checked={emailConfig.orderConfirmationEnabled !== false}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, orderConfirmationEnabled: e.target.checked })}
+                      className="w-4 h-4 text-forest rounded focus:ring-forest/20"
+                    />
+                    <span>Order Confirmation Email [ON/OFF]</span>
+                  </label>
                 </div>
 
-                <div>
-                  <label className="block text-[11px] font-bold text-charcoal mb-1">Extra COD Fee (₹)</label>
-                  <input
-                    type="number"
-                    value={shippingConfig.codFee || 0}
-                    onChange={(e) => setShippingConfig({ ...shippingConfig, codFee: Number(e.target.value) })}
-                    className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                  />
-                </div>
-              </div>
+                {/* Sender & Support Information */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-charcoal mb-1">Customer Email Sender Name</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. Fibax Ayurveda"
+                      value={emailConfig.senderName || ''}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, senderName: e.target.value })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
 
-              {/* Carrier API Credentials */}
-              <div className="p-3.5 bg-sand/60 rounded-2xl border border-sand-border space-y-2.5">
-                <div className="text-xs font-bold text-forest flex items-center gap-1.5">
-                  <Sliders className="h-3.5 w-3.5" />
-                  <span>
-                    {shippingConfig.provider === 'shiprocket' ? 'Shiprocket API Credentials' : 'Delhivery API Credentials'}
-                  </span>
+                  <div>
+                    <label className="block text-xs font-bold text-charcoal mb-1">Sender Email Address</label>
+                    <input
+                      type="email"
+                      placeholder="e.g. orders@fibaxpharma.com"
+                      value={emailConfig.senderEmail || ''}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, senderEmail: e.target.value })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-charcoal mb-1">Reply-To Email Address</label>
+                    <input
+                      type="email"
+                      placeholder="e.g. care@fibaxpharma.com"
+                      value={emailConfig.replyToEmail || ''}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, replyToEmail: e.target.value })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-charcoal mb-1">Support Email Address</label>
+                    <input
+                      type="email"
+                      placeholder="e.g. care@fibaxpharma.com"
+                      value={emailConfig.supportEmail || ''}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, supportEmail: e.target.value })}
+                      className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
+                    />
+                  </div>
                 </div>
 
-                {shippingConfig.provider === 'shiprocket' ? (
+                {/* SMTP Credentials */}
+                <div className="p-3.5 bg-sand/60 rounded-2xl border border-sand-border space-y-2.5">
+                  <div className="text-xs font-bold text-forest flex items-center gap-1.5">
+                    <Mail className="h-3.5 w-3.5" />
+                    <span>SMTP Server Configuration (Transactional Transport)</span>
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-2">
+                      <input
+                        type="text"
+                        placeholder="SMTP Host (e.g. smtp.gmail.com)"
+                        value={emailConfig.smtpHost || ''}
+                        onChange={(e) => setEmailConfig({ ...emailConfig, smtpHost: e.target.value })}
+                        className="w-full px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        placeholder="Port (587)"
+                        value={emailConfig.smtpPort || 587}
+                        onChange={(e) => setEmailConfig({ ...emailConfig, smtpPort: Number(e.target.value) })}
+                        className="w-full px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
+                      />
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-2 gap-2">
                     <input
                       type="text"
-                      placeholder="Shiprocket Login Email"
-                      value={shippingConfig.shiprocket?.email || ''}
-                      onChange={(e) => setShippingConfig({
-                        ...shippingConfig,
-                        shiprocket: { ...(shippingConfig.shiprocket || {}), email: e.target.value }
-                      })}
+                      placeholder="SMTP User / Email"
+                      value={emailConfig.smtpUser || ''}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, smtpUser: e.target.value })}
                       className="px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
                     />
                     <input
                       type="password"
-                      placeholder="Shiprocket Password / Token"
-                      value={shippingConfig.shiprocket?.password || ''}
-                      onChange={(e) => setShippingConfig({
-                        ...shippingConfig,
-                        shiprocket: { ...(shippingConfig.shiprocket || {}), password: e.target.value }
-                      })}
+                      placeholder="SMTP Password / App Secret"
+                      value={emailConfig.smtpPassword || ''}
+                      onChange={(e) => setEmailConfig({ ...emailConfig, smtpPassword: e.target.value })}
                       className="px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
                     />
                   </div>
-                ) : (
-                  <div className="space-y-2">
-                    <input
-                      type="password"
-                      placeholder="Delhivery Client API Token"
-                      value={shippingConfig.delhivery?.apiKey || ''}
-                      onChange={(e) => setShippingConfig({
-                        ...shippingConfig,
-                        delhivery: { ...(shippingConfig.delhivery || {}), apiKey: e.target.value }
-                      })}
-                      className="w-full px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-sand-border focus:outline-none"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Warehouse Pickup Address */}
-              <div className="space-y-2">
-                <span className="text-xs font-bold text-charcoal block">Central Dispatch Warehouse Address</span>
-                <input
-                  type="text"
-                  placeholder="Facility Name"
-                  value={shippingConfig.warehouse?.name || ''}
-                  onChange={(e) => setShippingConfig({
-                    ...shippingConfig,
-                    warehouse: { ...(shippingConfig.warehouse || {}), name: e.target.value }
-                  })}
-                  className="w-full px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                />
-                <input
-                  type="text"
-                  placeholder="Street / SCO Address"
-                  value={shippingConfig.warehouse?.address || ''}
-                  onChange={(e) => setShippingConfig({
-                    ...shippingConfig,
-                    warehouse: { ...(shippingConfig.warehouse || {}), address: e.target.value }
-                  })}
-                  className="w-full px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                />
-                <div className="grid grid-cols-3 gap-2">
-                  <input
-                    type="text"
-                    placeholder="City"
-                    value={shippingConfig.warehouse?.city || ''}
-                    onChange={(e) => setShippingConfig({
-                      ...shippingConfig,
-                      warehouse: { ...(shippingConfig.warehouse || {}), city: e.target.value }
-                    })}
-                    className="px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    placeholder="State"
-                    value={shippingConfig.warehouse?.state || ''}
-                    onChange={(e) => setShippingConfig({
-                      ...shippingConfig,
-                      warehouse: { ...(shippingConfig.warehouse || {}), state: e.target.value }
-                    })}
-                    className="px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                  />
-                  <input
-                    type="text"
-                    placeholder="Pincode"
-                    value={shippingConfig.warehouse?.pincode || ''}
-                    onChange={(e) => setShippingConfig({
-                      ...shippingConfig,
-                      warehouse: { ...(shippingConfig.warehouse || {}), pincode: e.target.value }
-                    })}
-                    className="px-3 py-1.5 bg-sand rounded-xl text-xs text-charcoal border border-transparent focus:border-forest focus:outline-none"
-                  />
                 </div>
-              </div>
 
-              <div className="flex gap-2 pt-2 border-t border-sand-border">
-                <button
-                  type="button"
-                  onClick={() => setIsSettingsOpen(false)}
-                  className="flex-1 py-2.5 rounded-xl border border-sand-border text-xs font-bold text-charcoal hover:bg-sand"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={configSaving}
-                  className="flex-1 py-2.5 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-xs"
-                >
-                  {configSaving ? 'Saving...' : 'Save Configuration'}
-                </button>
-              </div>
-            </form>
+                {/* Send Test Email Card */}
+                <div className="p-3.5 bg-emerald-50/70 rounded-2xl border border-emerald-200/80 space-y-2">
+                  <div className="text-xs font-bold text-emerald-900 flex items-center gap-1.5">
+                    <Send className="h-3.5 w-3.5 text-emerald-700" />
+                    <span>Send Test Email (Verify Integration)</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type="email"
+                      placeholder="Enter recipient email address..."
+                      value={testEmailRecipient}
+                      onChange={(e) => setTestEmailRecipient(e.target.value)}
+                      className="flex-1 px-3 py-1.5 bg-white rounded-xl text-xs text-charcoal border border-emerald-200 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSendTestEmail}
+                      disabled={isSendingTestEmail}
+                      className="px-4 py-1.5 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold transition-all flex items-center gap-1 disabled:opacity-50"
+                    >
+                      {isSendingTestEmail ? 'Sending...' : 'Send Test Email'}
+                    </button>
+                  </div>
+                  {testEmailStatus && (
+                    <div className={`text-[11px] font-semibold pt-1 ${testEmailStatus.success ? 'text-emerald-800' : 'text-rose-700'}`}>
+                      {testEmailStatus.success ? '✓ ' + testEmailStatus.message : '✕ ' + testEmailStatus.error}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex gap-2 pt-2 border-t border-sand-border">
+                  <button
+                    type="button"
+                    onClick={() => setIsSettingsOpen(false)}
+                    className="flex-1 py-2.5 rounded-xl border border-sand-border text-xs font-bold text-charcoal hover:bg-sand"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={emailConfigSaving}
+                    className="flex-1 py-2.5 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-xs"
+                  >
+                    {emailConfigSaving ? 'Saving...' : 'Save Email Settings'}
+                  </button>
+                </div>
+              </form>
+            )}
           </div>
         </div>
       )}
@@ -1054,6 +1339,53 @@ export function ShippingView() {
                     {viewOrderModal.shipping?.city || ''} - {viewOrderModal.shipping?.pincode || ''}
                   </p>
                 </div>
+              </div>
+            </div>
+
+            {/* Transactional Email Alert Status Card */}
+            <div className="p-3.5 rounded-2xl bg-sand/40 border border-sand-border space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-forest text-xs flex items-center gap-1.5">
+                  <Mail className="h-3.5 w-3.5 text-brand" /> Order Confirmation Email Alert
+                </span>
+                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                  viewOrderModal.orderConfirmationEmailStatus === 'SENT' || viewOrderModal.orderConfirmationEmailSent
+                    ? 'bg-emerald-100 text-emerald-800'
+                    : viewOrderModal.orderConfirmationEmailStatus === 'FAILED'
+                    ? 'bg-rose-100 text-rose-800'
+                    : 'bg-amber-100 text-amber-800'
+                }`}>
+                  {viewOrderModal.orderConfirmationEmailStatus === 'SENT' || viewOrderModal.orderConfirmationEmailSent
+                    ? '✓ Email Sent'
+                    : viewOrderModal.orderConfirmationEmailStatus === 'FAILED'
+                    ? '✕ Email Failed'
+                    : 'ℹ Email Skipped / Pending'}
+                </span>
+              </div>
+
+              <div className="text-[11px] text-charcoal space-y-0.5">
+                <div>Customer Email: <strong className="font-semibold">{viewOrderModal.customer?.email || 'No email provided'}</strong></div>
+                {viewOrderModal.orderConfirmationEmailSentAt && (
+                  <div className="text-charcoal-muted">Sent At: <strong>{new Date(viewOrderModal.orderConfirmationEmailSentAt).toLocaleString('en-IN')}</strong></div>
+                )}
+                {viewOrderModal.orderConfirmationEmailError && (
+                  <div className="text-rose-700 font-medium pt-0.5">Failure Reason: {viewOrderModal.orderConfirmationEmailError}</div>
+                )}
+              </div>
+
+              <div className="pt-1 flex items-center justify-between gap-2 border-t border-sand-border/80">
+                <button
+                  type="button"
+                  onClick={() => handleResendConfirmationEmail(viewOrderModal.orderId)}
+                  disabled={isResendingEmail}
+                  className="px-3 py-1.5 rounded-xl bg-forest hover:bg-forest-light text-white text-[11px] font-bold transition-all flex items-center gap-1.5 shadow-xs disabled:opacity-50"
+                >
+                  <RotateCcw className={`h-3 w-3 ${isResendingEmail ? 'animate-spin' : ''}`} />
+                  <span>{isResendingEmail ? 'Resending Email...' : 'Resend Confirmation Email'}</span>
+                </button>
+                {resendMessage && (
+                  <span className="text-[11px] font-bold text-emerald-800">{resendMessage}</span>
+                )}
               </div>
             </div>
 

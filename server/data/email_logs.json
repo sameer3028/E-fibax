@@ -1,0 +1,101 @@
+[
+  {
+    "id": "EML-1790314195642-EFW",
+    "timestamp": "2026-09-25T05:29:55.642Z",
+    "orderId": "TEST-EMAIL",
+    "type": "Admin Test Email",
+    "recipient": "admin.verify@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<80ec9c9e-4756-d22c-ce51-34e61c62a9a4@fibaxpharma.com>",
+    "previewUrl": null
+  },
+  {
+    "id": "EML-1790314194130-OWZ",
+    "timestamp": "2026-09-25T05:29:54.130Z",
+    "orderId": "FBX-193635-YJW",
+    "type": "Order Confirmation",
+    "recipient": "None",
+    "status": "SKIPPED_NO_EMAIL",
+    "details": "Customer email unavailable or system placeholder."
+  },
+  {
+    "id": "EML-1790314193631-66U",
+    "timestamp": "2026-09-25T05:29:53.631Z",
+    "orderId": "FBX-192099-TCU",
+    "type": "Order Confirmation",
+    "recipient": "testcustomer@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<62995017-6415-ccf9-e403-853aad17deca@fibaxpharma.com>",
+    "previewUrl": null
+  },
+  {
+    "id": "EML-1790314192110-GWJ",
+    "timestamp": "2026-09-25T05:29:52.110Z",
+    "orderId": "FBX-192099-TCU",
+    "type": "Order Confirmation",
+    "recipient": "testcustomer@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<1fc4b3a6-3a6c-4602-d1b2-c30e0823d07a@fibaxpharma.com>",
+    "previewUrl": null
+  },
+  {
+    "id": "EML-1790314154567-75Y",
+    "timestamp": "2026-09-25T05:29:14.567Z",
+    "orderId": "TEST-EMAIL",
+    "type": "Admin Test Email",
+    "recipient": "admin.verify@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<bb127ef0-99b0-1747-8651-73cf89d0b8ce@fibaxpharma.com>",
+    "previewUrl": null
+  },
+  {
+    "id": "EML-1790314153044-JM8",
+    "timestamp": "2026-09-25T05:29:13.044Z",
+    "orderId": "FBX-151512-NGH",
+    "type": "Order Confirmation",
+    "recipient": "testcustomer@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<75c43e2f-4dd1-4cdb-6fd1-8ac0624441b5@fibaxpharma.com>",
+    "previewUrl": null
+  },
+  {
+    "id": "EML-1790314151547-WYZ",
+    "timestamp": "2026-09-25T05:29:11.547Z",
+    "orderId": "FBX-151512-NGH",
+    "type": "Order Confirmation",
+    "recipient": "testcustomer@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<4ddc4244-d766-957e-815f-45b8442f85c5@fibaxpharma.com>",
+    "previewUrl": null
+  },
+  {
+    "id": "EML-1790314071515-ELL",
+    "timestamp": "2026-09-25T05:27:51.515Z",
+    "orderId": "TEST-EMAIL",
+    "type": "Admin Test Email",
+    "recipient": "admin.verify@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<3cc93800-ecdd-1d47-6c82-1cca92d91779@fibaxpharma.com>",
+    "previewUrl": "https://ethereal.email/message/arYGT.s5XuOetV2xarYGV.LvAxtdqtWxAAAAAwaWZ31pOK-EgD2JyE4TFhM"
+  },
+  {
+    "id": "EML-1790314067248-A1J",
+    "timestamp": "2026-09-25T05:27:47.248Z",
+    "orderId": "FBX-062773-I48",
+    "type": "Order Confirmation",
+    "recipient": "testcustomer@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<f0fa1503-f4be-8d08-4cdb-4cd8d25aa957@fibaxpharma.com>",
+    "previewUrl": "https://ethereal.email/message/arYGT.s5XuOetV2xarYGU5W6vNXKkbVDAAAAAjfjge4PrA7ee46nkPXKhrg"
+  },
+  {
+    "id": "EML-1790314066109-CTM",
+    "timestamp": "2026-09-25T05:27:46.109Z",
+    "orderId": "FBX-062773-I48",
+    "type": "Order Confirmation",
+    "recipient": "testcustomer@fibaxpharma.com",
+    "status": "SENT",
+    "messageId": "<26ef1f10-bce7-7554-4309-0e653db6a274@fibaxpharma.com>",
+    "previewUrl": "https://ethereal.email/message/arYGT.s5XuOetV2xarYGUvLvAxtdqtWtAAAAAfuXPCJY0bLtYN3mVAuyEvQ"
+  }
+]
