@@ -484,7 +484,7 @@
     "mrp": 350,
     "salePrice": 345,
     "discountPercent": 1,
-    "stockQuantity": 4,
+    "stockQuantity": 2,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/multivitamin.png",

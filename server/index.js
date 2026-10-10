@@ -48,6 +48,7 @@ import {
   reportReview,
   removeReviewMedia
 } from './reviews.js';
+import compression from 'compression';
 import {
   sendOrderConfirmationEmail,
   readEmailConfig,
@@ -60,6 +61,7 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 
 // Middleware
+app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -83,10 +85,14 @@ if (!existsSync(uploadsDir)) {
   mkdirSync(uploadsDir, { recursive: true });
 }
 
-// Serve uploaded files statically from all available locations
+// Serve uploaded files statically with Gzip & 1-year browser cache
 possibleUploadDirs.forEach((d) => {
   if (existsSync(d)) {
-    app.use('/uploads', express.static(d));
+    app.use('/uploads', express.static(d, {
+      maxAge: '1y',
+      etag: true,
+      lastModified: true
+    }));
   }
 });
 

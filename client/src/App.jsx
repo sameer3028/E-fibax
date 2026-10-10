@@ -153,7 +153,7 @@ function StorefrontApp() {
         setCurrentPage('checkout');
         document.title = 'Checkout | Fibax Ayurveda';
       } else if (pathname === '/track' || pathname.startsWith('/track/')) {
-        const id = pathname.startsWith('/track/') ? decodeURIComponent(pathname.replace(/^\/track\//, '')).trim() : '';
+        const id = pathname.startsWith('/track/') ? decodeURIComponent(pathname.replace(/^\/track\//, '')).trim() : (searchParams.get('orderId') || searchParams.get('id') || '');
         setTrackInitialId(id);
         setIsTrackOrderOpen(true);
       }
