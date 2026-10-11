@@ -1,7 +1,7 @@
-import fs from 'fs';
 import path from 'path';
 import nodemailer from 'nodemailer';
 import { generateOrderConfirmationHtml, generateOrderConfirmationText } from '../emailTemplates/orderConfirmation.js';
+import { readJsonFile, writeJsonFile } from '../store.js';
 
 const __dirname = path.resolve();
 const CONFIG_FILE = path.join(__dirname, 'server', 'data', 'email_config.json');
@@ -26,8 +26,8 @@ const DEFAULT_CONFIG = {
 // Helper: Read email configuration
 export function readEmailConfig() {
   try {
-    if (fs.existsSync(CONFIG_FILE)) {
-      const data = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+    const data = readJsonFile(CONFIG_FILE, null);
+    if (data) {
       return { ...DEFAULT_CONFIG, ...data };
     }
   } catch (err) {
@@ -39,10 +39,7 @@ export function readEmailConfig() {
 // Helper: Save email configuration
 export function saveEmailConfig(config) {
   try {
-    const dir = path.dirname(CONFIG_FILE);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf8');
-    return true;
+    return writeJsonFile(CONFIG_FILE, config);
   } catch (err) {
     console.error('Error saving email_config.json:', err.message);
     return false;
@@ -51,14 +48,7 @@ export function saveEmailConfig(config) {
 
 // Helper: Read email logs
 export function readEmailLogs() {
-  try {
-    if (fs.existsSync(LOGS_FILE)) {
-      return JSON.parse(fs.readFileSync(LOGS_FILE, 'utf8'));
-    }
-  } catch (err) {
-    console.error('Error reading email_logs.json:', err.message);
-  }
-  return [];
+  return readJsonFile(LOGS_FILE, []);
 }
 
 // Helper: Append to email logs
@@ -72,9 +62,7 @@ export function logEmailExecution(logEntry) {
     });
     // Keep last 500 logs
     const trimmedLogs = logs.slice(0, 500);
-    const dir = path.dirname(LOGS_FILE);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    fs.writeFileSync(LOGS_FILE, JSON.stringify(trimmedLogs, null, 2), 'utf8');
+    writeJsonFile(LOGS_FILE, trimmedLogs);
   } catch (err) {
     console.error('Error logging email execution:', err.message);
   }
@@ -83,8 +71,7 @@ export function logEmailExecution(logEntry) {
 // Helper: Helper to update order in orders.json
 function updateOrderEmailFields(orderId, emailFields) {
   try {
-    if (!fs.existsSync(ORDERS_FILE)) return;
-    const orders = JSON.parse(fs.readFileSync(ORDERS_FILE, 'utf8'));
+    const orders = readJsonFile(ORDERS_FILE, []);
     const idx = orders.findIndex(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
     if (idx !== -1) {
       orders[idx] = {
@@ -92,7 +79,7 @@ function updateOrderEmailFields(orderId, emailFields) {
         ...emailFields,
         updatedAt: new Date().toISOString()
       };
-      fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2), 'utf8');
+      writeJsonFile(ORDERS_FILE, orders);
     }
   } catch (err) {
     console.error(`Error updating order #${orderId} email status:`, err.message);

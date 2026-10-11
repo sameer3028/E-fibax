@@ -52,6 +52,28 @@ export async function apiRequest(endpoint, options = {}) {
     delete headers['Content-Type'];
   }
 
+  // Automatically attach Authorization token if present in storage and not explicitly provided
+  if (!headers['Authorization'] && !headers['authorization'] && typeof window !== 'undefined') {
+    const adminToken = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+    const customerToken = localStorage.getItem('fibax_auth_token') || sessionStorage.getItem('fibax_auth_token');
+
+    const cleanEndpoint = String(endpoint);
+    const isAdminRoute = cleanEndpoint.includes('/admin') ||
+      cleanEndpoint.includes('/shipping/config') ||
+      cleanEndpoint.includes('/email/config') ||
+      cleanEndpoint.includes('/email/test') ||
+      cleanEndpoint.includes('/ship-order') ||
+      cleanEndpoint.includes('/resend-email');
+
+    if (isAdminRoute && adminToken) {
+      headers['Authorization'] = `Bearer ${adminToken}`;
+    } else if (adminToken && (options.method === 'POST' || options.method === 'PUT' || options.method === 'DELETE' || options.method === 'PATCH') && !cleanEndpoint.includes('/orders') && !cleanEndpoint.includes('/enquiries') && !cleanEndpoint.includes('/reviews') && !cleanEndpoint.includes('/auth/')) {
+      headers['Authorization'] = `Bearer ${adminToken}`;
+    } else if (customerToken && (cleanEndpoint.includes('/auth/') || cleanEndpoint.includes('/orders'))) {
+      headers['Authorization'] = `Bearer ${customerToken}`;
+    }
+  }
+
   // Attempt 1: Using current base URL
   let result = await executeFetch(primaryUrl, options, headers);
 

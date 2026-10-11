@@ -1,6 +1,6 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { readJsonFile, writeJsonFile } from './store.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -8,37 +8,15 @@ const REVIEWS_FILE = join(__dirname, 'data', 'reviews.json');
 const ORDERS_FILE = join(__dirname, 'data', 'orders.json');
 
 export function readReviews() {
-  try {
-    if (existsSync(REVIEWS_FILE)) {
-      const data = readFileSync(REVIEWS_FILE, 'utf8');
-      return JSON.parse(data || '[]');
-    }
-  } catch (err) {
-    console.error('Error reading reviews.json:', err.message);
-  }
-  return [];
+  return readJsonFile(REVIEWS_FILE, []);
 }
 
 export function saveReviews(reviews) {
-  try {
-    writeFileSync(REVIEWS_FILE, JSON.stringify(reviews, null, 2), 'utf8');
-    return true;
-  } catch (err) {
-    console.error('Error writing reviews.json:', err.message);
-    return false;
-  }
+  return writeJsonFile(REVIEWS_FILE, reviews);
 }
 
 function readOrders() {
-  try {
-    if (existsSync(ORDERS_FILE)) {
-      const data = readFileSync(ORDERS_FILE, 'utf8');
-      return JSON.parse(data || '[]');
-    }
-  } catch (err) {
-    console.error('Error reading orders.json:', err.message);
-  }
-  return [];
+  return readJsonFile(ORDERS_FILE, []);
 }
 
 // Generate public customer name (e.g. "Kabul Singh" -> "Kabul S.")

@@ -68,11 +68,15 @@ export async function createRazorpayOrder({ amount, receipt, notes = {} }) {
 /**
  * Cryptographically verifies Razorpay Payment Signature
  * @param {Object} params
- * @param {string} params.razorpay_order_id
- * @param {string} params.razorpay_payment_id
- * @param {string} params.razorpay_signature
+ * @param {string} [params.razorpay_order_id]
+ * @param {string} [params.razorpay_payment_id]
+ * @param {string} [params.razorpay_signature]
  */
-export function verifyPaymentSignature({ razorpay_order_id, razorpay_payment_id, razorpay_signature }) {
+export function verifyPaymentSignature(params = {}) {
+  const razorpay_order_id = params.razorpay_order_id || params.razorpayOrderId;
+  const razorpay_payment_id = params.razorpay_payment_id || params.razorpayPaymentId || params.paymentId || params.transactionId;
+  const razorpay_signature = params.razorpay_signature || params.signature;
+
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     return { success: false, error: 'Incomplete payment credentials for verification.' };
   }
@@ -101,4 +105,66 @@ export function verifyPaymentSignature({ razorpay_order_id, razorpay_payment_id,
       error: 'Invalid payment signature. Verification failed.'
     };
   }
+}
+
+/**
+ * Validates a payment object submitted during checkout
+ * @param {Object} payment
+ * @returns {{ valid: boolean, error?: string, verifiedPayment?: Object }}
+ */
+export function verifyOrderPayment(payment = {}) {
+  if (!payment) {
+    return { valid: false, error: 'Payment payload is required.' };
+  }
+
+  const method = payment.method || '';
+  const isRazorpay = /razorpay|online|upi|card/i.test(method);
+
+  // If status is marked as 'Paid', signature is mandatory
+  if (payment.status === 'Paid' || isRazorpay) {
+    const rzpOrderId = payment.razorpayOrderId || payment.razorpay_order_id;
+    const rzpPaymentId = payment.transactionId || payment.paymentId || payment.razorpay_payment_id;
+    const rzpSignature = payment.signature || payment.razorpay_signature;
+
+    if (!rzpOrderId || !rzpPaymentId || !rzpSignature) {
+      return {
+        valid: false,
+        error: 'Missing Razorpay verification tokens (order ID, payment ID, or signature).'
+      };
+    }
+
+    const verification = verifyPaymentSignature({
+      razorpay_order_id: rzpOrderId,
+      razorpay_payment_id: rzpPaymentId,
+      razorpay_signature: rzpSignature
+    });
+
+    if (!verification.success) {
+      return {
+        valid: false,
+        error: verification.error || 'Cryptographic payment verification failed.'
+      };
+    }
+
+    return {
+      valid: true,
+      verifiedPayment: {
+        ...payment,
+        status: 'Paid',
+        transactionId: rzpPaymentId,
+        razorpayOrderId: rzpOrderId,
+        signature: rzpSignature,
+        verifiedAt: new Date().toISOString()
+      }
+    };
+  }
+
+  // COD or pending payments
+  return {
+    valid: true,
+    verifiedPayment: {
+      ...payment,
+      status: payment.status || 'Pending'
+    }
+  };
 }

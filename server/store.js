@@ -12,8 +12,8 @@
 // to know which backend is active. Call `await initStore()` once at boot
 // before serving requests.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, copyFileSync, unlinkSync } from 'fs';
+import { dirname, join, basename } from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -62,22 +62,64 @@ function ensureDataDir() {
   if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
 }
 
-function readJsonFile(file, fallback) {
+export function readJsonFile(file, fallback) {
   try {
     if (!existsSync(file)) return fallback;
-    return JSON.parse(readFileSync(file, 'utf8'));
+    const raw = readFileSync(file, 'utf8');
+    if (!raw.trim()) return fallback;
+    return JSON.parse(raw);
   } catch (err) {
-    console.error(`Error reading ${file}:`, err.message);
+    console.error(`⚠️ Corruption or read error in ${file}: ${err.message}`);
+    // Check if a healthy .bak backup exists
+    const bakFile = `${file}.bak`;
+    if (existsSync(bakFile)) {
+      try {
+        const bakRaw = readFileSync(bakFile, 'utf8');
+        const restored = JSON.parse(bakRaw);
+        console.warn(`🛡️ Successfully recovered data for ${basename(file)} from .bak backup!`);
+        return restored;
+      } catch (bakErr) {
+        console.error(`❌ Backup file ${bakFile} also unreadable:`, bakErr.message);
+      }
+    }
+    // Preserve corrupted file for recovery rather than silent destruction
+    try {
+      const corruptCopy = `${file}.corrupt.${Date.now()}`;
+      copyFileSync(file, corruptCopy);
+      console.warn(`📁 Preserved damaged file to ${corruptCopy}`);
+    } catch (_) {}
     return fallback;
   }
 }
 
-function writeJsonFile(file, value) {
+export function writeJsonFile(file, value) {
   try {
     ensureDataDir();
-    writeFileSync(file, JSON.stringify(value, null, 2), 'utf8');
+    const serialized = JSON.stringify(value, null, 2);
+    const tempFile = `${file}.tmp.${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+
+    // 1. Write to temp file first
+    writeFileSync(tempFile, serialized, 'utf8');
+
+    // 2. If destination file exists, maintain a .bak copy
+    if (existsSync(file)) {
+      try {
+        copyFileSync(file, `${file}.bak`);
+      } catch (_) {}
+    }
+
+    // 3. Atomically rename temp file over destination file
+    try {
+      renameSync(tempFile, file);
+    } catch (renameErr) {
+      // Windows fallback if renameSync fails due to file locking
+      copyFileSync(tempFile, file);
+      try { unlinkSync(tempFile); } catch (_) {}
+    }
+    return true;
   } catch (err) {
     console.error(`Error writing ${file}:`, err.message);
+    return false;
   }
 }
 
