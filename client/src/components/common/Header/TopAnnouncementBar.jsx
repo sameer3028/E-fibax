@@ -28,7 +28,7 @@ export function TopAnnouncementBar() {
         {/* Right Helpline */}
         <div className="flex items-center gap-3 text-[11px]">
           <span className="text-white/90">
-            Helpline: <a href="tel:+917657963458" className="font-bold text-white hover:text-brand-light transition-colors">+91 76579 63458</a>
+            Helpline: <a href="tel:8872544458" className="font-bold text-white hover:text-brand-light transition-colors">+91 88725 44458</a>
           </span>
         </div>
       </div>

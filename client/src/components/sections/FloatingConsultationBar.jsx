@@ -21,7 +21,7 @@ export function FloatingConsultationBar() {
           </div>
 
           <a
-            href="https://wa.me/917657963458?text=Hello%20Doctor,%20I%20need%20guidance%20on%20Fibax%20Ayurvedic%20products"
+            href="https://wa.me/918872544458?text=Hello%20Doctor,%20I%20need%20guidance%20on%20Fibax%20Ayurvedic%20products"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto px-6 py-3 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-extrabold tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 transform active:scale-98 flex-shrink-0"

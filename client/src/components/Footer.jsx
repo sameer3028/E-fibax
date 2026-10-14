@@ -240,7 +240,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 border-t border-white/10 text-center sm:text-left">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-sand-warm/60">
           <p>
-            &copy; {new Date().getFullYear()} <strong>Fibax Pharma Private Limited</strong>. All Rights Reserved.
+            &copy; {new Date().getFullYear()} <strong>Fibax Pharma</strong>. All Rights Reserved.
           </p>
           <div className="flex items-center gap-4 text-[11px]">
             <button

@@ -174,7 +174,7 @@ export function AdminLogin({ onLoginSuccess, onExit }) {
       </div>
 
       <div className="mt-6 text-center text-xs text-emerald-200/60">
-        © 2026 Fibax Pharma Pvt. Ltd. • Secure SSL Encrypted Session
+        © 2026 Fibax Pharma • Secure SSL Encrypted Session
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ export function AppPromoSection() {
               {/* Action Buttons */}
               <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
                 <a
-                  href="https://wa.me/917657963458?text=Hello%20Fibax,%20I%20want%20to%20join%20the%20Wellness%20Club"
+                  href="https://wa.me/918872544458?text=Hello%20Fibax,%20I%20want%20to%20join%20the%20Wellness%20Club"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="px-7 py-3 rounded-full bg-gradient-to-r from-brand to-orange-500 hover:from-brand-hover hover:to-brand text-white font-extrabold text-xs tracking-wider uppercase transition-all shadow-lg hover:shadow-orange-glow flex items-center gap-2"

@@ -300,7 +300,7 @@ export function generateOrderConfirmationHtml(order, emailConfig = {}) {
               </div>
               <div style="font-size: 12px; color: #6b7280; margin-top: 12px; line-height: 1.5;">
                 Need help with your order? Contact our Ayurveda Helpline:<br/>
-                Email: <a href="mailto:${supportEmail}" style="color: #0f382c; font-weight: 600; text-decoration: underline;">${supportEmail}</a> | WhatsApp: <strong style="color: #0f382c;">+91-7657963458</strong>
+                Email: <a href="mailto:${supportEmail}" style="color: #0f382c; font-weight: 600; text-decoration: underline;">${supportEmail}</a> | WhatsApp: <strong style="color: #0f382c;">+91-8872544458</strong>
               </div>
               <div style="font-size: 11px; color: #9ca3af; margin-top: 16px;">
                 &copy; ${new Date().getFullYear()} Fibax Ayurveda. All rights reserved.<br/>
@@ -342,7 +342,7 @@ PAYMENT METHOD: ${order.payment?.method || 'COD'}
 Track Your Order:
 ${trackUrl}
 
-Need assistance? Contact support at ${supportEmail} or WhatsApp +91-7657963458.
+Need assistance? Contact support at ${supportEmail} or WhatsApp +91-8872544458.
 Fibax Ayurveda - Pure Ayurvedic Healthcare & Natural Wellness
 `;
 }

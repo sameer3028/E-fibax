@@ -134,7 +134,7 @@ export function ConcernDropdown({ isOpen, onClose, onSelectConcern }) {
             <span>Not sure which formulation suits your body constitution (Prakriti)?</span>
           </div>
           <a
-            href="https://wa.me/917657963458?text=Hello%20Fibax%20Pharma,%20I%20would%20like%20a%20free%20Ayurvedic%20doctor%20consultation"
+            href="https://wa.me/918872544458?text=Hello%20Fibax%20Pharma,%20I%20would%20like%20a%20free%20Ayurvedic%20doctor%20consultation"
             target="_blank"
             rel="noopener noreferrer"
             onClick={onClose}

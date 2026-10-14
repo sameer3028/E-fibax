@@ -78,7 +78,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
             <div className="space-y-2 pt-2 text-sand/90">
               <p className="flex items-center gap-2">
                 <Phone className="h-4 w-4 text-sage" />
-                <span>Customer Care: +91 76579 63458 / +91 90563 44458</span>
+                <span>Customer Care: <a href="tel:8872544458" className="hover:text-gold transition-colors">+91 88725 44458</a></span>
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="h-4 w-4 text-sage" />

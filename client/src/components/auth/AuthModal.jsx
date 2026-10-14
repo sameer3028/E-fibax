@@ -188,7 +188,7 @@ export function AuthModal() {
                 <div className="flex items-center justify-between mb-1">
                   <label className="text-xs font-bold text-charcoal">Password</label>
                   <a
-                    href="https://wa.me/917657963458?text=Hello%20Fibax%20Pharma,%20I%20need%20help%20resetting%20my%20customer%20password"
+                    href="https://wa.me/918872544458?text=Hello%20Fibax%20Pharma,%20I%20need%20help%20resetting%20my%20customer%20password"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-[11px] text-brand hover:underline font-semibold"

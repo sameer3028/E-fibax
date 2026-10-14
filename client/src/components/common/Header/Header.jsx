@@ -157,7 +157,7 @@ export function Header({ onSelectConcern, onSelectCategory, onNavigateHome, onOp
             </button>
 
             <a
-              href="https://wa.me/917657963458?text=Hello%20Fibax%20Pharma,%20I%20need%20assistance%20with%20Ayurvedic%20products"
+              href="https://wa.me/918872544458?text=Hello%20Fibax%20Pharma,%20I%20need%20assistance%20with%20Ayurvedic%20products"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-leaf-soft text-forest font-semibold border border-leaf-border text-xs hover:bg-leaf/20 transition-colors"
