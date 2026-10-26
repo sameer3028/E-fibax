@@ -52,8 +52,11 @@ export function ProductProvider({ children }) {
 
   useEffect(() => {
     fetchProducts();
+  }, [fetchProducts]);
+
+  useEffect(() => {
     fetchStats();
-  }, [fetchProducts, fetchStats]);
+  }, [fetchStats]);
 
   // 1. Add Product
   const addProduct = async (productData) => {

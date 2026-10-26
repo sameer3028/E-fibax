@@ -1,5 +1,14 @@
 [
   {
+    "id": "EML-1793012557606-5A5",
+    "timestamp": "2026-10-26T11:02:37.606Z",
+    "orderId": "FBX-556836-H4Q",
+    "type": "Order Confirmation",
+    "recipient": "9056344458@customer.fibaxpharma.com",
+    "status": "SKIPPED_NO_EMAIL",
+    "details": "Customer email unavailable or system placeholder."
+  },
+  {
     "id": "EML-1790318972993-P8K",
     "timestamp": "2026-09-25T06:49:32.993Z",
     "orderId": "FBX-972362-AT2",

@@ -37,6 +37,17 @@ function StorefrontApp() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isTrackOrderOpen, setIsTrackOrderOpen] = useState(false);
   const [trackInitialId, setTrackInitialId] = useState('');
+
+  const handleCloseTrackOrder = () => {
+    setIsTrackOrderOpen(false);
+    const pathname = window.location.pathname;
+    const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+    if (pathname === '/track' || pathname.startsWith('/track/')) {
+      window.history.replaceState({}, '', '/' + (window.location.search || ''));
+    } else if (rawHash.startsWith('track')) {
+      window.history.replaceState({}, '', window.location.pathname + (window.location.search || ''));
+    }
+  };
   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
   const [callbackDefaultConcern, setCallbackDefaultConcern] = useState('');
 
@@ -73,7 +84,7 @@ function StorefrontApp() {
         else if (rawHash === 'contact') migratedPath = '/contact';
         else if (rawHash === 'admin') migratedPath = '/admin';
         else if (rawHash === 'checkout' || rawHash === 'checkout-custom') migratedPath = '/checkout-custom';
-        else if (rawHash === 'track' || rawHash.startsWith('track/')) migratedPath = `/${rawHash}`;
+        else if (rawHash === 'track' || rawHash.startsWith('track/') || rawHash.startsWith('track?')) migratedPath = `/${rawHash}`;
 
         if (migratedPath) {
           window.history.replaceState({}, '', migratedPath);
@@ -86,6 +97,8 @@ function StorefrontApp() {
         pathname = pathname.slice(0, -1);
       }
       const searchParams = new URLSearchParams(window.location.search);
+      const rawHash = (window.location.hash || '').replace(/^#\/?/, '').trim();
+      const hashParams = new URLSearchParams(rawHash.includes('?') ? rawHash.split('?')[1] : '');
 
       if (pathname === '/' || pathname === '') {
         setCurrentPage('home');
@@ -152,8 +165,8 @@ function StorefrontApp() {
       } else if (pathname === '/checkout' || pathname === '/checkout-custom') {
         setCurrentPage('checkout');
         document.title = 'Checkout | Fibax Ayurveda';
-      } else if (pathname === '/track' || pathname.startsWith('/track/')) {
-        const id = pathname.startsWith('/track/') ? decodeURIComponent(pathname.replace(/^\/track\//, '')).trim() : (searchParams.get('orderId') || searchParams.get('id') || '');
+      } else if (pathname === '/track' || pathname.startsWith('/track/') || rawHash === 'track' || rawHash.startsWith('track/') || rawHash.startsWith('track?')) {
+        const id = pathname.startsWith('/track/') ? decodeURIComponent(pathname.replace(/^\/track\//, '')).trim() : (searchParams.get('orderId') || searchParams.get('id') || hashParams.get('orderId') || hashParams.get('id') || '');
         setTrackInitialId(id);
         setIsTrackOrderOpen(true);
       }
@@ -161,7 +174,11 @@ function StorefrontApp() {
 
     handlePathRouting();
     window.addEventListener('popstate', handlePathRouting);
-    return () => window.removeEventListener('popstate', handlePathRouting);
+    window.addEventListener('hashchange', handlePathRouting);
+    return () => {
+      window.removeEventListener('popstate', handlePathRouting);
+      window.removeEventListener('hashchange', handlePathRouting);
+    };
   }, [products]);
 
   // Master navigation handler with clean URLs
@@ -275,7 +292,7 @@ function StorefrontApp() {
         />
         <TrackOrderModal
           isOpen={isTrackOrderOpen}
-          onClose={() => setIsTrackOrderOpen(false)}
+          onClose={handleCloseTrackOrder}
           initialTrackingId={trackInitialId}
         />
         <AuthModal />
@@ -432,7 +449,7 @@ function StorefrontApp() {
       {/* 9. Public Live Order Tracking Modal (Delhivery & Shiprocket) */}
       <TrackOrderModal
         isOpen={isTrackOrderOpen}
-        onClose={() => setIsTrackOrderOpen(false)}
+        onClose={handleCloseTrackOrder}
         initialTrackingId={trackInitialId}
       />
 

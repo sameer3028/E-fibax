@@ -1,5 +1,63 @@
 [
   {
+    "orderId": "FBX-556836-H4Q",
+    "createdAt": "2026-10-26T11:02:37.591Z",
+    "idempotencyKey": null,
+    "customer": {
+      "name": "Mintu Sidhu",
+      "phone": "9056344458",
+      "email": "9056344458@customer.fibaxpharma.com",
+      "userId": "USR-mue2ogr75MPE"
+    },
+    "items": [
+      {
+        "id": "101",
+        "title": "Axe Ortho Pain Relief- 30 Capsules",
+        "price": 425,
+        "quantity": 1,
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/Axe_Ortho_Plus-1790187581049.jpg"
+      },
+      {
+        "id": "95",
+        "title": "Arthobax Ayurvedic Capsules for Arthritis & Joint Pain Relief – 30 Capsules",
+        "price": 330,
+        "quantity": 1,
+        "packName": "Standard Pack",
+        "featuredImage": "/uploads/arthobax.png"
+      }
+    ],
+    "shipping": {
+      "address": "Teacher colony, Gidderbaha, q",
+      "houseFlat": "Teacher colony, Gidderbaha",
+      "area": "q",
+      "landmark": "",
+      "city": "Gidderbaha",
+      "state": "Punjab",
+      "pincode": "140603"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 755,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 844
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "SKIPPED_NO_EMAIL",
+    "updatedAt": "2026-10-26T11:02:37.601Z"
+  },
+  {
     "orderId": "FBX-972362-AT2",
     "createdAt": "2026-09-25T06:49:32.900Z",
     "customer": {
