@@ -2,15 +2,17 @@
   "name": "fibax-pharma",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "node server/index.js",
     "server": "node server/index.js",
     "dev:server": "node --watch server/index.js",
     "dev:client": "npm run dev --prefix client",
-    "build": "npm install --prefix client && npm run build --prefix client",
+    "sitemap": "node scripts/generate-sitemap.js",
+    "build": "node scripts/generate-sitemap.js && npm run build --prefix client",
     "install:all": "npm install --prefix client && npm install --prefix server",
     "test": "node --test server/tests/*.test.js",
-    "setup": "npm install --prefix server && npm install --prefix client && npm run build --prefix client",
+    "setup": "npm install --prefix server && npm install --prefix client && npm run build",
     "postinstall": "npm run setup"
   }
 }

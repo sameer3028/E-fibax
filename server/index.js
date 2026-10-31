@@ -103,6 +103,31 @@ app.use('/api/reviews', reviewRouter);
 app.use('/api/email', emailRoutes);
 app.use('/api', contentRoutes); // Includes /api/coupons, /api/website/about-banners, /api/enquiry, /api/upload
 
+// ==========================================
+// SEO & SEARCH ENGINE CRAWLER ROUTES
+// ==========================================
+app.get('/sitemap.xml', (req, res) => {
+  const distSitemap = join(__dirname, '..', 'client', 'dist', 'sitemap.xml');
+  const publicSitemap = join(__dirname, '..', 'client', 'public', 'sitemap.xml');
+  const sitemapPath = existsSync(distSitemap) ? distSitemap : publicSitemap;
+  if (existsSync(sitemapPath)) {
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    return res.sendFile(sitemapPath);
+  }
+  res.status(404).type('text/plain').send('Sitemap not found');
+});
+
+app.get('/robots.txt', (req, res) => {
+  const distRobots = join(__dirname, '..', 'client', 'dist', 'robots.txt');
+  const publicRobots = join(__dirname, '..', 'client', 'public', 'robots.txt');
+  const robotsPath = existsSync(distRobots) ? distRobots : publicRobots;
+  if (existsSync(robotsPath)) {
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    return res.sendFile(robotsPath);
+  }
+  res.status(404).type('text/plain').send('User-agent: *\nAllow: /\n');
+});
+
 // API 404 Catch-All (prevents returning index.html for unknown /api/* routes)
 app.all('/api/*', notFoundHandler);
 
