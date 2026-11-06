@@ -142,6 +142,11 @@ router.post('/', requireAdminAuth, (req, res) => {
         recommendationText: "Recommended 90-Day Course for Best Results",
         packs: []
       },
+      productIntroduction: body.productIntroduction || null,
+      botanicalIngredients: body.botanicalIngredients || null,
+      usageInstructions: body.usageInstructions || null,
+      comparisonTable: body.comparisonTable || null,
+      faqsConfig: body.faqsConfig || null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -199,12 +204,17 @@ router.put('/:id', requireAdminAuth, (req, res) => {
       packageLengthCm: lengthCm > 0 ? lengthCm : 0,
       packageWidthCm: widthCm > 0 ? widthCm : 0,
       packageHeightCm: heightCm > 0 ? heightCm : 0,
-      treatmentCourseConfig: body.treatmentCourseConfig !== undefined ? body.treatmentCourseConfig : {
+      treatmentCourseConfig: body.treatmentCourseConfig !== undefined ? body.treatmentCourseConfig : (current.treatmentCourseConfig || {
         enabled: false,
         heading: "SELECT TREATMENT COURSE / VALUE PACK:",
         recommendationText: "Recommended 90-Day Course for Best Results",
         packs: []
-      },
+      }),
+      productIntroduction: body.productIntroduction !== undefined ? body.productIntroduction : (current.productIntroduction || null),
+      botanicalIngredients: body.botanicalIngredients !== undefined ? body.botanicalIngredients : (current.botanicalIngredients || null),
+      usageInstructions: body.usageInstructions !== undefined ? body.usageInstructions : (current.usageInstructions || null),
+      comparisonTable: body.comparisonTable !== undefined ? body.comparisonTable : (current.comparisonTable || null),
+      faqsConfig: body.faqsConfig !== undefined ? body.faqsConfig : (current.faqsConfig || null),
       updatedAt: new Date().toISOString()
     };
 

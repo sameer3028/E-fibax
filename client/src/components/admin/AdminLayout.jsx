@@ -107,12 +107,26 @@ export function AdminLayout({ onExitAdmin }) {
   };
 
   const handleSaveModal = async (formData) => {
-    if (productToEdit) {
-      await updateProduct(productToEdit.id, formData);
-    } else {
-      await addProduct(formData);
+    try {
+      if (productToEdit) {
+        const res = await updateProduct(productToEdit.id, formData);
+        if (res && res.success === false) {
+          alert('Failed to update product: ' + (res.error || 'Server error'));
+          return false;
+        }
+      } else {
+        const res = await addProduct(formData);
+        if (res && res.success === false) {
+          alert('Failed to create product: ' + (res.error || 'Server error'));
+          return false;
+        }
+      }
+      setIsModalOpen(false);
+      return true;
+    } catch (err) {
+      alert('Error saving product: ' + err.message);
+      return false;
     }
-    setIsModalOpen(false);
   };
 
   // 1. Loading authentication verification state
