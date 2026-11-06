@@ -1,6 +1,7 @@
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BLOG_POSTS, BLOG_CATEGORIES } from '../data/blogs';
+import { apiRequest } from '../utils/api';
 import {
   BookOpen,
   Calendar,
@@ -26,6 +27,40 @@ export function Blogs({ onNavigate }) {
   const [currentPage, setCurrentPage] = useState(1);
   const topListRef = useRef(null);
 
+  // Live blogs & categories from API (initialized with static fallback)
+  const [posts, setPosts] = useState(BLOG_POSTS);
+  const [categories, setCategories] = useState(BLOG_CATEGORIES);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLiveBlogs = async () => {
+      try {
+        setIsLoading(true);
+        const [blogsRes, catsRes] = await Promise.all([
+          apiRequest('/api/blogs?limit=0'),
+          apiRequest('/api/blogs/categories')
+        ]);
+
+        if (isMounted) {
+          if (blogsRes.success && Array.isArray(blogsRes.data) && blogsRes.data.length > 0) {
+            setPosts(blogsRes.data);
+          }
+          if (catsRes.success && Array.isArray(catsRes.data) && catsRes.data.length > 0) {
+            setCategories(['All', ...catsRes.data.map(c => c.name)]);
+          }
+        }
+      } catch (err) {
+        console.warn('Using offline blog cache:', err);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    };
+
+    fetchLiveBlogs();
+    return () => { isMounted = false; };
+  }, []);
+
   const handleOpenArticle = (post) => {
     if (onNavigate) {
       onNavigate('blog-detail', { post });
@@ -37,20 +72,20 @@ export function Blogs({ onNavigate }) {
 
   // Filter posts based on category and search query
   const filteredPosts = useMemo(() => {
-    return BLOG_POSTS.filter((post) => {
+    return posts.filter((post) => {
       const matchesCategory =
         selectedCategory === 'All' || post.category === selectedCategory;
       const q = searchQuery.toLowerCase().trim();
       const matchesSearch =
         !q ||
-        post.title.toLowerCase().includes(q) ||
-        post.excerpt.toLowerCase().includes(q) ||
-        post.tag.toLowerCase().includes(q) ||
-        post.category.toLowerCase().includes(q);
+        (post.title || '').toLowerCase().includes(q) ||
+        (post.excerpt || '').toLowerCase().includes(q) ||
+        (post.tag || '').toLowerCase().includes(q) ||
+        (post.category || '').toLowerCase().includes(q);
 
       return matchesCategory && matchesSearch;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [posts, selectedCategory, searchQuery]);
 
   // Pagination calculation
   const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
@@ -78,7 +113,6 @@ export function Blogs({ onNavigate }) {
     setCurrentPage(1);
   };
 
-
   return (
     <div className="w-full bg-[#fbf9f4] min-h-screen">
       {/* 1. Hero Header Banner */}
@@ -104,7 +138,7 @@ export function Blogs({ onNavigate }) {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="font-heading text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight max-w-3xl mx-auto"
           >
-            Evidence-Based Insights &{' '}
+            Evidence-Based Insights &amp;{' '}
             <span className="bg-gradient-to-r from-amber-300 via-orange-400 to-amber-400 bg-clip-text text-transparent">
               Ayurvedic Wisdom
             </span>
@@ -132,7 +166,7 @@ export function Blogs({ onNavigate }) {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search by health concern, herb (e.g. Ashwagandha, Liver, Acidity)..."
-                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white text-charcoal text-sm placeholder-charcoal-muted/70 focus:outline-none focus:ring-2 focus:ring-brand shadow-lg border border-white/20"
+                className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-white text-charcoal text-sm placeholder-charcoal-muted/70 focus:outline-hidden focus:ring-2 focus:ring-brand shadow-lg border border-white/20"
               />
               <Search className="h-5 w-5 text-forest absolute left-4 top-1/2 -translate-y-1/2" />
               {searchQuery && (
@@ -152,13 +186,13 @@ export function Blogs({ onNavigate }) {
       <section className="bg-white border-b border-sand-border sticky top-0 z-20 shadow-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-            {BLOG_CATEGORIES.map((cat) => {
+            {categories.map((cat) => {
               const isActive = selectedCategory === cat;
               return (
                 <button
                   key={cat}
                   onClick={() => handleCategorySelect(cat)}
-                  className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 ${
+                  className={`whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 cursor-pointer ${
                     isActive
                       ? 'bg-forest text-white shadow-sm font-bold scale-102'
                       : 'bg-sand hover:bg-sand-border/70 text-charcoal hover:text-forest'
@@ -219,9 +253,9 @@ export function Blogs({ onNavigate }) {
                 setSearchQuery('');
                 setSelectedCategory('All');
               }}
-              className="px-5 py-2.5 rounded-full bg-forest text-white text-xs font-bold hover:bg-forest-deep transition-all"
+              className="px-5 py-2.5 rounded-full bg-forest text-white text-xs font-bold hover:bg-forest-deep transition-all cursor-pointer"
             >
-              Reset Filters & View All
+              Reset Filters &amp; View All
             </button>
           </div>
         )}
@@ -238,34 +272,40 @@ export function Blogs({ onNavigate }) {
             >
               <div>
                 {/* Header colored banner */}
-                <div className={`px-4 py-2.5 ${post.colorBlock} flex items-center justify-between`}>
+                <div className={`px-4 py-2.5 ${post.colorBlock || 'bg-[#285238] text-white'} flex items-center justify-between`}>
                   <span className="text-[10px] font-extrabold uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded">
-                    {post.tag}
+                    {post.tag || 'Ayurvedic Wellness'}
                   </span>
                   <span className="text-[10px] font-semibold opacity-90 flex items-center gap-1">
                     <Clock className="h-3 w-3" />
-                    <span>{post.readTime}</span>
+                    <span>{post.readTime || '4 min read'}</span>
                   </span>
                 </div>
 
                 {/* Article Image Thumbnail */}
                 <div className="relative aspect-[16/10] w-full overflow-hidden bg-sand">
-                  <img
-                    src={post.image}
-                    alt={post.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <span className="absolute top-2.5 left-2.5 bg-forest-deep/80 backdrop-blur-sm text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">
-                    {post.category}
+                  {post.image ? (
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-charcoal-muted">
+                      <BookOpen className="h-8 w-8 opacity-40" />
+                    </div>
+                  )}
+                  <span className="absolute top-2.5 left-2.5 bg-forest-deep/80 backdrop-blur-xs text-white text-[10px] font-semibold px-2 py-0.5 rounded-md">
+                    {post.category || 'Ayurveda'}
                   </span>
                 </div>
 
                 {/* Article Content */}
                 <div className="p-4 space-y-2">
-                  <div className="flex items-center gap-1.5 text-[11px] text-charcoal-subtle">
+                  <div className="flex items-center gap-1.5 text-[11px] text-charcoal-muted">
                     <Calendar className="h-3 w-3 text-forest" />
-                    <span>{post.date}</span>
+                    <span>{post.date || (post.publishedAt ? new Date(post.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent')}</span>
                   </div>
 
                   <h3 className="font-heading font-bold text-forest-deep group-hover:text-brand text-sm leading-snug line-clamp-2 transition-colors">
@@ -281,13 +321,19 @@ export function Blogs({ onNavigate }) {
               {/* Card Footer: Author and Read Button */}
               <div className="px-4 py-3 bg-sand/40 border-t border-sand-border/80 flex items-center justify-between">
                 <div className="flex items-center gap-2 min-w-0">
-                  <img
-                    src={post.author.avatar}
-                    alt={post.author.name}
-                    className="w-6 h-6 rounded-full object-cover border border-sand-border flex-shrink-0"
-                  />
+                  {post.author?.avatar ? (
+                    <img
+                      src={post.author.avatar}
+                      alt={post.author?.name || 'Author'}
+                      className="w-6 h-6 rounded-full object-cover border border-sand-border flex-shrink-0"
+                    />
+                  ) : (
+                    <div className="w-6 h-6 rounded-full bg-forest/10 text-forest flex items-center justify-center font-bold text-[10px] flex-shrink-0">
+                      {(post.author?.name || 'Dr')[0]}
+                    </div>
+                  )}
                   <span className="text-[11px] font-semibold text-charcoal truncate">
-                    {post.author.name.split(',')[0]}
+                    {(post.author?.name || 'Dr. Sameer Patel').split(',')[0]}
                   </span>
                 </div>
 
@@ -300,7 +346,7 @@ export function Blogs({ onNavigate }) {
           ))}
         </div>
 
-        {/* 4. Pagination (Rendered ONLY if total posts > 20 on page) */}
+        {/* 4. Pagination */}
         {totalPages > 1 && (
           <div className="mt-12 pt-8 border-t border-sand-border flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-xs text-charcoal-muted order-2 sm:order-1">
@@ -313,7 +359,7 @@ export function Blogs({ onNavigate }) {
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   currentPage === 1
                     ? 'bg-sand/60 text-charcoal-muted/50 cursor-not-allowed border border-sand-border/50'
                     : 'bg-white text-forest hover:bg-forest hover:text-white border border-sand-border shadow-xs'
@@ -332,7 +378,7 @@ export function Blogs({ onNavigate }) {
                     <button
                       key={pageNum}
                       onClick={() => handlePageChange(pageNum)}
-                      className={`w-9 h-9 rounded-xl text-xs font-bold transition-all ${
+                      className={`w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                         isActive
                           ? 'bg-brand text-white shadow-md scale-105'
                           : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
@@ -348,7 +394,7 @@ export function Blogs({ onNavigate }) {
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all ${
+                className={`flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   currentPage === totalPages
                     ? 'bg-sand/60 text-charcoal-muted/50 cursor-not-allowed border border-sand-border/50'
                     : 'bg-white text-forest hover:bg-forest hover:text-white border border-sand-border shadow-xs'
@@ -365,3 +411,4 @@ export function Blogs({ onNavigate }) {
     </div>
   );
 }
+export default Blogs;

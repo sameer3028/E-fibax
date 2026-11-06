@@ -12,7 +12,7 @@
     "productSlug": "ayurvedic-multivitamin-syrup",
     "concernSlug": "immunity-vitality",
     "primaryBtnText": "Shop Now",
-    "primaryBtnUrl": "products?concern=immunity-vitality",
+    "primaryBtnUrl": "product/ayurvedic-multivitamin-syrup",
     "secondaryBtnText": "View Details",
     "secondaryBtnUrl": "product/ayurvedic-multivitamin-syrup",
     "altText": "Fibax Ayurveda Multivitamin Daily Nutritional Syrup 500ml Banner",
@@ -20,7 +20,7 @@
     "status": "published",
     "sortOrder": 1,
     "createdAt": "2026-11-06T09:00:00.000Z",
-    "updatedAt": "2026-11-06T09:00:00.000Z"
+    "updatedAt": "2026-11-06T09:42:49.960Z"
   },
   {
     "id": "banner_axe_ortho",
@@ -35,7 +35,7 @@
     "productSlug": "axe-ortho-oil",
     "concernSlug": "pain-joint-care",
     "primaryBtnText": "Shop Now",
-    "primaryBtnUrl": "products?concern=pain-joint-care",
+    "primaryBtnUrl": "product/axe-ortho-syrup",
     "secondaryBtnText": "View Details",
     "secondaryBtnUrl": "product/axe-ortho-oil",
     "altText": "Fibax Ayurveda Axe Ortho Joint Care Oil Syrup Capsules Banner",
@@ -43,7 +43,7 @@
     "status": "published",
     "sortOrder": 2,
     "createdAt": "2026-11-06T09:00:00.000Z",
-    "updatedAt": "2026-11-06T09:00:00.000Z"
+    "updatedAt": "2026-11-06T09:43:56.238Z"
   },
   {
     "id": "banner_triphala",

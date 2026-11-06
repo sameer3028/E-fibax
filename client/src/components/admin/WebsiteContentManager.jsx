@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '../../utils/api';
 import { CONCERNS } from '../../data/concerns';
+import { BlogManager } from './BlogManager';
 import {
   Sparkles,
   Globe,
@@ -25,7 +26,8 @@ import {
   Monitor,
   Smartphone,
   ExternalLink,
-  RefreshCw
+  RefreshCw,
+  BookOpen
 } from 'lucide-react';
 
 export function WebsiteContentManager() {
@@ -563,39 +565,41 @@ export function WebsiteContentManager() {
       />
 
       {/* Top Section Breadcrumb & Header */}
-      <div className="bg-white p-6 rounded-3xl border border-sand-border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          {/* Admin Navigation Path */}
-          <div className="flex items-center gap-2 text-xs font-bold text-forest uppercase tracking-wider mb-1 flex-wrap">
-            <Globe className="h-4 w-4 text-brand" />
-            <span>Website Content</span>
-            <span>&rsaquo;</span>
-            <span>{activeSubTab === 'home-hero' ? 'Home Page' : 'About Us'}</span>
-            <span>&rsaquo;</span>
-            <span className="text-brand">Hero Banners</span>
+      {activeSubTab !== 'blogs' && (
+        <div className="bg-white p-6 rounded-3xl border border-sand-border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            {/* Admin Navigation Path */}
+            <div className="flex items-center gap-2 text-xs font-bold text-forest uppercase tracking-wider mb-1 flex-wrap">
+              <Globe className="h-4 w-4 text-brand" />
+              <span>Website Content</span>
+              <span>&rsaquo;</span>
+              <span>{activeSubTab === 'home-hero' ? 'Home Page' : 'About Us'}</span>
+              <span>&rsaquo;</span>
+              <span className="text-brand">Hero Banners</span>
+            </div>
+            <h2 className="text-xl sm:text-2xl font-black text-forest-deep">
+              {activeSubTab === 'home-hero'
+                ? 'Home Page Hero Banner Management'
+                : 'About Us Hero Banner Management'}
+            </h2>
+            <p className="text-xs text-charcoal-muted mt-1 max-w-2xl">
+              {activeSubTab === 'home-hero'
+                ? 'Manage, replace, publish, reorder and preview promotional hero banners displayed on the Fibax Ayurveda Home Page.'
+                : 'Configure dynamic hero banners, custom headline visuals, CTA buttons, and trust points for the About Us page.'}
+            </p>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-forest-deep">
-            {activeSubTab === 'home-hero'
-              ? 'Home Page Hero Banner Management'
-              : 'About Us Hero Banner Management'}
-          </h2>
-          <p className="text-xs text-charcoal-muted mt-1 max-w-2xl">
-            {activeSubTab === 'home-hero'
-              ? 'Manage, replace, publish, reorder and preview promotional hero banners displayed on the Fibax Ayurveda Home Page.'
-              : 'Configure dynamic hero banners, custom headline visuals, CTA buttons, and trust points for the About Us page.'}
-          </p>
+
+          <button
+            onClick={activeSubTab === 'home-hero' ? handleOpenAddHomeModal : handleOpenAddAboutModal}
+            className="px-5 py-2.5 rounded-2xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 self-start md:self-auto cursor-pointer"
+          >
+            <Plus className="h-4 w-4 text-gold" />
+            <span>{activeSubTab === 'home-hero' ? '+ Add New Home Banner' : '+ Add New About Banner'}</span>
+          </button>
         </div>
+      )}
 
-        <button
-          onClick={activeSubTab === 'home-hero' ? handleOpenAddHomeModal : handleOpenAddAboutModal}
-          className="px-5 py-2.5 rounded-2xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-md hover:shadow-lg transition-all flex items-center gap-2 self-start md:self-auto cursor-pointer"
-        >
-          <Plus className="h-4 w-4 text-gold" />
-          <span>{activeSubTab === 'home-hero' ? '+ Add New Home Banner' : '+ Add New About Banner'}</span>
-        </button>
-      </div>
-
-      {/* Sub Tabs: Home Page Banners vs About Us Banner */}
+      {/* Sub Tabs: Home Page Banners vs About Us Banner vs Blog Management */}
       <div className="flex items-center gap-2 border-b border-sand-border pb-1 overflow-x-auto">
         <button
           onClick={() => setActiveSubTab('home-hero')}
@@ -619,6 +623,18 @@ export function WebsiteContentManager() {
         >
           <Layers className="h-3.5 w-3.5 text-forest" />
           <span>About Us Hero Banner ({aboutBanners.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('blogs')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
+            activeSubTab === 'blogs'
+              ? 'bg-forest text-white shadow-xs'
+              : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
+          }`}
+        >
+          <BookOpen className={`h-3.5 w-3.5 ${activeSubTab === 'blogs' ? 'text-amber-300' : 'text-forest'}`} />
+          <span>Blog Management</span>
         </button>
       </div>
 
@@ -1039,6 +1055,13 @@ export function WebsiteContentManager() {
             </div>
           )}
         </div>
+      )}
+
+      {/* ============================================================= */}
+      {/* TAB 3: BLOG MANAGEMENT SYSTEM                                  */}
+      {/* ============================================================= */}
+      {activeSubTab === 'blogs' && (
+        <BlogManager />
       )}
 
       {/* ============================================================= */}

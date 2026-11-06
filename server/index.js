@@ -19,6 +19,7 @@ import paymentRoutes from './routes/paymentRoutes.js';
 import { reviewRouter, adminReviewRouter } from './routes/reviewRoutes.js';
 import emailRoutes from './routes/emailRoutes.js';
 import contentRoutes from './routes/contentRoutes.js';
+import blogRoutes, { getBlogs } from './routes/blogRoutes.js';
 
 // Middleware
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
@@ -102,6 +103,7 @@ app.use('/api/payment', paymentRoutes);
 app.use('/api/reviews', reviewRouter);
 app.use('/api/email', emailRoutes);
 app.use('/api', contentRoutes); // Includes /api/coupons, /api/website/about-banners, /api/enquiry, /api/upload
+app.use('/api', blogRoutes); // Includes /api/blogs, /api/admin/blogs, categories, SEO
 
 // ==========================================
 // SEO & SEARCH ENGINE CRAWLER ROUTES
@@ -152,6 +154,7 @@ async function bootstrap() {
   try {
     await initStore();
     await initShipping();
+    await getBlogs();
   } catch (err) {
     console.error('❌ Storage initialization error:', err.message);
   }

@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, ArrowRight, BookOpen } from 'lucide-react';
 import { BLOG_POSTS } from '../../data/blogs';
+import { apiRequest } from '../../utils/api';
 
 export function BlogsSection({ onNavigate }) {
-  const articles = BLOG_POSTS.slice(0, 4);
+  const [articles, setArticles] = useState(BLOG_POSTS.slice(0, 4));
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchLatestBlogs = async () => {
+      try {
+        const res = await apiRequest('/api/blogs?limit=4');
+        if (isMounted && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setArticles(res.data.slice(0, 4));
+        }
+      } catch (err) {
+        console.warn('Fallback to static blogs for BlogsSection:', err);
+      }
+    };
+
+    fetchLatestBlogs();
+    return () => { isMounted = false; };
+  }, []);
 
   const handleOpenBlogs = () => {
     if (onNavigate) {
@@ -38,7 +56,7 @@ export function BlogsSection({ onNavigate }) {
           </div>
           <button
             onClick={handleOpenBlogs}
-            className="text-xs font-bold text-forest hover:text-brand flex items-center gap-1.5 transition-colors group"
+            className="text-xs font-bold text-forest hover:text-brand flex items-center gap-1.5 transition-colors group cursor-pointer"
           >
             <span>Read All Articles</span>
             <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
@@ -51,31 +69,37 @@ export function BlogsSection({ onNavigate }) {
             <article
               key={item.id}
               onClick={() => handleOpenArticle(item)}
-              className="group bg-white rounded-2xl overflow-hidden border border-[#e8e2d5] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
+              className="group bg-white rounded-2xl overflow-hidden border border-[#e8e2d5] shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between cursor-pointer"
             >
               <div>
                 {/* Colorful Block Header */}
-                <div className={`p-4 ${item.colorBlock} flex items-center justify-between`}>
+                <div className={`p-4 ${item.colorBlock || 'bg-[#285238] text-white'} flex items-center justify-between`}>
                   <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded">
-                    {item.tag}
+                    {item.tag || 'Ayurvedic Wellness'}
                   </span>
-                  <span className="text-[10px] opacity-80">{item.readTime}</span>
+                  <span className="text-[10px] opacity-80">{item.readTime || '4 min read'}</span>
                 </div>
 
                 {/* Article Image Thumbnail */}
                 <div className="relative aspect-video w-full overflow-hidden bg-sand">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+                  {item.image ? (
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-charcoal-muted">
+                      <BookOpen className="h-8 w-8 opacity-40" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Article Body */}
                 <div className="p-4 space-y-2">
                   <div className="flex items-center gap-1.5 text-[10px] text-charcoal-muted">
                     <Calendar className="h-3 w-3 text-forest" />
-                    <span>{item.date}</span>
+                    <span>{item.date || (item.publishedAt ? new Date(item.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent')}</span>
                   </div>
 
                   <h4 className="font-heading font-extrabold text-xs sm:text-sm text-charcoal group-hover:text-brand transition-colors line-clamp-2 leading-snug">
@@ -102,3 +126,4 @@ export function BlogsSection({ onNavigate }) {
     </section>
   );
 }
+export default BlogsSection;

@@ -148,14 +148,9 @@ function StorefrontApp() {
         const found = BLOG_POSTS.find(
           (b) => (b.slug && b.slug.toLowerCase() === identifier.toLowerCase()) || String(b.id) === identifier
         );
-        if (found) {
-          setSelectedBlogPost(found);
-          setCurrentPage('blog-detail');
-          document.title = `${found.title} | Fibax Pharma`;
-        } else {
-          setCurrentPage('blogs');
-          document.title = 'Ayurvedic Health Journal | Fibax Pharma';
-        }
+        setSelectedBlogPost(found || { slug: identifier, title: 'Ayurvedic Article' });
+        setCurrentPage('blog-detail');
+        document.title = found ? `${found.title} | Fibax Pharma` : 'Ayurvedic Health Journal | Fibax Pharma';
       } else if (pathname === '/contact') {
         setCurrentPage('contact');
         document.title = 'Contact Us | Fibax Pharma';
