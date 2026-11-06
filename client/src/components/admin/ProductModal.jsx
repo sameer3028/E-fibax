@@ -223,6 +223,15 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
   const [uploadProgress, setUploadProgress] = useState(false);
   const [uploadError, setUploadError] = useState('');
 
+  // Collapsible Accordion States for Product Detail Page Content Sections (top-level hook)
+  const [openSections, setOpenSections] = useState({
+    intro: false,
+    ingredients: false,
+    usage: false,
+    comparison: false,
+    faqs: false
+  });
+
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -348,6 +357,11 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
           recommendationText: 'Recommended 90-Day Course for Best Results',
           packs: []
         },
+        productIntroduction: productToEdit.productIntroduction || getDefaultProductContent(productToEdit).productIntroduction,
+        botanicalIngredients: productToEdit.botanicalIngredients || getDefaultProductContent(productToEdit).botanicalIngredients,
+        usageInstructions: productToEdit.usageInstructions || getDefaultProductContent(productToEdit).usageInstructions,
+        comparisonTable: productToEdit.comparisonTable || getDefaultProductContent(productToEdit).comparisonTable,
+        faqsConfig: productToEdit.faqsConfig || getDefaultProductContent(productToEdit).faqsConfig,
       });
     } else {
       setFormData({
@@ -381,6 +395,11 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
           recommendationText: 'Recommended 90-Day Course for Best Results',
           packs: []
         },
+        productIntroduction: getDefaultProductContent({}).productIntroduction,
+        botanicalIngredients: getDefaultProductContent({}).botanicalIngredients,
+        usageInstructions: getDefaultProductContent({}).usageInstructions,
+        comparisonTable: getDefaultProductContent({}).comparisonTable,
+        faqsConfig: getDefaultProductContent({}).faqsConfig,
       });
     }
   }, [productToEdit, isOpen]);
@@ -480,14 +499,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
   };
 
   
-  // Collapsible Accordion States for Product Detail Page Content Sections
-  const [openSections, setOpenSections] = useState({
-    intro: false,
-    ingredients: false,
-    usage: false,
-    comparison: false,
-    faqs: false
-  });
+  // Collapsible Accordion States moved to top of component to respect React Rules of Hooks
 
   const toggleAccordion = (sectionKey) => {
     setOpenSections(prev => ({ ...prev, [sectionKey]: !prev[sectionKey] }));
