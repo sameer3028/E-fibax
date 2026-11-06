@@ -1,3 +1,4 @@
+import { apiRequest } from "../../utils/api";
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight } from "lucide-react";
@@ -44,19 +45,54 @@ export function HeroBannerSlider({
   onNavigate,
   onSelectConcern
 }) {
+  const [slides, setSlides] = useState(HERO_SLIDES);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
   const autoPlayTimerRef = useRef(null);
 
+  // Fetch active Home Page Hero Banners from Admin
+  useEffect(() => {
+    let isMounted = true;
+    const fetchBanners = async () => {
+      try {
+        const res = await apiRequest('/api/website/home-banners/active');
+        if (isMounted && res.success && Array.isArray(res.data) && res.data.length > 0) {
+          const formatted = res.data.map((b, idx) => ({
+            id: b.id || ('slide-' + idx),
+            title: b.heading || b.title || 'Fibax Ayurveda',
+            subtitle: b.description || b.subtitle || '',
+            badge: b.badge || '',
+            chipLabel: b.chipLabel || b.title || ('Banner ' + (idx + 1)),
+            image: b.desktopImage || b.image || '/banners/banner-multivitamin.jpg',
+            desktopImage: b.desktopImage || b.image || '/banners/banner-multivitamin.jpg',
+            mobileImage: b.mobileImage || '',
+            productSlug: b.productSlug || '',
+            concernSlug: b.concernSlug || '',
+            primaryBtnText: b.primaryBtnText || 'Shop Now',
+            primaryBtnUrl: b.primaryBtnUrl || 'products',
+            alt: b.altText || b.heading || b.title || 'Fibax Ayurveda Banner'
+          }));
+          setSlides(formatted);
+        } else if (isMounted) {
+          setSlides(HERO_SLIDES);
+        }
+      } catch (err) {
+        if (isMounted) setSlides(HERO_SLIDES);
+      }
+    };
+    fetchBanners();
+    return () => { isMounted = false; };
+  }, []);
+
   const nextSlide = useCallback(() => {
     setDirection(1);
-    setCurrentIndex((prev) => (prev + 1) % HERO_SLIDES.length);
+    setCurrentIndex((prev) => (prev + 1) % (slides.length || 1));
   }, []);
 
   const prevSlide = useCallback(() => {
     setDirection(-1);
-    setCurrentIndex((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length);
+    setCurrentIndex((prev) => (prev - 1 + (slides.length || 1)) % (slides.length || 1));
   }, []);
 
   const goToSlide = useCallback((index) => {
@@ -79,6 +115,27 @@ export function HeroBannerSlider({
   }, [isPaused, nextSlide]);
 
   const handleBannerClick = (slide) => {
+    if (!slide) return;
+
+    if (slide.primaryBtnUrl) {
+      const url = slide.primaryBtnUrl.trim();
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        window.open(url, '_blank', 'noopener,noreferrer');
+        return;
+      }
+      if (url.startsWith('products') || url.startsWith('contact') || url.startsWith('about') || url.startsWith('blogs')) {
+        const [page, query] = url.split('?');
+        const params = {};
+        if (query) {
+          new URLSearchParams(query).forEach((v, k) => { params[k] = v; });
+        }
+        if (onNavigate) {
+          onNavigate(page, params);
+          return;
+        }
+      }
+    }
+
     if (slide.productSlug && products && products.length > 0 && onSelectProduct) {
       const matched = products.find(
         (p) => p.slug === slide.productSlug || p.title?.toLowerCase().includes(slide.id)
@@ -107,7 +164,7 @@ export function HeroBannerSlider({
     }
   };
 
-  const currentSlide = HERO_SLIDES[currentIndex];
+  const currentSlide = slides[currentIndex] || slides[0] || HERO_SLIDES[0];
 
   const slideVariants = {
     enter: (dir) => ({
@@ -167,20 +224,29 @@ export function HeroBannerSlider({
                 className="absolute inset-0 w-full h-full cursor-pointer select-none"
                 title={currentSlide.title + " - Click to shop"}
               >
-                <img
-                  src={currentSlide.image}
-                  alt={currentSlide.alt}
-                  className="w-full h-full object-cover object-center pointer-events-none transition-transform duration-700 hover:scale-[1.01]"
-                  loading="eager"
-                  fetchPriority="high"
-                />
+                <picture className="w-full h-full block">
+                  {currentSlide.mobileImage ? (
+                    <source
+                      media="(max-width: 639px)"
+                      srcSet={currentSlide.mobileImage}
+                    />
+                  ) : null}
+                  <img
+                    src={currentSlide.desktopImage || currentSlide.image}
+                    alt={currentSlide.alt || currentSlide.title}
+                    className="w-full h-full object-cover object-center pointer-events-none transition-transform duration-700 hover:scale-[1.01]"
+                    loading="eager"
+                    fetchPriority="high"
+                  />
+                </picture>
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
               </motion.div>
             </AnimatePresence>
 
 
+            {slides.length > 1 && (
             <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">
-              {HERO_SLIDES.map((slide, idx) => {
+              {slides.map((slide, idx) => {
                 const isActive = idx === currentIndex;
                 return (
                   <button
@@ -195,11 +261,13 @@ export function HeroBannerSlider({
                 );
               })}
             </div>
+          )}
           </div>
         </div>
 
-        <div className="mt-3.5 grid grid-cols-3 gap-2 sm:gap-4">
-          {HERO_SLIDES.map((slide, idx) => {
+        {slides.length > 1 && (
+        <div className={`mt-3.5 grid gap-2 sm:gap-4 ${slides.length === 2 ? 'grid-cols-2' : slides.length === 3 ? 'grid-cols-3' : 'grid-cols-2 sm:grid-cols-4'}`}>
+          {slides.map((slide, idx) => {
             const isActive = idx === currentIndex;
             return (
               <button
@@ -233,6 +301,7 @@ export function HeroBannerSlider({
             );
           })}
         </div>
+        )}
       </div>
     </section>
   );

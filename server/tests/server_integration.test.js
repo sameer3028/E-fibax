@@ -5,6 +5,7 @@ import { initStore, storageDriver, getArray } from '../store.js';
 import productRoutes from '../routes/productRoutes.js';
 import shippingRoutes from '../routes/shippingRoutes.js';
 import paymentRoutes from '../routes/paymentRoutes.js';
+import contentRoutes from '../routes/contentRoutes.js';
 
 test('Server Integration & Route Mounting Tests', async (t) => {
   await initStore();
@@ -24,6 +25,7 @@ test('Server Integration & Route Mounting Tests', async (t) => {
   app.use('/api/products', productRoutes);
   app.use('/api/shipping', shippingRoutes);
   app.use('/api/payment', paymentRoutes);
+  app.use('/api', contentRoutes);
 
   let server;
   let testPort;
@@ -71,6 +73,16 @@ test('Server Integration & Route Mounting Tests', async (t) => {
     assert.equal(data.success, true);
     assert.equal(data.currency, 'INR');
     assert.equal(data.companyName, 'Fibax Ayurveda');
+  });
+
+  await t.test('GET /api/website/home-banners/active returns published home page hero banners', async () => {
+    const res = await fetch(`http://127.0.0.1:${testPort}/api/website/home-banners/active`);
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.success, true);
+    assert.ok(Array.isArray(data.data), 'Data should be an array of home banners');
+    assert.ok(data.data.length > 0, 'Should return active home banners');
+    assert.ok(data.data[0].desktopImage, 'First banner must have desktop image');
   });
 
   // Close test server

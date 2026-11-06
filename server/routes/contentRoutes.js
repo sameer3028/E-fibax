@@ -13,6 +13,7 @@ const router = Router();
 const dataDir = join(__dirname, '..', 'data');
 const uploadsDir = join(__dirname, '..', 'uploads');
 const ABOUT_BANNERS_FILE = join(dataDir, 'about_banners.json');
+const HOME_BANNERS_FILE = join(dataDir, 'home_banners.json');
 
 // ==========================================
 // 1. ABOUT US HERO BANNERS
@@ -156,6 +157,223 @@ router.delete('/website/about-banners/:id', requireAdminAuth, (req, res) => {
     res.json({ success: true, message: 'Banner deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, error: 'Failed to delete about banner' });
+  }
+});
+
+// ==========================================
+// 1B. HOME PAGE HERO BANNERS
+// ==========================================
+
+const DEFAULT_HOME_BANNERS = [
+  {
+    id: 'banner_multivitamin',
+    title: 'Natural Source of Multivitamin Daily Nutritional Syrup 500ml',
+    heading: 'Natural Source of Multivitamin Daily Nutritional Syrup 500ml',
+    subtitle: 'Complete Daily Nutrition for a Stronger & Healthier You',
+    description: 'Complete Daily Nutrition for a Stronger & Healthier You',
+    badge: 'TOP SELLER',
+    chipLabel: 'Daily Multivitamin',
+    desktopImage: '/banners/banner-multivitamin.jpg',
+    mobileImage: '',
+    productSlug: 'ayurvedic-multivitamin-syrup',
+    concernSlug: 'immunity-vitality',
+    primaryBtnText: 'Shop Now',
+    primaryBtnUrl: 'products?concern=immunity-vitality',
+    secondaryBtnText: 'View Details',
+    secondaryBtnUrl: 'product/ayurvedic-multivitamin-syrup',
+    altText: 'Fibax Ayurveda Multivitamin Daily Nutritional Syrup 500ml Banner',
+    enabled: true,
+    status: 'published',
+    sortOrder: 1,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'banner_axe_ortho',
+    title: 'Axe Ortho+ Ayurvedic Care for Healthy Joints & Active Life',
+    heading: 'Axe Ortho+ Ayurvedic Care for Healthy Joints & Active Life',
+    subtitle: 'The power of Oil + Syrup + Capsules for complete joint support',
+    description: 'The power of Oil + Syrup + Capsules for complete joint support',
+    badge: 'TRIPLE THERAPY',
+    chipLabel: 'Axe Ortho+ Joint Care',
+    desktopImage: '/banners/banner-axe-ortho.jpg',
+    mobileImage: '',
+    productSlug: 'axe-ortho-oil',
+    concernSlug: 'pain-joint-care',
+    primaryBtnText: 'Shop Now',
+    primaryBtnUrl: 'products?concern=pain-joint-care',
+    secondaryBtnText: 'View Details',
+    secondaryBtnUrl: 'product/axe-ortho-oil',
+    altText: 'Fibax Ayurveda Axe Ortho Joint Care Oil Syrup Capsules Banner',
+    enabled: true,
+    status: 'published',
+    sortOrder: 2,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 'banner_triphala',
+    title: 'Ancient Herbal Care for Modern Life - Triphala Kashayam 500ml',
+    heading: 'Ancient Herbal Care for Modern Life - Triphala Kashayam 500ml',
+    subtitle: 'Daily Cleansing. Natural Balance. 100% Pure Herbs',
+    description: 'Daily Cleansing. Natural Balance. 100% Pure Herbs',
+    badge: 'HERBAL DETOX',
+    chipLabel: 'Triphala Kashayam',
+    desktopImage: '/banners/banner-triphala.jpg',
+    mobileImage: '',
+    productSlug: 'fibax-triphala-juice',
+    concernSlug: 'digestion-gut-health',
+    primaryBtnText: 'Shop Now',
+    primaryBtnUrl: 'products?concern=digestion-gut-health',
+    secondaryBtnText: 'View Details',
+    secondaryBtnUrl: 'product/fibax-triphala-juice',
+    altText: 'Fibax Ayurveda Triphala Kashayam Daily Cleansing 500ml Banner',
+    enabled: true,
+    status: 'published',
+    sortOrder: 3,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  }
+];
+
+const readHomeBanners = () => {
+  return readJsonFile(HOME_BANNERS_FILE, DEFAULT_HOME_BANNERS);
+};
+
+const saveHomeBanners = (banners) => {
+  return writeJsonFile(HOME_BANNERS_FILE, banners);
+};
+
+// GET /api/website/home-banners - Get all Home Page Hero Banners (Admin)
+router.get('/website/home-banners', (req, res) => {
+  try {
+    const banners = readHomeBanners();
+    banners.sort((a, b) => (Number(a.sortOrder || 999)) - (Number(b.sortOrder || 999)));
+    res.json({ success: true, count: banners.length, data: banners });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch home banners' });
+  }
+});
+
+// GET /api/website/home-banners/active - Get published & enabled hero banners for frontend
+router.get('/website/home-banners/active', (req, res) => {
+  try {
+    const banners = readHomeBanners();
+    const published = banners
+      .filter(b => b.status === 'published' && b.enabled !== false)
+      .sort((a, b) => (Number(a.sortOrder || 999)) - (Number(b.sortOrder || 999)));
+
+    res.json({ success: true, count: published.length, data: published });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch active home banners' });
+  }
+});
+
+// POST /api/website/home-banners - Create new Home Page Hero Banner (Admin only)
+router.post('/website/home-banners', requireAdminAuth, (req, res) => {
+  try {
+    const banners = readHomeBanners();
+    const body = req.body || {};
+
+    if (!body.desktopImage && !body.mobileImage) {
+      return res.status(400).json({ success: false, error: 'Banner image (desktop or mobile) is required' });
+    }
+
+    const newBanner = {
+      id: 'hbanner_' + Date.now(),
+      title: body.title?.trim() || 'New Home Page Hero Banner',
+      heading: body.heading || body.title || '',
+      subtitle: body.subtitle || body.description || '',
+      description: body.description || body.subtitle || '',
+      badge: body.badge || body.badgeText || '',
+      chipLabel: body.chipLabel || body.title || 'Featured Banner',
+      desktopImage: body.desktopImage || '',
+      mobileImage: body.mobileImage || '',
+      productSlug: body.productSlug || '',
+      concernSlug: body.concernSlug || '',
+      primaryBtnText: body.primaryBtnText || 'Shop Now',
+      primaryBtnUrl: body.primaryBtnUrl || 'products',
+      secondaryBtnText: body.secondaryBtnText || '',
+      secondaryBtnUrl: body.secondaryBtnUrl || '',
+      altText: body.altText || body.title || 'Fibax Ayurveda Promotional Banner',
+      enabled: body.enabled !== false,
+      status: body.status || 'published',
+      sortOrder: body.sortOrder !== undefined && body.sortOrder !== null ? Number(body.sortOrder) : (banners.length + 1),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+
+    banners.push(newBanner);
+    saveHomeBanners(banners);
+    res.json({ success: true, data: newBanner });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to create home banner' });
+  }
+});
+
+// PUT /api/website/home-banners/reorder - Reorder home banners (Admin only)
+router.put('/website/home-banners/reorder', requireAdminAuth, (req, res) => {
+  try {
+    const { order } = req.body || {}; // array of { id, sortOrder }
+    if (!Array.isArray(order)) {
+      return res.status(400).json({ success: false, error: 'Invalid order payload' });
+    }
+    const banners = readHomeBanners();
+    order.forEach(item => {
+      const b = banners.find(x => String(x.id) === String(item.id));
+      if (b && typeof item.sortOrder === 'number') {
+        b.sortOrder = item.sortOrder;
+        b.updatedAt = new Date().toISOString();
+      }
+    });
+    saveHomeBanners(banners);
+    banners.sort((a, b) => (Number(a.sortOrder || 999)) - (Number(b.sortOrder || 999)));
+    res.json({ success: true, data: banners });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to reorder banners' });
+  }
+});
+
+// PUT /api/website/home-banners/:id - Update Home Page Hero Banner (Admin only)
+router.put('/website/home-banners/:id', requireAdminAuth, (req, res) => {
+  try {
+    const banners = readHomeBanners();
+    const idx = banners.findIndex(b => String(b.id) === String(req.params.id));
+    if (idx === -1) {
+      return res.status(404).json({ success: false, error: 'Home banner not found' });
+    }
+
+    const current = banners[idx];
+    const body = req.body || {};
+
+    const updated = {
+      ...current,
+      ...body,
+      sortOrder: body.sortOrder !== undefined ? Number(body.sortOrder) : current.sortOrder,
+      updatedAt: new Date().toISOString()
+    };
+
+    banners[idx] = updated;
+    saveHomeBanners(banners);
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to update home banner' });
+  }
+});
+
+// DELETE /api/website/home-banners/:id - Delete Home Page Hero Banner (Admin only)
+router.delete('/website/home-banners/:id', requireAdminAuth, (req, res) => {
+  try {
+    let banners = readHomeBanners();
+    const initialLen = banners.length;
+    banners = banners.filter(b => String(b.id) !== String(req.params.id));
+    if (banners.length === initialLen) {
+      return res.status(404).json({ success: false, error: 'Home banner not found' });
+    }
+    saveHomeBanners(banners);
+    res.json({ success: true, message: 'Home banner deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to delete home banner' });
   }
 });
 
