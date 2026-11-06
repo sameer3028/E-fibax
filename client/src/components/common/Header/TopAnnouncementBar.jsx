@@ -25,8 +25,8 @@ export function TopAnnouncementBar() {
           <span className="hidden sm:inline text-white/80">Express Delhivery Tracking</span>
         </div>
 
-        {/* Right Helpline */}
-        <div className="flex items-center gap-3 text-[11px]">
+        {/* Right Helpline (hidden on narrow mobile screens for clean layout) */}
+        <div className="hidden sm:flex items-center gap-3 text-[11px]">
           <span className="text-white/90">
             Helpline: <a href="tel:8872544458" className="font-bold text-white hover:text-brand-light transition-colors">+91 88725 44458</a>
           </span>

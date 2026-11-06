@@ -27,13 +27,13 @@ export function ProductCard({ product, onSelectProduct }) {
     <motion.div 
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2, ease: 'easeOut' }}
-      className="group rounded-2xl bg-white border border-sand-border p-3.5 hover:shadow-botanical hover:border-brand/40 transition-shadow duration-300 flex flex-col justify-between h-full w-full overflow-hidden"
+      className="group rounded-2xl bg-white border border-sand-border p-2.5 sm:p-3.5 hover:shadow-botanical hover:border-brand/40 transition-shadow duration-300 flex flex-col justify-between h-full w-full overflow-hidden"
     >
       <div>
         {/* Packshot Image Container with Badges */}
         <div
           onClick={() => onSelectProduct && onSelectProduct(product)}
-          className="relative aspect-square w-full rounded-xl bg-sand/50 p-3.5 sm:p-4 mb-3 overflow-hidden flex items-center justify-center cursor-pointer select-none"
+          className="relative aspect-square w-full rounded-xl bg-sand/50 p-2 sm:p-4 mb-2.5 sm:mb-3 overflow-hidden flex items-center justify-center cursor-pointer select-none"
         >
           {isOutOfStock ? (
             <span className="absolute top-2.5 left-2.5 bg-charcoal text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider z-10 shadow-xs pointer-events-none">
@@ -101,7 +101,7 @@ export function ProductCard({ product, onSelectProduct }) {
 
           {/* Price: Bold Deep Green with MRP strikethrough */}
           <div className="flex items-baseline gap-2 pt-1 pb-2">
-            <span className="text-base font-bold text-forest">
+            <span className="text-sm sm:text-base font-bold text-forest">
               {formatPrice(product.salePrice)}
             </span>
             <span className="text-xs text-charcoal-muted line-through">
@@ -124,7 +124,7 @@ export function ProductCard({ product, onSelectProduct }) {
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={() => addToCart(product, 1)}
-          className="w-full py-2.5 px-4 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold tracking-wide transition-colors duration-200 shadow-sm hover:shadow-orange-glow flex items-center justify-center gap-2"
+          className="w-full py-2 sm:py-2.5 px-2 sm:px-4 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold tracking-wide transition-colors duration-200 shadow-sm hover:shadow-orange-glow flex items-center justify-center gap-2"
         >
           <ShoppingBag className="h-3.5 w-3.5" />
           <span>Add to cart</span>

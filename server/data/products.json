@@ -522,7 +522,7 @@
       }
     ],
     "createdAt": "2026-09-03T10:43:10.577Z",
-    "updatedAt": "2026-09-24T12:00:07.242Z",
+    "updatedAt": "2026-11-06T08:25:08.530Z",
     "images": [
       "/uploads/multivitamin.png",
       "/uploads/1-1790251081532.png",
@@ -538,7 +538,7 @@
       "heightCm": 9
     },
     "treatmentCourseConfig": {
-      "enabled": true,
+      "enabled": false,
       "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
       "recommendationText": "Recommended 90-Day Course for Best Results",
       "packs": [
@@ -577,7 +577,178 @@
     "packageWeightGrams": 540,
     "packageLengthCm": 18,
     "packageWidthCm": 10,
-    "packageHeightCm": 9
+    "packageHeightCm": 9,
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Authentic Ayurvedic Heritage",
+      "heading": "Root-Cause Restoration with 100% Raw Ayurvedic Herbs",
+      "description": "Unlike synthetic pills that provide temporary superficial relief, Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support is prepared by traditional cold decoction extraction to preserve active botanical phytoconstituents. It nourishes deep tissue systems (Dhatus), eliminates accumulated toxic bio-waste (Ama), and restores physiological equilibrium naturally.",
+      "features": [
+        {
+          "title": "Cold Extraction Method",
+          "description": "Extracted within 24 hours of wild-crafting to retain heat-sensitive botanical enzymes, tannins, and bioflavonoids.",
+          "icon": "leaf"
+        },
+        {
+          "title": "Targets Biological Root Cause",
+          "description": "Balances elevated Vata, Pitta, and Kapha doshas while optimizing cellular metabolism and digestive fire (Agni).",
+          "icon": "heart"
+        },
+        {
+          "title": "Heavy-Metal Lab Tested",
+          "description": "Every batch undergoes rigorous 3-tier testing for Lead, Mercury, Arsenic, and microbial safety under AYUSH standards.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": false,
+      "badge": "What Goes Inside Every Bottle",
+      "heading": "The Botanical Powerhouse Behind the Results",
+      "description": "Each ingredient is selected based on classical Ayurvedic treatises and verified modern pharmacological research.",
+      "herbs": [
+        {
+          "name": "Amla (Indian Gooseberry)",
+          "sanskrit": "Amalaki",
+          "role": "Potent Vitamin C & Cellular Immunity",
+          "desc": "Nourishes systemic tissues, balances all three doshas (Tridoshic), and strengthens cellular vitality."
+        },
+        {
+          "name": "Karela (Bitter Gourd)",
+          "sanskrit": "Karavellaka",
+          "role": "Active Polypeptide-p & Charantin",
+          "desc": "Naturally activates AMP-activated protein kinase to promote healthy cellular glucose uptake."
+        },
+        {
+          "name": "Jamun (Black Plum)",
+          "sanskrit": "Jambu Phala",
+          "role": "Glycemic Regulation & Pancreatic Tonification",
+          "desc": "Seeds and fruit extracts rich in jamboline that slow down the pathological conversion of starch into sugar."
+        },
+        {
+          "name": "Giloy (Guduchi)",
+          "sanskrit": "Amrita — The Nectar of Life",
+          "role": "Immunomodulator & Micro-Detox",
+          "desc": "A divine Rasayana herb that cleanses liver-gut toxins (Ama) and enhances biological defense mechanisms."
+        },
+        {
+          "name": "Gudmar (Gymnema)",
+          "sanskrit": "The Sugar Destroyer (Madhunashini)",
+          "role": "Suppresses Sweet Receptors",
+          "desc": "Clinically known to regenerate pancreatic islet beta cells and curb intense cravings for refined carbs."
+        },
+        {
+          "name": "Neem & Methi Extracts",
+          "sanskrit": "Nimba & Methika",
+          "role": "Lipid Balance & Metabolic Cleansing",
+          "desc": "Improves digestive fire (Agni), enhances liver bile secretions, and protects micro-vascular capillary circulation."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Daily Wellness Protocol",
+      "heading": "How to Consume for Maximum Therapeutic Results",
+      "description": "Consistency is key in Ayurvedic healing. Follow this simple 3-step ritual daily.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Shake & Measure",
+          "description": "Shake the bottle thoroughly. Measure 20-30 ml (approx 2-3 tablespoons) of the formulation."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Dilute with Water",
+          "description": "Mix with an equal quantity (30 ml) of lukewarm or normal drinking water in a glass."
+        },
+        {
+          "stepNumber": 3,
+          "title": "Twice Daily Ritual",
+          "description": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "Your 90-Day Ayurvedic Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Day 1 - 30 (Bottle 1)",
+          "title": "Metabolic Detox & Cleansing",
+          "description": "Flushes metabolic toxins (Ama), jumpstarts sluggish digestive Agni, and stabilizes morning fatigue."
+        },
+        {
+          "stage": "Day 31 - 60 (Bottle 2)",
+          "title": "Organ Balance & Glycemic Control",
+          "description": "Noticeable reduction in post-meal spikes, balanced lipid levels, and improved stamina throughout the day."
+        },
+        {
+          "stage": "Day 61 - 90 (Bottle 3)",
+          "title": "Long-Term Equilibrium",
+          "description": "Restores cellular receptor sensitivity, supports sustained organ vitality, and locks in long-term wellness."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Comparison",
+      "heading": "Why Fibax Pharma Stands Out",
+      "description": "See the tangible difference between authentic cold-pressed Ayurveda and typical marketplace brands.",
+      "competitorHeader": "Conventional Market Products",
+      "rows": [
+        {
+          "feature": "Extraction Technique",
+          "fibax": "Cold Decoction & Raw Swaras",
+          "competitor": "High-heat boiling (destroys enzymes)"
+        },
+        {
+          "feature": "Sugar & Artificial Sweeteners",
+          "fibax": "Zero Added Sugar or Aspartame",
+          "competitor": "Often laden with sugar syrup for taste"
+        },
+        {
+          "feature": "Raw Herb Sourcing",
+          "fibax": "Certified Organic Ayurvedic Farms",
+          "competitor": "Commercial dried powders of mixed origin"
+        },
+        {
+          "feature": "Safety & Heavy Metal Testing",
+          "fibax": "3-Tier NABL Accredited Lab Tested",
+          "competitor": "Rarely published batch test reports"
+        },
+        {
+          "feature": "Government Approvals",
+          "fibax": "AYUSH Ministry & GMP Certified",
+          "competitor": "Standard food license only"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Everything You Need to Know",
+      "heading": "Frequently Asked Questions",
+      "description": "Clear answers to common questions about usage, safety, and course length.",
+      "items": [
+        {
+          "q": "Can I take this Ayurvedic formulation along with regular modern medicines?",
+          "a": "Yes, Fibax formulations are natural, AYUSH-approved botanical blends with zero synthetic chemicals. We advise maintaining a 30 to 45-minute gap between your regular medicines and Ayurvedic remedies."
+        },
+        {
+          "q": "How long should I follow the course for visible, lasting results?",
+          "a": "Ayurveda addresses root imbalances rather than offering temporary suppression. We recommend a minimum 60 to 90-day course (3 bottles/packs) for cellular repair, metabolic balance, and sustained outcomes."
+        },
+        {
+          "q": "What is the recommended daily dosage and timing?",
+          "a": "10-15 ml twice day after meals with lukewarm water, or as advised by an Ayurvedic physician."
+        },
+        {
+          "q": "What are the delivery?",
+          "a": "All orders are dispatched within 24 hours via Delhivery Express with live tracking. "
+        },
+        {
+          "q": "Storage guidelines?",
+          "a": "Store the formulation in a cool, dry place away from direct sunlight. Shake well before each use."
+        }
+      ]
+    }
   },
   {
     "id": "3428",

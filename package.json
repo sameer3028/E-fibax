@@ -14,5 +14,8 @@
     "test": "node --test server/tests/*.test.js",
     "setup": "npm install --prefix server && npm install --prefix client && npm run build",
     "postinstall": "npm run setup"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.16.0"
   }
 }

@@ -260,7 +260,7 @@ export function ProductPageView({
     <div className="min-h-screen bg-sand-warm/30 text-charcoal pb-24 font-sans">
       {/* 1. Breadcrumb & Back Navigation */}
       <div className="bg-white border-b border-sand-border sticky top-16 z-20 shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3 flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-charcoal-muted overflow-hidden">
             <button
               onClick={onBack}
@@ -290,15 +290,15 @@ export function ProductPageView({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-4 sm:pt-8">
         {/* 2. Main Hero Buy Box Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 bg-white rounded-3xl p-6 sm:p-8 border border-sand-border shadow-card mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12 bg-white rounded-3xl p-4 sm:p-6 lg:p-8 border border-sand-border shadow-card mb-8 sm:mb-12 overflow-hidden">
           {/* Left Column: Product Gallery */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="flex flex-col-reverse sm:flex-row gap-3">
+          <div className="lg:col-span-5 space-y-4 min-w-0 w-full overflow-hidden">
+            <div className="flex flex-col-reverse sm:flex-row gap-3 min-w-0 w-full">
               {/* Thumbnails list (vertical on sm+, horizontal scroll on mobile) */}
               {galleryImages.length > 1 && (
-                <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[420px] flex-shrink-0 py-1 sm:py-0 scrollbar-none">
+                <div className="flex sm:flex-col gap-2 overflow-x-auto sm:overflow-y-auto sm:max-h-[420px] w-full sm:w-auto py-1 sm:py-0 scrollbar-thin">
                   {galleryImages.map((imgUrl, idx) => (
                     <button
                       key={idx}
@@ -321,7 +321,7 @@ export function ProductPageView({
               )}
 
               {/* Main Active Image Box */}
-              <div className="relative aspect-square flex-1 rounded-2xl bg-sand/40 border border-sand-border p-6 flex items-center justify-center overflow-hidden group">
+              <div className="relative aspect-square flex-1 min-w-0 w-full rounded-2xl bg-sand/40 border border-sand-border p-4 sm:p-6 flex items-center justify-center overflow-hidden group">
                 {/* Badges */}
                 <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
                   {isOutOfStock && (
@@ -378,7 +378,7 @@ export function ProductPageView({
           </div>
 
           {/* Right Column: Title, Ratings, Pricing, Multi-Packs & CTAs */}
-          <div className="lg:col-span-7 flex flex-col justify-between space-y-6">
+          <div className="lg:col-span-7 flex flex-col justify-between space-y-6 min-w-0 w-full">
             <div className="space-y-3">
               {/* Category & Format Pill */}
               <div className="flex items-center gap-2">
@@ -525,69 +525,75 @@ export function ProductPageView({
                     </button>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3">
-                    {/* Qty Stepper */}
-                    <div className="flex items-center border border-sand-border rounded-xl bg-sand/50 p-1">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+                      {/* Qty Stepper */}
+                      <div className="flex items-center border border-sand-border rounded-xl bg-sand/50 p-1 flex-shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                          className="w-8 h-8 rounded-lg bg-white flex items-center justify-center font-bold text-charcoal hover:text-brand shadow-xs touch-manipulation active:scale-95 transition-transform"
+                          aria-label="Decrease quantity"
+                        >
+                          -
+                        </button>
+                        <span className="w-8 text-center font-bold text-sm text-charcoal">{quantity}</span>
+                        <button
+                          type="button"
+                          onClick={() => setQuantity(quantity + 1)}
+                          className="w-8 h-8 rounded-lg bg-white flex items-center justify-center font-bold text-charcoal hover:text-brand shadow-xs touch-manipulation active:scale-95 transition-transform"
+                          aria-label="Increase quantity"
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      {/* Primary Add To Cart Button */}
                       <button
-                        type="button"
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-8 h-8 rounded-lg bg-white flex items-center justify-center font-bold text-charcoal hover:text-brand shadow-xs"
+                        onClick={handleAddToCart}
+                        className="flex-1 min-w-0 py-3 sm:py-3.5 px-3 sm:px-6 rounded-xl sm:rounded-2xl bg-brand hover:bg-brand-hover text-white text-xs sm:text-sm font-bold tracking-wide uppercase transition-all shadow-md hover:shadow-orange-glow flex items-center justify-center gap-1.5 sm:gap-2 transform active:scale-98 touch-manipulation"
                       >
-                        -
-                      </button>
-                      <span className="w-10 text-center font-bold text-sm text-charcoal">{quantity}</span>
-                      <button
-                        type="button"
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-8 h-8 rounded-lg bg-white flex items-center justify-center font-bold text-charcoal hover:text-brand shadow-xs"
-                      >
-                        +
+                        <ShoppingBag className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">Add To Cart • {formatPrice(currentPrice * quantity)}</span>
                       </button>
                     </div>
-
-                    {/* Primary Add To Cart Button */}
-                    <button
-                      onClick={handleAddToCart}
-                      className="flex-1 py-3.5 px-6 rounded-2xl bg-brand hover:bg-brand-hover text-white text-sm font-bold tracking-wide uppercase transition-all shadow-md hover:shadow-orange-glow flex items-center justify-center gap-2 transform active:scale-98"
-                    >
-                      <ShoppingBag className="h-4 w-4" />
-                      <span>Add To Cart • {formatPrice(currentPrice * quantity)}</span>
-                    </button>
 
                     {/* Buy Now Instant CTA */}
                     <button
                       onClick={handleBuyNow}
-                      className="py-3.5 px-6 rounded-2xl bg-forest hover:bg-forest-light text-white text-sm font-bold tracking-wide uppercase transition-all shadow-md flex items-center justify-center gap-2 transform active:scale-98"
+                      className="py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl sm:rounded-2xl bg-forest hover:bg-forest-light text-white text-xs sm:text-sm font-bold tracking-wide uppercase transition-all shadow-md flex items-center justify-center gap-1.5 sm:gap-2 transform active:scale-98 touch-manipulation flex-shrink-0"
                     >
-                      <Zap className="h-4 w-4 text-gold" />
-                      <span className="hidden sm:inline">Buy Now</span>
+                      <Zap className="h-4 w-4 text-gold flex-shrink-0" />
+                      <span>Buy Now</span>
                     </button>
                   </div>
                 )}
 
                 {/* Delhivery Express Pincode Estimator */}
                 <div className="p-3.5 rounded-2xl bg-sand/40 border border-sand-border space-y-2">
-                  <div className="flex items-center justify-between text-xs font-semibold text-charcoal">
-                    <span className="flex items-center gap-1.5">
-                      <Truck className="h-4 w-4 text-forest" />
-                      <span>Check Express Delivery & COD Availability</span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs font-semibold text-charcoal">
+                    <span className="flex items-center gap-1.5 min-w-0">
+                      <Truck className="h-4 w-4 text-forest flex-shrink-0" />
+                      <span className="truncate">Check Express Delivery & COD</span>
                     </span>
-                    <span className="text-[11px] text-forest font-bold">Fastest Dispatch</span>
+                    <span className="text-[11px] text-forest font-bold flex-shrink-0">Fastest Dispatch</span>
                   </div>
 
                   <form onSubmit={handleCheckPincode} className="flex gap-2">
                     <input
                       type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
                       maxLength={6}
                       value={pincode}
                       onChange={(e) => setPincode(e.target.value)}
                       placeholder="Enter 6-digit PIN code..."
-                      className="flex-1 px-3.5 py-2 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest focus:outline-none text-xs bg-white"
+                      className="flex-1 min-w-0 px-3.5 py-2 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest focus:outline-none text-xs bg-white"
                     />
                     <button
                       type="submit"
                       disabled={checkingPincode}
-                      className="px-4 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold transition-colors disabled:opacity-60 flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold transition-colors disabled:opacity-60 flex items-center gap-1.5 flex-shrink-0 touch-manipulation"
                     >
                       {checkingPincode ? (
                         <>
@@ -613,7 +619,7 @@ export function ProductPageView({
                 </div>
 
                 {/* Trust Badges Bar */}
-                <div className="grid grid-cols-3 gap-2 pt-2 text-[11px] text-charcoal-muted text-center border-t border-sand-border">
+                <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-2 text-[10px] sm:text-[11px] text-charcoal-muted text-center border-t border-sand-border">
                   <div className="flex items-center justify-center gap-1">
                     <CheckCircle2 className="h-3.5 w-3.5 text-forest" />
                     <span>Free Shipping ₹499+</span>
@@ -636,7 +642,7 @@ export function ProductPageView({
         <div className="space-y-12">
           {/* A+ Section 1: The Ayurvedic Formulation Story */}
           {product.productIntroduction?.enabled !== false && (
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-sand-border shadow-card overflow-hidden">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 lg:p-10 border border-sand-border shadow-card overflow-hidden">
             <div className="max-w-3xl mx-auto text-center space-y-4">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-forest/10 text-forest text-xs font-bold uppercase tracking-wider">
                 <Sparkles className="h-3.5 w-3.5 text-gold" />
@@ -681,7 +687,7 @@ export function ProductPageView({
 
           {/* A+ Section 2: Botanical Ingredients Breakdown */}
           {product.botanicalIngredients?.enabled !== false && (
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-sand-border shadow-card">
+          <div className="bg-white rounded-3xl p-5 sm:p-8 lg:p-10 border border-sand-border shadow-card">
             <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
               <span className="text-xs font-bold text-brand uppercase tracking-wider">
                 What Goes Inside Every Bottle
@@ -720,7 +726,7 @@ export function ProductPageView({
 
           {/* A+ Section 3: How To Consume & 90-Day Course Journey */}
           {product.usageInstructions?.enabled !== false && (
-          <div className="bg-forest-deep text-white rounded-3xl p-8 sm:p-10 shadow-botanical relative overflow-hidden">
+          <div className="bg-forest-deep text-white rounded-3xl p-5 sm:p-8 lg:p-10 shadow-botanical relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 max-w-3xl mx-auto text-center space-y-3 mb-12">
@@ -778,12 +784,12 @@ export function ProductPageView({
 
           {/* A+ Section 4: Comparison Table (Fibax vs Conventional Brands) */}
           {product.comparisonTable?.enabled !== false && (
-          <div className="bg-white rounded-3xl p-8 sm:p-10 border border-sand-border shadow-card overflow-hidden">
-            <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
+          <div className="bg-white rounded-3xl p-4 sm:p-8 lg:p-10 border border-sand-border shadow-card overflow-hidden w-full">
+            <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8 space-y-2">
               <span className="text-xs font-bold text-forest uppercase tracking-wider">
                 {product.comparisonTable?.badge || 'Clinical Comparison'}
               </span>
-              <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-forest-deep">
+              <h2 className="font-heading text-xl sm:text-3xl font-extrabold text-forest-deep">
                 {product.comparisonTable?.heading || 'Why Fibax Pharma Stands Out'}
               </h2>
               <p className="text-xs text-charcoal-muted">
@@ -791,24 +797,26 @@ export function ProductPageView({
               </p>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="w-full overflow-x-auto scrollbar-thin rounded-xl border border-sand-border/60">
+              <table className="w-full min-w-[480px] text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-sand-border text-xs uppercase font-bold text-charcoal-muted">
-                    <th className="py-3 px-4">Feature / Standard</th>
-                    <th className="py-3 px-4 text-forest bg-forest/5 rounded-t-xl font-extrabold">Fibax Pharma</th>
-                    <th className="py-3 px-4">{product.comparisonTable?.competitorHeader || 'Conventional Market Products'}</th>
+                  <tr className="border-b border-sand-border text-xs uppercase font-bold text-charcoal-muted bg-sand/30">
+                    <th className="py-3 px-3 sm:px-4">Feature / Standard</th>
+                    <th className="py-3 px-3 sm:px-4 text-forest bg-forest/5 font-extrabold">Fibax Pharma</th>
+                    <th className="py-3 px-3 sm:px-4">{product.comparisonTable?.competitorHeader || 'Conventional Market Products'}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-sand-border text-xs">
                   {(Array.isArray(product.comparisonTable?.rows) && product.comparisonTable.rows.length > 0 ? product.comparisonTable.rows : defaultComparisonRows).map((row, idx) => (
-                    <tr key={idx}>
-                      <td className="py-3.5 px-4 font-semibold text-charcoal">{row.feature}</td>
-                      <td className="py-3.5 px-4 font-bold text-forest bg-forest/5 flex items-center gap-1.5">
-                        <Check className="h-4 w-4 text-forest flex-shrink-0" />
-                        <span>{row.fibax}</span>
+                    <tr key={idx} className="hover:bg-sand/10 transition-colors">
+                      <td className="py-3 px-3 sm:px-4 font-semibold text-charcoal">{row.feature}</td>
+                      <td className="py-3 px-3 sm:px-4 font-bold text-forest bg-forest/5">
+                        <div className="flex items-center gap-1.5">
+                          <Check className="h-4 w-4 text-forest flex-shrink-0" />
+                          <span>{row.fibax}</span>
+                        </div>
                       </td>
-                      <td className="py-3.5 px-4 text-charcoal-muted">{row.competitor}</td>
+                      <td className="py-3 px-3 sm:px-4 text-charcoal-muted">{row.competitor}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -894,41 +902,47 @@ export function ProductPageView({
       </div>
 
       {/* 4. Sticky Bottom Mobile Add-To-Cart Conversion Bar */}
-      <div className="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-sand-border p-3 z-40 shadow-2xl flex items-center justify-between gap-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 min-w-0">
-          <img
-            src={product.featuredImage}
-            alt={product.title}
-            className="w-11 h-11 rounded-lg object-contain bg-sand p-1 border border-sand-border flex-shrink-0"
-          />
-          <div className="min-w-0">
-            <h4 className="font-heading font-bold text-xs text-charcoal truncate">{product.title}</h4>
-            <div className="flex items-baseline gap-2">
-              <span className="font-bold text-forest text-sm">{formatPrice(currentPrice)}</span>
-              {regularMrpForPack > currentPrice && <span className="text-[11px] text-charcoal-muted line-through">{formatPrice(regularMrpForPack)}</span>}
-              {isTcEnabled && currentPack && <span className="text-[10px] text-red-600 font-bold hidden sm:inline">({currentPack.name})</span>}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/98 backdrop-blur-md border-t border-sand-border shadow-2xl px-3 sm:px-6 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4 w-full">
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+            <img
+              src={product.featuredImage}
+              alt={product.title}
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-lg object-contain bg-sand p-1 border border-sand-border flex-shrink-0"
+            />
+            <div className="min-w-0 flex-1">
+              <h4 className="font-heading font-bold text-xs text-charcoal truncate">{product.title}</h4>
+              <div className="flex items-baseline gap-1.5 sm:gap-2">
+                <span className="font-extrabold text-forest text-xs sm:text-sm">{formatPrice(currentPrice)}</span>
+                {regularMrpForPack > currentPrice && (
+                  <span className="text-[10px] sm:text-[11px] text-charcoal-muted line-through">{formatPrice(regularMrpForPack)}</span>
+                )}
+                {isTcEnabled && currentPack && (
+                  <span className="text-[9px] sm:text-[10px] text-brand font-bold truncate hidden xs:inline sm:inline">({currentPack.name})</span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2 flex-shrink-0">
-          {isOutOfStock ? (
-            <button
-              disabled
-              className="px-5 py-2.5 rounded-xl bg-sand text-charcoal-muted text-xs font-bold uppercase tracking-wide cursor-not-allowed flex items-center gap-1.5 border border-sand-border"
-            >
-              <AlertCircle className="h-4 w-4 text-charcoal-subtle" />
-              <span>Out of Stock</span>
-            </button>
-          ) : (
-            <button
-              onClick={handleAddToCart}
-              className="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold uppercase tracking-wide transition-all shadow-sm hover:shadow-orange-glow flex items-center gap-1.5"
-            >
-              <ShoppingBag className="h-4 w-4" />
-              <span>Add to Cart</span>
-            </button>
-          )}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            {isOutOfStock ? (
+              <button
+                disabled
+                className="px-3 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-sand text-charcoal-muted text-[11px] sm:text-xs font-bold uppercase tracking-wide cursor-not-allowed flex items-center gap-1.5 border border-sand-border"
+              >
+                <AlertCircle className="h-3.5 w-3.5 text-charcoal-subtle" />
+                <span>Out of Stock</span>
+              </button>
+            ) : (
+              <button
+                onClick={handleAddToCart}
+                className="px-3.5 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold uppercase tracking-wide transition-all shadow-sm hover:shadow-orange-glow flex items-center gap-1.5 touch-manipulation active:scale-98"
+              >
+                <ShoppingBag className="h-3.5 w-3.5" />
+                <span>Add to Cart</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>

@@ -1008,10 +1008,10 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex items-center justify-center p-2 sm:p-4">
       <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] flex flex-col shadow-2xl overflow-hidden border border-sand-border animate-scaleIn">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-sand-border bg-sand/30">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-sand-border bg-sand/30">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-forest/10 flex items-center justify-center text-forest">
               <Sparkles className="h-5 w-5" />
@@ -2713,7 +2713,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
         </form>
 
         {/* Modal Sticky Bottom Controls */}
-        <div className="flex-shrink-0 px-6 py-4 border-t border-sand-border bg-sand/30 backdrop-blur-xs flex items-center justify-between gap-4">
+        <div className="flex-shrink-0 px-4 sm:px-6 py-3 sm:py-4 border-t border-sand-border bg-sand/30 backdrop-blur-xs flex items-center justify-between gap-2 sm:gap-4">
           <div className="text-xs text-charcoal-muted hidden sm:block">
             <span className="font-semibold text-forest">One-click save:</span> Basic details, pricing, images, and all 5 PDP sections persist together.
           </div>
