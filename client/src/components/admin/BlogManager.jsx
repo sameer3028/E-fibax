@@ -514,12 +514,12 @@ export function BlogManager() {
       });
       if (res.success) {
         setDeleteConfirmPost(null);
-        await fetchPosts();
+        await Promise.all([fetchPosts(), fetchCategories()]);
       } else {
         alert(res.error || 'Failed to delete blog post.');
       }
     } catch (err) {
-      alert('Failed to delete blog post.');
+      alert('Failed to delete blog post: ' + (err.message || 'Server connection error'));
     } finally {
       setIsDeleting(false);
     }

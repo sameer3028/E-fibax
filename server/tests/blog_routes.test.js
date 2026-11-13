@@ -124,10 +124,13 @@ test('Blog System Unit & Integration Tests', async (t) => {
     assert.equal(data.data.status, 'draft');
 
     // Clean duplicate immediately
-    await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/${data.data.id}`, {
+    const cleanRes = await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/${data.data.id}`, {
       method: 'DELETE',
       headers: authHeaders
     });
+    assert.equal(cleanRes.status, 200);
+    const cleanData = await cleanRes.json();
+    assert.equal(cleanData.success, true);
   });
 
   await t.test('Admin API: POST /api/admin/blogs/:id/publish-toggle toggles status', async () => {
@@ -156,13 +159,43 @@ test('Blog System Unit & Integration Tests', async (t) => {
     assert.ok(delData.error.includes('Cannot delete category'));
   });
 
-  await t.test('Clean up test blog post', async () => {
-    if (createdPostId) {
-      await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/${createdPostId}`, {
-        method: 'DELETE',
-        headers: authHeaders
-      });
-    }
+  await t.test('Admin API: DELETE /api/admin/blogs/:id permanently deletes blog post', async () => {
+    assert.ok(createdPostId, 'createdPostId should be present');
+    const res = await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/${createdPostId}`, {
+      method: 'DELETE',
+      headers: authHeaders
+    });
+    assert.equal(res.status, 200);
+    const data = await res.json();
+    assert.equal(data.success, true);
+    assert.ok(data.message.includes('deleted successfully'));
+
+    // Verify it no longer exists
+    const verifyRes = await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/${createdPostId}`, {
+      headers: authHeaders
+    });
+    assert.equal(verifyRes.status, 404);
+  });
+
+  await t.test('Admin API: DELETE /api/admin/blogs/:id returns 404 for non-existent ID', async () => {
+    const res = await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/non_existent_id_999`, {
+      method: 'DELETE',
+      headers: authHeaders
+    });
+    assert.equal(res.status, 404);
+    const data = await res.json();
+    assert.equal(data.success, false);
+    assert.equal(data.error, 'Blog post not found');
+  });
+
+  await t.test('Admin API: DELETE /api/admin/blogs/:id rejects unauthorized requests with 401', async () => {
+    const res = await fetch(`http://127.0.0.1:${testPort}/api/admin/blogs/blog_1`, {
+      method: 'DELETE'
+    });
+    assert.equal(res.status, 401);
+  });
+
+  await t.test('Teardown test server', async () => {
     if (server) {
       server.close();
     }

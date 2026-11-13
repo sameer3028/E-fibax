@@ -1,5 +1,77 @@
 [
   {
+    "id": "blog_1794310609428_wqvl",
+    "title": "Unit Test Ashwagandha Rejuvenation Protocol (Copy)",
+    "slug": "unit-test-ashwagandha-rejuvenation-protocol-2-copy",
+    "category": "Vitality & Stamina",
+    "tag": "Test Protocol",
+    "date": "Nov 10, 2026",
+    "readTime": "1 min read",
+    "author": {
+      "name": "Dr. Sameer Patel, BAMS",
+      "role": "Chief Ayurvedic Consultant",
+      "avatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80"
+    },
+    "colorBlock": "bg-[#285238] text-white",
+    "badgeColor": "bg-emerald-100 text-emerald-800 border-emerald-200",
+    "image": "",
+    "imageAlt": "Unit Test Ashwagandha Rejuvenation Protocol",
+    "excerpt": "Clinical protocol testing unit verification.",
+    "content": "<p>Testing Ashwagandha root extract.</p>",
+    "status": "draft",
+    "enabled": true,
+    "publishedAt": "2026-11-10T11:36:49.428Z",
+    "scheduledAt": null,
+    "views": 0,
+    "seo": {
+      "metaTitle": "Unit Test Ashwagandha Rejuvenation Protocol (Copy) | Fibax Ayurveda",
+      "metaDescription": "Clinical protocol testing unit verification.",
+      "focusKeyword": "Test Protocol",
+      "canonicalUrl": "/blog/unit-test-ashwagandha-rejuvenation-protocol-2-copy",
+      "ogTitle": "Unit Test Ashwagandha Rejuvenation Protocol",
+      "ogDescription": "Clinical protocol testing unit verification.",
+      "ogImage": ""
+    },
+    "createdAt": "2026-11-10T11:36:49.428Z",
+    "updatedAt": "2026-11-10T11:36:49.428Z"
+  },
+  {
+    "id": "blog_1794310609406_15q3",
+    "title": "Unit Test Ashwagandha Rejuvenation Protocol",
+    "slug": "unit-test-ashwagandha-rejuvenation-protocol-2",
+    "category": "Vitality & Stamina",
+    "tag": "Test Protocol",
+    "date": "Nov 10, 2026",
+    "readTime": "1 min read",
+    "author": {
+      "name": "Dr. Sameer Patel, BAMS",
+      "role": "Chief Ayurvedic Consultant",
+      "avatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80"
+    },
+    "colorBlock": "bg-[#285238] text-white",
+    "badgeColor": "bg-emerald-100 text-emerald-800 border-emerald-200",
+    "image": "",
+    "imageAlt": "Unit Test Ashwagandha Rejuvenation Protocol",
+    "excerpt": "Clinical protocol testing unit verification.",
+    "content": "<p>Testing Ashwagandha root extract.</p>",
+    "status": "published",
+    "enabled": true,
+    "publishedAt": "2026-11-10T11:36:49.451Z",
+    "scheduledAt": null,
+    "views": 4,
+    "seo": {
+      "metaTitle": "Unit Test Ashwagandha Rejuvenation Protocol | Fibax Ayurveda",
+      "metaDescription": "Clinical protocol testing unit verification.",
+      "focusKeyword": "Test Protocol",
+      "canonicalUrl": "/blog/unit-test-ashwagandha-rejuvenation-protocol-2",
+      "ogTitle": "Unit Test Ashwagandha Rejuvenation Protocol",
+      "ogDescription": "Clinical protocol testing unit verification.",
+      "ogImage": ""
+    },
+    "createdAt": "2026-11-10T11:36:49.405Z",
+    "updatedAt": "2026-11-10T11:36:49.451Z"
+  },
+  {
     "id": "blog_1793960571664_clo0",
     "title": "Unit Test Ashwagandha Rejuvenation Protocol (Copy)",
     "slug": "unit-test-ashwagandha-rejuvenation-protocol-1-copy",
@@ -34,42 +106,6 @@
     },
     "createdAt": "2026-11-06T10:22:51.664Z",
     "updatedAt": "2026-11-06T10:22:51.664Z"
-  },
-  {
-    "id": "blog_1793960571638_whdo",
-    "title": "Unit Test Ashwagandha Rejuvenation Protocol",
-    "slug": "unit-test-ashwagandha-rejuvenation-protocol-1",
-    "category": "Vitality & Stamina",
-    "tag": "Test Protocol",
-    "date": "Nov 6, 2026",
-    "readTime": "1 min read",
-    "author": {
-      "name": "Dr. Sameer Patel, BAMS",
-      "role": "Chief Ayurvedic Consultant",
-      "avatar": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&auto=format&fit=crop&q=80"
-    },
-    "colorBlock": "bg-[#285238] text-white",
-    "badgeColor": "bg-emerald-100 text-emerald-800 border-emerald-200",
-    "image": "",
-    "imageAlt": "Unit Test Ashwagandha Rejuvenation Protocol",
-    "excerpt": "Clinical protocol testing unit verification.",
-    "content": "<p>Testing Ashwagandha root extract.</p>",
-    "status": "published",
-    "enabled": true,
-    "publishedAt": "2026-11-06T10:22:51.678Z",
-    "scheduledAt": null,
-    "views": 0,
-    "seo": {
-      "metaTitle": "Unit Test Ashwagandha Rejuvenation Protocol | Fibax Ayurveda",
-      "metaDescription": "Clinical protocol testing unit verification.",
-      "focusKeyword": "Test Protocol",
-      "canonicalUrl": "/blog/unit-test-ashwagandha-rejuvenation-protocol-1",
-      "ogTitle": "Unit Test Ashwagandha Rejuvenation Protocol",
-      "ogDescription": "Clinical protocol testing unit verification.",
-      "ogImage": ""
-    },
-    "createdAt": "2026-11-06T10:22:51.638Z",
-    "updatedAt": "2026-11-06T10:22:51.678Z"
   },
   {
     "id": "blog_1793960561207_qxki",

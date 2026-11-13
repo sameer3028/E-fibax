@@ -223,7 +223,7 @@ export async function getBlogs() {
 }
 
 // Background scheduler interval check every 60 seconds
-setInterval(async () => {
+const schedulerInterval = setInterval(async () => {
   try {
     const blogs = readBlogsSync();
     if (blogs && Array.isArray(blogs)) {
@@ -231,6 +231,9 @@ setInterval(async () => {
     }
   } catch (_) {}
 }, 60 * 1000);
+if (schedulerInterval && typeof schedulerInterval.unref === 'function') {
+  schedulerInterval.unref();
+}
 
 // ============================================================
 // 3. SITEMAP GENERATION HELPER
@@ -891,7 +894,7 @@ router.put('/admin/blogs/:id', requireAdminAuth, async (req, res) => {
 });
 
 // DELETE /api/admin/blogs/:id - Delete a blog post (permanent or soft archive)
-router.delete('/api/admin/blogs/:id', requireAdminAuth, async (req, res) => {
+router.delete(['/admin/blogs/:id', '/api/admin/blogs/:id'], requireAdminAuth, async (req, res) => {
   try {
     const blogs = await getBlogs();
     const index = blogs.findIndex(b => String(b.id) === String(req.params.id));
@@ -903,12 +906,18 @@ router.delete('/api/admin/blogs/:id', requireAdminAuth, async (req, res) => {
     if (archiveOnly === 'true') {
       blogs[index].status = 'archived';
       blogs[index].updatedAt = new Date().toISOString();
-      saveBlogs(blogs);
+      const saved = saveBlogs(blogs);
+      if (!saved) {
+        return res.status(500).json({ success: false, error: 'Failed to update blog archive status' });
+      }
       return res.json({ success: true, message: 'Blog post moved to archive', data: blogs[index] });
     }
 
     const deleted = blogs.splice(index, 1)[0];
-    saveBlogs(blogs);
+    const saved = saveBlogs(blogs);
+    if (!saved) {
+      return res.status(500).json({ success: false, error: 'Failed to persist blog deletion to storage' });
+    }
 
     res.json({
       success: true,
