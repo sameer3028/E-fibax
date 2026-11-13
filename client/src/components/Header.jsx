@@ -139,9 +139,9 @@ export function Header({
               {/* Customer Account Button (Sign In or Profile) */}
               {currentUser ? (
                 <button
-                  onClick={() => openAccountModal('orders')}
+                  onClick={() => openAccountModal('main')}
                   className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full bg-forest/10 hover:bg-forest/20 text-forest text-xs font-bold transition-all"
-                  title="My Account & Orders"
+                  title="My Account & Profile"
                 >
                   <div className="w-6 h-6 rounded-full bg-forest text-white text-[10px] font-black flex items-center justify-center">
                     {currentUser.name ? currentUser.name[0].toUpperCase() : 'U'}

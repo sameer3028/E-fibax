@@ -291,7 +291,7 @@ function StorefrontApp() {
           initialTrackingId={trackInitialId}
         />
         <AuthModal />
-        <AccountModal />
+        <AccountModal onNavigate={handleNavigate} />
       </>
     );
   }
@@ -434,6 +434,7 @@ function StorefrontApp() {
 
       {/* 8. Customer Account Dashboard Modal (Orders, Tracking, Profile) */}
       <AccountModal
+        onNavigate={handleNavigate}
         onExploreProducts={() => handleNavigate('products')}
         onOpenTrackOrder={(id) => {
           setTrackInitialId(id || '');

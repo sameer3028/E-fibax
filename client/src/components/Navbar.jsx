@@ -228,7 +228,7 @@ export function Navbar({
                 <button
                   onClick={() => {
                     setIsMobileMenuOpen(false);
-                    openAccountModal('orders');
+                    openAccountModal('main');
                   }}
                   className="w-full flex items-center justify-between p-2.5 rounded-xl bg-forest/10 border border-forest/20 text-forest text-xs font-bold"
                 >
@@ -238,7 +238,7 @@ export function Navbar({
                     </div>
                     <span>My Account ({currentUser.name?.split(' ')[0]})</span>
                   </span>
-                  <span className="text-[11px] text-brand underline font-semibold">View Orders</span>
+                  <span className="text-[11px] text-brand underline font-semibold">View Profile</span>
                 </button>
               ) : (
                 <button

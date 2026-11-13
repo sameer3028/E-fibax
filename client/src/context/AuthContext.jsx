@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState('login'); // 'login' | 'register'
   const [isAccountModalOpen, setIsAccountModalOpen] = useState(false);
-  const [accountModalTab, setAccountModalTab] = useState('orders'); // 'orders' | 'profile' | 'addresses'
+  const [accountModalTab, setAccountModalTab] = useState('main'); // 'main' | 'orders' | 'profile' | 'addresses' | etc.
 
   // Verify session on mount
   useEffect(() => {
@@ -191,7 +191,7 @@ export function AuthProvider({ children }) {
     setIsAuthModalOpen(false);
   };
 
-  const openAccountModal = (tab = 'orders') => {
+  const openAccountModal = (tab = 'main') => {
     setAccountModalTab(tab);
     setIsAccountModalOpen(true);
     if (currentUser) {
