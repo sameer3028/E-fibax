@@ -3,7 +3,11 @@ import nodemailer from 'nodemailer';
 import { generateOrderConfirmationHtml, generateOrderConfirmationText } from '../emailTemplates/orderConfirmation.js';
 import { generateAdminOrderAlertHtml, generateAdminOrderAlertText } from '../emailTemplates/adminOrderAlert.js';
 import { readJsonFile, writeJsonFile } from '../store.js';
-import { DATA_DIR, ensureRuntimeFile } from '../config/paths.js';
+
+const __dirname = path.resolve();
+const CONFIG_FILE = path.join(__dirname, 'server', 'data', 'email_config.json');
+const LOGS_FILE = path.join(__dirname, 'server', 'data', 'email_logs.json');
+const ORDERS_FILE = path.join(__dirname, 'server', 'data', 'orders.json');
 
 // Default email configuration
 const DEFAULT_CONFIG = {
@@ -24,10 +28,6 @@ const DEFAULT_CONFIG = {
   lastAdminAlertTimestamp: null,
   lastAdminAlertRecipient: 'fibaxpharma@gmail.com'
 };
-
-const CONFIG_FILE = ensureRuntimeFile('email_config.json', DEFAULT_CONFIG);
-const LOGS_FILE = ensureRuntimeFile('email_logs.json', []);
-const ORDERS_FILE = ensureRuntimeFile('orders.json', []);
 
 // Helper: Check if SMTP is configured with actual host and credentials
 export function isSmtpConfigured(config = null) {

@@ -54,16 +54,11 @@ export async function apiRequest(endpoint, options = {}) {
 
   // Automatically attach Authorization token if present in storage and not explicitly provided
   if (!headers['Authorization'] && !headers['authorization'] && typeof window !== 'undefined') {
-    const rawAdminToken = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
-    const rawCustomerToken = localStorage.getItem('fibax_auth_token') || sessionStorage.getItem('fibax_auth_token');
-    const adminToken = rawAdminToken ? rawAdminToken.trim().replace(/^"(.*)"$/, '$1') : null;
-    const customerToken = rawCustomerToken ? rawCustomerToken.trim().replace(/^"(.*)"$/, '$1') : null;
+    const adminToken = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+    const customerToken = localStorage.getItem('fibax_auth_token') || sessionStorage.getItem('fibax_auth_token');
 
     const cleanEndpoint = String(endpoint);
     const isAdminRoute = cleanEndpoint.includes('/admin') ||
-      cleanEndpoint.includes('/website') ||
-      cleanEndpoint.includes('/blogs') ||
-      cleanEndpoint.includes('/upload') ||
       cleanEndpoint.includes('/shipping/config') ||
       cleanEndpoint.includes('/email/config') ||
       cleanEndpoint.includes('/email/test') ||
@@ -169,14 +164,6 @@ async function executeFetch(url, options, headers) {
   }
 
   if (!res.ok || data.success === false) {
-    if (res.status === 401 && typeof window !== 'undefined') {
-      const errMsg = (data.error || data.message || '').toLowerCase();
-      if (errMsg.includes('admin') || errMsg.includes('unauthorized')) {
-        window.dispatchEvent(new CustomEvent('fibax:admin:unauthorized', {
-          detail: { url, status: 401, error: data.error }
-        }));
-      }
-    }
     return {
       success: false,
       status: res.status,

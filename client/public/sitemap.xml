@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://www.fibaxpharma.com/</loc>
     <lastmod>2026-11-13</lastmod>
@@ -38,725 +37,253 @@
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://www.fibaxpharma.com/product/joint-conbo-pack</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Untitled-1-1790179478381.jpg</image:loc>
-      <image:title>joint conbo pack</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Untitled-2-1790187354554.jpg</image:loc>
-      <image:title>joint conbo pack</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Untitled-3-1790187354627.jpg</image:loc>
-      <image:title>joint conbo pack</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Untitled-4-1790187354668.jpg</image:loc>
-      <image:title>joint conbo pack</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Untitled-5-1790187354731.jpg</image:loc>
-      <image:title>joint conbo pack</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/liver-care-combo</loc>
-    <lastmod>2026-10-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/piles-kit.png</image:loc>
-      <image:title>Liver Care Combo</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/PILES_COMBO_copy-1790232430556.jpg</image:loc>
-      <image:title>Liver Care Combo</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/PILES_COMBO_copy-1790232430587.png</image:loc>
-      <image:title>Liver Care Combo</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-safed-musli-powder</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/safed-musli.png</image:loc>
-      <image:title>Fibax Safed Musli Powder 100gm</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-ashwagandha-powder</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/ashwgandha-powder.png</image:loc>
-      <image:title>Fibax Ashwagandha Powder 100gm</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-amla-powder</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/fibax-amla-powder.png</image:loc>
-      <image:title>Fibax Amla Powder 100gm | Pure &amp; Natural Herbal Supplement</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-rose-soap</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/rose-shop.png</image:loc>
-      <image:title>Fibax Rose Soap 75gm</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-lemon-soap</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/lemon-shop.png</image:loc>
-      <image:title>Fibax Lemon Soap 75gm</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-neem-aloevera-soap</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/neem-shop.png</image:loc>
-      <image:title>Fibax Neem Aloevera Soap 75gm</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-haldi-chandan-soap</loc>
-    <lastmod>2026-09-14</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/haldi-chandan.png</image:loc>
-      <image:title>Fibax Haldi Chandan Soap 75gm</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/ayurvedic-multivitamin-syrup</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/multivitamin.png</image:loc>
-      <image:title>Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition &amp; Anemia Support</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/1-1790251081532.png</image:loc>
-      <image:title>Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition &amp; Anemia Support</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/2-1790251081709.png</image:loc>
-      <image:title>Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition &amp; Anemia Support</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/3-1790251081821.png</image:loc>
-      <image:title>Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition &amp; Anemia Support</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/4-1790251081909.png</image:loc>
-      <image:title>Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition &amp; Anemia Support</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/5-1790251082072.png</image:loc>
-      <image:title>Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition &amp; Anemia Support</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/lipidobax-cholesterol-syrup</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/lipodobax.png</image:loc>
-      <image:title>Lipidobax Syrup 200ml – Ayurvedic Cholesterol Control Tonic for Heart and Blood Pressure Health</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fp-enzyme-syrup</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/fp-enzyme.png</image:loc>
-      <image:title>Fp Enzyme Syrup 200ml – Digestive Enzyme Supplement for Gut Health, Indigestion &amp; Abdominal Gas</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/bp-hype-syrup</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/bp-hype.png</image:loc>
-      <image:title>BP Hype Syrup 200ml – Ayurvedic Support for Blood Pressure, Hypertension &amp; Heart Health</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/nariupchar-women-syrup</loc>
-    <lastmod>2026-09-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/nariupchar.png</image:loc>
-      <image:title>Nariupchar Women Syrup 200ml – Ayurvedic Hormonal &amp; Menstrual Health Tonic</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/livupchar-ayurvedic-liver-care-syrup-200ml</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/livupchar.png</image:loc>
-      <image:title>Livupchar Ayurvedic Liver Care Syrup 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/immunbax-syrup-ayurvedic-immunity-platelet-support-200ml</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/immunbax.png</image:loc>
-      <image:title>Immunbax Syrup – Ayurvedic Immunity &amp; Platelet Support 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibocid-syrup-ayurvedic-antacid-digestive-enzyme-200ml</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/fibocid.png</image:loc>
-      <image:title>Fibocid Syrup – Ayurvedic Antacid &amp; Digestive Enzyme 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/tus-remove-syrup-ayurvedic-cough-relief-syrup-100ml</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/tus-remove.png</image:loc>
-      <image:title>Tus Remove Syrup – Ayurvedic Cough Relief Syrup 100ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fevobax-ayurvedic-capsules-for-fever-and-immunity-support</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/fevobax.png</image:loc>
-      <image:title>Fevobax Ayurvedic Capsules for Fever and Immunity Support – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/constisoal-syrup-for-constipation</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/constisol.png</image:loc>
-      <image:title>Constisol Ayurvedic Syrup 200ml – Natural Relief for Constipation</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/diabdic-capsules</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/diabdic-capsule.png</image:loc>
-      <image:title>Diabdic Ayurvedic &amp; Natural Blood Sugar Support – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/platobax-syrup-for-platelet-boost-immunity</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/platobax.png</image:loc>
-      <image:title>Platobax Ayurvedic Syrup for Boosting Platelet Count &amp; Immunity - 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-neem-aloevera-facewash</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/neem-alovera-facewash.png</image:loc>
-      <image:title>Fibax Neem &amp; Aloevera Facewash for Clear, Healthy, and Glowing Skin – 100ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-triphala-juice</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/triphla-juice.png</image:loc>
-      <image:title>Fibax Triphala Juice for Digestion and Detox – 500ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-neem-karela-jamun-juice</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/neem-karla-jamun.png</image:loc>
-      <image:title>Fibax Neem Karela Jamun Juice for Sugar Balance and Detox – 500ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/axe-ortho-oil</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/axe-ortho-oil.png</image:loc>
-      <image:title>Axe Ortho Pain Relief Oil – 60ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/axe-ortho-pain-relief-capsules</loc>
-    <lastmod>2026-09-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Axe_Ortho_Plus-1790187581049.jpg</image:loc>
-      <image:title>Axe Ortho Pain Relief- 30 Capsules</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Axe_Ortho_Plus_Compo-1790187575966.jpg</image:loc>
-      <image:title>Axe Ortho Pain Relief- 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/axe-ortho-syrup</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/axe-ortho-syurp.png</image:loc>
-      <image:title>Axe Ortho Pain Relief Syrup – 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/diabdic-ayurvedic-syrup</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/diabdic-syurp.png</image:loc>
-      <image:title>Diabdic Ayurvedic Syrup Helps Maintain Healthy Blood Sugar Levels – 300ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/incredible-musli-gold</loc>
-    <lastmod>2026-09-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/musli-gold.png</image:loc>
-      <image:title>Incredible Musli Gold Capsules – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/livupchar-capsules-for-liver-detox</loc>
-    <lastmod>2026-09-21</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/livupchar.png</image:loc>
-      <image:title>Livupchar Capsules Supports Liver Health &amp; Detox Naturally – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/stonupchar-capsules-for-kidney-detox</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/stoneupchar-cap.png</image:loc>
-      <image:title>Stonupchar Ayurvedic Capsules – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/arthobax-capsules-for-arthritis-joint-pain-relief</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/arthobax.png</image:loc>
-      <image:title>Arthobax Ayurvedic Capsules for Arthritis &amp; Joint Pain Relief – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/moonkind-capsules-for-power-stamina-strength-stress-relief</loc>
-    <lastmod>2026-09-23</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/moonkind.png</image:loc>
-      <image:title>Moonkind Ayurvedic Capsules for Power, Stamina, Strength &amp; Stress Relief – 30 Capsules</image:title>
-    </image:image>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/Moonkind_Shilajit-1790187442078.jpg</image:loc>
-      <image:title>Moonkind Ayurvedic Capsules for Power, Stamina, Strength &amp; Stress Relief – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/uriupchar-capsules-for-uric-acid-control-joint-pain-relief</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/uri-upchar-cap.png</image:loc>
-      <image:title>Uriupchar Ayurvedic Capsules for Uric Acid Control &amp; Joint Health – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/stonupchar-ayurvedic-syrup</loc>
-    <lastmod>2026-09-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/stone-upchar-syrup.png</image:loc>
-      <image:title>Stonupchar Ayurvedic Syrup for Kidney and Urinary Health – 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-herbal-hair-shampoo</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/hair-shampo.png</image:loc>
-      <image:title>Fibax Kesh Sanjeevani Herbal Hair Shampoo – 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-ayurvedic-rose-water</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/rose-water.png</image:loc>
-      <image:title>Fibax Pure Gulab Jal / Ayurvedic Rose Water – 100ml</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-neem-leaf-powder</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/neem-powder.png</image:loc>
-      <image:title>Fibax Pure Neem Leaf Powder 100gm – Blood Purifier &amp; Detox</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/fibax-constisol-churan-powder</loc>
-    <lastmod>2026-09-22</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/contisol-powder.png</image:loc>
-      <image:title>Fibax Constisol Digestive Churan 100gm – Quick Relief for Constipation</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/piles-back-relief-capsules</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/piles-capsule.png</image:loc>
-      <image:title>Piles Back Ayurvedic Relief Capsules – 30 Capsules</image:title>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://www.fibaxpharma.com/product/piles-back-soothing-syrup</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-    <image:image>
-      <image:loc>https://www.fibaxpharma.com/uploads/piles-syurp.png</image:loc>
-      <image:title>Piles Back Soothing Ayurvedic Syrup – 200ml</image:title>
-    </image:image>
-  </url>
-  <url>
     <loc>https://www.fibaxpharma.com/blog/5-ayurvedic-herbs-to-cleanse-sluggish-liver</loc>
-    <lastmod>2026-09-09</lastmod>
+    <lastmod>2026-11-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>5 Ayurvedic Herbs to Cleanse Sluggish Liver &amp; Restore SGPT Naturally</image:title>
+      <image:loc>https://images.unsplash.com/photo-1540420773420-3366772f4999?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>5 Ayurvedic Herbs to Cleanse Sluggish Liver  Restore SGPT Naturally</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/golden-ayurvedic-rule-for-ending-chronic-acidity</loc>
-    <lastmod>2026-09-04</lastmod>
+    <lastmod>2026-11-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1505576399279-565b52d4ac71?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>The Golden Ayurvedic Rule for Ending Chronic Acidity and Severe Bloating</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ayurvedic-remedies-for-joint-pain-and-morning-stiffness</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-10-31</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1519710164239-da123dc03ef4?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Ayurvedic Remedies for Joint Pain: Ending Morning Stiffness Naturally</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ashwagandha-vs-safed-musli-choosing-vitality-root</loc>
-    <lastmod>2026-08-21</lastmod>
+    <lastmod>2026-10-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Ashwagandha vs. Safed Musli: Choosing the Right Vitality Root for Energy</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/triphala-the-ancient-remedy-for-complete-colon-cleanse</loc>
-    <lastmod>2026-08-16</lastmod>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Triphala: The Ancient 3-Fruit Elixir for Complete Colon Rejuvenation</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/pure-shilajit-resin-guide-testing-authenticity</loc>
-    <lastmod>2026-08-10</lastmod>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Pure Himalayan Shilajit Resin: How to Verify Authenticity at Home</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ayurvedic-approach-to-managing-type-2-blood-sugar</loc>
-    <lastmod>2026-08-03</lastmod>
+    <lastmod>2026-10-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1498837167922-ddd27525d352?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Managing Blood Sugar Naturally: The Ayurvedic Madhumeha Protocol</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/bhringraj-and-brahmi-for-stopping-hair-fall</loc>
-    <lastmod>2026-07-27</lastmod>
+    <lastmod>2026-10-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Bhringraj &amp; Brahmi: Ancient Secrets for Reversing Rapid Hair Thinning</image:title>
+      <image:loc>https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Bhringraj  Brahmi: Ancient Secrets for Reversing Rapid Hair Thinning</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/understanding-your-prakriti-vata-pitta-kapha</loc>
-    <lastmod>2026-07-20</lastmod>
+    <lastmod>2026-10-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Understanding Your Prakriti: A Complete Guide to Vata, Pitta, and Kapha</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/arjuna-bark-for-cardiovascular-wellness-and-bp</loc>
-    <lastmod>2026-07-14</lastmod>
+    <lastmod>2026-10-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Arjuna Bark: The Sacred Cardiovascular Tonic for Healthy Blood Pressure</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/chyawanprash-master-recipe-45-himalayan-herbs</loc>
-    <lastmod>2026-07-07</lastmod>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Inside the Master Recipe: Why Authentic 45-Herb Chyawanprash Works</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/sleep-deeply-with-shankhpushpi-and-jatamansi</loc>
-    <lastmod>2026-06-29</lastmod>
+    <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1511295742362-92c96b124e52?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Ending Chronic Insomnia: How Shankhpushpi &amp; Jatamansi Calm Racing Minds</image:title>
+      <image:loc>https://images.unsplash.com/photo-1511295742362-92c96b124e52?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Ending Chronic Insomnia: How Shankhpushpi  Jatamansi Calm Racing Minds</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/kidney-detox-and-creatinine-management-with-punarnava</loc>
-    <lastmod>2026-06-21</lastmod>
+    <lastmod>2026-10-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Kidney Detox: Maintaining Healthy Creatinine and Urea with Gokshura &amp; Punarnava</image:title>
+      <image:loc>https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Kidney Detox: Maintaining Healthy Creatinine and Urea with Gokshura  Punarnava</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/kumkumadi-tailam-the-ayurvedic-face-oil-guide</loc>
-    <lastmod>2026-06-14</lastmod>
+    <lastmod>2026-09-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1556228720-195a672e8a03?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Kumkumadi Tailam: The 24k Saffron Beauty Elixir for Glowing, Spotless Skin</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ayurvedic-guide-to-safe-weight-loss-and-metabolism</loc>
-    <lastmod>2026-06-07</lastmod>
+    <lastmod>2026-09-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1517838277536-f5f99be501cd?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Sustainable Weight Loss: Igniting Meda Dhatu Agni Without Starvation</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/respiratory-wellness-with-vasaka-and-kantakari</loc>
-    <lastmod>2026-05-30</lastmod>
+    <lastmod>2026-09-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Breathe Easy: Clearing Mucus and Bronchial Congestion with Vasaka &amp; Kantakari</image:title>
+      <image:loc>https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Breathe Easy: Clearing Mucus and Bronchial Congestion with Vasaka  Kantakari</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/safed-musli-and-kaunch-beej-guide-for-men</loc>
-    <lastmod>2026-05-23</lastmod>
+    <lastmod>2026-09-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Kaunch Beej &amp; Safed Musli: Natural Testosterone and Neuromuscular Strength</image:title>
+      <image:loc>https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Kaunch Beej  Safed Musli: Natural Testosterone and Neuromuscular Strength</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/guduchi-giloy-the-immortal-herbal-shield</loc>
-    <lastmod>2026-05-16</lastmod>
+    <lastmod>2026-09-16</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Giloy (Guduchi): The &quot;Amrita&quot; Herb for Balancing High Fever and Platelet Count</image:title>
+      <image:loc>https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Giloy (Guduchi): The Amrita Herb for Balancing High Fever and Platelet Count</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/shatavari-the-queen-of-herbs-for-womens-hormones</loc>
-    <lastmod>2026-05-09</lastmod>
+    <lastmod>2026-09-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1518611012118-696072aa579a?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Shatavari: The Ultimate Tonic for Women’s Hormonal Balance and Vitality</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ayurvedic-morning-routine-dinacharya-guide</loc>
-    <lastmod>2026-05-02</lastmod>
+    <lastmod>2026-09-10</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1545205597-3d9d02c29597?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>Dinacharya: 6 Sacred Ayurvedic Morning Habits That Transform Your Energy</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ayurvedic-herbs-for-fatty-liver-grade-1-and-2</loc>
-    <lastmod>2026-04-25</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Reversing Grade 1 &amp; 2 Fatty Liver: The Clinically Tested Herbal Protocol</image:title>
+      <image:loc>https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Reversing Grade 1  2 Fatty Liver: The Clinically Tested Herbal Protocol</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/brahmi-and-shankhpushpi-for-memory-and-focus</loc>
-    <lastmod>2026-04-18</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1499209974431-9dac3ada0047?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Biohacking Brain Fog: How Brahmi &amp; Shankhpushpi Accelerate Memory Retention</image:title>
+      <image:loc>https://images.unsplash.com/photo-1499209974431-9dac3ada0047?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Biohacking Brain Fog: How Brahmi  Shankhpushpi Accelerate Memory Retention</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/pure-neem-and-manjistha-blood-purification</loc>
-    <lastmod>2026-04-11</lastmod>
+    <lastmod>2026-09-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1512290900672-1f4144e13554?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>Ending Acne from Within: Blood Purification with Neem &amp; Manjistha</image:title>
+      <image:loc>https://images.unsplash.com/photo-1512290900672-1f4144e13554?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>Ending Acne from Within: Blood Purification with Neem  Manjistha</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ortho-pain-oil-murchhana-taila-manufacturing</loc>
-    <lastmod>2026-04-04</lastmod>
+    <lastmod>2026-08-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
+      <image:loc>https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=800&auto=format&fit=crop&q=80</image:loc>
       <image:title>The Science of Ayurvedic Pain Oils: Why Cold-Pressed Murchhana Taila Works</image:title>
     </image:image>
   </url>
   <url>
     <loc>https://www.fibaxpharma.com/blog/ayurvedic-digestive-teas-ccf-recipe</loc>
-    <lastmod>2026-03-27</lastmod>
+    <lastmod>2026-08-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
     <image:image>
-      <image:loc>https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&amp;auto=format&amp;fit=crop&amp;q=80</image:loc>
-      <image:title>The Miracle CCF Tea: Cumin, Coriander, &amp; Fennel for All-Day Digestion</image:title>
+      <image:loc>https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&auto=format&fit=crop&q=80</image:loc>
+      <image:title>The Miracle CCF Tea: Cumin, Coriander,  Fennel for All-Day Digestion</image:title>
     </image:image>
   </url>
 </urlset>

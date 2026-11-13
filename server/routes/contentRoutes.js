@@ -5,52 +5,47 @@ import { writeFileSync, existsSync } from 'fs';
 import { requireAdminAuth } from '../middleware/auth.js';
 import { contactLimiter, uploadLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray, readJsonFile, writeJsonFile } from '../store.js';
-import { DATA_DIR, getUploadsDir, ensureRuntimeFile } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = Router();
-const uploadsDir = getUploadsDir();
-const ABOUT_BANNERS_FILE = ensureRuntimeFile('about_banners.json');
-const HOME_BANNERS_FILE = ensureRuntimeFile('home_banners.json');
-
-// Helper to auto-persist base64 data URLs to static /uploads/ files
-export function saveBase64MediaIfPresent(dataUrl, prefix = 'banner') {
-  if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
-    return dataUrl ? String(dataUrl).trim() : '';
-  }
-  try {
-    const matches = dataUrl.match(/^data:image\/([a-zA-Z+]+);base64,(.+)$/);
-    if (!matches || matches.length !== 3) return dataUrl;
-    let ext = matches[1].toLowerCase();
-    if (ext === 'jpeg') ext = 'jpg';
-    if (!['jpg', 'png', 'webp'].includes(ext)) ext = 'jpg';
-
-    const buffer = Buffer.from(matches[2], 'base64');
-    const safeName = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}.${ext}`;
-    const filePath = join(uploadsDir, safeName);
-    writeFileSync(filePath, buffer);
-
-    const clientPublicUploadsDir = join(__dirname, '..', '..', 'client', 'public', 'uploads');
-    if (existsSync(clientPublicUploadsDir)) {
-      try {
-        writeFileSync(join(clientPublicUploadsDir, safeName), buffer);
-      } catch (_) {}
-    }
-    return `/uploads/${safeName}`;
-  } catch (e) {
-    console.error('Failed to auto-save base64 media:', e);
-    return dataUrl;
-  }
-}
+const dataDir = join(__dirname, '..', 'data');
+const uploadsDir = join(__dirname, '..', 'uploads');
+const ABOUT_BANNERS_FILE = join(dataDir, 'about_banners.json');
+const HOME_BANNERS_FILE = join(dataDir, 'home_banners.json');
 
 // ==========================================
 // 1. ABOUT US HERO BANNERS
 // ==========================================
 
 const readAboutBanners = () => {
-  return readJsonFile(ABOUT_BANNERS_FILE, []);
+  return readJsonFile(ABOUT_BANNERS_FILE, [
+    {
+      id: 'banner_default',
+      title: 'Default About Us Hero',
+      enabled: true,
+      status: 'published',
+      sortOrder: 1,
+      desktopImage: '',
+      mobileImage: '',
+      badgeText: 'AUTHENTIC AYURVEDIC HERITAGE',
+      heading: 'Pioneering Pure Ayurvedic Healthcare & Natural Wellness',
+      description: 'Fibax Ayurveda is a premier herbal wellness brand dedicated to formulating authentic, research-driven botanical remedies. Backed by WHO-GMP certified infrastructure, we deliver pure, chemical-free healthcare solutions directly to households across India.',
+      primaryBtnText: 'Browse 250+ Formulations',
+      primaryBtnUrl: 'products',
+      secondaryBtnText: 'Contact Us',
+      secondaryBtnUrl: 'contact',
+      trustPoints: [
+        'Pure & Natural Ingredients',
+        'WHO-GMP Certified',
+        'Safe & Effective Formulations',
+        'Made for Healthier India'
+      ],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }
+  ]);
 };
 
 const saveAboutBanners = (banners) => {
@@ -244,7 +239,7 @@ const DEFAULT_HOME_BANNERS = [
 ];
 
 const readHomeBanners = () => {
-  return readJsonFile(HOME_BANNERS_FILE, []);
+  return readJsonFile(HOME_BANNERS_FILE, DEFAULT_HOME_BANNERS);
 };
 
 const saveHomeBanners = (banners) => {
@@ -297,10 +292,7 @@ router.post('/website/home-banners', requireAdminAuth, (req, res) => {
     const banners = readHomeBanners();
     const body = req.body || {};
 
-    const rawDesktop = saveBase64MediaIfPresent(body.desktopImage, 'banner-home-desktop');
-    const rawMobile = saveBase64MediaIfPresent(body.mobileImage, 'banner-home-mobile');
-
-    if (!rawDesktop && !rawMobile) {
+    if (!body.desktopImage && !body.mobileImage) {
       return res.status(400).json({ success: false, error: 'Banner image (desktop or mobile) is required' });
     }
 
@@ -312,8 +304,8 @@ router.post('/website/home-banners', requireAdminAuth, (req, res) => {
       description: body.description || body.subtitle || '',
       badge: body.badge || body.badgeText || '',
       chipLabel: body.chipLabel || body.title || 'Featured Banner',
-      desktopImage: rawDesktop || '',
-      mobileImage: rawMobile || '',
+      desktopImage: body.desktopImage || '',
+      mobileImage: body.mobileImage || '',
       productSlug: body.productSlug || '',
       concernSlug: body.concernSlug || '',
       primaryBtnText: body.primaryBtnText || 'Shop Now',
@@ -371,19 +363,11 @@ router.put('/website/home-banners/:id', requireAdminAuth, (req, res) => {
     const current = banners[idx];
     const body = req.body || {};
 
-    const updatedDesktop = body.desktopImage !== undefined
-      ? saveBase64MediaIfPresent(body.desktopImage, 'banner-home-desktop')
-      : current.desktopImage;
-
-    const updatedMobile = body.mobileImage !== undefined
-      ? saveBase64MediaIfPresent(body.mobileImage, 'banner-home-mobile')
-      : (current.mobileImage || '');
-
     const updated = {
       ...current,
       ...body,
-      desktopImage: updatedDesktop,
-      mobileImage: updatedMobile,
+      desktopImage: body.desktopImage !== undefined ? String(body.desktopImage).trim() : current.desktopImage,
+      mobileImage: body.mobileImage !== undefined ? String(body.mobileImage).trim() : (current.mobileImage || ''),
       sortOrder: body.sortOrder !== undefined ? Number(body.sortOrder) : current.sortOrder,
       updatedAt: new Date().toISOString()
     };

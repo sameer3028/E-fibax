@@ -6,25 +6,8 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 
-import { DATA_DIR, getUploadsDir, ensureDirectories } from './config/paths.js';
-import { createAutomatedBackup, verifyDataIntegrity } from './services/backupService.js';
 import { initShipping } from './shipping.js';
 import { initStore, storageDriver, getArray, flushStore } from './store.js';
-
-// Ensure data, default_data, uploads, and backups directories exist
-ensureDirectories();
-
-// Verify data integrity on startup and create automated point-in-time snapshot
-const integrity = verifyDataIntegrity();
-if (integrity.issues.length > 0) {
-  console.warn('⚠️ Data integrity notices on boot:', integrity.issues);
-}
-if (integrity.repaired.length > 0) {
-  console.log('🛡️ Auto-repaired data files:', integrity.repaired);
-}
-if (process.env.NODE_ENV !== 'test') {
-  createAutomatedBackup('server_boot');
-}
 
 // Modular Route Handlers
 import adminRoutes from './routes/adminRoutes.js';
@@ -53,11 +36,19 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// Serve uploaded images and videos statically from the unified uploads directory
-const uploadsDir = getUploadsDir();
+// Ensure data & upload directories exist
+const dataDir = join(__dirname, 'data');
+const uploadsDir =
+  process.env.UPLOADS_DIR ||
+  (existsSync('/var/www/fibax-uploads') ? '/var/www/fibax-uploads' : join(__dirname, 'uploads'));
+
+if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
+if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });
+
+// Serve uploaded images and videos statically
 app.use('/uploads', express.static(uploadsDir));
 const clientPublicUploadsDir = join(__dirname, '..', 'client', 'public', 'uploads');
-if (existsSync(clientPublicUploadsDir) && clientPublicUploadsDir !== uploadsDir) {
+if (existsSync(clientPublicUploadsDir)) {
   app.use('/uploads', express.static(clientPublicUploadsDir));
 }
 
@@ -70,7 +61,6 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptimeSeconds: Math.floor(process.uptime()),
     storageDriver: storageDriver(),
-    dataDir: DATA_DIR,
     environment: process.env.NODE_ENV || 'development'
   });
 });

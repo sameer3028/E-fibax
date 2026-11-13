@@ -5,7 +5,6 @@ import {
   verifyPassword,
   hashPassword,
   generateAdminToken,
-  deleteAdminSession,
   getAdminSessionFromRequest,
   requireAdminAuth,
   activeAdminSessions,
@@ -102,7 +101,7 @@ router.post('/change-password', requireAdminAuth, (req, res) => {
 router.post('/logout', (req, res) => {
   const session = getAdminSessionFromRequest(req);
   if (session) {
-    deleteAdminSession(session.token);
+    activeAdminSessions.delete(session.token);
   }
   return res.json({ success: true, message: 'Logged out successfully' });
 });

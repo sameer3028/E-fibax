@@ -27,10 +27,7 @@ import {
   Smartphone,
   ExternalLink,
   RefreshCw,
-  BookOpen,
-  KeyRound,
-  AlertCircle,
-  EyeOff
+  BookOpen
 } from 'lucide-react';
 
 export function WebsiteContentManager() {
@@ -64,77 +61,6 @@ export function WebsiteContentManager() {
   // Quick Replace image target
   const [quickReplacingId, setQuickReplacingId] = useState(null);
   const quickFileInputRef = useRef(null);
-
-  // Auto-Rescue Re-Authentication Modal State
-  const [reAuthModal, setReAuthModal] = useState({
-    isOpen: false,
-    pendingAction: null,
-    errorMessage: '',
-    isLoading: false
-  });
-  const [reAuthPassword, setReAuthPassword] = useState('');
-  const [reAuthShowPass, setReAuthShowPass] = useState(false);
-
-  // Helper to retrieve sanitized admin auth header
-  const getAdminHeaders = () => {
-    const raw = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
-    const token = raw ? raw.trim().replace(/^"(.*)"$/, '$1') : null;
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-  };
-
-  const handleAuthError = (retryCallback) => {
-    setReAuthModal({
-      isOpen: true,
-      pendingAction: retryCallback,
-      errorMessage: 'Your admin session has expired or requires re-authentication. Enter your admin password to save changes immediately.',
-      isLoading: false
-    });
-  };
-
-  const handlePerformReAuth = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (!reAuthPassword) return;
-
-    setReAuthModal(prev => ({ ...prev, isLoading: true, errorMessage: '' }));
-
-    try {
-      const res = await apiRequest('/api/admin/login', {
-        method: 'POST',
-        body: JSON.stringify({
-          username: localStorage.getItem('fibax_admin_user') || 'admin',
-          password: reAuthPassword
-        })
-      });
-
-      if (!res.success) {
-        setReAuthModal(prev => ({
-          ...prev,
-          isLoading: false,
-          errorMessage: res.error || 'Incorrect admin password. Please try again.'
-        }));
-        return;
-      }
-
-      // Store new valid token
-      localStorage.setItem('fibax_admin_token', res.token);
-      localStorage.setItem('fibax_admin_user', res.username || 'admin');
-
-      const actionToRetry = reAuthModal.pendingAction;
-      setReAuthModal({ isOpen: false, pendingAction: null, errorMessage: '', isLoading: false });
-      setReAuthPassword('');
-
-      // Retry the save action!
-      if (typeof actionToRetry === 'function') {
-        actionToRetry();
-      }
-    } catch (err) {
-      setReAuthModal(prev => ({
-        ...prev,
-        isLoading: false,
-        errorMessage: err.message || 'Login failed.'
-      }));
-    }
-  };
 
   // -------------------------------------------------------------
   // HOME PAGE BANNER DEFAULT FORM DATA
@@ -377,7 +303,7 @@ export function WebsiteContentManager() {
   };
 
   const handleSaveHome = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
+    e.preventDefault();
     if (!homeFormData.title.trim()) {
       alert('Please enter an internal banner title/name.');
       return;
@@ -388,24 +314,28 @@ export function WebsiteContentManager() {
     }
 
     try {
-      const endpoint = editingHomeBanner
-        ? `/api/website/home-banners/${editingHomeBanner.id}`
-        : '/api/website/home-banners';
-      const method = editingHomeBanner ? 'PUT' : 'POST';
-
-      const res = await apiRequest(endpoint, {
-        method,
-        headers: getAdminHeaders(),
-        body: JSON.stringify(homeFormData)
-      });
-
-      if (res.success) {
-        setIsHomeModalOpen(false);
-        fetchHomeBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleSaveHome());
+      if (editingHomeBanner) {
+        const res = await apiRequest(`/api/website/home-banners/${editingHomeBanner.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(homeFormData)
+        });
+        if (res.success) {
+          setIsHomeModalOpen(false);
+          fetchHomeBanners();
+        } else {
+          alert(res.error || 'Failed to update banner');
+        }
       } else {
-        alert(res.error || 'Failed to save banner');
+        const res = await apiRequest('/api/website/home-banners', {
+          method: 'POST',
+          body: JSON.stringify(homeFormData)
+        });
+        if (res.success) {
+          setIsHomeModalOpen(false);
+          fetchHomeBanners();
+        } else {
+          alert(res.error || 'Failed to create banner');
+        }
       }
     } catch (err) {
       alert('Error saving home banner: ' + err.message);
@@ -416,15 +346,10 @@ export function WebsiteContentManager() {
     if (!window.confirm('Are you sure you want to delete this Home Page hero banner?')) return;
     try {
       const res = await apiRequest(`/api/website/home-banners/${id}`, {
-        method: 'DELETE',
-        headers: getAdminHeaders()
+        method: 'DELETE'
       });
       if (res.success) {
         fetchHomeBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleDeleteHome(id));
-      } else {
-        alert(res.error || 'Failed to delete banner');
       }
     } catch (err) {
       alert('Failed to delete banner');
@@ -436,15 +361,10 @@ export function WebsiteContentManager() {
     try {
       const res = await apiRequest(`/api/website/home-banners/${banner.id}`, {
         method: 'PUT',
-        headers: getAdminHeaders(),
         body: JSON.stringify({ status: newStatus })
       });
       if (res.success) {
         fetchHomeBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleToggleHomeStatus(banner));
-      } else {
-        alert(res.error || 'Failed to update status');
       }
     } catch (err) {
       alert('Failed to update status');
@@ -456,15 +376,10 @@ export function WebsiteContentManager() {
     try {
       const res = await apiRequest(`/api/website/home-banners/${banner.id}`, {
         method: 'PUT',
-        headers: getAdminHeaders(),
         body: JSON.stringify({ enabled: newEnabled })
       });
       if (res.success) {
         fetchHomeBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleToggleHomeEnabled(banner));
-      } else {
-        alert(res.error || 'Failed to update status');
       }
     } catch (err) {
       alert('Failed to update status');
@@ -484,13 +399,10 @@ export function WebsiteContentManager() {
     try {
       const res = await apiRequest('/api/website/home-banners/reorder', {
         method: 'PUT',
-        headers: getAdminHeaders(),
         body: JSON.stringify({ order: payload })
       });
       if (res.success) {
         setHomeBanners(res.data);
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleMoveHomeOrder(index, direction));
       }
     } catch (err) {
       console.error('Failed to reorder banners:', err);
@@ -513,15 +425,10 @@ export function WebsiteContentManager() {
       try {
         const res = await apiRequest(`/api/website/home-banners/${quickReplacingId}`, {
           method: 'PUT',
-          headers: getAdminHeaders(),
           body: JSON.stringify({ desktopImage: url })
         });
         if (res.success) {
           fetchHomeBanners();
-        } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-          handleAuthError(() => handleQuickFileSelected(e));
-        } else {
-          alert(res.error || 'Failed to replace banner image');
         }
       } catch (err) {
         alert('Failed to replace banner image: ' + err.message);
@@ -568,29 +475,34 @@ export function WebsiteContentManager() {
   };
 
   const handleSaveAbout = async (e) => {
-    if (e && e.preventDefault) e.preventDefault();
+    e.preventDefault();
     if (!aboutFormData.heading || !aboutFormData.title) {
       alert('Please enter banner title and main heading.');
       return;
     }
     try {
-      const endpoint = editingAboutBanner
-        ? `/api/website/about-banners/${editingAboutBanner.id}`
-        : '/api/website/about-banners';
-      const method = editingAboutBanner ? 'PUT' : 'POST';
-
-      const res = await apiRequest(endpoint, {
-        method,
-        headers: getAdminHeaders(),
-        body: JSON.stringify(aboutFormData)
-      });
-      if (res.success) {
-        setIsAboutModalOpen(false);
-        fetchAboutBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleSaveAbout());
+      if (editingAboutBanner) {
+        const res = await apiRequest(`/api/website/about-banners/${editingAboutBanner.id}`, {
+          method: 'PUT',
+          body: JSON.stringify(aboutFormData)
+        });
+        if (res.success) {
+          setIsAboutModalOpen(false);
+          fetchAboutBanners();
+        } else {
+          alert(res.error || 'Failed to update banner');
+        }
       } else {
-        alert(res.error || 'Failed to save banner');
+        const res = await apiRequest('/api/website/about-banners', {
+          method: 'POST',
+          body: JSON.stringify(aboutFormData)
+        });
+        if (res.success) {
+          setIsAboutModalOpen(false);
+          fetchAboutBanners();
+        } else {
+          alert(res.error || 'Failed to create banner');
+        }
       }
     } catch (err) {
       alert('Error saving banner: ' + err.message);
@@ -601,15 +513,10 @@ export function WebsiteContentManager() {
     if (!window.confirm('Are you sure you want to delete this About Us hero banner?')) return;
     try {
       const res = await apiRequest(`/api/website/about-banners/${id}`, {
-        method: 'DELETE',
-        headers: getAdminHeaders()
+        method: 'DELETE'
       });
       if (res.success) {
         fetchAboutBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleDeleteAbout(id));
-      } else {
-        alert(res.error || 'Failed to delete banner');
       }
     } catch (err) {
       alert('Failed to delete banner');
@@ -621,15 +528,10 @@ export function WebsiteContentManager() {
     try {
       const res = await apiRequest(`/api/website/about-banners/${banner.id}`, {
         method: 'PUT',
-        headers: getAdminHeaders(),
         body: JSON.stringify({ status: newStatus })
       });
       if (res.success) {
         fetchAboutBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleToggleAboutStatus(banner));
-      } else {
-        alert(res.error || 'Failed to update status');
       }
     } catch (err) {
       alert('Failed to update status');
@@ -641,15 +543,10 @@ export function WebsiteContentManager() {
     try {
       const res = await apiRequest(`/api/website/about-banners/${banner.id}`, {
         method: 'PUT',
-        headers: getAdminHeaders(),
         body: JSON.stringify({ enabled: newEnabled })
       });
       if (res.success) {
         fetchAboutBanners();
-      } else if (res.status === 401 || (res.error && res.error.toLowerCase().includes('admin'))) {
-        handleAuthError(() => handleToggleAboutEnabled(banner));
-      } else {
-        alert(res.error || 'Failed to update status');
       }
     } catch (err) {
       alert('Failed to update status');
@@ -1968,102 +1865,6 @@ export function WebsiteContentManager() {
                 >
                   <Check className="h-4 w-4" />
                   <span>Save Changes</span>
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* ============================================================= */}
-      {/* RE-AUTHENTICATION MODAL (Auto-Rescue on Session Expiration)    */}
-      {/* ============================================================= */}
-      {reAuthModal.isOpen && (
-        <div className="fixed inset-0 z-[100] overflow-y-auto bg-black/80 backdrop-blur-xs flex items-center justify-center p-4 animate-fadeIn">
-          <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-sand-border animate-scaleIn">
-            <div className="px-6 py-5 bg-sand/40 border-b border-sand-border flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 rounded-xl bg-forest/10 text-forest">
-                  <KeyRound className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-heading font-extrabold text-forest-deep text-base">
-                    Admin Re-Authentication
-                  </h3>
-                  <p className="text-[11px] text-charcoal-muted">Renew your session without losing any changes</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setReAuthModal({ isOpen: false, pendingAction: null, errorMessage: '', isLoading: false })}
-                className="p-1.5 rounded-lg text-charcoal-muted hover:text-charcoal hover:bg-sand transition-colors cursor-pointer"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handlePerformReAuth} className="p-6 space-y-4">
-              <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200/80 flex items-start gap-2.5 text-xs text-amber-800">
-                <AlertCircle className="h-4 w-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                <p>
-                  Your admin session has expired or requires re-authentication. Enter your admin password below to save your changes immediately.
-                </p>
-              </div>
-
-              {reAuthModal.errorMessage && (
-                <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium">
-                  {reAuthModal.errorMessage}
-                </div>
-              )}
-
-              <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-charcoal">
-                  Admin Password
-                </label>
-                <div className="relative">
-                  <input
-                    type={reAuthShowPass ? 'text' : 'password'}
-                    value={reAuthPassword}
-                    onChange={(e) => setReAuthPassword(e.target.value)}
-                    placeholder="Enter admin password..."
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-sand-border focus:ring-2 focus:ring-forest text-xs font-medium pr-10"
-                    autoFocus
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setReAuthShowPass(!reAuthShowPass)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-charcoal-muted hover:text-charcoal cursor-pointer"
-                  >
-                    {reAuthShowPass ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end gap-2.5 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setReAuthModal({ isOpen: false, pendingAction: null, errorMessage: '', isLoading: false })}
-                  className="px-4 py-2 rounded-xl border border-sand-border text-charcoal hover:bg-sand text-xs font-bold transition-colors cursor-pointer"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={reAuthModal.isLoading}
-                  className="px-5 py-2 rounded-xl bg-forest hover:bg-forest-light text-white text-xs font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {reAuthModal.isLoading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Verifying...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Check className="h-4 w-4" />
-                      <span>Verify &amp; Save Changes</span>
-                    </>
-                  )}
                 </button>
               </div>
             </form>

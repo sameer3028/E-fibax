@@ -84,19 +84,6 @@ export function AdminLayout({ onExitAdmin }) {
     };
 
     checkAuth();
-
-    const handleUnauthorizedEvent = () => {
-      // If unauthorized event received and no modal is actively saving work, reset auth
-      const hasOpenModal = document.querySelector('.animate-scaleIn');
-      if (!hasOpenModal) {
-        localStorage.removeItem('fibax_admin_token');
-        sessionStorage.removeItem('fibax_admin_token');
-        setIsAuthenticated(false);
-      }
-    };
-
-    window.addEventListener('fibax:admin:unauthorized', handleUnauthorizedEvent);
-    return () => window.removeEventListener('fibax:admin:unauthorized', handleUnauthorizedEvent);
   }, []);
 
   const handleLogout = async () => {
