@@ -5,6 +5,7 @@ node_modules/
 
 # Testing
 coverage/
+server/tests/test_data_sandbox/
 
 # Production build
 dist/
@@ -17,12 +18,23 @@ build/
 .env.test.local
 .env.production.local
 
-# Logs
+# Logs & Ephemeral Sessions
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+server/data/admin_sessions.json
+server/data/customer_sessions.json
+
+# Backups & Temporary Data Files
+server/backups/
+*.bak
+*.tmp.*
+*.corrupt.*
+
+# Scratch Scripts & Testing Notes
+scratch/
 
 # Editor & OS
 .vscode/
@@ -34,7 +46,3 @@ lerna-debug.log*
 *.sw?
 .DS_Store
 Thumbs.db
-scratch/
-server/backups/
-*.bak
-*.tmp.*

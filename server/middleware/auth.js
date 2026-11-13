@@ -3,11 +3,12 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { existsSync } from 'fs';
 import { getArray, getSingleton, setSingleton, readJsonFile, writeJsonFile } from '../store.js';
+import { DATA_DIR } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const ADMIN_SESSIONS_FILE = join(__dirname, '..', 'data', 'admin_sessions.json');
-const CUSTOMER_SESSIONS_FILE = join(__dirname, '..', 'data', 'customer_sessions.json');
+const ADMIN_SESSIONS_FILE = join(DATA_DIR, 'admin_sessions.json');
+const CUSTOMER_SESSIONS_FILE = join(DATA_DIR, 'customer_sessions.json');
 
 // Password hashing using scrypt
 export function hashPassword(password, salt) {

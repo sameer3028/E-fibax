@@ -15,6 +15,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, copyFileSync, unlinkSync } from 'fs';
 import { dirname, join, basename } from 'path';
 import { fileURLToPath } from 'url';
+import { DATA_DIR, ensureRuntimeFile } from './config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,15 +31,15 @@ const DRIVER = normalizeDriver(process.env.STORAGE_DRIVER);
 const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries', 'coupons'];
 const SINGLETON_NAMES = ['admin_auth', 'shipping_config'];
 
-const dataDir = join(__dirname, 'data');
+const dataDir = DATA_DIR;
 const FILE_FOR = {
-  products: join(dataDir, 'products.json'),
-  orders: join(dataDir, 'orders.json'),
-  users: join(dataDir, 'users.json'),
-  enquiries: join(dataDir, 'enquiries.json'),
-  coupons: join(dataDir, 'coupons.json'),
-  admin_auth: join(dataDir, 'admin_auth.json'),
-  shipping_config: join(dataDir, 'shipping_config.json')
+  products: join(DATA_DIR, 'products.json'),
+  orders: join(DATA_DIR, 'orders.json'),
+  users: join(DATA_DIR, 'users.json'),
+  enquiries: join(DATA_DIR, 'enquiries.json'),
+  coupons: join(DATA_DIR, 'coupons.json'),
+  admin_auth: join(DATA_DIR, 'admin_auth.json'),
+  shipping_config: join(DATA_DIR, 'shipping_config.json')
 };
 
 // In-memory cache. Arrays default to []; singletons default to null.
@@ -128,10 +129,12 @@ const DB_DRIVERS = ['mysql', 'postgres'];
 function loadFromJsonFiles() {
   ensureDataDir();
   for (const name of ARRAY_NAMES) {
-    cache[name] = readJsonFile(FILE_FOR[name], []);
+    const filePath = ensureRuntimeFile(`${name}.json`, []);
+    cache[name] = readJsonFile(filePath, []);
   }
   for (const name of SINGLETON_NAMES) {
-    cache[name] = readJsonFile(FILE_FOR[name], null);
+    const filePath = ensureRuntimeFile(`${name}.json`, null);
+    cache[name] = readJsonFile(filePath, null);
   }
 }
 

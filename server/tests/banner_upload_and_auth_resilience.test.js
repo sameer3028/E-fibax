@@ -105,6 +105,20 @@ test('Banner Upload & Admin Auth Resilience Suite', async (t) => {
     assert.ok(data.data.desktopImage.startsWith('/uploads/'), 'Base64 desktop image must be auto-saved to /uploads/');
     assert.ok(data.data.mobileImage.startsWith('/uploads/'), 'Base64 mobile image must be auto-saved to /uploads/');
 
+    // Clean up temporary test files created by base64 auto-save
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const deskBase = path.basename(data.data.desktopImage);
+      const mobBase = path.basename(data.data.mobileImage);
+      [deskBase, mobBase].forEach(f => {
+        ['server/uploads', 'client/public/uploads'].forEach(dir => {
+          const p = path.join(process.cwd(), dir, f);
+          if (fs.existsSync(p)) fs.unlinkSync(p);
+        });
+      });
+    } catch (_) {}
+
     // Restore original clean images
     await fetch(`${baseUrl}/api/website/home-banners/banner_multivitamin`, {
       method: 'PUT',

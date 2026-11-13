@@ -5,15 +5,15 @@ import { writeFileSync, existsSync } from 'fs';
 import { requireAdminAuth } from '../middleware/auth.js';
 import { contactLimiter, uploadLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray, readJsonFile, writeJsonFile } from '../store.js';
+import { DATA_DIR, getUploadsDir, ensureRuntimeFile } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = Router();
-const dataDir = join(__dirname, '..', 'data');
-const uploadsDir = join(__dirname, '..', 'uploads');
-const ABOUT_BANNERS_FILE = join(dataDir, 'about_banners.json');
-const HOME_BANNERS_FILE = join(dataDir, 'home_banners.json');
+const uploadsDir = getUploadsDir();
+const ABOUT_BANNERS_FILE = ensureRuntimeFile('about_banners.json');
+const HOME_BANNERS_FILE = ensureRuntimeFile('home_banners.json');
 
 // Helper to auto-persist base64 data URLs to static /uploads/ files
 export function saveBase64MediaIfPresent(dataUrl, prefix = 'banner') {
@@ -50,32 +50,7 @@ export function saveBase64MediaIfPresent(dataUrl, prefix = 'banner') {
 // ==========================================
 
 const readAboutBanners = () => {
-  return readJsonFile(ABOUT_BANNERS_FILE, [
-    {
-      id: 'banner_default',
-      title: 'Default About Us Hero',
-      enabled: true,
-      status: 'published',
-      sortOrder: 1,
-      desktopImage: '',
-      mobileImage: '',
-      badgeText: 'AUTHENTIC AYURVEDIC HERITAGE',
-      heading: 'Pioneering Pure Ayurvedic Healthcare & Natural Wellness',
-      description: 'Fibax Ayurveda is a premier herbal wellness brand dedicated to formulating authentic, research-driven botanical remedies. Backed by WHO-GMP certified infrastructure, we deliver pure, chemical-free healthcare solutions directly to households across India.',
-      primaryBtnText: 'Browse 250+ Formulations',
-      primaryBtnUrl: 'products',
-      secondaryBtnText: 'Contact Us',
-      secondaryBtnUrl: 'contact',
-      trustPoints: [
-        'Pure & Natural Ingredients',
-        'WHO-GMP Certified',
-        'Safe & Effective Formulations',
-        'Made for Healthier India'
-      ],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-  ]);
+  return readJsonFile(ABOUT_BANNERS_FILE, []);
 };
 
 const saveAboutBanners = (banners) => {
@@ -269,7 +244,7 @@ const DEFAULT_HOME_BANNERS = [
 ];
 
 const readHomeBanners = () => {
-  return readJsonFile(HOME_BANNERS_FILE, DEFAULT_HOME_BANNERS);
+  return readJsonFile(HOME_BANNERS_FILE, []);
 };
 
 const saveHomeBanners = (banners) => {

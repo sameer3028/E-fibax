@@ -4,14 +4,14 @@ import { fileURLToPath } from 'url';
 import { existsSync, writeFileSync, readFileSync } from 'fs';
 import { requireAdminAuth } from '../middleware/auth.js';
 import { readJsonFile, writeJsonFile } from '../store.js';
+import { DATA_DIR, ensureRuntimeFile } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = Router();
-const dataDir = join(__dirname, '..', 'data');
-const BLOGS_FILE = join(dataDir, 'blogs.json');
-const BLOG_CATEGORIES_FILE = join(dataDir, 'blog_categories.json');
+const BLOGS_FILE = ensureRuntimeFile('blogs.json', []);
+const BLOG_CATEGORIES_FILE = ensureRuntimeFile('blog_categories.json', []);
 const PUBLIC_SITEMAP_FILE = join(__dirname, '..', '..', 'client', 'public', 'sitemap.xml');
 const DIST_SITEMAP_FILE = join(__dirname, '..', '..', 'client', 'dist', 'sitemap.xml');
 
@@ -99,7 +99,7 @@ const DEFAULT_CATEGORIES = [
 
 export function readBlogCategories() {
   const categories = readJsonFile(BLOG_CATEGORIES_FILE, null);
-  if (!categories || !Array.isArray(categories) || categories.length === 0) {
+  if (!categories || !Array.isArray(categories)) {
     writeJsonFile(BLOG_CATEGORIES_FILE, DEFAULT_CATEGORIES);
     return DEFAULT_CATEGORIES;
   }
@@ -208,7 +208,7 @@ export function syncScheduledPosts(blogs) {
 
 export async function getBlogs() {
   let blogs = readBlogsSync();
-  if (!blogs || !Array.isArray(blogs) || blogs.length === 0) {
+  if (!blogs || !Array.isArray(blogs)) {
     const seed = await getSeedPosts();
     if (seed && seed.length > 0) {
       writeJsonFile(BLOGS_FILE, seed);
