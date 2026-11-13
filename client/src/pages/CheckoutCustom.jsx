@@ -603,8 +603,8 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                 const image = item.featuredImage || item.image || item.product?.featuredImage;
 
                 return (
-                  <div key={idx} className="py-2 flex items-center justify-between text-xs gap-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
+                  <div key={idx} className="py-2 flex items-center justify-between text-xs gap-3 w-full min-w-0">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
                       {image && (
                         <img
                           src={image}
@@ -612,14 +612,14 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                           className="w-10 h-10 object-cover rounded-lg border border-sand-border flex-shrink-0"
                         />
                       )}
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="font-medium text-charcoal truncate">{title}</p>
-                        <p className="text-[11px] text-charcoal-muted">
+                        <p className="text-[11px] text-charcoal-muted truncate">
                           {pack} • Qty: <strong>{qty}</strong>
                         </p>
                       </div>
                     </div>
-                    <span className="font-bold text-forest whitespace-nowrap">
+                    <span className="font-bold text-forest whitespace-nowrap flex-shrink-0 ml-2">
                       {formatPrice(price * qty)}
                     </span>
                   </div>
@@ -703,27 +703,29 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
 
               {!isOtpVerified ? (
                 <div className="space-y-3 pt-2">
-                  <div className="flex gap-2">
-                    <div className="flex items-center px-3.5 py-3 rounded-2xl border border-sand-border bg-[#FBF9F4] text-xs font-bold text-forest">
-                      🇮🇳 +91
+                  <div className="flex flex-col sm:flex-row gap-2.5 w-full min-w-0">
+                    <div className="flex items-center gap-2 flex-1 min-w-0 w-full">
+                      <div className="flex items-center justify-center px-3 py-3 rounded-2xl border border-sand-border bg-[#FBF9F4] text-xs font-bold text-forest flex-shrink-0">
+                        🇮🇳 +91
+                      </div>
+                      <input
+                        type="tel"
+                        maxLength={10}
+                        value={mobile}
+                        onChange={(e) => {
+                          setMobile(e.target.value.replace(/\D/g, ''));
+                          setOtpError('');
+                        }}
+                        placeholder="Enter 10-digit Mobile Number"
+                        className="flex-1 min-w-0 w-full px-3.5 sm:px-4 py-3 rounded-2xl border border-sand-border bg-white text-sm text-charcoal placeholder-charcoal-muted focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest box-border"
+                      />
                     </div>
-                    <input
-                      type="tel"
-                      maxLength={10}
-                      value={mobile}
-                      onChange={(e) => {
-                        setMobile(e.target.value.replace(/\D/g, ''));
-                        setOtpError('');
-                      }}
-                      placeholder="Enter 10-digit Mobile Number"
-                      className="flex-1 px-4 py-3 rounded-2xl border border-sand-border bg-white text-sm text-charcoal placeholder-charcoal-muted focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest"
-                    />
                     {!otpSent && (
                       <button
                         type="button"
                         disabled={mobile.length !== 10 || otpSending}
                         onClick={handleSendOtp}
-                        className="px-5 py-3 rounded-2xl bg-forest hover:bg-forest-deep text-white text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xs flex items-center gap-1.5 whitespace-nowrap"
+                        className="w-full sm:w-auto px-5 py-3 rounded-2xl bg-forest hover:bg-forest-deep text-white text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap flex-shrink-0"
                       >
                         {otpSending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Send OTP'}
                       </button>
@@ -749,7 +751,7 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                         )}
                       </div>
 
-                      <div className="flex gap-2">
+                      <div className="flex flex-col sm:flex-row gap-2 w-full min-w-0">
                         <input
                           type="tel"
                           maxLength={4}
@@ -759,13 +761,13 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                             setOtpError('');
                           }}
                           placeholder="Enter 4-digit OTP"
-                          className="flex-1 px-4 py-2.5 text-center tracking-widest text-base font-bold rounded-xl border border-sand-border bg-white focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest"
+                          className="flex-1 min-w-0 w-full px-4 py-2.5 text-center tracking-widest text-base font-bold rounded-xl border border-sand-border bg-white focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest box-border"
                         />
                         <button
                           type="button"
                           disabled={otpCode.length < 4 || otpVerifying}
                           onClick={handleVerifyOtp}
-                          className="px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xs flex items-center gap-1.5"
+                          className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap flex-shrink-0"
                         >
                           {otpVerifying ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Verify OTP'}
                         </button>
@@ -966,64 +968,64 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                 {/* UPI / Cards Option Card */}
                 <label
                   onClick={() => setPaymentMethod('UPI')}
-                  className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                  className={`flex items-start sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all gap-3 w-full max-w-full box-border ${
                     paymentMethod === 'UPI'
                       ? 'border-forest bg-forest/5 shadow-xs'
                       : 'border-sand-border hover:bg-sand/40'
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
                     <input
                       type="radio"
                       name="checkout_custom_payment"
                       checked={paymentMethod === 'UPI'}
                       onChange={() => setPaymentMethod('UPI')}
-                      className="h-4 w-4 text-forest focus:ring-forest cursor-pointer"
+                      className="h-4 w-4 text-forest focus:ring-forest cursor-pointer mt-1 sm:mt-0 flex-shrink-0"
                     />
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                         <span className="text-sm font-bold text-charcoal">
                           🟢 UPI / Cards / Net Banking
                         </span>
-                        <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
+                        <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
                           Fastest
                         </span>
                       </div>
-                      <p className="text-xs text-charcoal-muted mt-0.5">
+                      <p className="text-xs text-charcoal-muted mt-0.5 break-words">
                         Instant Google Pay, PhonePe, Paytm, Debit/Credit Card, Net Banking
                       </p>
                     </div>
                   </div>
-                  <CreditCard className="h-5 w-5 text-forest flex-shrink-0" />
+                  <CreditCard className="h-5 w-5 text-forest flex-shrink-0 mt-1 sm:mt-0" />
                 </label>
 
                 {/* Cash on Delivery Option Card */}
                 <label
                   onClick={() => setPaymentMethod('COD')}
-                  className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                  className={`flex items-start sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl border-2 cursor-pointer transition-all gap-3 w-full max-w-full box-border ${
                     paymentMethod === 'COD'
                       ? 'border-forest bg-forest/5 shadow-xs'
                       : 'border-sand-border hover:bg-sand/40'
                   }`}
                 >
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
                     <input
                       type="radio"
                       name="checkout_custom_payment"
                       checked={paymentMethod === 'COD'}
                       onChange={() => setPaymentMethod('COD')}
-                      className="h-4 w-4 text-forest focus:ring-forest cursor-pointer"
+                      className="h-4 w-4 text-forest focus:ring-forest cursor-pointer mt-1 sm:mt-0 flex-shrink-0"
                     />
-                    <div>
-                      <span className="text-sm font-bold text-charcoal">
+                    <div className="min-w-0 flex-1">
+                      <span className="text-sm font-bold text-charcoal block">
                         💵 Cash on Delivery
                       </span>
-                      <p className="text-xs text-charcoal-muted mt-0.5">
-                        Pay cash or scan QR at doorstep upon arrival
+                      <p className="text-xs text-charcoal-muted mt-0.5 break-words">
+                        Pay cash or scan QR at doorstep via Delhivery Express courier
                       </p>
                     </div>
                   </div>
-                  <Banknote className="h-5 w-5 text-brand flex-shrink-0" />
+                  <Banknote className="h-5 w-5 text-brand flex-shrink-0 mt-1 sm:mt-0" />
                 </label>
               </div>
             </section>
@@ -1200,25 +1202,25 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                     </div>
                   ) : (
                     <>
-                      <div className="flex gap-2">
+                      <div className="flex items-center gap-2 w-full min-w-0">
                         <input
                           type="text"
                           value={couponInput}
                           onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                          placeholder="Enter coupon code"
-                          className="flex-1 px-3.5 py-2.5 rounded-xl border border-sand-border text-xs uppercase focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest"
+                          placeholder="ENTER COUPON CODE"
+                          className="flex-1 min-w-0 w-full px-3.5 py-2.5 rounded-xl border border-sand-border text-xs uppercase focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest box-border"
                         />
                         <button
                           type="button"
                           onClick={() => handleApplyCoupon()}
-                          className="px-4 py-2.5 rounded-xl bg-forest hover:bg-forest-deep text-white text-xs font-bold transition-colors shadow-xs"
+                          className="flex-shrink-0 px-5 py-2.5 rounded-xl bg-forest hover:bg-forest-deep text-white text-xs font-bold transition-colors shadow-xs whitespace-nowrap"
                         >
                           Apply
                         </button>
                       </div>
 
                       {/* Dynamic 1-Tap Coupon Shortcuts from Backend */}
-                      <div className="flex flex-wrap gap-1.5 pt-1">
+                      <div className="flex flex-wrap gap-1.5 pt-1 w-full max-w-full">
                         {coupons && coupons.filter(c => c.isActive !== false).length > 0 ? (
                           coupons.filter(c => c.isActive !== false).map((c) => {
                             const minOrd = Number(c.minOrder || 0);
@@ -1232,7 +1234,7 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                                 key={c.id || c.code}
                                 type="button"
                                 onClick={() => handleApplyCoupon(c.code)}
-                                className={`px-3 py-1.5 rounded-full border text-xs font-bold transition-all flex items-center gap-1.5 ${
+                                className={`max-w-full px-3 py-1.5 rounded-full border text-xs font-bold transition-all flex flex-wrap items-center gap-1.5 text-left ${
                                   isCurrentlyApplied
                                     ? 'border-emerald-600 bg-emerald-100 text-emerald-900 shadow-xs ring-2 ring-emerald-500/30'
                                     : isEligible
@@ -1241,9 +1243,9 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                                 }`}
                                 title={c.description || (minOrd > 0 ? `Minimum order: ₹${minOrd}` : '')}
                               >
-                                <span>🏷️ {c.code} ({discountLabel})</span>
+                                <span className="break-all sm:break-normal">🏷️ {c.code} ({discountLabel})</span>
                                 {!isEligible && (
-                                  <span className="text-[10px] bg-sand-border/60 text-charcoal-muted px-1.5 py-0.2 rounded font-normal">
+                                  <span className="text-[10px] bg-sand-border/60 text-charcoal-muted px-1.5 py-0.2 rounded font-normal whitespace-nowrap">
                                     Min ₹{minOrd}
                                   </span>
                                 )}

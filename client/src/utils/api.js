@@ -59,6 +59,8 @@ export async function apiRequest(endpoint, options = {}) {
 
     const cleanEndpoint = String(endpoint);
     const isAdminRoute = cleanEndpoint.includes('/admin') ||
+      cleanEndpoint.includes('/website') ||
+      cleanEndpoint.includes('/coupons') ||
       cleanEndpoint.includes('/shipping/config') ||
       cleanEndpoint.includes('/email/config') ||
       cleanEndpoint.includes('/email/test') ||

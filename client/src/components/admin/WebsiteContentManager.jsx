@@ -322,6 +322,11 @@ export function WebsiteContentManager() {
         if (res.success) {
           setIsHomeModalOpen(false);
           fetchHomeBanners();
+        } else if (res.status === 401) {
+          alert('Your admin session has expired. Please log in again to save changes.');
+          localStorage.removeItem('fibax_admin_token');
+          sessionStorage.removeItem('fibax_admin_token');
+          window.location.reload();
         } else {
           alert(res.error || 'Failed to update banner');
         }
@@ -333,6 +338,11 @@ export function WebsiteContentManager() {
         if (res.success) {
           setIsHomeModalOpen(false);
           fetchHomeBanners();
+        } else if (res.status === 401) {
+          alert('Your admin session has expired. Please log in again to save changes.');
+          localStorage.removeItem('fibax_admin_token');
+          sessionStorage.removeItem('fibax_admin_token');
+          window.location.reload();
         } else {
           alert(res.error || 'Failed to create banner');
         }
@@ -489,6 +499,11 @@ export function WebsiteContentManager() {
         if (res.success) {
           setIsAboutModalOpen(false);
           fetchAboutBanners();
+        } else if (res.status === 401) {
+          alert('Your admin session has expired. Please log in again to save changes.');
+          localStorage.removeItem('fibax_admin_token');
+          sessionStorage.removeItem('fibax_admin_token');
+          window.location.reload();
         } else {
           alert(res.error || 'Failed to update banner');
         }
@@ -500,6 +515,11 @@ export function WebsiteContentManager() {
         if (res.success) {
           setIsAboutModalOpen(false);
           fetchAboutBanners();
+        } else if (res.status === 401) {
+          alert('Your admin session has expired. Please log in again to save changes.');
+          localStorage.removeItem('fibax_admin_token');
+          sessionStorage.removeItem('fibax_admin_token');
+          window.location.reload();
         } else {
           alert(res.error || 'Failed to create banner');
         }

@@ -102,6 +102,13 @@ router.post('/logout', (req, res) => {
   const session = getAdminSessionFromRequest(req);
   if (session) {
     activeAdminSessions.delete(session.token);
+    try {
+      const config = getAdminConfig();
+      if (config.tokens && config.tokens[session.token]) {
+        delete config.tokens[session.token];
+        setSingleton('admin_auth', config);
+      }
+    } catch {}
   }
   return res.json({ success: true, message: 'Logged out successfully' });
 });

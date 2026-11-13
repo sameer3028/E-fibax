@@ -3,5 +3,51 @@
   "salt": "e7afe88523e812e032431a526d0d9040",
   "passwordHash": "77f621868818241073e6ef84177e6a9ef583079ec06aeba35e2b62e2aa6a921d95089a0caa9dbf270f66dbdcdbac50f3a2ad386f87b98c03198ba494c4e2de49",
   "createdAt": "2026-09-11T13:01:17.528Z",
-  "updatedAt": "2026-09-11T13:01:17.529Z"
+  "updatedAt": "2026-09-11T13:01:17.529Z",
+  "tokens": {
+    "927b559890c30516dcfb8ee7af8c70468a44d5bfd6767b099b440f8f84c5a4ce": {
+      "username": "admin",
+      "expiresAt": 1795192389209
+    },
+    "3b64a53dd9dbaefe2ef0f28c27ef0108e1f24914af07130355a8fd77c2133d37": {
+      "username": "admin",
+      "expiresAt": 1795192406138
+    },
+    "2901f75f05998e27560f5816fbfe8f208d31d6c67325c941f99a66182647dddc": {
+      "username": "admin",
+      "expiresAt": 1795192413569
+    },
+    "d520f07fbcf4360a4499b4f03ce74f2f5358fd61417b3e42aacfdff37b93daf7": {
+      "username": "admin",
+      "expiresAt": 1795192721275
+    },
+    "5e84c83d8efd9a4a89ae51d26db4898f54e336d451795724d23b865de6629e78": {
+      "username": "admin",
+      "expiresAt": 1795192721285
+    },
+    "c85471bf937370018913a88d6c8a6a837ea39afd9eb319142d43bc256264cbc4": {
+      "username": "admin_test",
+      "expiresAt": 1795192721301
+    },
+    "7a38111fa217503957a50960db152bd253df877303bdd78e2b26501fbb413164": {
+      "username": "admin",
+      "expiresAt": 1795192721345
+    },
+    "1825f94a237ecb822b2b0c1bfc0decdfc8a79f1503bdf9bc2472cb27b2be2fd6": {
+      "username": "admin",
+      "expiresAt": 1795192919439
+    },
+    "16e4d2a186a8e25ffc0dd9be9007df098dd645bd975421d6eb5e86fcbcd521a7": {
+      "username": "admin",
+      "expiresAt": 1795192919445
+    },
+    "7c36f3e996475bb6594dbf0bf1e8dc76b64e0797d6077ecf54cc26828be83a75": {
+      "username": "admin_test",
+      "expiresAt": 1795192919457
+    },
+    "799210a79315f4cf8f0e9da08297d6cb749df7c78283d6bcf353da7a3adbf867": {
+      "username": "admin",
+      "expiresAt": 1795192919476
+    }
+  }
 }

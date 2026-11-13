@@ -39,6 +39,26 @@ export function generateAdminToken(username) {
   const token = crypto.randomBytes(32).toString('hex');
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
   activeAdminSessions.set(token, { username, expiresAt });
+
+  // Persist token in admin_auth singleton so sessions survive server restarts/deploys
+  try {
+    const config = getAdminConfig();
+    if (!config.tokens || typeof config.tokens !== 'object') {
+      config.tokens = {};
+    }
+    config.tokens[token] = { username: username || config.username || 'admin', expiresAt };
+    // Prune expired tokens
+    const now = Date.now();
+    for (const [t, s] of Object.entries(config.tokens)) {
+      if (!s || !s.expiresAt || s.expiresAt < now) {
+        delete config.tokens[t];
+      }
+    }
+    setSingleton('admin_auth', config);
+  } catch (err) {
+    console.error('Failed to persist admin session token:', err);
+  }
+
   return token;
 }
 
@@ -48,7 +68,28 @@ export function getAdminSessionFromRequest(req) {
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') return null;
   const token = parts[1];
-  const session = activeAdminSessions.get(token);
+  
+  let session = activeAdminSessions.get(token);
+
+  // If not found in RAM (e.g. after server reboot or redeploy), check admin_auth singleton
+  if (!session) {
+    try {
+      const config = getAdminConfig();
+      if (config.tokens && config.tokens[token]) {
+        const persisted = config.tokens[token];
+        if (persisted.expiresAt > Date.now()) {
+          session = { username: persisted.username || config.username || 'admin', expiresAt: persisted.expiresAt };
+          activeAdminSessions.set(token, session);
+        } else {
+          delete config.tokens[token];
+          setSingleton('admin_auth', config);
+        }
+      }
+    } catch (err) {
+      console.error('Error verifying persisted session:', err);
+    }
+  }
+
   if (!session) return null;
   if (Date.now() > session.expiresAt) {
     activeAdminSessions.delete(token);
