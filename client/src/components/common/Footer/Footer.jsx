@@ -150,7 +150,7 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
                 </a>
               </li>
               <li>
-                <a href="/about" className="hover:text-gold transition-colors">
+                <a href="/privacy" className="hover:text-gold transition-colors">
                   Privacy Policy
                 </a>
               </li>

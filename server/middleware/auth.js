@@ -36,17 +36,25 @@ export function getAdminConfig() {
 export const activeAdminSessions = new Map();
 
 export function generateAdminToken(username) {
-  const token = crypto.randomBytes(32).toString('hex');
+  const config = getAdminConfig();
+  const uname = username || config.username || 'admin';
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
-  activeAdminSessions.set(token, { username, expiresAt });
+  const randomHex = crypto.randomBytes(16).toString('hex');
 
-  // Persist token in admin_auth singleton so sessions survive server restarts/deploys
+  // Compute HMAC signature over username:randomHex:expiresAt using config.passwordHash
+  // This allows tokens to be verified even after server restarts or container redeploys
+  const payload = `${uname}:${randomHex}:${expiresAt}`;
+  const hmac = crypto.createHmac('sha256', config.passwordHash).update(payload).digest('hex');
+  const token = `fba_${randomHex}_${expiresAt}_${hmac}`;
+
+  activeAdminSessions.set(token, { username: uname, expiresAt });
+
+  // Persist token in admin_auth singleton for tracking/legacy support
   try {
-    const config = getAdminConfig();
     if (!config.tokens || typeof config.tokens !== 'object') {
       config.tokens = {};
     }
-    config.tokens[token] = { username: username || config.username || 'admin', expiresAt };
+    config.tokens[token] = { username: uname, expiresAt };
     // Prune expired tokens
     const now = Date.now();
     for (const [t, s] of Object.entries(config.tokens)) {
@@ -68,34 +76,52 @@ export function getAdminSessionFromRequest(req) {
   const parts = authHeader.split(' ');
   if (parts.length !== 2 || parts[0] !== 'Bearer') return null;
   const token = parts[1];
+  if (!token || token === 'null' || token === 'undefined') return null;
   
+  // 1. Check in-memory cache
   let session = activeAdminSessions.get(token);
+  if (session && session.expiresAt > Date.now()) {
+    return { ...session, token };
+  }
 
-  // If not found in RAM (e.g. after server reboot or redeploy), check admin_auth singleton
-  if (!session) {
-    try {
-      const config = getAdminConfig();
-      if (config.tokens && config.tokens[token]) {
-        const persisted = config.tokens[token];
-        if (persisted.expiresAt > Date.now()) {
-          session = { username: persisted.username || config.username || 'admin', expiresAt: persisted.expiresAt };
-          activeAdminSessions.set(token, session);
-        } else {
-          delete config.tokens[token];
-          setSingleton('admin_auth', config);
+  // 2. Check signed HMAC token (survives any server reboot or deployment!)
+  try {
+    const config = getAdminConfig();
+    if (token.startsWith('fba_')) {
+      const parts = token.split('_');
+      if (parts.length === 4) {
+        const [, randomHex, expStr, signature] = parts;
+        const expiresAt = parseInt(expStr, 10);
+        if (expiresAt > Date.now()) {
+          const uname = config.username || 'admin';
+          const payload = `${uname}:${randomHex}:${expiresAt}`;
+          const expectedHmac = crypto.createHmac('sha256', config.passwordHash).update(payload).digest('hex');
+          if (crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedHmac, 'hex'))) {
+            session = { username: uname, expiresAt };
+            activeAdminSessions.set(token, session);
+            return { ...session, token };
+          }
         }
       }
-    } catch (err) {
-      console.error('Error verifying persisted session:', err);
     }
+
+    // 3. Fallback: Check persisted tokens in admin_auth singleton (legacy 64-char hex tokens)
+    if (config.tokens && config.tokens[token]) {
+      const persisted = config.tokens[token];
+      if (persisted.expiresAt > Date.now()) {
+        session = { username: persisted.username || config.username || 'admin', expiresAt: persisted.expiresAt };
+        activeAdminSessions.set(token, session);
+        return { ...session, token };
+      } else {
+        delete config.tokens[token];
+        setSingleton('admin_auth', config);
+      }
+    }
+  } catch (err) {
+    console.error('Error verifying admin session token:', err);
   }
 
-  if (!session) return null;
-  if (Date.now() > session.expiresAt) {
-    activeAdminSessions.delete(token);
-    return null;
-  }
-  return { ...session, token };
+  return null;
 }
 
 /**

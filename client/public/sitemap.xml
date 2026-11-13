@@ -38,6 +38,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://www.fibaxpharma.com/privacy</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://www.fibaxpharma.com/track</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>monthly</changefreq>

@@ -315,34 +315,72 @@ export function WebsiteContentManager() {
 
     try {
       if (editingHomeBanner) {
-        const res = await apiRequest(`/api/website/home-banners/${editingHomeBanner.id}`, {
+        let res = await apiRequest(`/api/website/home-banners/${editingHomeBanner.id}`, {
           method: 'PUT',
           body: JSON.stringify(homeFormData)
         });
+
+        // If unauthorized or session expired, prompt for password to retry without losing user input
+        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
+          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
+          if (pass) {
+            const loginRes = await apiRequest('/api/admin/login', {
+              method: 'POST',
+              body: JSON.stringify({ username: 'admin', password: pass.trim() })
+            });
+            if (loginRes.success && loginRes.token) {
+              localStorage.setItem('fibax_admin_token', loginRes.token);
+              sessionStorage.setItem('fibax_admin_token', loginRes.token);
+              res = await apiRequest(`/api/website/home-banners/${editingHomeBanner.id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${loginRes.token}` },
+                body: JSON.stringify(homeFormData)
+              });
+            } else {
+              alert(loginRes.error || 'Authentication failed. Incorrect password.');
+              return;
+            }
+          }
+        }
+
         if (res.success) {
           setIsHomeModalOpen(false);
           fetchHomeBanners();
-        } else if (res.status === 401) {
-          alert('Your admin session has expired. Please log in again to save changes.');
-          localStorage.removeItem('fibax_admin_token');
-          sessionStorage.removeItem('fibax_admin_token');
-          window.location.reload();
         } else {
           alert(res.error || 'Failed to update banner');
         }
       } else {
-        const res = await apiRequest('/api/website/home-banners', {
+        let res = await apiRequest('/api/website/home-banners', {
           method: 'POST',
           body: JSON.stringify(homeFormData)
         });
+
+        // If unauthorized or session expired, prompt for password to retry without losing user input
+        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
+          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
+          if (pass) {
+            const loginRes = await apiRequest('/api/admin/login', {
+              method: 'POST',
+              body: JSON.stringify({ username: 'admin', password: pass.trim() })
+            });
+            if (loginRes.success && loginRes.token) {
+              localStorage.setItem('fibax_admin_token', loginRes.token);
+              sessionStorage.setItem('fibax_admin_token', loginRes.token);
+              res = await apiRequest('/api/website/home-banners', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${loginRes.token}` },
+                body: JSON.stringify(homeFormData)
+              });
+            } else {
+              alert(loginRes.error || 'Authentication failed. Incorrect password.');
+              return;
+            }
+          }
+        }
+
         if (res.success) {
           setIsHomeModalOpen(false);
           fetchHomeBanners();
-        } else if (res.status === 401) {
-          alert('Your admin session has expired. Please log in again to save changes.');
-          localStorage.removeItem('fibax_admin_token');
-          sessionStorage.removeItem('fibax_admin_token');
-          window.location.reload();
         } else {
           alert(res.error || 'Failed to create banner');
         }
@@ -492,34 +530,70 @@ export function WebsiteContentManager() {
     }
     try {
       if (editingAboutBanner) {
-        const res = await apiRequest(`/api/website/about-banners/${editingAboutBanner.id}`, {
+        let res = await apiRequest(`/api/website/about-banners/${editingAboutBanner.id}`, {
           method: 'PUT',
           body: JSON.stringify(aboutFormData)
         });
+
+        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
+          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
+          if (pass) {
+            const loginRes = await apiRequest('/api/admin/login', {
+              method: 'POST',
+              body: JSON.stringify({ username: 'admin', password: pass.trim() })
+            });
+            if (loginRes.success && loginRes.token) {
+              localStorage.setItem('fibax_admin_token', loginRes.token);
+              sessionStorage.setItem('fibax_admin_token', loginRes.token);
+              res = await apiRequest(`/api/website/about-banners/${editingAboutBanner.id}`, {
+                method: 'PUT',
+                headers: { 'Authorization': `Bearer ${loginRes.token}` },
+                body: JSON.stringify(aboutFormData)
+              });
+            } else {
+              alert(loginRes.error || 'Authentication failed. Incorrect password.');
+              return;
+            }
+          }
+        }
+
         if (res.success) {
           setIsAboutModalOpen(false);
           fetchAboutBanners();
-        } else if (res.status === 401) {
-          alert('Your admin session has expired. Please log in again to save changes.');
-          localStorage.removeItem('fibax_admin_token');
-          sessionStorage.removeItem('fibax_admin_token');
-          window.location.reload();
         } else {
           alert(res.error || 'Failed to update banner');
         }
       } else {
-        const res = await apiRequest('/api/website/about-banners', {
+        let res = await apiRequest('/api/website/about-banners', {
           method: 'POST',
           body: JSON.stringify(aboutFormData)
         });
+
+        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
+          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
+          if (pass) {
+            const loginRes = await apiRequest('/api/admin/login', {
+              method: 'POST',
+              body: JSON.stringify({ username: 'admin', password: pass.trim() })
+            });
+            if (loginRes.success && loginRes.token) {
+              localStorage.setItem('fibax_admin_token', loginRes.token);
+              sessionStorage.setItem('fibax_admin_token', loginRes.token);
+              res = await apiRequest('/api/website/about-banners', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${loginRes.token}` },
+                body: JSON.stringify(aboutFormData)
+              });
+            } else {
+              alert(loginRes.error || 'Authentication failed. Incorrect password.');
+              return;
+            }
+          }
+        }
+
         if (res.success) {
           setIsAboutModalOpen(false);
           fetchAboutBanners();
-        } else if (res.status === 401) {
-          alert('Your admin session has expired. Please log in again to save changes.');
-          localStorage.removeItem('fibax_admin_token');
-          sessionStorage.removeItem('fibax_admin_token');
-          window.location.reload();
         } else {
           alert(res.error || 'Failed to create banner');
         }

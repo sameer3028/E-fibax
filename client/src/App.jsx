@@ -13,6 +13,7 @@ import { Contact } from './pages/Contact';
 import { Blogs } from './pages/Blogs';
 import { BlogDetail } from './pages/BlogDetail';
 import { Terms } from './pages/Terms';
+import { Privacy } from './pages/Privacy';
 import { BLOG_POSTS } from './data/blogs';
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 import { CartDrawer } from './components/common/Cart/CartDrawer';
@@ -158,6 +159,9 @@ function StorefrontApp() {
       } else if (pathname === '/terms' || pathname === '/terms-and-conditions' || pathname === '/terms-of-service') {
         setCurrentPage('terms');
         document.title = 'Terms & Conditions | Fibax Ayurveda';
+      } else if (pathname === '/privacy' || pathname === '/privacy-policy') {
+        setCurrentPage('privacy');
+        document.title = 'Privacy Policy | Fibax Ayurveda';
       } else if (pathname === '/admin') {
         setCurrentPage('admin');
         document.title = 'Admin Console | Fibax Pharma';
@@ -237,6 +241,10 @@ function StorefrontApp() {
       targetUrl = '/terms';
       setCurrentPage('terms');
       document.title = 'Terms & Conditions | Fibax Ayurveda';
+    } else if (pageId === 'privacy' || pageId === 'privacy-policy') {
+      targetUrl = '/privacy';
+      setCurrentPage('privacy');
+      document.title = 'Privacy Policy | Fibax Ayurveda';
     } else if (pageId === 'admin') {
       targetUrl = '/admin';
       setCurrentPage('admin');
@@ -403,6 +411,10 @@ function StorefrontApp() {
 
             {currentPage === 'terms' && (
               <Terms onNavigate={handleNavigate} />
+            )}
+
+            {currentPage === 'privacy' && (
+              <Privacy onNavigate={handleNavigate} />
             )}
           </motion.div>
         </AnimatePresence>

@@ -250,7 +250,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
               <Truck className="h-3 w-3 inline" /> Track Order
             </button>
             <span>•</span>
-            <button onClick={() => handleNav('about')} className="hover:underline">Privacy Policy</button>
+            <button onClick={() => handleNav('privacy')} className="hover:underline">Privacy Policy</button>
             <span>•</span>
             <button onClick={() => handleNav('terms')} className="hover:underline">Terms & Conditions</button>
             <span>•</span>

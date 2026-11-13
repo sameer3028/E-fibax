@@ -536,9 +536,9 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
                   {!isOtpVerified ? (
                     <div className="space-y-3 pt-1">
                       {/* Mobile input with +91 prefix */}
-                      <div className="flex flex-col sm:flex-row gap-2.5 w-full min-w-0">
-                        <div className="flex items-center gap-2 flex-1 min-w-0 w-full">
-                          <div className="flex items-center justify-center px-3 py-2.5 rounded-xl border border-sand-border bg-white text-xs font-bold text-forest flex-shrink-0">
+                      <div className="space-y-2 w-full min-w-0">
+                        <div className="flex items-stretch rounded-xl border border-sand-border bg-white overflow-hidden w-full focus-within:ring-2 focus-within:ring-forest/30 focus-within:border-forest shadow-2xs">
+                          <div className="flex items-center justify-center px-3 py-2.5 bg-[#FBF9F4] border-r border-sand-border text-xs font-bold text-forest whitespace-nowrap flex-shrink-0 select-none">
                             🇮🇳 +91
                           </div>
                           <input
@@ -550,7 +550,7 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
                               setOtpError('');
                             }}
                             placeholder="Enter 10-digit Mobile Number"
-                            className="flex-1 min-w-0 w-full px-3.5 py-2.5 rounded-xl border border-sand-border bg-white text-xs text-charcoal placeholder-charcoal-muted focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest box-border"
+                            className="flex-1 min-w-0 px-3.5 py-2.5 bg-transparent text-xs text-charcoal placeholder-charcoal-muted focus:outline-none"
                           />
                         </div>
                         {!otpSent && (
@@ -558,7 +558,7 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
                             type="button"
                             disabled={mobile.length !== 10 || otpSending}
                             onClick={handleSendOtp}
-                            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-forest hover:bg-forest-deep text-white text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap flex-shrink-0"
+                            className="w-full px-4 py-2.5 rounded-xl bg-forest hover:bg-forest-deep text-white text-xs font-bold disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-xs flex items-center justify-center gap-1.5 whitespace-nowrap"
                           >
                             {otpSending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Send OTP'}
                           </button>
@@ -595,7 +595,7 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
                                 setOtpError('');
                               }}
                               placeholder="Enter 4-digit OTP"
-                              className="flex-1 min-w-0 w-full px-3 py-2 text-center tracking-widest text-sm font-bold rounded-lg border border-sand-border focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest box-border"
+                              className="flex-1 min-w-0 px-3 py-2 text-center tracking-widest text-sm font-bold rounded-lg border border-sand-border focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest"
                             />
                             <button
                               type="button"
@@ -833,18 +833,18 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
                         </div>
                       ) : (
                         <>
-                          <div className="flex items-center gap-2 w-full min-w-0">
+                          <div className="flex items-stretch rounded-xl border border-sand-border bg-white overflow-hidden w-full focus-within:ring-2 focus-within:ring-forest/30 focus-within:border-forest shadow-2xs">
                             <input
                               type="text"
                               value={couponInput}
                               onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                               placeholder="ENTER COUPON CODE"
-                              className="flex-1 min-w-0 w-full px-3 py-2 rounded-xl border border-sand-border text-xs uppercase focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest box-border"
+                              className="flex-1 min-w-0 px-3 py-2 bg-transparent text-xs uppercase font-medium text-charcoal placeholder-charcoal-muted focus:outline-none"
                             />
                             <button
                               type="button"
                               onClick={() => handleApplyCoupon()}
-                              className="flex-shrink-0 px-4 py-2 rounded-xl bg-forest hover:bg-forest-deep text-white text-xs font-bold transition-colors shadow-xs whitespace-nowrap"
+                              className="px-4 py-2 bg-forest hover:bg-forest-deep text-white text-xs font-bold transition-colors whitespace-nowrap flex-shrink-0"
                             >
                               Apply
                             </button>

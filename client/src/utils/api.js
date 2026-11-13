@@ -54,8 +54,10 @@ export async function apiRequest(endpoint, options = {}) {
 
   // Automatically attach Authorization token if present in storage and not explicitly provided
   if (!headers['Authorization'] && !headers['authorization'] && typeof window !== 'undefined') {
-    const adminToken = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
-    const customerToken = localStorage.getItem('fibax_auth_token') || sessionStorage.getItem('fibax_auth_token');
+    const rawAdminToken = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+    const adminToken = rawAdminToken && rawAdminToken !== 'null' && rawAdminToken !== 'undefined' ? rawAdminToken.trim() : null;
+    const rawCustomerToken = localStorage.getItem('fibax_auth_token') || sessionStorage.getItem('fibax_auth_token');
+    const customerToken = rawCustomerToken && rawCustomerToken !== 'null' && rawCustomerToken !== 'undefined' ? rawCustomerToken.trim() : null;
 
     const cleanEndpoint = String(endpoint);
     const isAdminRoute = cleanEndpoint.includes('/admin') ||
@@ -166,9 +168,14 @@ async function executeFetch(url, options, headers) {
   }
 
   if (!res.ok || data.success === false) {
+    const isAuth = res.status === 401 ||
+      (typeof data.error === 'string' && data.error.toLowerCase().includes('unauthorized')) ||
+      (typeof data.error === 'string' && data.error.toLowerCase().includes('authentication required'));
+
     return {
       success: false,
       status: res.status,
+      isAuthError: isAuth,
       error: data.error || data.message || `Request failed with status ${res.status}`,
       ...data
     };
