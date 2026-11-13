@@ -1068,6 +1068,18 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                 <span>•</span>
                 <span>Delhivery Express Air</span>
               </div>
+
+              <p className="text-center text-[11px] text-charcoal-muted mt-2">
+                By placing an order, you agree to Fibax Ayurveda's{' '}
+                <a
+                  href="/terms"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-forest font-semibold underline hover:text-forest-deep"
+                >
+                  Terms & Conditions
+                </a>
+              </p>
             </div>
 
           </div>

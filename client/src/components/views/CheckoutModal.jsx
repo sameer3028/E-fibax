@@ -1087,6 +1087,18 @@ export function CheckoutModal({ isOpen, onClose, onOpenTrackOrder }) {
                     <span>•</span>
                     <span>Direct Ayurvedic Dispatch</span>
                   </div>
+
+                  <p className="text-center text-[10px] text-charcoal-muted mt-2">
+                    By placing an order, you accept Fibax Ayurveda's{' '}
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-forest font-semibold underline hover:text-forest-deep"
+                    >
+                      Terms & Conditions
+                    </a>
+                  </p>
                 </div>
               </>
             )}

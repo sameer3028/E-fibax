@@ -46,6 +46,7 @@ export async function generateSitemap() {
     { loc: `${BASE_URL}/blogs`, priority: '0.8', changefreq: 'daily', lastmod: today },
     { loc: `${BASE_URL}/about`, priority: '0.7', changefreq: 'weekly', lastmod: today },
     { loc: `${BASE_URL}/contact`, priority: '0.7', changefreq: 'monthly', lastmod: today },
+    { loc: `${BASE_URL}/terms`, priority: '0.5', changefreq: 'monthly', lastmod: today },
     { loc: `${BASE_URL}/track`, priority: '0.6', changefreq: 'monthly', lastmod: today }
   ];
 

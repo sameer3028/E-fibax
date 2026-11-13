@@ -252,7 +252,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
             <span>•</span>
             <button onClick={() => handleNav('about')} className="hover:underline">Privacy Policy</button>
             <span>•</span>
-            <button onClick={() => handleNav('about')} className="hover:underline">Terms of Service</button>
+            <button onClick={() => handleNav('terms')} className="hover:underline">Terms & Conditions</button>
             <span>•</span>
             <button onClick={() => handleNav('contact')} className="hover:underline">Shipping & Return Policy</button>
           </div>
