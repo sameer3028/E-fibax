@@ -10,7 +10,7 @@
     "mrp": 999,
     "salePrice": 799,
     "discountPercent": 20,
-    "stockQuantity": 50,
+    "stockQuantity": 55,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/Untitled-1-1790179478381.jpg",
@@ -33,7 +33,7 @@
       "packs": []
     },
     "createdAt": "2026-09-23T15:52:47.568Z",
-    "updatedAt": "2026-09-23T18:16:08.921Z",
+    "updatedAt": "2026-11-13T10:28:59.592Z",
     "isCombo": true,
     "images": [
       "/uploads/Untitled-1-1790179478381.jpg",
@@ -41,7 +41,122 @@
       "/uploads/Untitled-3-1790187354627.jpg",
       "/uploads/Untitled-4-1790187354668.jpg",
       "/uploads/Untitled-5-1790187354731.jpg"
-    ]
+    ],
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (combos)",
+      "heading": "Therapeutic Efficacy of joint conbo pack",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax joint conbo pack Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for joint conbo pack",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from joint conbo pack?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0
   },
   {
     "id": "1790173325139",
@@ -127,9 +242,9 @@
     "mrp": 650,
     "salePrice": 600,
     "discountPercent": 8,
-    "stockQuantity": 0,
+    "stockQuantity": 55,
     "lowStockThreshold": 15,
-    "inStock": false,
+    "inStock": true,
     "featuredImage": "/uploads/safed-musli.png",
     "ratingAverage": "4.6",
     "ratingCount": 28,
@@ -165,7 +280,128 @@
       }
     ],
     "createdAt": "2026-09-10T10:43:10.576Z",
-    "updatedAt": "2026-09-22T10:21:25.095Z"
+    "updatedAt": "2026-11-13T10:28:59.647Z",
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (powders)",
+      "heading": "Therapeutic Efficacy of Fibax Safed Musli Powder 100gm",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Fibax Safed Musli Powder 100gm Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Fibax Safed Musli Powder 100gm",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from Fibax Safed Musli Powder 100gm?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0,
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    }
   },
   {
     "id": "3620",
@@ -280,12 +516,12 @@
     "mrp": 99,
     "salePrice": 90,
     "discountPercent": 9,
-    "stockQuantity": 800,
+    "stockQuantity": 805,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/rose-shop.png",
-    "ratingAverage": "4.9",
-    "ratingCount": 49,
+    "ratingAverage": 0,
+    "ratingCount": 0,
     "isBestseller": false,
     "volumeWeight": "30 Capsules",
     "shortDesc": "About this item: Handmade Rose Soap: Enriched with pure rose extracts, and natural glycerin for soft, nourished, and refreshed skin. Moisturising &amp; Brightening: Glycerin hydrates deeply while rose helps even skin tone, making this a gentle skin brightening soap. Ayurvedic &amp; Natural: Crafted with Ayurvedic herbs and oils, free from parabens, sulfates, and harsh chemicals. Anti-Fungal &amp; Antiseptic Care: Works as a mild anti fungal and antibacterial bathing soap, ideal for daily skin hygiene. Refreshing Fragrance: Infused with a soothing rose scent that uplifts your bath experience. Unisex &amp; Everyday Use: Suitable for men, women, and youth with all skin types.",
@@ -318,7 +554,128 @@
       }
     ],
     "createdAt": "2026-09-07T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-11-13T10:28:59.717Z",
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (skincare)",
+      "heading": "Therapeutic Efficacy of Fibax Rose Soap 75gm",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Fibax Rose Soap 75gm Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Fibax Rose Soap 75gm",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from Fibax Rose Soap 75gm?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0,
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    }
   },
   {
     "id": "3564",
@@ -484,7 +841,7 @@
     "mrp": 350,
     "salePrice": 345,
     "discountPercent": 1,
-    "stockQuantity": 2,
+    "stockQuantity": 7,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/multivitamin.png",
@@ -522,7 +879,7 @@
       }
     ],
     "createdAt": "2026-09-03T10:43:10.577Z",
-    "updatedAt": "2026-11-06T08:25:08.530Z",
+    "updatedAt": "2026-11-13T10:28:59.765Z",
     "images": [
       "/uploads/multivitamin.png",
       "/uploads/1-1790251081532.png",
@@ -580,172 +937,106 @@
     "packageHeightCm": 9,
     "productIntroduction": {
       "enabled": true,
-      "badge": "Authentic Ayurvedic Heritage",
-      "heading": "Root-Cause Restoration with 100% Raw Ayurvedic Herbs",
-      "description": "Unlike synthetic pills that provide temporary superficial relief, Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support is prepared by traditional cold decoction extraction to preserve active botanical phytoconstituents. It nourishes deep tissue systems (Dhatus), eliminates accumulated toxic bio-waste (Ama), and restores physiological equilibrium naturally.",
+      "badge": "Ayurvedic Formulation (syrups)",
+      "heading": "Therapeutic Efficacy of Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
       "features": [
         {
-          "title": "Cold Extraction Method",
-          "description": "Extracted within 24 hours of wild-crafting to retain heat-sensitive botanical enzymes, tannins, and bioflavonoids.",
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
           "icon": "leaf"
         },
         {
-          "title": "Targets Biological Root Cause",
-          "description": "Balances elevated Vata, Pitta, and Kapha doshas while optimizing cellular metabolism and digestive fire (Agni).",
-          "icon": "heart"
-        },
-        {
-          "title": "Heavy-Metal Lab Tested",
-          "description": "Every batch undergoes rigorous 3-tier testing for Lead, Mercury, Arsenic, and microbial safety under AYUSH standards.",
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
           "icon": "shield"
         }
       ]
     },
     "botanicalIngredients": {
-      "enabled": false,
-      "badge": "What Goes Inside Every Bottle",
-      "heading": "The Botanical Powerhouse Behind the Results",
-      "description": "Each ingredient is selected based on classical Ayurvedic treatises and verified modern pharmacological research.",
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
       "herbs": [
         {
-          "name": "Amla (Indian Gooseberry)",
-          "sanskrit": "Amalaki",
-          "role": "Potent Vitamin C & Cellular Immunity",
-          "desc": "Nourishes systemic tissues, balances all three doshas (Tridoshic), and strengthens cellular vitality."
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
         },
         {
-          "name": "Karela (Bitter Gourd)",
-          "sanskrit": "Karavellaka",
-          "role": "Active Polypeptide-p & Charantin",
-          "desc": "Naturally activates AMP-activated protein kinase to promote healthy cellular glucose uptake."
-        },
-        {
-          "name": "Jamun (Black Plum)",
-          "sanskrit": "Jambu Phala",
-          "role": "Glycemic Regulation & Pancreatic Tonification",
-          "desc": "Seeds and fruit extracts rich in jamboline that slow down the pathological conversion of starch into sugar."
-        },
-        {
-          "name": "Giloy (Guduchi)",
-          "sanskrit": "Amrita — The Nectar of Life",
-          "role": "Immunomodulator & Micro-Detox",
-          "desc": "A divine Rasayana herb that cleanses liver-gut toxins (Ama) and enhances biological defense mechanisms."
-        },
-        {
-          "name": "Gudmar (Gymnema)",
-          "sanskrit": "The Sugar Destroyer (Madhunashini)",
-          "role": "Suppresses Sweet Receptors",
-          "desc": "Clinically known to regenerate pancreatic islet beta cells and curb intense cravings for refined carbs."
-        },
-        {
-          "name": "Neem & Methi Extracts",
-          "sanskrit": "Nimba & Methika",
-          "role": "Lipid Balance & Metabolic Cleansing",
-          "desc": "Improves digestive fire (Agni), enhances liver bile secretions, and protects micro-vascular capillary circulation."
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
         }
       ]
     },
     "usageInstructions": {
       "enabled": true,
-      "badge": "Daily Wellness Protocol",
-      "heading": "How to Consume for Maximum Therapeutic Results",
-      "description": "Consistency is key in Ayurvedic healing. Follow this simple 3-step ritual daily.",
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
       "steps": [
         {
           "stepNumber": 1,
-          "title": "Shake & Measure",
-          "description": "Shake the bottle thoroughly. Measure 20-30 ml (approx 2-3 tablespoons) of the formulation."
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
         },
         {
           "stepNumber": 2,
-          "title": "Dilute with Water",
-          "description": "Mix with an equal quantity (30 ml) of lukewarm or normal drinking water in a glass."
-        },
-        {
-          "stepNumber": 3,
-          "title": "Twice Daily Ritual",
-          "description": "10-15 ml or 1-2 capsules twice daily after meals with lukewarm water, or as advised by an Ayurvedic physician."
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
         }
       ],
       "showProgression": true,
-      "progressionHeading": "Your 90-Day Ayurvedic Course Progression",
+      "progressionHeading": "90-Day Course Progression",
       "progressionStages": [
         {
-          "stage": "Day 1 - 30 (Bottle 1)",
-          "title": "Metabolic Detox & Cleansing",
-          "description": "Flushes metabolic toxins (Ama), jumpstarts sluggish digestive Agni, and stabilizes morning fatigue."
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
         },
         {
-          "stage": "Day 31 - 60 (Bottle 2)",
-          "title": "Organ Balance & Glycemic Control",
-          "description": "Noticeable reduction in post-meal spikes, balanced lipid levels, and improved stamina throughout the day."
-        },
-        {
-          "stage": "Day 61 - 90 (Bottle 3)",
-          "title": "Long-Term Equilibrium",
-          "description": "Restores cellular receptor sensitivity, supports sustained organ vitality, and locks in long-term wellness."
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
         }
       ]
     },
     "comparisonTable": {
       "enabled": true,
-      "badge": "Clinical Comparison",
-      "heading": "Why Fibax Pharma Stands Out",
-      "description": "See the tangible difference between authentic cold-pressed Ayurveda and typical marketplace brands.",
-      "competitorHeader": "Conventional Market Products",
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
       "rows": [
         {
-          "feature": "Extraction Technique",
-          "fibax": "Cold Decoction & Raw Swaras",
-          "competitor": "High-heat boiling (destroys enzymes)"
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
         },
         {
-          "feature": "Sugar & Artificial Sweeteners",
-          "fibax": "Zero Added Sugar or Aspartame",
-          "competitor": "Often laden with sugar syrup for taste"
-        },
-        {
-          "feature": "Raw Herb Sourcing",
-          "fibax": "Certified Organic Ayurvedic Farms",
-          "competitor": "Commercial dried powders of mixed origin"
-        },
-        {
-          "feature": "Safety & Heavy Metal Testing",
-          "fibax": "3-Tier NABL Accredited Lab Tested",
-          "competitor": "Rarely published batch test reports"
-        },
-        {
-          "feature": "Government Approvals",
-          "fibax": "AYUSH Ministry & GMP Certified",
-          "competitor": "Standard food license only"
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
         }
       ]
     },
     "faqsConfig": {
       "enabled": true,
-      "badge": "Everything You Need to Know",
-      "heading": "Frequently Asked Questions",
-      "description": "Clear answers to common questions about usage, safety, and course length.",
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support",
+      "description": "Clear guidance on safety, indications, and regimen.",
       "items": [
         {
-          "q": "Can I take this Ayurvedic formulation along with regular modern medicines?",
-          "a": "Yes, Fibax formulations are natural, AYUSH-approved botanical blends with zero synthetic chemicals. We advise maintaining a 30 to 45-minute gap between your regular medicines and Ayurvedic remedies."
+          "q": "How soon can I expect results from Fibax Multivitamin Syrup 500ml – Ayurvedic Multivitamin for Myalgia, Malnutrition & Anemia Support?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
         },
         {
-          "q": "How long should I follow the course for visible, lasting results?",
-          "a": "Ayurveda addresses root imbalances rather than offering temporary suppression. We recommend a minimum 60 to 90-day course (3 bottles/packs) for cellular repair, metabolic balance, and sustained outcomes."
-        },
-        {
-          "q": "What is the recommended daily dosage and timing?",
-          "a": "10-15 ml twice day after meals with lukewarm water, or as advised by an Ayurvedic physician."
-        },
-        {
-          "q": "What are the delivery?",
-          "a": "All orders are dispatched within 24 hours via Delhivery Express with live tracking. "
-        },
-        {
-          "q": "Storage guidelines?",
-          "a": "Store the formulation in a cool, dry place away from direct sunlight. Shake well before each use."
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
         }
       ]
     }
@@ -1229,7 +1520,7 @@
     "mrp": 315,
     "salePrice": 300,
     "discountPercent": 5,
-    "stockQuantity": 89,
+    "stockQuantity": 94,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/fevobax.png",
@@ -1267,7 +1558,128 @@
       }
     ],
     "createdAt": "2026-08-24T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-11-13T10:28:59.828Z",
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (capsules)",
+      "heading": "Therapeutic Efficacy of Fevobax Ayurvedic Capsules for Fever and Immunity Support – 30 Capsules",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Fevobax Ayurvedic Capsules for Fever and Immunity Support – 30 Capsules Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Fevobax Ayurvedic Capsules for Fever and Immunity Support – 30 Capsules",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from Fevobax Ayurvedic Capsules for Fever and Immunity Support – 30 Capsules?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0,
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    }
   },
   {
     "id": "2796",
@@ -1484,7 +1896,7 @@
     "mrp": 275,
     "salePrice": 260,
     "discountPercent": 5,
-    "stockQuantity": 59,
+    "stockQuantity": 64,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/triphla-juice.png",
@@ -1522,7 +1934,7 @@
       }
     ],
     "createdAt": "2026-08-19T10:43:10.577Z",
-    "updatedAt": "2026-09-23T16:13:44.944Z",
+    "updatedAt": "2026-11-13T10:28:59.876Z",
     "treatmentCourseConfig": {
       "enabled": true,
       "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
@@ -1559,7 +1971,122 @@
           "sortOrder": 3
         }
       ]
-    }
+    },
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (juices)",
+      "heading": "Therapeutic Efficacy of Fibax Triphala Juice for Digestion and Detox – 500ml",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Fibax Triphala Juice for Digestion and Detox – 500ml Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Fibax Triphala Juice for Digestion and Detox – 500ml",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from Fibax Triphala Juice for Digestion and Detox – 500ml?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0
   },
   {
     "id": "103",
@@ -1623,7 +2150,7 @@
     "mrp": 145,
     "salePrice": 140,
     "discountPercent": 3,
-    "stockQuantity": 73,
+    "stockQuantity": 78,
     "lowStockThreshold": 15,
     "inStock": true,
     "featuredImage": "/uploads/axe-ortho-oil.png",
@@ -1661,7 +2188,128 @@
       }
     ],
     "createdAt": "2026-08-17T10:43:10.577Z",
-    "updatedAt": "2026-09-11T13:13:59.939Z"
+    "updatedAt": "2026-11-13T10:28:59.925Z",
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (oils)",
+      "heading": "Therapeutic Efficacy of Axe Ortho Pain Relief Oil – 60ml",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Axe Ortho Pain Relief Oil – 60ml Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Axe Ortho Pain Relief Oil – 60ml",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from Axe Ortho Pain Relief Oil – 60ml?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0,
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    }
   },
   {
     "id": "101",
@@ -2251,7 +2899,7 @@
     "mrp": 399,
     "salePrice": 299,
     "discountPercent": 25,
-    "stockQuantity": 50,
+    "stockQuantity": 55,
     "lowStockThreshold": 10,
     "inStock": true,
     "featuredImage": "/uploads/hair-shampo.png",
@@ -2267,7 +2915,129 @@
     ],
     "ingredients": "Bhringraj, Shikakai, Reetha, Amla, Methi & Aloe Vera extract",
     "dosage": "Apply evenly on wet scalp, massage gently for 2 minutes, and rinse thoroughly.",
-    "ayushCertified": true
+    "ayushCertified": true,
+    "productIntroduction": {
+      "enabled": true,
+      "badge": "Ayurvedic Formulation (personal-care)",
+      "heading": "Therapeutic Efficacy of Fibax Kesh Sanjeevani Herbal Hair Shampoo – 200ml",
+      "description": "Clinically formulated with pure active botanicals to treat the root causes of health concerns without synthetic compounds.",
+      "features": [
+        {
+          "title": "Standardized Botanical Extract",
+          "description": "Assayed for bioactive potency and bioavailability.",
+          "icon": "leaf"
+        },
+        {
+          "title": "100% Pure & Toxin-Free",
+          "description": "Zero artificial preservatives, steroids, or heavy metals.",
+          "icon": "shield"
+        }
+      ]
+    },
+    "botanicalIngredients": {
+      "enabled": true,
+      "badge": "Herbal Composition",
+      "heading": "Key Botanical Actives",
+      "description": "Selected according to Charaka Samhita guidelines.",
+      "herbs": [
+        {
+          "name": "Pure Botanical Active A",
+          "sanskrit": "Dravya Shrestha",
+          "role": "Primary Active",
+          "desc": "Accelerates cellular healing."
+        },
+        {
+          "name": "Pure Botanical Active B",
+          "sanskrit": "Sahakari Dravya",
+          "role": "Bio-enhancer",
+          "desc": "Promotes micro-channel tissue penetration."
+        }
+      ]
+    },
+    "usageInstructions": {
+      "enabled": true,
+      "badge": "Administration Protocol",
+      "heading": "Recommended Usage & Daily Routine",
+      "description": "For optimal holistic absorption and balance.",
+      "steps": [
+        {
+          "stepNumber": 1,
+          "title": "Step 1: Preparation",
+          "description": "Take as prescribed after meals."
+        },
+        {
+          "stepNumber": 2,
+          "title": "Step 2: Consumption",
+          "description": "Follow with a glass of lukewarm water or as directed."
+        }
+      ],
+      "showProgression": true,
+      "progressionHeading": "90-Day Course Progression",
+      "progressionStages": [
+        {
+          "stage": "Phase 1 (Days 1-30)",
+          "title": "Detoxification",
+          "description": "Balances doshic disturbances and flushes toxins."
+        },
+        {
+          "stage": "Phase 2 (Days 31-90)",
+          "title": "Cellular Rejuvenation",
+          "description": "Sustained organ rejuvenation and tissue repair."
+        }
+      ]
+    },
+    "comparisonTable": {
+      "enabled": true,
+      "badge": "Clinical Advantage",
+      "heading": "Why Fibax Fibax Kesh Sanjeevani Herbal Hair Shampoo – 200ml Outperforms",
+      "description": "Rigorous comparison with standard commercial products.",
+      "competitorHeader": "Generic Market Alternatives",
+      "rows": [
+        {
+          "feature": "Purity & Grade",
+          "fibax": "100% Pure Extract (WHO-GMP & AYUSH)",
+          "competitor": "Diluted commercial blends"
+        },
+        {
+          "feature": "Safety Testing",
+          "fibax": "NABL Certified 3-Tier Heavy Metal Tested",
+          "competitor": "Rarely tested"
+        }
+      ]
+    },
+    "faqsConfig": {
+      "enabled": true,
+      "badge": "Frequently Asked Questions",
+      "heading": "FAQs for Fibax Kesh Sanjeevani Herbal Hair Shampoo – 200ml",
+      "description": "Clear guidance on safety, indications, and regimen.",
+      "items": [
+        {
+          "q": "How soon can I expect results from Fibax Kesh Sanjeevani Herbal Hair Shampoo – 200ml?",
+          "a": "Most users experience noticeable symptom relief within 2 to 3 weeks of regular daily use."
+        },
+        {
+          "q": "Is this formulation safe for long-term daily use?",
+          "a": "Yes, it is non-habit forming and 100% natural."
+        }
+      ]
+    },
+    "shippingPackage": {
+      "weightGrams": 0,
+      "lengthCm": 0,
+      "widthCm": 0,
+      "heightCm": 0
+    },
+    "packageWeightGrams": 0,
+    "packageLengthCm": 0,
+    "packageWidthCm": 0,
+    "packageHeightCm": 0,
+    "treatmentCourseConfig": {
+      "enabled": false,
+      "heading": "SELECT TREATMENT COURSE / VALUE PACK:",
+      "recommendationText": "Recommended 90-Day Course for Best Results",
+      "packs": []
+    },
+    "updatedAt": "2026-11-13T10:28:59.967Z"
   },
   {
     "id": "3702",

@@ -11,7 +11,7 @@ export function ProductDetail({
   onSelectConcern,
   onNavigate
 }) {
-  const activeProduct = product || (allProducts && allProducts.length > 0 ? allProducts[0] : null);
+  const activeProduct = (allProducts && product && allProducts.find(p => String(p.id) === String(product.id))) || product || (allProducts && allProducts.length > 0 ? allProducts[0] : null);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

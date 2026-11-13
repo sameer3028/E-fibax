@@ -25,6 +25,92 @@ function attachReviewStatsToProduct(p) {
   };
 }
 
+// ============================================================
+// PDP Content Sanitizers for Universal Product Compatibility
+// ============================================================
+export function sanitizeProductIntroduction(data) {
+  if (!data || typeof data !== 'object') return null;
+  return {
+    enabled: typeof data.enabled === 'boolean' ? data.enabled : data.enabled !== 'false' && data.enabled !== false,
+    badge: typeof data.badge === 'string' ? data.badge.trim() : '',
+    heading: typeof data.heading === 'string' ? data.heading.trim() : '',
+    description: typeof data.description === 'string' ? data.description.trim() : '',
+    features: Array.isArray(data.features) ? data.features.filter(f => f && (f.title || f.description)).map(f => ({
+      title: String(f.title || '').trim(),
+      description: String(f.description || '').trim(),
+      icon: ['leaf', 'heart', 'shield', 'sparkles'].includes(f.icon) ? f.icon : 'leaf'
+    })) : []
+  };
+}
+
+export function sanitizeBotanicalIngredients(data) {
+  if (!data || typeof data !== 'object') return null;
+  return {
+    enabled: typeof data.enabled === 'boolean' ? data.enabled : data.enabled !== 'false' && data.enabled !== false,
+    badge: typeof data.badge === 'string' ? data.badge.trim() : '',
+    heading: typeof data.heading === 'string' ? data.heading.trim() : '',
+    description: typeof data.description === 'string' ? data.description.trim() : '',
+    herbs: Array.isArray(data.herbs) ? data.herbs.filter(h => h && (h.name || h.sanskrit || h.role || h.desc)).map(h => ({
+      name: String(h.name || '').trim(),
+      sanskrit: String(h.sanskrit || '').trim(),
+      role: String(h.role || '').trim(),
+      desc: String(h.desc || '').trim()
+    })) : []
+  };
+}
+
+export function sanitizeUsageInstructions(data) {
+  if (!data || typeof data !== 'object') return null;
+  return {
+    enabled: typeof data.enabled === 'boolean' ? data.enabled : data.enabled !== 'false' && data.enabled !== false,
+    badge: typeof data.badge === 'string' ? data.badge.trim() : '',
+    heading: typeof data.heading === 'string' ? data.heading.trim() : '',
+    description: typeof data.description === 'string' ? data.description.trim() : '',
+    steps: Array.isArray(data.steps) ? data.steps.filter(s => s && (s.title || s.description)).map((s, i) => ({
+      stepNumber: Number(s.stepNumber) || i + 1,
+      title: String(s.title || '').trim(),
+      description: String(s.description || '').trim()
+    })) : [],
+    showProgression: data.showProgression !== false && data.showProgression !== 'false',
+    progressionHeading: typeof data.progressionHeading === 'string' ? data.progressionHeading.trim() : '',
+    progressionStages: Array.isArray(data.progressionStages) ? data.progressionStages.filter(stg => stg && (stg.stage || stg.title || stg.description)).map(stg => ({
+      stage: String(stg.stage || '').trim(),
+      title: String(stg.title || '').trim(),
+      description: String(stg.description || '').trim()
+    })) : []
+  };
+}
+
+export function sanitizeComparisonTable(data) {
+  if (!data || typeof data !== 'object') return null;
+  return {
+    enabled: typeof data.enabled === 'boolean' ? data.enabled : data.enabled !== 'false' && data.enabled !== false,
+    badge: typeof data.badge === 'string' ? data.badge.trim() : '',
+    heading: typeof data.heading === 'string' ? data.heading.trim() : '',
+    description: typeof data.description === 'string' ? data.description.trim() : '',
+    competitorHeader: typeof data.competitorHeader === 'string' ? data.competitorHeader.trim() : 'Conventional Market Products',
+    rows: Array.isArray(data.rows) ? data.rows.filter(r => r && (r.feature || r.fibax || r.competitor)).map(r => ({
+      feature: String(r.feature || '').trim(),
+      fibax: String(r.fibax || '').trim(),
+      competitor: String(r.competitor || '').trim()
+    })) : []
+  };
+}
+
+export function sanitizeFaqsConfig(data) {
+  if (!data || typeof data !== 'object') return null;
+  return {
+    enabled: typeof data.enabled === 'boolean' ? data.enabled : data.enabled !== 'false' && data.enabled !== false,
+    badge: typeof data.badge === 'string' ? data.badge.trim() : '',
+    heading: typeof data.heading === 'string' ? data.heading.trim() : '',
+    description: typeof data.description === 'string' ? data.description.trim() : '',
+    items: Array.isArray(data.items) ? data.items.filter(it => it && (it.q || it.a)).map(it => ({
+      q: String(it.q || '').trim(),
+      a: String(it.a || '').trim()
+    })) : []
+  };
+}
+
 // GET /api/products - Get all products with optional filters
 router.get('/', (req, res) => {
   try {
@@ -142,11 +228,11 @@ router.post('/', requireAdminAuth, (req, res) => {
         recommendationText: "Recommended 90-Day Course for Best Results",
         packs: []
       },
-      productIntroduction: body.productIntroduction || null,
-      botanicalIngredients: body.botanicalIngredients || null,
-      usageInstructions: body.usageInstructions || null,
-      comparisonTable: body.comparisonTable || null,
-      faqsConfig: body.faqsConfig || null,
+      productIntroduction: body.productIntroduction !== undefined ? sanitizeProductIntroduction(body.productIntroduction) : null,
+      botanicalIngredients: body.botanicalIngredients !== undefined ? sanitizeBotanicalIngredients(body.botanicalIngredients) : null,
+      usageInstructions: body.usageInstructions !== undefined ? sanitizeUsageInstructions(body.usageInstructions) : null,
+      comparisonTable: body.comparisonTable !== undefined ? sanitizeComparisonTable(body.comparisonTable) : null,
+      faqsConfig: body.faqsConfig !== undefined ? sanitizeFaqsConfig(body.faqsConfig) : null,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };
@@ -210,11 +296,11 @@ router.put('/:id', requireAdminAuth, (req, res) => {
         recommendationText: "Recommended 90-Day Course for Best Results",
         packs: []
       }),
-      productIntroduction: body.productIntroduction !== undefined ? body.productIntroduction : (current.productIntroduction || null),
-      botanicalIngredients: body.botanicalIngredients !== undefined ? body.botanicalIngredients : (current.botanicalIngredients || null),
-      usageInstructions: body.usageInstructions !== undefined ? body.usageInstructions : (current.usageInstructions || null),
-      comparisonTable: body.comparisonTable !== undefined ? body.comparisonTable : (current.comparisonTable || null),
-      faqsConfig: body.faqsConfig !== undefined ? body.faqsConfig : (current.faqsConfig || null),
+      productIntroduction: body.productIntroduction !== undefined ? sanitizeProductIntroduction(body.productIntroduction) : (current.productIntroduction || null),
+      botanicalIngredients: body.botanicalIngredients !== undefined ? sanitizeBotanicalIngredients(body.botanicalIngredients) : (current.botanicalIngredients || null),
+      usageInstructions: body.usageInstructions !== undefined ? sanitizeUsageInstructions(body.usageInstructions) : (current.usageInstructions || null),
+      comparisonTable: body.comparisonTable !== undefined ? sanitizeComparisonTable(body.comparisonTable) : (current.comparisonTable || null),
+      faqsConfig: body.faqsConfig !== undefined ? sanitizeFaqsConfig(body.faqsConfig) : (current.faqsConfig || null),
       updatedAt: new Date().toISOString()
     };
 

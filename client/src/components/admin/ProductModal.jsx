@@ -37,183 +37,291 @@ const PRESET_IMAGES = [
 ];
 
 
-const getDefaultProductContent = (product = {}) => {
-  const title = product?.title || 'This Ayurvedic Formulation';
-  const dosage = product?.dosage || '10-15 ml twice daily with warm water after meals';
+/**
+ * Safely initializes PDP content for any product.
+ * - If product already has saved content, preserves that exact content and enabled state.
+ * - If product has no saved content, initializes as DISABLED with empty arrays,
+ *   guaranteeing zero cross-product data contamination.
+ */
+const getInitialProductContent = (product = {}) => {
+  const title = (product?.title || '').trim();
+  const dosage = product?.dosage || '';
 
   return {
-    productIntroduction: product?.productIntroduction || {
-      enabled: true,
-      badge: 'Authentic Ayurvedic Heritage',
-      heading: 'Root-Cause Restoration with 100% Raw Ayurvedic Herbs',
-      description: `Unlike synthetic pills that provide temporary superficial relief, ${title} is prepared by traditional cold decoction extraction to preserve active botanical phytoconstituents. It nourishes deep tissue systems (Dhatus), eliminates accumulated toxic bio-waste (Ama), and restores physiological equilibrium naturally.`,
-      features: [
-        {
-          title: 'Cold Extraction Method',
-          description: 'Extracted within 24 hours of wild-crafting to retain heat-sensitive botanical enzymes, tannins, and bioflavonoids.',
-          icon: 'leaf'
-        },
-        {
-          title: 'Targets Biological Root Cause',
-          description: 'Balances elevated Vata, Pitta, and Kapha doshas while optimizing cellular metabolism and digestive fire (Agni).',
-          icon: 'heart'
-        },
-        {
-          title: 'Heavy-Metal Lab Tested',
-          description: 'Every batch undergoes rigorous 3-tier testing for Lead, Mercury, Arsenic, and microbial safety under AYUSH standards.',
-          icon: 'shield'
-        }
-      ]
+    productIntroduction: product?.productIntroduction ? {
+      enabled: product.productIntroduction.enabled !== false,
+      badge: product.productIntroduction.badge ?? 'Authentic Ayurvedic Formulation',
+      heading: product.productIntroduction.heading ?? (title ? `Restorative Power of ${title}` : 'Root-Cause Restoration with 100% Raw Ayurvedic Herbs'),
+      description: product.productIntroduction.description ?? '',
+      features: Array.isArray(product.productIntroduction.features) ? product.productIntroduction.features : []
+    } : {
+      enabled: false,
+      badge: 'Authentic Ayurvedic Formulation',
+      heading: title ? `Restorative Power of ${title}` : 'Root-Cause Restoration with 100% Raw Ayurvedic Herbs',
+      description: '',
+      features: []
     },
-    botanicalIngredients: product?.botanicalIngredients || {
-      enabled: true,
-      badge: 'What Goes Inside Every Bottle',
-      heading: 'The Botanical Powerhouse Behind the Results',
-      description: 'Each ingredient is selected based on classical Ayurvedic treatises and verified modern pharmacological research.',
-      herbs: [
-        {
-          name: 'Amla (Indian Gooseberry)',
-          sanskrit: 'Amalaki',
-          role: 'Potent Vitamin C & Cellular Immunity',
-          desc: 'Nourishes systemic tissues, balances all three doshas (Tridoshic), and strengthens cellular vitality.'
-        },
-        {
-          name: 'Karela (Bitter Gourd)',
-          sanskrit: 'Karavellaka',
-          role: 'Active Polypeptide-p & Charantin',
-          desc: 'Naturally activates AMP-activated protein kinase to promote healthy cellular glucose uptake.'
-        },
-        {
-          name: 'Jamun (Black Plum)',
-          sanskrit: 'Jambu Phala',
-          role: 'Glycemic Regulation & Pancreatic Tonification',
-          desc: 'Seeds and fruit extracts rich in jamboline that slow down the pathological conversion of starch into sugar.'
-        },
-        {
-          name: 'Giloy (Guduchi)',
-          sanskrit: 'Amrita — The Nectar of Life',
-          role: 'Immunomodulator & Micro-Detox',
-          desc: 'A divine Rasayana herb that cleanses liver-gut toxins (Ama) and enhances biological defense mechanisms.'
-        },
-        {
-          name: 'Gudmar (Gymnema)',
-          sanskrit: 'The Sugar Destroyer (Madhunashini)',
-          role: 'Suppresses Sweet Receptors',
-          desc: 'Clinically known to regenerate pancreatic islet beta cells and curb intense cravings for refined carbs.'
-        },
-        {
-          name: 'Neem & Methi Extracts',
-          sanskrit: 'Nimba & Methika',
-          role: 'Lipid Balance & Metabolic Cleansing',
-          desc: 'Improves digestive fire (Agni), enhances liver bile secretions, and protects micro-vascular capillary circulation.'
-        }
-      ]
+
+    botanicalIngredients: product?.botanicalIngredients ? {
+      enabled: product.botanicalIngredients.enabled !== false,
+      badge: product.botanicalIngredients.badge ?? 'Botanical Ingredients',
+      heading: product.botanicalIngredients.heading ?? 'Key Herbal Actives',
+      description: product.botanicalIngredients.description ?? '',
+      herbs: Array.isArray(product.botanicalIngredients.herbs) ? product.botanicalIngredients.herbs : []
+    } : {
+      enabled: false,
+      badge: 'Botanical Ingredients',
+      heading: 'Key Herbal Actives',
+      description: '',
+      herbs: []
     },
-    usageInstructions: product?.usageInstructions || {
-      enabled: true,
-      badge: 'Daily Wellness Protocol',
-      heading: 'How to Consume for Maximum Therapeutic Results',
-      description: 'Consistency is key in Ayurvedic healing. Follow this simple 3-step ritual daily.',
-      steps: [
-        {
-          stepNumber: 1,
-          title: 'Shake & Measure',
-          description: 'Shake the bottle thoroughly. Measure 20-30 ml (approx 2-3 tablespoons) of the formulation.'
-        },
-        {
-          stepNumber: 2,
-          title: 'Dilute with Water',
-          description: 'Mix with an equal quantity (30 ml) of lukewarm or normal drinking water in a glass.'
-        },
-        {
-          stepNumber: 3,
-          title: 'Twice Daily Ritual',
-          description: dosage || 'Drink once in the morning on an empty stomach and once 30 minutes after dinner.'
-        }
-      ],
-      showProgression: true,
-      progressionHeading: 'Your 90-Day Ayurvedic Course Progression',
-      progressionStages: [
-        {
-          stage: 'Day 1 - 30 (Bottle 1)',
-          title: 'Metabolic Detox & Cleansing',
-          description: 'Flushes metabolic toxins (Ama), jumpstarts sluggish digestive Agni, and stabilizes morning fatigue.'
-        },
-        {
-          stage: 'Day 31 - 60 (Bottle 2)',
-          title: 'Organ Balance & Glycemic Control',
-          description: 'Noticeable reduction in post-meal spikes, balanced lipid levels, and improved stamina throughout the day.'
-        },
-        {
-          stage: 'Day 61 - 90 (Bottle 3)',
-          title: 'Long-Term Equilibrium',
-          description: 'Restores cellular receptor sensitivity, supports sustained organ vitality, and locks in long-term wellness.'
-        }
-      ]
+
+    usageInstructions: product?.usageInstructions ? {
+      enabled: product.usageInstructions.enabled !== false,
+      badge: product.usageInstructions.badge ?? 'Daily Protocol',
+      heading: product.usageInstructions.heading ?? 'How to Use for Best Results',
+      description: product.usageInstructions.description ?? '',
+      steps: Array.isArray(product.usageInstructions.steps) ? product.usageInstructions.steps : [],
+      showProgression: product.usageInstructions.showProgression !== false,
+      progressionHeading: product.usageInstructions.progressionHeading ?? 'Recommended Course Progression',
+      progressionStages: Array.isArray(product.usageInstructions.progressionStages) ? product.usageInstructions.progressionStages : []
+    } : {
+      enabled: false,
+      badge: 'Daily Protocol',
+      heading: 'How to Use for Best Results',
+      description: dosage,
+      steps: [],
+      showProgression: false,
+      progressionHeading: 'Recommended Course Progression',
+      progressionStages: []
     },
-    comparisonTable: product?.comparisonTable || {
-      enabled: true,
+
+    comparisonTable: product?.comparisonTable ? {
+      enabled: product.comparisonTable.enabled !== false,
+      badge: product.comparisonTable.badge ?? 'Clinical Comparison',
+      heading: product.comparisonTable.heading ?? 'Why Fibax Pharma Stands Out',
+      description: product.comparisonTable.description ?? '',
+      competitorHeader: product.comparisonTable.competitorHeader ?? 'Conventional Market Products',
+      rows: Array.isArray(product.comparisonTable.rows) ? product.comparisonTable.rows : []
+    } : {
+      enabled: false,
       badge: 'Clinical Comparison',
       heading: 'Why Fibax Pharma Stands Out',
-      description: 'See the tangible difference between authentic cold-pressed Ayurveda and typical marketplace brands.',
+      description: '',
       competitorHeader: 'Conventional Market Products',
-      rows: [
-        {
-          feature: 'Extraction Technique',
-          fibax: 'Cold Decoction & Raw Swaras',
-          competitor: 'High-heat boiling (destroys enzymes)'
-        },
-        {
-          feature: 'Sugar & Artificial Sweeteners',
-          fibax: 'Zero Added Sugar or Aspartame',
-          competitor: 'Often laden with sugar syrup for taste'
-        },
-        {
-          feature: 'Raw Herb Sourcing',
-          fibax: 'Certified Organic Ayurvedic Farms',
-          competitor: 'Commercial dried powders of mixed origin'
-        },
-        {
-          feature: 'Safety & Heavy Metal Testing',
-          fibax: '3-Tier NABL Accredited Lab Tested',
-          competitor: 'Rarely published batch test reports'
-        },
-        {
-          feature: 'Government Approvals',
-          fibax: 'AYUSH Ministry & GMP Certified',
-          competitor: 'Standard food license only'
-        }
-      ]
+      rows: []
     },
-    faqsConfig: product?.faqsConfig || {
-      enabled: true,
-      badge: 'Everything You Need to Know',
+
+    faqsConfig: product?.faqsConfig ? {
+      enabled: product.faqsConfig.enabled !== false,
+      badge: product.faqsConfig.badge ?? 'Frequently Asked Questions',
+      heading: product.faqsConfig.heading ?? 'Frequently Asked Questions',
+      description: product.faqsConfig.description ?? '',
+      items: Array.isArray(product.faqsConfig.items) ? product.faqsConfig.items : []
+    } : {
+      enabled: false,
+      badge: 'Frequently Asked Questions',
       heading: 'Frequently Asked Questions',
-      description: 'Clear answers to common questions about usage, safety, and course length.',
-      items: [
-        {
-          q: 'Can I take this Ayurvedic formulation along with regular modern medicines?',
-          a: 'Yes, Fibax formulations are 100% natural, AYUSH-approved botanical blends with zero synthetic chemicals. We advise maintaining a 30 to 45-minute gap between your regular medicines and Ayurvedic remedies.'
-        },
-        {
-          q: 'How long should I follow the course for visible, lasting results?',
-          a: 'Ayurveda addresses root imbalances rather than offering temporary suppression. We recommend a minimum 60 to 90-day course (3 bottles/packs) for cellular repair, metabolic balance, and sustained outcomes.'
-        },
-        {
-          q: 'Are there any side effects or added preservatives?',
-          a: 'None. Fibax products are free from added sugar, artificial colorings, parabens, and heavy metal impurities. They are formulated strictly in GMP and ISO-certified pharmaceutical facilities.'
-        },
-        {
-          q: 'What is the recommended daily dosage and timing?',
-          a: dosage || 'Take 15-30 ml mixed with equal parts lukewarm water, twice daily — preferably once on an empty stomach in the morning and once 30 minutes after dinner.'
-        },
-        {
-          q: 'What are the delivery and storage guidelines?',
-          a: 'All orders are dispatched within 24 hours via Delhivery Express with live tracking. Store the formulation in a cool, dry place away from direct sunlight. Shake well before each use.'
-        }
-      ]
+      description: '',
+      items: []
     }
   };
+};
+
+/**
+ * Intelligent template generator: generates starter template customized to the product's
+ * title and dosageForm (Syrups, Capsules, Powders, Soaps, Oils, Juices).
+ */
+const generateSuggestedSectionTemplate = (sectionKey, product = {}) => {
+  const title = (product?.title || 'This Ayurvedic Formulation').trim();
+  const format = (product?.dosageForm || '').toLowerCase();
+
+  switch (sectionKey) {
+    case 'productIntroduction':
+      return {
+        enabled: true,
+        badge: 'Authentic Ayurvedic Formulation',
+        heading: `Root-Cause Restoration with 100% Pure Botanical Actives`,
+        description: `Formulated according to classical Ayurvedic treatises, ${title} works at deep tissue levels (Dhatus) to eliminate toxic bio-waste (Ama) and restore physiological equilibrium naturally.`,
+        features: [
+          {
+            title: 'Traditional Cold Processing',
+            description: 'Processed at controlled temperatures to preserve heat-sensitive active bioflavonoids and enzymes.',
+            icon: 'leaf'
+          },
+          {
+            title: 'Targets Root Imbalance',
+            description: 'Nourishes systemic cellular vitality and optimizes metabolism without artificial dependencies.',
+            icon: 'heart'
+          },
+          {
+            title: 'Heavy-Metal NABL Lab Tested',
+            description: 'Every batch undergoes rigorous 3-tier testing for Lead, Mercury, Arsenic, and microbial safety.',
+            icon: 'shield'
+          }
+        ]
+      };
+
+    case 'botanicalIngredients': {
+      const rawIng = product?.ingredients || '';
+      const parsedHerbs = rawIng && rawIng.includes(',')
+        ? rawIng.split(',').map(s => s.trim()).filter(Boolean).slice(0, 4).map((name, i) => ({
+            name,
+            sanskrit: `Active Botanical #${i + 1}`,
+            role: 'Standardized Herbal Active',
+            desc: `Supports therapeutic efficacy and cellular bioavailability.`
+          }))
+        : [
+            {
+              name: 'Primary Botanical Extract',
+              sanskrit: 'Mukhya Dravya',
+              role: 'Core Therapeutic Active',
+              desc: 'Selected based on verified Ayurvedic treatise indications.'
+            },
+            {
+              name: 'Synergistic Herbal Bio-enhancer',
+              sanskrit: 'Sahakari Dravya',
+              role: 'Absorption & Tissue Penetration',
+              desc: 'Enhances cellular assimilation and digestive compatibility.'
+            }
+          ];
+
+      return {
+        enabled: true,
+        badge: 'Botanical Ingredients',
+        heading: 'The Botanical Powerhouse Behind the Results',
+        description: 'Each botanical active is sourced from organically managed farms and standardized under AYUSH quality protocols.',
+        herbs: parsedHerbs
+      };
+    }
+
+    case 'usageInstructions': {
+      let steps = [];
+      if (format.includes('soap')) {
+        steps = [
+          { stepNumber: 1, title: 'Wet Skin', description: 'Moisten skin thoroughly with lukewarm or normal water.' },
+          { stepNumber: 2, title: 'Gentle Lather', description: 'Work into rich creamy lather and gently massage over body and face.' },
+          { stepNumber: 3, title: 'Rinse Clean', description: 'Rinse thoroughly with fresh water and pat dry with a soft towel.' }
+        ];
+      } else if (format.includes('oil')) {
+        steps = [
+          { stepNumber: 1, title: 'Dispense', description: 'Take 5 to 10 ml of oil in your palm.' },
+          { stepNumber: 2, title: 'Apply & Massage', description: 'Apply gently to the affected area in circular, soothing motions for 5-7 minutes.' },
+          { stepNumber: 3, title: 'Twice Daily Ritual', description: 'Apply once in the morning and once before bedtime for optimal absorption.' }
+        ];
+      } else if (format.includes('capsule') || format.includes('tablet')) {
+        steps = [
+          { stepNumber: 1, title: 'Measure Dosage', description: 'Take 1 to 2 capsules as indicated.' },
+          { stepNumber: 2, title: 'Lukewarm Water', description: 'Swallow with a full glass of lukewarm water 30 minutes after meals.' },
+          { stepNumber: 3, title: 'Daily Consistency', description: 'Consume twice daily — morning after breakfast and evening after dinner.' }
+        ];
+      } else if (format.includes('powder') || format.includes('churna')) {
+        steps = [
+          { stepNumber: 1, title: 'Measure', description: 'Measure 3 to 5 grams (approx 1 level teaspoon) of powder.' },
+          { stepNumber: 2, title: 'Mix Thoroughly', description: 'Mix in a cup of lukewarm water, fresh milk, or with honey as advised.' },
+          { stepNumber: 3, title: 'Daily Consumption', description: 'Drink once in the morning on an empty stomach and once at night.' }
+        ];
+      } else {
+        steps = [
+          { stepNumber: 1, title: 'Shake Bottle', description: 'Shake the bottle thoroughly before each use.' },
+          { stepNumber: 2, title: 'Measure & Dilute', description: 'Measure 10 to 20 ml and mix with an equal quantity of lukewarm water.' },
+          { stepNumber: 3, title: 'Daily Ritual', description: product?.dosage || 'Consume twice daily after meals, or as directed by an Ayurvedic physician.' }
+        ];
+      }
+
+      return {
+        enabled: true,
+        badge: 'Daily Wellness Protocol',
+        heading: 'How to Use for Best Therapeutic Results',
+        description: 'Consistency is essential in Ayurvedic healing. Follow this simple protocol daily.',
+        steps,
+        showProgression: true,
+        progressionHeading: 'Recommended 90-Day Course Progression',
+        progressionStages: [
+          {
+            stage: 'Month 1 (Days 1 - 30)',
+            title: 'Cellular Cleansing & Acclimatization',
+            description: 'Flushes systemic impurities (Ama), balances digestive fire (Agni), and initiates cellular nourishment.'
+          },
+          {
+            stage: 'Month 2 (Days 31 - 60)',
+            title: 'Organ Balance & Symptom Relief',
+            description: 'Visible improvements in daily energy, reduced discomfort, and progressive tissue restoration.'
+          },
+          {
+            stage: 'Month 3 (Days 61 - 90)',
+            title: 'Long-Term Equilibrium & Vitality',
+            description: 'Consolidates internal balance, supports sustained vitality, and protects against recurrence.'
+          }
+        ]
+      };
+    }
+
+    case 'comparisonTable':
+      return {
+        enabled: true,
+        badge: 'Clinical Comparison',
+        heading: 'Why Fibax Pharma Stands Out',
+        description: 'See the tangible difference between authentic Ayurvedic manufacturing and typical marketplace brands.',
+        competitorHeader: 'Conventional Market Products',
+        rows: [
+          {
+            feature: 'Extraction Technique',
+            fibax: 'Cold Decoction & Raw Extraction',
+            competitor: 'High-heat boiling (destroys active enzymes)'
+          },
+          {
+            feature: 'Chemicals & Artificial Additives',
+            fibax: 'Zero Added Chemicals, Sugar or Synthetic Colors',
+            competitor: 'Often loaded with artificial binders and preservatives'
+          },
+          {
+            feature: 'Raw Herb Sourcing',
+            fibax: 'Certified Organic Ayurvedic Cultivation',
+            competitor: 'Commercial dried powders of unverified origin'
+          },
+          {
+            feature: 'Safety & Heavy Metal Testing',
+            fibax: '3-Tier NABL Accredited Lab Batch Tested',
+            competitor: 'Rarely published batch test certificates'
+          },
+          {
+            feature: 'Manufacturing Standards',
+            fibax: 'AYUSH Ministry & WHO-GMP Certified',
+            competitor: 'Standard basic food license only'
+          }
+        ]
+      };
+
+    case 'faqsConfig':
+      return {
+        enabled: true,
+        badge: 'Everything You Need to Know',
+        heading: 'Frequently Asked Questions',
+        description: 'Clear answers to common questions about usage, safety, and course length.',
+        items: [
+          {
+            q: `Can I take ${title} alongside my regular allopathic medicines?`,
+            a: 'Yes, Fibax formulations are 100% natural, AYUSH-approved botanical blends. We advise maintaining a 30 to 45-minute gap between modern medicines and Ayurvedic remedies.'
+          },
+          {
+            q: 'How long should I follow the course for visible, lasting results?',
+            a: 'Ayurveda addresses root imbalances rather than offering temporary suppression. We recommend a minimum 60 to 90-day course (3 packs/bottles) for cellular repair, metabolic balance, and sustained outcomes.'
+          },
+          {
+            q: 'Are there any known side effects or habit-forming ingredients?',
+            a: 'None. Fibax formulations are non-habit forming and free from heavy metal impurities, parabens, and steroids. Formulated strictly under GMP standards.'
+          },
+          {
+            q: 'What are the delivery and storage guidelines?',
+            a: 'All orders are dispatched within 24 hours via Delhivery Express with live tracking. Store the formulation in a cool, dry place away from direct sunlight. Shake well before each use.'
+          }
+        ]
+      };
+
+    default:
+      return null;
+  }
 };
 
 export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
@@ -257,51 +365,13 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
       widthCm: '',
       heightCm: ''
     },
-        productIntroduction: {
-      enabled: true,
-      badge: 'Authentic Ayurvedic Heritage',
-      heading: 'Root-Cause Restoration with 100% Raw Ayurvedic Herbs',
-      description: '',
-      features: []
-    },
-    botanicalIngredients: {
-      enabled: true,
-      badge: 'What Goes Inside Every Bottle',
-      heading: 'The Botanical Powerhouse Behind the Results',
-      description: '',
-      herbs: []
-    },
-    usageInstructions: {
-      enabled: true,
-      badge: 'Daily Wellness Protocol',
-      heading: 'How to Consume for Maximum Therapeutic Results',
-      description: '',
-      steps: [],
-      showProgression: true,
-      progressionHeading: 'Your 90-Day Ayurvedic Course Progression',
-      progressionStages: []
-    },
-    comparisonTable: {
-      enabled: true,
-      badge: 'Clinical Comparison',
-      heading: 'Why Fibax Pharma Stands Out',
-      description: '',
-      competitorHeader: 'Conventional Market Products',
-      rows: []
-    },
-    faqsConfig: {
-      enabled: true,
-      badge: 'Everything You Need to Know',
-      heading: 'Frequently Asked Questions',
-      description: '',
-      items: []
-    },
     treatmentCourseConfig: {
       enabled: false,
       heading: 'SELECT TREATMENT COURSE / VALUE PACK:',
       recommendationText: 'Recommended 90-Day Course for Best Results',
       packs: []
     },
+    ...getInitialProductContent({})
   });
 
   useEffect(() => {
@@ -357,11 +427,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
           recommendationText: 'Recommended 90-Day Course for Best Results',
           packs: []
         },
-        productIntroduction: productToEdit.productIntroduction || getDefaultProductContent(productToEdit).productIntroduction,
-        botanicalIngredients: productToEdit.botanicalIngredients || getDefaultProductContent(productToEdit).botanicalIngredients,
-        usageInstructions: productToEdit.usageInstructions || getDefaultProductContent(productToEdit).usageInstructions,
-        comparisonTable: productToEdit.comparisonTable || getDefaultProductContent(productToEdit).comparisonTable,
-        faqsConfig: productToEdit.faqsConfig || getDefaultProductContent(productToEdit).faqsConfig,
+        ...getInitialProductContent(productToEdit),
       });
     } else {
       setFormData({
@@ -395,11 +461,7 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
           recommendationText: 'Recommended 90-Day Course for Best Results',
           packs: []
         },
-        productIntroduction: getDefaultProductContent({}).productIntroduction,
-        botanicalIngredients: getDefaultProductContent({}).botanicalIngredients,
-        usageInstructions: getDefaultProductContent({}).usageInstructions,
-        comparisonTable: getDefaultProductContent({}).comparisonTable,
-        faqsConfig: getDefaultProductContent({}).faqsConfig,
+        ...getInitialProductContent({}),
       });
     }
   }, [productToEdit, isOpen]);
@@ -521,6 +583,35 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
       [section]: {
         ...prev[section],
         enabled
+      }
+    }));
+  };
+
+  const handleLoadSuggestedTemplate = (sectionKey) => {
+    const template = generateSuggestedSectionTemplate(sectionKey, formData);
+    if (!template) return;
+
+    const currentSection = formData[sectionKey];
+    const hasExistingContent =
+      (currentSection?.features && currentSection.features.length > 0) ||
+      (currentSection?.herbs && currentSection.herbs.length > 0) ||
+      (currentSection?.steps && currentSection.steps.length > 0) ||
+      (currentSection?.rows && currentSection.rows.length > 0) ||
+      (currentSection?.items && currentSection.items.length > 0) ||
+      (currentSection?.description && currentSection.description.trim().length > 10);
+
+    if (hasExistingContent) {
+      const confirmReplace = window.confirm(
+        'Populate this section with suggested Ayurvedic template content? This will overwrite existing items in this section.'
+      );
+      if (!confirmReplace) return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [sectionKey]: {
+        ...template,
+        enabled: true
       }
     }));
   };
@@ -1970,7 +2061,19 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
               </div>
 
               {openSections.intro && (
-                <div className="p-4 pt-2 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                <div className="p-4 pt-3 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-sand-border/50">
+                    <span className="text-[11px] text-charcoal-muted font-medium">Hero story and core Ayurvedic value highlights.</span>
+                    <button
+                      type="button"
+                      onClick={() => handleLoadSuggestedTemplate('productIntroduction')}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-forest/10 text-forest hover:bg-forest/20 transition-colors"
+                      title="Load customized Ayurvedic template for this product"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      <span>Load Suggested Template</span>
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="block text-[11px] font-bold text-charcoal uppercase tracking-wider">Badge Tag</label>
@@ -2112,7 +2215,19 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
               </div>
 
               {openSections.ingredients && (
-                <div className="p-4 pt-2 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                <div className="p-4 pt-3 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-sand-border/50">
+                    <span className="text-[11px] text-charcoal-muted font-medium">Classical herbs, Sanskrit nomenclature, and biochemical actions.</span>
+                    <button
+                      type="button"
+                      onClick={() => handleLoadSuggestedTemplate('botanicalIngredients')}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-forest/10 text-forest hover:bg-forest/20 transition-colors"
+                      title="Load customized Ayurvedic template for this product"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      <span>Load Suggested Template</span>
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="block text-[11px] font-bold text-charcoal uppercase tracking-wider">Badge Tag</label>
@@ -2266,7 +2381,19 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
               </div>
 
               {openSections.usage && (
-                <div className="p-4 pt-2 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                <div className="p-4 pt-3 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-sand-border/50">
+                    <span className="text-[11px] text-charcoal-muted font-medium">Daily consumption steps, water dilution, and 90-day progress timeline.</span>
+                    <button
+                      type="button"
+                      onClick={() => handleLoadSuggestedTemplate('usageInstructions')}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-forest/10 text-forest hover:bg-forest/20 transition-colors"
+                      title="Load customized dosage & protocol template for this product format"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      <span>Load Suggested Template</span>
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="block text-[11px] font-bold text-charcoal uppercase tracking-wider">Badge Tag</label>
@@ -2469,7 +2596,19 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
               </div>
 
               {openSections.comparison && (
-                <div className="p-4 pt-2 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                <div className="p-4 pt-3 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-sand-border/50">
+                    <span className="text-[11px] text-charcoal-muted font-medium">Compare Fibax formulation standards against marketplace alternatives.</span>
+                    <button
+                      type="button"
+                      onClick={() => handleLoadSuggestedTemplate('comparisonTable')}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-forest/10 text-forest hover:bg-forest/20 transition-colors"
+                      title="Load clinical comparison benchmark rows"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      <span>Load Suggested Template</span>
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="space-y-1">
                       <label className="block text-[11px] font-bold text-charcoal uppercase tracking-wider">Badge Tag</label>
@@ -2620,7 +2759,19 @@ export function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
               </div>
 
               {openSections.faqs && (
-                <div className="p-4 pt-2 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                <div className="p-4 pt-3 border-t border-sand-border/60 bg-sand/10 space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-sand-border/50">
+                    <span className="text-[11px] text-charcoal-muted font-medium">Product-specific answers on safety, duration, drug interaction, and usage.</span>
+                    <button
+                      type="button"
+                      onClick={() => handleLoadSuggestedTemplate('faqsConfig')}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-forest/10 text-forest hover:bg-forest/20 transition-colors"
+                      title="Load recommended Ayurvedic FAQs for this product"
+                    >
+                      <Sparkles className="h-3 w-3" />
+                      <span>Load Suggested Template</span>
+                    </button>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1">
                       <label className="block text-[11px] font-bold text-charcoal uppercase tracking-wider">Badge Tag</label>

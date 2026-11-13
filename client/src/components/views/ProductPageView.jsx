@@ -184,77 +184,42 @@ export function ProductPageView({
     .filter(p => p.id !== product.id && p.concernId === product.concernId)
     .slice(0, 4);
 
-  // Botanical Herbs breakdown
-  const herbList = [
-    {
-      name: 'Amla (Indian Gooseberry)',
-      sanskrit: 'Amalaki',
-      role: 'Potent Vitamin C & Cellular Immunity',
-      desc: 'Nourishes systemic tissues, balances all three doshas (Tridoshic), and strengthens cellular vitality.'
-    },
-    {
-      name: 'Karela (Bitter Gourd)',
-      sanskrit: 'Karavellaka',
-      role: 'Active Polypeptide-p & Charantin',
-      desc: 'Naturally activates AMP-activated protein kinase to promote healthy cellular glucose uptake.'
-    },
-    {
-      name: 'Jamun (Black Plum)',
-      sanskrit: 'Jambu Phala',
-      role: 'Glycemic Regulation & Pancreatic Tonification',
-      desc: 'Seeds and fruit extracts rich in jamboline that slow down the pathological conversion of starch into sugar.'
-    },
-    {
-      name: 'Giloy (Guduchi)',
-      sanskrit: 'Amrita — The Nectar of Life',
-      role: 'Immunomodulator & Micro-Detox',
-      desc: 'A divine Rasayana herb that cleanses liver-gut toxins (Ama) and enhances biological defense mechanisms.'
-    },
-    {
-      name: 'Gudmar (Gymnema)',
-      sanskrit: 'The Sugar Destroyer (Madhunashini)',
-      role: 'Suppresses Sweet Receptors',
-      desc: 'Clinically known to regenerate pancreatic islet beta cells and curb intense cravings for refined carbs.'
-    },
-    {
-      name: 'Neem & Methi Extracts',
-      sanskrit: 'Nimba & Methika',
-      role: 'Lipid Balance & Metabolic Cleansing',
-      desc: 'Improves digestive fire (Agni), enhances liver bile secretions, and protects micro-vascular capillary circulation.'
-    }
-  ];
+  // Active PDP Section Detectors (product-specific, zero cross-product leakage)
+  const hasIntro = Boolean(
+    product?.productIntroduction &&
+    product.productIntroduction.enabled !== false &&
+    (product.productIntroduction.heading || product.productIntroduction.description || (Array.isArray(product.productIntroduction.features) && product.productIntroduction.features.length > 0))
+  );
 
-  const defaultComparisonRows = [
-    { feature: 'Extraction Technique', fibax: 'Cold Decoction & Raw Swaras', competitor: 'High-heat boiling (destroys enzymes)' },
-    { feature: 'Sugar & Artificial Sweeteners', fibax: 'Zero Added Sugar or Aspartame', competitor: 'Often laden with sugar syrup for taste' },
-    { feature: 'Raw Herb Sourcing', fibax: 'Certified Organic Ayurvedic Farms', competitor: 'Commercial dried powders of mixed origin' },
-    { feature: 'Safety & Heavy Metal Testing', fibax: '3-Tier NABL Accredited Lab Tested', competitor: 'Rarely published batch test reports' },
-    { feature: 'Government Approvals', fibax: 'AYUSH Ministry & GMP Certified', competitor: 'Standard food license only' }
-  ];
+  const hasBotanical = Boolean(
+    product?.botanicalIngredients &&
+    product.botanicalIngredients.enabled !== false &&
+    Array.isArray(product.botanicalIngredients.herbs) &&
+    product.botanicalIngredients.herbs.length > 0
+  );
 
-  // FAQ list
-  const faqs = [
-    {
-      q: 'Can I take this Ayurvedic formulation along with regular modern medicines?',
-      a: 'Yes, Fibax formulations are 100% natural, AYUSH-approved botanical blends with zero synthetic chemicals. We advise maintaining a 30 to 45-minute gap between your regular medicines and Ayurvedic remedies.'
-    },
-    {
-      q: 'How long should I follow the course for visible, lasting results?',
-      a: 'Ayurveda addresses root imbalances rather than offering temporary suppression. We recommend a minimum 60 to 90-day course (3 bottles/packs) for cellular repair, metabolic balance, and sustained outcomes.'
-    },
-    {
-      q: 'Are there any side effects or added preservatives?',
-      a: 'None. Fibax products are free from added sugar, artificial colorings, parabens, and heavy metal impurities. They are formulated strictly in GMP and ISO-certified pharmaceutical facilities.'
-    },
-    {
-      q: 'What is the recommended daily dosage and timing?',
-      a: product.dosage || 'Take 15-30 ml mixed with equal parts lukewarm water, twice daily — preferably once on an empty stomach in the morning and once 30 minutes after dinner.'
-    },
-    {
-      q: 'What are the delivery and storage guidelines?',
-      a: 'All orders are dispatched within 24 hours via Delhivery Express with live tracking. Store the formulation in a cool, dry place away from direct sunlight. Shake well before each use.'
-    }
-  ];
+  const hasUsage = Boolean(
+    product?.usageInstructions &&
+    product.usageInstructions.enabled !== false &&
+    (
+      (Array.isArray(product.usageInstructions.steps) && product.usageInstructions.steps.length > 0) ||
+      (product.usageInstructions.description && product.usageInstructions.description.trim() !== '')
+    )
+  );
+
+  const hasComparison = Boolean(
+    product?.comparisonTable &&
+    product.comparisonTable.enabled !== false &&
+    Array.isArray(product.comparisonTable.rows) &&
+    product.comparisonTable.rows.length > 0
+  );
+
+  const hasFaqs = Boolean(
+    product?.faqsConfig &&
+    product.faqsConfig.enabled !== false &&
+    Array.isArray(product.faqsConfig.items) &&
+    product.faqsConfig.items.length > 0
+  );
 
   return (
     <div className="min-h-screen bg-sand-warm/30 text-charcoal pb-24 font-sans">
@@ -638,138 +603,130 @@ export function ProductPageView({
           </div>
         </div>
 
-        {/* 3. A+ CONTENT SECTION (Modelled on Krishna's Herbal A+ modules) */}
+        {/* 3. A+ CONTENT SECTION (Product-Specific Rich Modules, Zero Cross-Product Leakage) */}
         <div className="space-y-12">
           {/* A+ Section 1: The Ayurvedic Formulation Story */}
-          {product.productIntroduction?.enabled !== false && (
+          {hasIntro && (
           <div className="bg-white rounded-3xl p-5 sm:p-8 lg:p-10 border border-sand-border shadow-card overflow-hidden">
             <div className="max-w-3xl mx-auto text-center space-y-4">
               <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-forest/10 text-forest text-xs font-bold uppercase tracking-wider">
                 <Sparkles className="h-3.5 w-3.5 text-gold" />
-                <span>{product.productIntroduction?.badge || 'Authentic Ayurvedic Heritage'}</span>
+                <span>{product.productIntroduction?.badge || 'Authentic Ayurvedic Formulation'}</span>
               </span>
               <h2 className="font-heading text-2xl sm:text-4xl font-extrabold text-forest-deep leading-tight">
-                {product.productIntroduction?.heading || 'Root-Cause Restoration with 100% Raw Ayurvedic Herbs'}
+                {product.productIntroduction?.heading || `Restorative Power of ${product.title}`}
               </h2>
-              <p className="text-sm text-charcoal leading-relaxed">
-                {product.productIntroduction?.description || (
-                  <>
-                    Unlike synthetic pills that provide temporary superficial relief,{' '}
-                    <strong className="text-forest font-bold">{product.title}</strong> is prepared by traditional cold decoction extraction to preserve active botanical phytoconstituents. It nourishes deep tissue systems (Dhatus), eliminates accumulated toxic bio-waste (Ama), and restores physiological equilibrium naturally.
-                  </>
-                )}
-              </p>
+              {product.productIntroduction?.description ? (
+                <p className="text-sm text-charcoal leading-relaxed whitespace-pre-line">
+                  {product.productIntroduction.description}
+                </p>
+              ) : null}
             </div>
 
             {/* Visual Feature Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-              {(Array.isArray(product.productIntroduction?.features) && product.productIntroduction.features.length > 0 ? product.productIntroduction.features : [
-                { title: 'Cold Extraction Method', description: 'Extracted within 24 hours of wild-crafting to retain heat-sensitive botanical enzymes, tannins, and bioflavonoids.', icon: 'leaf' },
-                { title: 'Targets Biological Root Cause', description: 'Balances elevated Vata, Pitta, and Kapha doshas while optimizing cellular metabolism and digestive fire (Agni).', icon: 'heart' },
-                { title: 'Heavy-Metal Lab Tested', description: 'Every batch undergoes rigorous 3-tier testing for Lead, Mercury, Arsenic, and microbial safety under AYUSH standards.', icon: 'shield' }
-              ]).map((feat, idx) => (
-                <div key={idx} className="p-6 rounded-2xl bg-sand/40 border border-sand-border text-center space-y-2">
-                  <div className="w-12 h-12 rounded-xl bg-forest text-white flex items-center justify-center mx-auto shadow-sm">
-                    {feat.icon === 'heart' ? <HeartPulse className="h-6 w-6" /> :
-                     feat.icon === 'shield' ? <ShieldCheck className="h-6 w-6" /> :
-                     feat.icon === 'sparkles' ? <Sparkles className="h-6 w-6" /> :
-                     <Leaf className="h-6 w-6" />}
+            {Array.isArray(product.productIntroduction?.features) && product.productIntroduction.features.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
+                {product.productIntroduction.features.map((feat, idx) => (
+                  <div key={idx} className="p-6 rounded-2xl bg-sand/40 border border-sand-border text-center space-y-2">
+                    <div className="w-12 h-12 rounded-xl bg-forest text-white flex items-center justify-center mx-auto shadow-sm">
+                      {feat.icon === 'heart' ? <HeartPulse className="h-6 w-6" /> :
+                       feat.icon === 'shield' ? <ShieldCheck className="h-6 w-6" /> :
+                       feat.icon === 'sparkles' ? <Sparkles className="h-6 w-6" /> :
+                       <Leaf className="h-6 w-6" />}
+                    </div>
+                    <h3 className="font-heading font-bold text-forest-deep text-base">{feat.title}</h3>
+                    <p className="text-xs text-charcoal-muted leading-relaxed">
+                      {feat.description}
+                    </p>
                   </div>
-                  <h3 className="font-heading font-bold text-forest-deep text-base">{feat.title}</h3>
-                  <p className="text-xs text-charcoal-muted leading-relaxed">
-                    {feat.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
           )}
 
           {/* A+ Section 2: Botanical Ingredients Breakdown */}
-          {product.botanicalIngredients?.enabled !== false && (
+          {hasBotanical && (
           <div className="bg-white rounded-3xl p-5 sm:p-8 lg:p-10 border border-sand-border shadow-card">
             <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
               <span className="text-xs font-bold text-brand uppercase tracking-wider">
-                What Goes Inside Every Bottle
+                {product.botanicalIngredients?.badge || 'Botanical Ingredients'}
               </span>
               <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-forest-deep">
-                The Botanical Powerhouse Behind the Results
+                {product.botanicalIngredients?.heading || 'Key Herbal Actives'}
               </h2>
-              <p className="text-xs text-charcoal-muted">
-                Each ingredient is selected based on classical Ayurvedic treatises and verified modern pharmacological research.
-              </p>
+              {product.botanicalIngredients?.description ? (
+                <p className="text-xs text-charcoal-muted">
+                  {product.botanicalIngredients.description}
+                </p>
+              ) : null}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {(Array.isArray(product.botanicalIngredients?.herbs) && product.botanicalIngredients.herbs.length > 0 ? product.botanicalIngredients.herbs : herbList).map((herb, idx) => (
+              {product.botanicalIngredients.herbs.map((herb, idx) => (
                 <div
                   key={idx}
                   className="p-5 rounded-2xl bg-sand/30 border border-sand-border hover:border-forest/40 hover:bg-sand/60 transition-all space-y-2"
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-forest uppercase tracking-wider">
-                      {herb.sanskrit}
+                      {herb.sanskrit || `Herb #${idx + 1}`}
                     </span>
                     <span className="w-6 h-6 rounded-full bg-forest/10 text-forest text-xs font-bold flex items-center justify-center">
                       {idx + 1}
                     </span>
                   </div>
                   <h4 className="font-heading font-bold text-forest-deep text-base">{herb.name}</h4>
-                  <div className="text-xs font-semibold text-brand">{herb.role}</div>
-                  <p className="text-xs text-charcoal-muted leading-relaxed">{herb.desc}</p>
+                  {herb.role ? <div className="text-xs font-semibold text-brand">{herb.role}</div> : null}
+                  {herb.desc ? <p className="text-xs text-charcoal-muted leading-relaxed">{herb.desc}</p> : null}
                 </div>
               ))}
             </div>
           </div>
+          )}
 
-                    )}
-
-          {/* A+ Section 3: How To Consume & 90-Day Course Journey */}
-          {product.usageInstructions?.enabled !== false && (
+          {/* A+ Section 3: How To Consume & Course Journey */}
+          {hasUsage && (
           <div className="bg-forest-deep text-white rounded-3xl p-5 sm:p-8 lg:p-10 shadow-botanical relative overflow-hidden">
             <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
 
             <div className="relative z-10 max-w-3xl mx-auto text-center space-y-3 mb-12">
-              <span className="text-xs font-bold text-gold uppercase tracking-wider">{product.usageInstructions?.badge || 'Daily Wellness Protocol'}</span>
+              <span className="text-xs font-bold text-gold uppercase tracking-wider">{product.usageInstructions?.badge || 'Daily Protocol'}</span>
               <h2 className="font-heading text-2xl sm:text-4xl font-extrabold text-white">
-                {product.usageInstructions?.heading || 'How to Consume for Maximum Therapeutic Results'}
+                {product.usageInstructions?.heading || 'How to Use for Best Results'}
               </h2>
-              <p className="text-xs text-emerald-200/90 leading-relaxed">
-                {product.usageInstructions?.description || 'Consistency is key in Ayurvedic healing. Follow this simple 3-step ritual daily.'}
-              </p>
+              {product.usageInstructions?.description ? (
+                <p className="text-xs text-emerald-200/90 leading-relaxed">
+                  {product.usageInstructions.description}
+                </p>
+              ) : null}
             </div>
 
             {/* Daily Steps */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 mb-12">
-              {(Array.isArray(product.usageInstructions?.steps) && product.usageInstructions.steps.length > 0 ? product.usageInstructions.steps : [
-                { stepNumber: 1, title: 'Shake & Measure', description: 'Shake the bottle thoroughly. Measure 20-30 ml (approx 2-3 tablespoons) of the formulation.' },
-                { stepNumber: 2, title: 'Dilute with Water', description: 'Mix with an equal quantity (30 ml) of lukewarm or normal drinking water in a glass.' },
-                { stepNumber: 3, title: 'Twice Daily Ritual', description: product.dosage || 'Drink once in the morning on an empty stomach and once 30 minutes after dinner.' }
-              ]).map((step, idx) => (
-                <div key={idx} className="bg-white/10 backdrop-blur-xs p-6 rounded-2xl border border-white/15 text-center space-y-3">
-                  <div className="w-12 h-12 rounded-full bg-gold text-forest-deep font-extrabold text-lg flex items-center justify-center mx-auto shadow-md">
-                    {step.stepNumber || idx + 1}
+            {Array.isArray(product.usageInstructions?.steps) && product.usageInstructions.steps.length > 0 && (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10 mb-12">
+                {product.usageInstructions.steps.map((step, idx) => (
+                  <div key={idx} className="bg-white/10 backdrop-blur-xs p-6 rounded-2xl border border-white/15 text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-gold text-forest-deep font-extrabold text-lg flex items-center justify-center mx-auto shadow-md">
+                      {step.stepNumber || idx + 1}
+                    </div>
+                    <h4 className="font-heading font-bold text-lg text-white">{step.title}</h4>
+                    <p className="text-xs text-emerald-100/80 leading-relaxed">
+                      {step.description}
+                    </p>
                   </div>
-                  <h4 className="font-heading font-bold text-lg text-white">{step.title}</h4>
-                  <p className="text-xs text-emerald-100/80 leading-relaxed">
-                    {step.description}
-                  </p>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
 
             {/* Course Progression Timeline */}
-            {product.usageInstructions?.showProgression !== false && (
+            {product.usageInstructions?.showProgression !== false && Array.isArray(product.usageInstructions?.progressionStages) && product.usageInstructions.progressionStages.length > 0 && (
               <div className="bg-white/10 backdrop-blur-xs rounded-2xl p-6 border border-white/15 relative z-10 space-y-4">
                 <h4 className="text-center font-heading font-bold text-gold text-lg">
-                  {product.usageInstructions?.progressionHeading || 'Your 90-Day Ayurvedic Course Progression'}
+                  {product.usageInstructions?.progressionHeading || 'Recommended Course Progression'}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-                  {(Array.isArray(product.usageInstructions?.progressionStages) && product.usageInstructions.progressionStages.length > 0 ? product.usageInstructions.progressionStages : [
-                    { stage: 'Day 1 - 30 (Bottle 1)', title: 'Metabolic Detox & Cleansing', description: 'Flushes metabolic toxins (Ama), jumpstarts sluggish digestive Agni, and stabilizes morning fatigue.' },
-                    { stage: 'Day 31 - 60 (Bottle 2)', title: 'Organ Balance & Glycemic Control', description: 'Noticeable reduction in post-meal spikes, balanced lipid levels, and improved stamina throughout the day.' },
-                    { stage: 'Day 61 - 90 (Bottle 3)', title: 'Long-Term Equilibrium', description: 'Restores cellular receptor sensitivity, supports sustained organ vitality, and locks in long-term wellness.' }
-                  ]).map((stg, idx) => (
+                  {product.usageInstructions.progressionStages.map((stg, idx) => (
                     <div key={idx} className="p-4 rounded-xl bg-black/20 border border-white/10 space-y-1">
                       <div className="text-amber-300 font-bold uppercase text-[10px]">{stg.stage}</div>
                       <div className="font-bold text-white text-sm">{stg.title}</div>
@@ -782,8 +739,8 @@ export function ProductPageView({
           </div>
           )}
 
-          {/* A+ Section 4: Comparison Table (Fibax vs Conventional Brands) */}
-          {product.comparisonTable?.enabled !== false && (
+          {/* A+ Section 4: Comparison Table */}
+          {hasComparison && (
           <div className="bg-white rounded-3xl p-4 sm:p-8 lg:p-10 border border-sand-border shadow-card overflow-hidden w-full">
             <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8 space-y-2">
               <span className="text-xs font-bold text-forest uppercase tracking-wider">
@@ -792,9 +749,11 @@ export function ProductPageView({
               <h2 className="font-heading text-xl sm:text-3xl font-extrabold text-forest-deep">
                 {product.comparisonTable?.heading || 'Why Fibax Pharma Stands Out'}
               </h2>
-              <p className="text-xs text-charcoal-muted">
-                {product.comparisonTable?.description || 'See the tangible difference between authentic cold-pressed Ayurveda and typical marketplace brands.'}
-              </p>
+              {product.comparisonTable?.description ? (
+                <p className="text-xs text-charcoal-muted">
+                  {product.comparisonTable.description}
+                </p>
+              ) : null}
             </div>
 
             <div className="w-full overflow-x-auto scrollbar-thin rounded-xl border border-sand-border/60">
@@ -807,7 +766,7 @@ export function ProductPageView({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-sand-border text-xs">
-                  {(Array.isArray(product.comparisonTable?.rows) && product.comparisonTable.rows.length > 0 ? product.comparisonTable.rows : defaultComparisonRows).map((row, idx) => (
+                  {product.comparisonTable.rows.map((row, idx) => (
                     <tr key={idx} className="hover:bg-sand/10 transition-colors">
                       <td className="py-3 px-3 sm:px-4 font-semibold text-charcoal">{row.feature}</td>
                       <td className="py-3 px-3 sm:px-4 font-bold text-forest bg-forest/5">
@@ -829,20 +788,24 @@ export function ProductPageView({
           <CustomerReviewsSection product={product} />
 
           {/* A+ Section 6: Interactive Frequently Asked Questions */}
-          {product.faqsConfig?.enabled !== false && (
+          {hasFaqs && (
           <div className="bg-white rounded-3xl p-8 sm:p-10 border border-sand-border shadow-card">
             <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
-              <span className="text-xs font-bold text-forest uppercase tracking-wider">Everything You Need to Know</span>
+              <span className="text-xs font-bold text-forest uppercase tracking-wider">
+                {product.faqsConfig?.badge || 'Everything You Need to Know'}
+              </span>
               <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-forest-deep">
-                Frequently Asked Questions
+                {product.faqsConfig?.heading || 'Frequently Asked Questions'}
               </h2>
-              <p className="text-xs text-charcoal-muted">
-                Clear answers to common questions about usage, safety, and course length.
-              </p>
+              {product.faqsConfig?.description ? (
+                <p className="text-xs text-charcoal-muted">
+                  {product.faqsConfig.description}
+                </p>
+              ) : null}
             </div>
 
             <div className="max-w-3xl mx-auto space-y-3">
-              {(Array.isArray(product.faqsConfig?.items) && product.faqsConfig.items.length > 0 ? product.faqsConfig.items : faqs).map((faq, idx) => {
+              {product.faqsConfig.items.map((faq, idx) => {
                 const isOpen = activeFaq === idx;
                 return (
                   <div
@@ -870,8 +833,7 @@ export function ProductPageView({
               })}
             </div>
           </div>
-
-                    )}
+          )}
 
           {/* A+ Section 7: Related Formulations Carousel */}
           {relatedProducts.length > 0 && (

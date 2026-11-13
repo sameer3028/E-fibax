@@ -1,5 +1,14 @@
 [
   {
+    "id": "EML-1794565639944-G7J",
+    "timestamp": "2026-11-13T10:27:19.944Z",
+    "orderId": "FBX-UNIT-TEST-001",
+    "type": "Admin Order Alert",
+    "recipient": "fibaxpharma@gmail.com",
+    "status": "NOT_CONFIGURED",
+    "details": "SMTP not configured in Admin Settings. Live email delivery simulated/skipped."
+  },
+  {
     "id": "EML-1793012557606-5A5",
     "timestamp": "2026-10-26T11:02:37.606Z",
     "orderId": "FBX-556836-H4Q",
