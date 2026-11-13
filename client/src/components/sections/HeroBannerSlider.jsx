@@ -5,39 +5,137 @@ import { ArrowRight } from "lucide-react";
 
 export const HERO_SLIDES = [
   {
-    id: "multivitamin",
+    id: "banner_multivitamin",
     title: "Natural Source of Multivitamin Daily Nutritional Syrup 500ml",
     subtitle: "Complete Daily Nutrition for a Stronger & Healthier You",
     badge: "TOP SELLER",
     chipLabel: "Daily Multivitamin",
     image: "/banners/banner-multivitamin.jpg",
+    desktopImage: "/banners/banner-multivitamin.jpg",
+    mobileImage: "",
     productSlug: "ayurvedic-multivitamin-syrup",
     concernSlug: "immunity-vitality",
+    primaryBtnText: "Shop Now",
+    primaryBtnUrl: "product/ayurvedic-multivitamin-syrup",
     alt: "Fibax Ayurveda Multivitamin Daily Nutritional Syrup 500ml Banner"
   },
   {
-    id: "axe-ortho",
+    id: "banner_axe_ortho",
     title: "Axe Ortho+ Ayurvedic Care for Healthy Joints & Active Life",
     subtitle: "The power of Oil + Syrup + Capsules for complete joint support",
     badge: "TRIPLE THERAPY",
     chipLabel: "Axe Ortho+ Joint Care",
     image: "/banners/banner-axe-ortho.jpg",
+    desktopImage: "/banners/banner-axe-ortho.jpg",
+    mobileImage: "",
     productSlug: "axe-ortho-oil",
     concernSlug: "pain-joint-care",
+    primaryBtnText: "Shop Now",
+    primaryBtnUrl: "product/axe-ortho-syrup",
     alt: "Fibax Ayurveda Axe Ortho Joint Care Oil Syrup Capsules Banner"
   },
   {
-    id: "triphala",
+    id: "banner_triphala",
     title: "Ancient Herbal Care for Modern Life - Triphala Kashayam 500ml",
     subtitle: "Daily Cleansing. Natural Balance. 100% Pure Herbs",
     badge: "HERBAL DETOX",
     chipLabel: "Triphala Kashayam",
     image: "/banners/banner-triphala.jpg",
+    desktopImage: "/banners/banner-triphala.jpg",
+    mobileImage: "",
     productSlug: "fibax-triphala-juice",
     concernSlug: "digestion-gut-health",
+    primaryBtnText: "Shop Now",
+    primaryBtnUrl: "products?concern=digestion-gut-health",
     alt: "Fibax Ayurveda Triphala Kashayam Daily Cleansing 500ml Banner"
   }
 ];
+
+/**
+ * Isolated Slide Item with strict art-directed responsive picture selection
+ * - Media Query max-width: 767px explicitly routes mobile devices to the uploaded mobile banner.
+ * - Media Query min-width: 768px serves the high-resolution desktop banner.
+ * - If no mobile image exists, the desktop image is safely contained (object-contain)
+ *   on mobile with an ambient blurred glow so no product, text, or offer is cropped.
+ * - Isolated keys ensure zero cross-slide image re-use or stale image flashing during transitions.
+ */
+const SlideItem = React.memo(function SlideItem({
+  slide,
+  direction,
+  variants,
+  onBannerClick,
+  onPrev,
+  onNext
+}) {
+  const rawMobile = typeof slide.mobileImage === 'string' ? slide.mobileImage.trim() : '';
+  const rawDesktop = typeof slide.desktopImage === 'string'
+    ? slide.desktopImage.trim()
+    : (typeof slide.image === 'string' ? slide.image.trim() : '/banners/banner-multivitamin.jpg');
+
+  const hasMobile = Boolean(rawMobile && rawMobile.length > 0);
+
+  return (
+    <motion.div
+      key={slide.id}
+      custom={direction}
+      variants={variants}
+      initial="enter"
+      animate="center"
+      exit="exit"
+      drag="x"
+      dragConstraints={{ left: 0, right: 0 }}
+      dragElastic={0.8}
+      onDragEnd={(e, { offset, velocity }) => {
+        const swipeThreshold = 50;
+        if (offset.x > swipeThreshold || velocity.x > 300) {
+          onPrev();
+        } else if (offset.x < -swipeThreshold || velocity.x < -300) {
+          onNext();
+        }
+      }}
+      onClick={() => onBannerClick(slide)}
+      className="absolute inset-0 w-full h-full cursor-pointer select-none"
+      title={`${slide.title || 'Fibax Banner'} - Click to shop`}
+    >
+      {/* Ambient background for fallback desktop banner on mobile screens when no dedicated mobile banner exists */}
+      {!hasMobile && (
+        <div className="absolute inset-0 overflow-hidden pointer-events-none md:hidden -z-10" aria-hidden="true">
+          <img
+            src={rawDesktop}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover blur-2xl opacity-40 scale-125"
+          />
+        </div>
+      )}
+
+      <picture className="w-full h-full block">
+        {hasMobile && (
+          <source
+            media="(max-width: 767px)"
+            srcSet={rawMobile}
+          />
+        )}
+        <source
+          media="(min-width: 768px)"
+          srcSet={rawDesktop}
+        />
+        <img
+          key={`img-${slide.id}-${hasMobile ? 'mob' : 'desk'}-${rawDesktop}`}
+          src={rawDesktop}
+          alt={slide.alt || slide.title || 'Fibax Ayurveda Promotional Banner'}
+          className={`w-full h-full ${
+            hasMobile ? 'object-cover' : 'max-md:object-contain md:object-cover'
+          } object-center pointer-events-none transition-transform duration-700 hover:scale-[1.01]`}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+        />
+      </picture>
+      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
+    </motion.div>
+  );
+});
 
 export function HeroBannerSlider({
   products = [],
@@ -51,12 +149,12 @@ export function HeroBannerSlider({
   const [isPaused, setIsPaused] = useState(false);
   const autoPlayTimerRef = useRef(null);
 
-  // Fetch active Home Page Hero Banners from Admin
+  // Fetch active Home Page Hero Banners from Admin with cache-busting
   useEffect(() => {
     let isMounted = true;
     const fetchBanners = async () => {
       try {
-        const res = await apiRequest('/api/website/home-banners/active');
+        const res = await apiRequest(`/api/website/home-banners/active?_t=${Date.now()}`);
         if (isMounted && res.success && Array.isArray(res.data) && res.data.length > 0) {
           const formatted = res.data.map((b, idx) => ({
             id: b.id || ('slide-' + idx),
@@ -64,14 +162,15 @@ export function HeroBannerSlider({
             subtitle: b.description || b.subtitle || '',
             badge: b.badge || '',
             chipLabel: b.chipLabel || b.title || ('Banner ' + (idx + 1)),
-            image: b.desktopImage || b.image || '/banners/banner-multivitamin.jpg',
-            desktopImage: b.desktopImage || b.image || '/banners/banner-multivitamin.jpg',
-            mobileImage: b.mobileImage || '',
+            image: (b.desktopImage || b.image || '/banners/banner-multivitamin.jpg').trim(),
+            desktopImage: (b.desktopImage || b.image || '/banners/banner-multivitamin.jpg').trim(),
+            mobileImage: (b.mobileImage || '').trim(),
             productSlug: b.productSlug || '',
             concernSlug: b.concernSlug || '',
             primaryBtnText: b.primaryBtnText || 'Shop Now',
             primaryBtnUrl: b.primaryBtnUrl || 'products',
-            alt: b.altText || b.heading || b.title || 'Fibax Ayurveda Banner'
+            alt: b.altText || b.heading || b.title || 'Fibax Ayurveda Banner',
+            updatedAt: b.updatedAt || ''
           }));
           setSlides(formatted);
         } else if (isMounted) {
@@ -88,12 +187,12 @@ export function HeroBannerSlider({
   const nextSlide = useCallback(() => {
     setDirection(1);
     setCurrentIndex((prev) => (prev + 1) % (slides.length || 1));
-  }, []);
+  }, [slides.length]);
 
   const prevSlide = useCallback(() => {
     setDirection(-1);
     setCurrentIndex((prev) => (prev - 1 + (slides.length || 1)) % (slides.length || 1));
-  }, []);
+  }, [slides.length]);
 
   const goToSlide = useCallback((index) => {
     setDirection(index > currentIndex ? 1 : -1);
@@ -200,49 +299,24 @@ export function HeroBannerSlider({
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-sand-border/80 bg-stone-900 group">
-          <div className="relative w-full aspect-[2/1] sm:aspect-[2.1/1] overflow-hidden">
+          {/*
+            Responsive Aspect Ratio Container:
+            - Mobile (< 768px portrait): aspect-[4/5] (1080x1350)
+            - Mobile landscape: landscape:aspect-[2.1/1] prevents vertical screen overflow
+            - Tablet & Desktop (>= 768px): md:aspect-[2.1/1] (original 1920x650 / 2.1:1 ratio preserved 100%)
+          */}
+          <div className="relative w-full aspect-[4/5] landscape:aspect-[2.1/1] md:aspect-[2.1/1] overflow-hidden">
             <AnimatePresence initial={false} custom={direction}>
-              <motion.div
-                key={currentIndex}
-                custom={direction}
+              <SlideItem
+                key={currentSlide.id || `slide-${currentIndex}`}
+                slide={currentSlide}
+                direction={direction}
                 variants={slideVariants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                drag="x"
-                dragConstraints={{ left: 0, right: 0 }}
-                dragElastic={0.8}
-                onDragEnd={(e, { offset, velocity }) => {
-                  const swipeThreshold = 50;
-                  if (offset.x > swipeThreshold || velocity.x > 300) {
-                    prevSlide();
-                  } else if (offset.x < -swipeThreshold || velocity.x < -300) {
-                    nextSlide();
-                  }
-                }}
-                onClick={() => handleBannerClick(currentSlide)}
-                className="absolute inset-0 w-full h-full cursor-pointer select-none"
-                title={currentSlide.title + " - Click to shop"}
-              >
-                <picture className="w-full h-full block">
-                  {currentSlide.mobileImage ? (
-                    <source
-                      media="(max-width: 639px)"
-                      srcSet={currentSlide.mobileImage}
-                    />
-                  ) : null}
-                  <img
-                    src={currentSlide.desktopImage || currentSlide.image}
-                    alt={currentSlide.alt || currentSlide.title}
-                    className="w-full h-full object-cover object-center pointer-events-none transition-transform duration-700 hover:scale-[1.01]"
-                    loading="eager"
-                    fetchPriority="high"
-                  />
-                </picture>
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300 pointer-events-none" />
-              </motion.div>
+                onBannerClick={handleBannerClick}
+                onPrev={prevSlide}
+                onNext={nextSlide}
+              />
             </AnimatePresence>
-
 
             {slides.length > 1 && (
             <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/40 backdrop-blur-md border border-white/20">

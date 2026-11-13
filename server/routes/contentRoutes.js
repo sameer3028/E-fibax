@@ -132,6 +132,8 @@ router.put('/website/about-banners/:id', requireAdminAuth, (req, res) => {
     const updated = {
       ...current,
       ...body,
+      desktopImage: body.desktopImage !== undefined ? String(body.desktopImage).trim() : current.desktopImage,
+      mobileImage: body.mobileImage !== undefined ? String(body.mobileImage).trim() : (current.mobileImage || ''),
       sortOrder: body.sortOrder !== undefined ? Number(body.sortOrder) : current.sortOrder,
       updatedAt: new Date().toISOString()
     };
@@ -247,6 +249,11 @@ const saveHomeBanners = (banners) => {
 // GET /api/website/home-banners - Get all Home Page Hero Banners (Admin)
 router.get('/website/home-banners', (req, res) => {
   try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
     const banners = readHomeBanners();
     banners.sort((a, b) => (Number(a.sortOrder || 999)) - (Number(b.sortOrder || 999)));
     res.json({ success: true, count: banners.length, data: banners });
@@ -258,10 +265,20 @@ router.get('/website/home-banners', (req, res) => {
 // GET /api/website/home-banners/active - Get published & enabled hero banners for frontend
 router.get('/website/home-banners/active', (req, res) => {
   try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
     const banners = readHomeBanners();
     const published = banners
       .filter(b => b.status === 'published' && b.enabled !== false)
-      .sort((a, b) => (Number(a.sortOrder || 999)) - (Number(b.sortOrder || 999)));
+      .sort((a, b) => (Number(a.sortOrder || 999)) - (Number(b.sortOrder || 999)))
+      .map(b => ({
+        ...b,
+        desktopImage: String(b.desktopImage || b.image || '').trim(),
+        mobileImage: String(b.mobileImage || '').trim()
+      }));
 
     res.json({ success: true, count: published.length, data: published });
   } catch (err) {
@@ -349,6 +366,8 @@ router.put('/website/home-banners/:id', requireAdminAuth, (req, res) => {
     const updated = {
       ...current,
       ...body,
+      desktopImage: body.desktopImage !== undefined ? String(body.desktopImage).trim() : current.desktopImage,
+      mobileImage: body.mobileImage !== undefined ? String(body.mobileImage).trim() : (current.mobileImage || ''),
       sortOrder: body.sortOrder !== undefined ? Number(body.sortOrder) : current.sortOrder,
       updatedAt: new Date().toISOString()
     };
