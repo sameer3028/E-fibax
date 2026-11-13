@@ -46,7 +46,7 @@ export function ComboDealsSection({ onSelectProduct, onExploreCombos }) {
         </div>
 
         {/* 2-Column Grid of Dynamic Admin Combo Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
           {activeCombos.map((deal) => {
             const isOut = deal.inStock === false || deal.stockQuantity === undefined || deal.stockQuantity === null || Number(deal.stockQuantity) <= 0;
             const discountPercent = deal.discountPercent || (deal.mrp > deal.salePrice ? Math.round(((deal.mrp - deal.salePrice) / deal.mrp) * 100) : 0);
@@ -55,7 +55,7 @@ export function ComboDealsSection({ onSelectProduct, onExploreCombos }) {
               <div
                 key={deal.id}
                 onClick={() => onSelectProduct && onSelectProduct(deal)}
-                className="p-4 rounded-2xl bg-white border border-sand-border shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-4 hover:border-forest/30 transition-all cursor-pointer group"
+                className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-white border border-sand-border shadow-subtle flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 hover:border-forest/30 transition-all cursor-pointer group"
               >
                 {/* Combo Image */}
                 <div className="flex items-center justify-center flex-shrink-0 bg-sand/60 p-2 rounded-xl w-20 h-20 sm:w-24 sm:h-24 overflow-hidden border border-sand-border">

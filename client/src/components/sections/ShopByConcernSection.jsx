@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { CONCERNS } from '../../data/concerns';
 import { useProducts } from '../../context/ProductContext';
 import { ProductCard } from '../common/ProductCard/ProductCard';
@@ -62,8 +62,8 @@ export function ShopByConcernSection({ onSelectProduct, onViewAllConcern }) {
           })}
         </div>
 
-        {/* 2 Rows of Product Grid (8 Cards: 4 per row on desktop) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* 2 Rows of Product Grid (2 per row on mobile, 4 per row on desktop) */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-6">
           {displayProds.map((product) => (
             <ProductCard
               key={product.id}

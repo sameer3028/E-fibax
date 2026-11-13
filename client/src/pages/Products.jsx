@@ -231,9 +231,9 @@ export function Products({
           </div>
         </div>
 
-        {/* Product Grid */}
+        {/* Product Grid (2 per row on mobile, 3-4 per row on desktop) */}
         {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
