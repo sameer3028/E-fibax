@@ -15,6 +15,36 @@ const uploadsDir = join(__dirname, '..', 'uploads');
 const ABOUT_BANNERS_FILE = join(dataDir, 'about_banners.json');
 const HOME_BANNERS_FILE = join(dataDir, 'home_banners.json');
 
+// Helper to auto-persist base64 data URLs to static /uploads/ files
+export function saveBase64MediaIfPresent(dataUrl, prefix = 'banner') {
+  if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image/')) {
+    return dataUrl ? String(dataUrl).trim() : '';
+  }
+  try {
+    const matches = dataUrl.match(/^data:image\/([a-zA-Z+]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) return dataUrl;
+    let ext = matches[1].toLowerCase();
+    if (ext === 'jpeg') ext = 'jpg';
+    if (!['jpg', 'png', 'webp'].includes(ext)) ext = 'jpg';
+
+    const buffer = Buffer.from(matches[2], 'base64');
+    const safeName = `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}.${ext}`;
+    const filePath = join(uploadsDir, safeName);
+    writeFileSync(filePath, buffer);
+
+    const clientPublicUploadsDir = join(__dirname, '..', '..', 'client', 'public', 'uploads');
+    if (existsSync(clientPublicUploadsDir)) {
+      try {
+        writeFileSync(join(clientPublicUploadsDir, safeName), buffer);
+      } catch (_) {}
+    }
+    return `/uploads/${safeName}`;
+  } catch (e) {
+    console.error('Failed to auto-save base64 media:', e);
+    return dataUrl;
+  }
+}
+
 // ==========================================
 // 1. ABOUT US HERO BANNERS
 // ==========================================
@@ -292,7 +322,10 @@ router.post('/website/home-banners', requireAdminAuth, (req, res) => {
     const banners = readHomeBanners();
     const body = req.body || {};
 
-    if (!body.desktopImage && !body.mobileImage) {
+    const rawDesktop = saveBase64MediaIfPresent(body.desktopImage, 'banner-home-desktop');
+    const rawMobile = saveBase64MediaIfPresent(body.mobileImage, 'banner-home-mobile');
+
+    if (!rawDesktop && !rawMobile) {
       return res.status(400).json({ success: false, error: 'Banner image (desktop or mobile) is required' });
     }
 
@@ -304,8 +337,8 @@ router.post('/website/home-banners', requireAdminAuth, (req, res) => {
       description: body.description || body.subtitle || '',
       badge: body.badge || body.badgeText || '',
       chipLabel: body.chipLabel || body.title || 'Featured Banner',
-      desktopImage: body.desktopImage || '',
-      mobileImage: body.mobileImage || '',
+      desktopImage: rawDesktop || '',
+      mobileImage: rawMobile || '',
       productSlug: body.productSlug || '',
       concernSlug: body.concernSlug || '',
       primaryBtnText: body.primaryBtnText || 'Shop Now',
@@ -363,11 +396,19 @@ router.put('/website/home-banners/:id', requireAdminAuth, (req, res) => {
     const current = banners[idx];
     const body = req.body || {};
 
+    const updatedDesktop = body.desktopImage !== undefined
+      ? saveBase64MediaIfPresent(body.desktopImage, 'banner-home-desktop')
+      : current.desktopImage;
+
+    const updatedMobile = body.mobileImage !== undefined
+      ? saveBase64MediaIfPresent(body.mobileImage, 'banner-home-mobile')
+      : (current.mobileImage || '');
+
     const updated = {
       ...current,
       ...body,
-      desktopImage: body.desktopImage !== undefined ? String(body.desktopImage).trim() : current.desktopImage,
-      mobileImage: body.mobileImage !== undefined ? String(body.mobileImage).trim() : (current.mobileImage || ''),
+      desktopImage: updatedDesktop,
+      mobileImage: updatedMobile,
       sortOrder: body.sortOrder !== undefined ? Number(body.sortOrder) : current.sortOrder,
       updatedAt: new Date().toISOString()
     };
