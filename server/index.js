@@ -20,6 +20,7 @@ import { reviewRouter, adminReviewRouter } from './routes/reviewRoutes.js';
 import emailRoutes from './routes/emailRoutes.js';
 import contentRoutes from './routes/contentRoutes.js';
 import blogRoutes, { getBlogs } from './routes/blogRoutes.js';
+import legalRoutes from './routes/legalRoutes.js';
 
 // Middleware
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
@@ -104,6 +105,7 @@ app.use('/api/reviews', reviewRouter);
 app.use('/api/email', emailRoutes);
 app.use('/api', contentRoutes); // Includes /api/coupons, /api/website/about-banners, /api/enquiry, /api/upload
 app.use('/api', blogRoutes); // Includes /api/blogs, /api/admin/blogs, categories, SEO
+app.use('/api', legalRoutes); // Includes /api/legal/:slug, /api/admin/legal/:slug
 
 // ==========================================
 // SEO & SEARCH ENGINE CRAWLER ROUTES

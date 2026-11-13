@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { apiRequest } from '../utils/api';
 import {
   ShieldCheck,
   Lock,
@@ -22,13 +23,41 @@ import {
   Truck,
   CreditCard,
   UserCheck,
-  FileText
+  FileText,
+  Loader2
 } from 'lucide-react';
 
 export function Privacy({ onNavigate }) {
   const [activeSection, setActiveSection] = useState('section-1');
   const [searchTerm, setSearchTerm] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
+
+  // Dynamic CMS Legal Page Data
+  const [legalData, setLegalData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isUnpublished, setIsUnpublished] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchPrivacy = async () => {
+      try {
+        const res = await apiRequest('/api/legal/privacy');
+        if (!isMounted) return;
+        if (res.success && res.data) {
+          setLegalData(res.data);
+          setIsUnpublished(false);
+        } else if (res.status === 'unpublished' || res.status === 404) {
+          setIsUnpublished(true);
+        }
+      } catch (err) {
+        console.warn('Failed to load dynamic privacy policy from CMS:', err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+    fetchPrivacy();
+    return () => { isMounted = false; };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -104,10 +133,10 @@ export function Privacy({ onNavigate }) {
                 <ShieldCheck className="h-3.5 w-3.5" /> Data Protection & Privacy
               </div>
               <h1 className="font-heading font-extrabold text-2xl sm:text-4xl text-white tracking-tight print:text-black">
-                Privacy Policy
+                {legalData?.pageTitle || 'Privacy Policy'}
               </h1>
               <p className="text-sand-warm/80 text-xs sm:text-sm mt-1 print:text-gray-700">
-                Official Consumer Privacy Notice & Personal Data Protection Framework for Fibax Ayurveda
+                {legalData?.shortDescription || 'Official Consumer Privacy Notice & Personal Data Protection Framework for Fibax Ayurveda'}
               </p>
             </div>
 
@@ -129,15 +158,15 @@ export function Privacy({ onNavigate }) {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 text-xs text-sand-warm/70 print:text-black">
             <div>
               <span className="block text-[10px] uppercase font-bold text-sand-warm/50">Effective Date</span>
-              <span className="font-semibold text-white print:text-black">1 January 2026</span>
+              <span className="font-semibold text-white print:text-black">{legalData?.effectiveDate || '1 January 2026'}</span>
             </div>
             <div>
               <span className="block text-[10px] uppercase font-bold text-sand-warm/50">Last Updated</span>
-              <span className="font-semibold text-white print:text-black">13 November 2026</span>
+              <span className="font-semibold text-white print:text-black">{legalData?.lastUpdated || '13 November 2026'}</span>
             </div>
             <div>
               <span className="block text-[10px] uppercase font-bold text-sand-warm/50">Policy Version</span>
-              <span className="font-semibold text-white print:text-black">v2.1 (DPDP Compliant)</span>
+              <span className="font-semibold text-white print:text-black">{legalData?.documentVersion || 'v2.1 (DPDP Compliant)'}</span>
             </div>
             <div>
               <span className="block text-[10px] uppercase font-bold text-sand-warm/50">Governing Law</span>
@@ -147,7 +176,28 @@ export function Privacy({ onNavigate }) {
         </div>
       </section>
 
-      {/* Owner Confirmation Notice Banner */}
+      {/* Unpublished Review Notice */}
+      {isUnpublished ? (
+        <div className="max-w-4xl mx-auto px-4 py-20 text-center space-y-4">
+          <div className="w-16 h-16 rounded-3xl bg-amber-100 text-amber-700 flex items-center justify-center mx-auto shadow-sm">
+            <ShieldCheck className="h-8 w-8" />
+          </div>
+          <h2 className="text-2xl font-black text-forest-deep">Privacy Policy Under Scheduled Administrative Review</h2>
+          <p className="text-sm text-charcoal-muted max-w-lg mx-auto leading-relaxed">
+            Our official Privacy Policy document is currently undergoing routine compliance and administrative review by Fibax Pharma. For immediate data principal enquiries or privacy questions, please contact our privacy desk:
+          </p>
+          <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
+            <a href="mailto:care@fibaxpharma.com" className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-forest text-white text-xs font-bold hover:bg-forest-light transition-colors shadow-xs">
+              <Mail className="h-4 w-4" /> care@fibaxpharma.com
+            </a>
+            <a href="tel:+918872544458" className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-white border border-sand-border text-forest text-xs font-bold hover:bg-sand transition-colors">
+              <Phone className="h-4 w-4" /> +91 8872544458
+            </a>
+          </div>
+        </div>
+      ) : (
+        <>
+          {/* Owner Confirmation Notice Banner */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-6 print:hidden">
         <div className="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 text-emerald-950 text-xs sm:text-sm space-y-1 shadow-xs">
           <div className="flex items-center gap-2 font-bold text-emerald-900">
@@ -241,7 +291,13 @@ export function Privacy({ onNavigate }) {
           {/* RIGHT COLUMN: COMPLETE ORIGINAL PRIVACY POLICY TEXT     */}
           {/* ======================================================== */}
           <main className="lg:col-span-8 bg-white rounded-3xl p-6 sm:p-10 border border-sand-border shadow-xs space-y-12 text-sm text-charcoal leading-relaxed print:p-0 print:border-0 print:shadow-none">
-
+            {legalData && legalData.content ? (
+              <div
+                className="legal-html-prose space-y-8"
+                dangerouslySetInnerHTML={{ __html: legalData.content }}
+              />
+            ) : (
+              <>
             {/* SECTION 1 */}
             <section id="section-1" className="space-y-3.5 scroll-mt-24">
               <div className="flex items-center gap-2.5">
@@ -959,10 +1015,14 @@ export function Privacy({ onNavigate }) {
                 </div>
               </div>
             </section>
+              </>
+            )}
 
           </main>
         </div>
       </div>
+      </>
+      )}
 
       {/* Floating Back to Top */}
       {showBackToTop && (

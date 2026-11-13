@@ -96,7 +96,9 @@ export function getAdminSessionFromRequest(req) {
           const uname = config.username || 'admin';
           const payload = `${uname}:${randomHex}:${expiresAt}`;
           const expectedHmac = crypto.createHmac('sha256', config.passwordHash).update(payload).digest('hex');
-          if (crypto.timingSafeEqual(Buffer.from(signature, 'hex'), Buffer.from(expectedHmac, 'hex'))) {
+          const sigBuf = Buffer.from(signature, 'hex');
+          const expBuf = Buffer.from(expectedHmac, 'hex');
+          if (sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf)) {
             session = { username: uname, expiresAt };
             activeAdminSessions.set(token, session);
             return { ...session, token };

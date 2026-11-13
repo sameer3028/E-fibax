@@ -1224,10 +1224,11 @@ export function CheckoutCustom({ onNavigate, onOpenTrackOrder }) {
                         />
                         <button
                           type="button"
+                          disabled={!couponInput.trim() || couponMessage?.loading}
                           onClick={() => handleApplyCoupon()}
-                          className="px-5 py-2.5 bg-forest hover:bg-forest-deep text-white text-xs font-bold transition-colors whitespace-nowrap flex-shrink-0"
+                          className="px-5 py-2.5 bg-forest hover:bg-forest-deep text-white text-xs font-bold transition-colors whitespace-nowrap flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
                         >
-                          Apply
+                          {couponMessage?.loading ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : 'Apply'}
                         </button>
                       </div>
 

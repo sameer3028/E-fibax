@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { apiRequest } from '../../utils/api';
 import { CONCERNS } from '../../data/concerns';
 import { BlogManager } from './BlogManager';
+import { LegalPagesManager } from './LegalPagesManager';
 import {
   Sparkles,
   Globe,
@@ -18,6 +19,7 @@ import {
   Leaf,
   ArrowRight,
   ShieldCheck,
+  Scale,
   FileText,
   AlertTriangle,
   Loader2,
@@ -302,6 +304,37 @@ export function WebsiteContentManager() {
     setIsHomeModalOpen(true);
   };
 
+  // Resilient Admin Auth execution helper
+  const executeWithAdminAuth = async (apiCallFn) => {
+    const rawToken = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+    const token = rawToken && rawToken !== 'null' && rawToken !== 'undefined' ? rawToken.trim() : null;
+    let res = await apiCallFn(token);
+    if (!res.success && (res.status === 401 || res.isAuthError || (typeof res.error === 'string' && res.error.toLowerCase().includes('unauthorized')))) {
+      const savedUser = localStorage.getItem('fibax_admin_user') || sessionStorage.getItem('fibax_admin_user') || 'admin';
+      const pass = window.prompt(`Admin session expired or required.\nPlease enter Admin password for "${savedUser}" to save changes:`);
+      if (pass && pass.trim()) {
+        const loginRes = await apiRequest('/api/admin/login', {
+          method: 'POST',
+          body: JSON.stringify({ username: savedUser, password: pass.trim() })
+        });
+        if (loginRes.success && loginRes.token) {
+          localStorage.setItem('fibax_admin_token', loginRes.token);
+          sessionStorage.setItem('fibax_admin_token', loginRes.token);
+          localStorage.setItem('fibax_admin_user', loginRes.username || savedUser);
+          sessionStorage.setItem('fibax_admin_user', loginRes.username || savedUser);
+          res = await apiCallFn(loginRes.token);
+        } else {
+          alert(loginRes.error || 'Authentication failed. Incorrect password.');
+          return null;
+        }
+      } else {
+        // User cancelled prompt - retain modal and input data without secondary alert
+        return null;
+      }
+    }
+    return res;
+  };
+
   const handleSaveHome = async (e) => {
     e.preventDefault();
     if (!homeFormData.title.trim()) {
@@ -314,76 +347,27 @@ export function WebsiteContentManager() {
     }
 
     try {
-      if (editingHomeBanner) {
-        let res = await apiRequest(`/api/website/home-banners/${editingHomeBanner.id}`, {
-          method: 'PUT',
+      const endpoint = editingHomeBanner
+        ? `/api/website/home-banners/${editingHomeBanner.id}`
+        : '/api/website/home-banners';
+      const method = editingHomeBanner ? 'PUT' : 'POST';
+
+      const res = await executeWithAdminAuth((token) => {
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        return apiRequest(endpoint, {
+          method,
+          headers,
           body: JSON.stringify(homeFormData)
         });
+      });
 
-        // If unauthorized or session expired, prompt for password to retry without losing user input
-        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
-          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
-          if (pass) {
-            const loginRes = await apiRequest('/api/admin/login', {
-              method: 'POST',
-              body: JSON.stringify({ username: 'admin', password: pass.trim() })
-            });
-            if (loginRes.success && loginRes.token) {
-              localStorage.setItem('fibax_admin_token', loginRes.token);
-              sessionStorage.setItem('fibax_admin_token', loginRes.token);
-              res = await apiRequest(`/api/website/home-banners/${editingHomeBanner.id}`, {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${loginRes.token}` },
-                body: JSON.stringify(homeFormData)
-              });
-            } else {
-              alert(loginRes.error || 'Authentication failed. Incorrect password.');
-              return;
-            }
-          }
-        }
+      if (!res) return; // Prompt was cancelled, keep modal open
 
-        if (res.success) {
-          setIsHomeModalOpen(false);
-          fetchHomeBanners();
-        } else {
-          alert(res.error || 'Failed to update banner');
-        }
+      if (res.success) {
+        setIsHomeModalOpen(false);
+        fetchHomeBanners();
       } else {
-        let res = await apiRequest('/api/website/home-banners', {
-          method: 'POST',
-          body: JSON.stringify(homeFormData)
-        });
-
-        // If unauthorized or session expired, prompt for password to retry without losing user input
-        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
-          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
-          if (pass) {
-            const loginRes = await apiRequest('/api/admin/login', {
-              method: 'POST',
-              body: JSON.stringify({ username: 'admin', password: pass.trim() })
-            });
-            if (loginRes.success && loginRes.token) {
-              localStorage.setItem('fibax_admin_token', loginRes.token);
-              sessionStorage.setItem('fibax_admin_token', loginRes.token);
-              res = await apiRequest('/api/website/home-banners', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${loginRes.token}` },
-                body: JSON.stringify(homeFormData)
-              });
-            } else {
-              alert(loginRes.error || 'Authentication failed. Incorrect password.');
-              return;
-            }
-          }
-        }
-
-        if (res.success) {
-          setIsHomeModalOpen(false);
-          fetchHomeBanners();
-        } else {
-          alert(res.error || 'Failed to create banner');
-        }
+        alert(res.error || (editingHomeBanner ? 'Failed to update banner' : 'Failed to create banner'));
       }
     } catch (err) {
       alert('Error saving home banner: ' + err.message);
@@ -529,74 +513,27 @@ export function WebsiteContentManager() {
       return;
     }
     try {
-      if (editingAboutBanner) {
-        let res = await apiRequest(`/api/website/about-banners/${editingAboutBanner.id}`, {
-          method: 'PUT',
+      const endpoint = editingAboutBanner
+        ? `/api/website/about-banners/${editingAboutBanner.id}`
+        : '/api/website/about-banners';
+      const method = editingAboutBanner ? 'PUT' : 'POST';
+
+      const res = await executeWithAdminAuth((token) => {
+        const headers = token ? { 'Authorization': `Bearer ${token}` } : {};
+        return apiRequest(endpoint, {
+          method,
+          headers,
           body: JSON.stringify(aboutFormData)
         });
+      });
 
-        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
-          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
-          if (pass) {
-            const loginRes = await apiRequest('/api/admin/login', {
-              method: 'POST',
-              body: JSON.stringify({ username: 'admin', password: pass.trim() })
-            });
-            if (loginRes.success && loginRes.token) {
-              localStorage.setItem('fibax_admin_token', loginRes.token);
-              sessionStorage.setItem('fibax_admin_token', loginRes.token);
-              res = await apiRequest(`/api/website/about-banners/${editingAboutBanner.id}`, {
-                method: 'PUT',
-                headers: { 'Authorization': `Bearer ${loginRes.token}` },
-                body: JSON.stringify(aboutFormData)
-              });
-            } else {
-              alert(loginRes.error || 'Authentication failed. Incorrect password.');
-              return;
-            }
-          }
-        }
+      if (!res) return; // Prompt cancelled, keep modal open
 
-        if (res.success) {
-          setIsAboutModalOpen(false);
-          fetchAboutBanners();
-        } else {
-          alert(res.error || 'Failed to update banner');
-        }
+      if (res.success) {
+        setIsAboutModalOpen(false);
+        fetchAboutBanners();
       } else {
-        let res = await apiRequest('/api/website/about-banners', {
-          method: 'POST',
-          body: JSON.stringify(aboutFormData)
-        });
-
-        if ((!res.success && (res.status === 401 || res.isAuthError)) || (res.error && res.error.toLowerCase().includes('unauthorized'))) {
-          const pass = window.prompt('Admin session required. Please enter Admin Password to save:');
-          if (pass) {
-            const loginRes = await apiRequest('/api/admin/login', {
-              method: 'POST',
-              body: JSON.stringify({ username: 'admin', password: pass.trim() })
-            });
-            if (loginRes.success && loginRes.token) {
-              localStorage.setItem('fibax_admin_token', loginRes.token);
-              sessionStorage.setItem('fibax_admin_token', loginRes.token);
-              res = await apiRequest('/api/website/about-banners', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${loginRes.token}` },
-                body: JSON.stringify(aboutFormData)
-              });
-            } else {
-              alert(loginRes.error || 'Authentication failed. Incorrect password.');
-              return;
-            }
-          }
-        }
-
-        if (res.success) {
-          setIsAboutModalOpen(false);
-          fetchAboutBanners();
-        } else {
-          alert(res.error || 'Failed to create banner');
-        }
+        alert(res.error || (editingAboutBanner ? 'Failed to update banner' : 'Failed to create banner'));
       }
     } catch (err) {
       alert('Error saving banner: ' + err.message);
@@ -659,7 +596,7 @@ export function WebsiteContentManager() {
       />
 
       {/* Top Section Breadcrumb & Header */}
-      {activeSubTab !== 'blogs' && (
+      {activeSubTab !== 'blogs' && !activeSubTab.startsWith('legal-') && (
         <div className="bg-white p-6 rounded-3xl border border-sand-border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             {/* Admin Navigation Path */}
@@ -693,7 +630,7 @@ export function WebsiteContentManager() {
         </div>
       )}
 
-      {/* Sub Tabs: Home Page Banners vs About Us Banner vs Blog Management */}
+      {/* Sub Tabs: Home Page Banners vs About Us Banner vs Blog Management vs Legal Pages */}
       <div className="flex items-center gap-2 border-b border-sand-border pb-1 overflow-x-auto">
         <button
           onClick={() => setActiveSubTab('home-hero')}
@@ -729,6 +666,30 @@ export function WebsiteContentManager() {
         >
           <BookOpen className={`h-3.5 w-3.5 ${activeSubTab === 'blogs' ? 'text-amber-300' : 'text-forest'}`} />
           <span>Blog Management</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('legal-terms')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
+            activeSubTab === 'legal-terms'
+              ? 'bg-forest text-white shadow-xs'
+              : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
+          }`}
+        >
+          <Scale className={`h-3.5 w-3.5 ${activeSubTab === 'legal-terms' ? 'text-amber-300' : 'text-forest'}`} />
+          <span>Legal: Terms &amp; Conditions</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('legal-privacy')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
+            activeSubTab === 'legal-privacy'
+              ? 'bg-forest text-white shadow-xs'
+              : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
+          }`}
+        >
+          <ShieldCheck className={`h-3.5 w-3.5 ${activeSubTab === 'legal-privacy' ? 'text-amber-300' : 'text-forest'}`} />
+          <span>Legal: Privacy Policy</span>
         </button>
       </div>
 
@@ -1156,6 +1117,20 @@ export function WebsiteContentManager() {
       {/* ============================================================= */}
       {activeSubTab === 'blogs' && (
         <BlogManager />
+      )}
+
+      {/* ============================================================= */}
+      {/* TAB 4: LEGAL - TERMS & CONDITIONS                             */}
+      {/* ============================================================= */}
+      {activeSubTab === 'legal-terms' && (
+        <LegalPagesManager initialPage="terms" key="terms" />
+      )}
+
+      {/* ============================================================= */}
+      {/* TAB 5: LEGAL - PRIVACY POLICY                                 */}
+      {/* ============================================================= */}
+      {activeSubTab === 'legal-privacy' && (
+        <LegalPagesManager initialPage="privacy" key="privacy" />
       )}
 
       {/* ============================================================= */}

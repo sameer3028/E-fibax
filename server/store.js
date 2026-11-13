@@ -28,7 +28,7 @@ function normalizeDriver(raw) {
 const DRIVER = normalizeDriver(process.env.STORAGE_DRIVER);
 
 const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries', 'coupons'];
-const SINGLETON_NAMES = ['admin_auth', 'shipping_config'];
+const SINGLETON_NAMES = ['admin_auth', 'shipping_config', 'legal_pages'];
 
 const dataDir = join(__dirname, 'data');
 const FILE_FOR = {
@@ -38,7 +38,8 @@ const FILE_FOR = {
   enquiries: join(dataDir, 'enquiries.json'),
   coupons: join(dataDir, 'coupons.json'),
   admin_auth: join(dataDir, 'admin_auth.json'),
-  shipping_config: join(dataDir, 'shipping_config.json')
+  shipping_config: join(dataDir, 'shipping_config.json'),
+  legal_pages: join(dataDir, 'legal_pages.json')
 };
 
 // In-memory cache. Arrays default to []; singletons default to null.
@@ -49,7 +50,8 @@ const cache = {
   enquiries: [],
   coupons: [],
   admin_auth: null,
-  shipping_config: null
+  shipping_config: null,
+  legal_pages: null
 };
 
 let db = null; // lazily imported mysql module when driver === 'mysql'

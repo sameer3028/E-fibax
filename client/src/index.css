@@ -41,3 +41,78 @@
 .animate-pulse-slow {
   animation: pulseSlow 3s ease-in-out infinite;
 }
+
+/* Legal CMS Prose Styling */
+.legal-html-prose h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #064E36;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+.legal-html-prose h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0F5132;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.legal-html-prose h4 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #14532D;
+  margin-top: 1rem;
+  margin-bottom: 0.35rem;
+}
+.legal-html-prose p {
+  margin-bottom: 0.85rem;
+  line-height: 1.65;
+  color: #2D3748;
+}
+.legal-html-prose ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.legal-html-prose ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+.legal-html-prose li {
+  margin-bottom: 0.35rem;
+  line-height: 1.55;
+}
+.legal-html-prose a {
+  color: #064E36;
+  text-decoration: underline;
+  font-weight: 600;
+}
+.legal-html-prose blockquote {
+  border-left: 4px solid #064E36;
+  padding-left: 1rem;
+  font-style: italic;
+  margin: 1rem 0;
+  color: #4A5568;
+}
+.legal-html-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.875rem;
+}
+.legal-html-prose th, .legal-html-prose td {
+  border: 1px solid #E2E8F0;
+  padding: 0.6rem 0.85rem;
+  text-align: left;
+}
+.legal-html-prose th {
+  background-color: #F7FAFC;
+  font-weight: 700;
+  color: #064E36;
+}
+.legal-html-prose hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid #E2E8F0;
+}

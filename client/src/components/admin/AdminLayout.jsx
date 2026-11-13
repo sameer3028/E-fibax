@@ -86,6 +86,26 @@ export function AdminLayout({ onExitAdmin }) {
     checkAuth();
   }, []);
 
+  // Periodic session heartbeat to keep admin session active while working
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const interval = setInterval(async () => {
+      const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+      if (!token) return;
+      try {
+        const res = await apiRequest('/api/admin/verify', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.success && res.valid) {
+          // session verified
+        }
+      } catch (e) {
+        // network blip, ignore
+      }
+    }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
   const handleLogout = async () => {
     const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
     try {
