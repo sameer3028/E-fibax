@@ -1,6 +1,8 @@
 {
   "enabled": true,
   "orderConfirmationEnabled": true,
+  "adminAlertEnabled": true,
+  "adminAlertEmail": "fibaxpharma@gmail.com",
   "senderName": "Fibax Ayurveda",
   "senderEmail": "orders@fibaxpharma.com",
   "replyToEmail": "care@fibaxpharma.com",
@@ -9,5 +11,8 @@
   "smtpPort": 587,
   "smtpSecure": false,
   "smtpUser": "",
-  "smtpPassword": ""
+  "smtpPassword": "",
+  "lastAdminAlertStatus": "NOT_CONFIGURED",
+  "lastAdminAlertTimestamp": "2026-11-13T08:09:52.764Z",
+  "lastAdminAlertRecipient": "fibaxpharma@gmail.com"
 }

@@ -6,7 +6,7 @@ import {
   cancelDelhiveryShipment
 } from '../shipping.js';
 import { verifyOrderPayment } from '../payment.js';
-import { sendOrderConfirmationEmail } from '../services/emailService.js';
+import { sendOrderConfirmationEmail, sendAdminNewOrderAlert } from '../services/emailService.js';
 import {
   getAdminSessionFromRequest,
   getCustomerFromRequest,
@@ -261,6 +261,11 @@ router.post('/', orderLimiter, async (req, res) => {
       console.error(`Non-blocking email alert error for order #${orderId}:`, err.message);
     });
 
+    // Non-blocking automatic admin new order alert
+    sendAdminNewOrderAlert(newOrder).catch(err => {
+      console.error(`Non-blocking admin alert error for order #${orderId}:`, err.message);
+    });
+
     res.status(201).json({ success: true, data: newOrder });
   } catch (error) {
     console.error('Error creating order:', error);
@@ -394,6 +399,40 @@ router.post('/:orderId/resend-email', requireAdminAuth, async (req, res) => {
       res.json({ success: true, message: `Order confirmation email resent successfully for #${order.orderId}.`, data: result });
     } else {
       res.status(400).json({ success: false, error: result.error || result.reason || 'Failed to send confirmation email.' });
+    }
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/orders/:orderId/resend-admin-alert - Admin manual resend admin order alert email
+router.post('/:orderId/resend-admin-alert', requireAdminAuth, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const orders = readOrders();
+    const order = orders.find(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+    if (!order) {
+      return res.status(404).json({ success: false, error: `Order #${orderId} not found.` });
+    }
+
+    const result = await sendAdminNewOrderAlert(order, true);
+    if (result.success) {
+      res.json({
+        success: true,
+        message: `Admin order alert resent successfully for #${order.orderId} to ${result.recipient}.`,
+        data: result
+      });
+    } else if (result.notConfigured) {
+      res.status(400).json({
+        success: false,
+        notConfigured: true,
+        error: 'SMTP credentials are not configured in Admin Settings. Unable to dispatch live email.'
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        error: result.error || result.reason || 'Failed to send admin order alert.'
+      });
     }
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

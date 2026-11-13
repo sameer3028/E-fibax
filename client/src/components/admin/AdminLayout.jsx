@@ -34,7 +34,14 @@ export function AdminLayout({ onExitAdmin }) {
   const [adminUser, setAdminUser] = useState('admin');
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [isChangeCredsOpen, setIsChangeCredsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('products'); // products, offers, inventory, orders
+  const [activeTab, setActiveTab] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('tab') || 'products';
+    } catch {
+      return 'products';
+    }
+  }); // products, offers, inventory, orders, reviews, users, website-content
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
   const { addProduct, updateProduct, stats } = useProducts();
