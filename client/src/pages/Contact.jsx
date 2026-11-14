@@ -340,7 +340,7 @@ export function Contact({ onOpenCallback }) {
               <div>
                 <span className="text-xs font-bold text-leaf-dark uppercase tracking-wider">Corporate Headquarters</span>
                 <p className="mt-1 text-xs font-bold text-charcoal leading-relaxed">
-                  SCO. 29, Metro Plaza, Zirakpur, Punjab - 140603, India
+                  Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA
                 </p>
                 <p className="text-[11px] text-charcoal-subtle mt-1.5">
                   WHO-GMP &amp; AYUSH Licensed Manufacturing

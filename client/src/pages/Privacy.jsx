@@ -337,7 +337,7 @@ export function Privacy({ onNavigate }) {
                 <p><strong>Brand Identity:</strong> Fibax Ayurveda</p>
                 <p><strong>Constitution of Business:</strong> Sole Proprietorship</p>
                 <p><strong>Legal Proprietor Name:</strong> [OWNER CONFIRMATION REQUIRED: Legal Name of Sole Proprietor]</p>
-                <p><strong>Registered Operating Address:</strong> SCO 28, Lower Ground Floor, Metro Plaza City Market, Lohgarh Road, Zirakpur, Punjab – 140603, India</p>
+                <p><strong>Registered Operating Address:</strong> Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA</p>
                 <p><strong>Customer Privacy Desk:</strong> care@fibaxpharma.com</p>
                 <p><strong>Helpline Telephone:</strong> +91 8872544458</p>
                 <p><strong>Primary Website URL:</strong> https://fibaxpharma.com</p>
@@ -958,7 +958,7 @@ export function Privacy({ onNavigate }) {
                 <p className="font-bold text-forest-deep">Designated Grievance Officer:</p>
                 <p><strong>Name:</strong> [OWNER CONFIRMATION REQUIRED: Full Name of Designated Grievance Officer]</p>
                 <p><strong>Official Designation:</strong> [OWNER CONFIRMATION REQUIRED: Grievance Officer / Operations Lead]</p>
-                <p><strong>Postal Address:</strong> Fibax Pharma, SCO 28, Lower Ground Floor, Metro Plaza City Market, Lohgarh Road, Zirakpur, Punjab – 140603, India</p>
+                <p><strong>Postal Address:</strong> Fibax Pharma, Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA</p>
                 <p><strong>Dedicated Grievance Email:</strong> [OWNER CONFIRMATION REQUIRED: Dedicated Grievance Email, e.g. grievance@fibaxpharma.com or care@fibaxpharma.com]</p>
                 <p><strong>Helpline Number:</strong> [OWNER CONFIRMATION REQUIRED: Direct Phone Number or +91 8872544458]</p>
               </div>
@@ -1010,7 +1010,7 @@ export function Privacy({ onNavigate }) {
                     <MapPin className="h-4 w-4 text-brand" /> Corporate Office
                   </div>
                   <p className="text-charcoal leading-tight">
-                    SCO 28, Lower Ground Floor, Metro Plaza City Market, Lohgarh Road, Zirakpur, Punjab – 140603, India
+                    Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA
                   </p>
                 </div>
               </div>

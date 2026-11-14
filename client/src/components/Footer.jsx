@@ -203,7 +203,7 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
               <div className="flex items-start gap-2.5">
                 <MapPin className="h-4 w-4 text-leaf flex-shrink-0 mt-0.5" />
                 <span>
-                  SCO. 29, Metro Plaza, Zirakpur, Punjab - 140603, India
+                  Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA
                 </span>
               </div>
               <div className="flex items-center gap-2.5">

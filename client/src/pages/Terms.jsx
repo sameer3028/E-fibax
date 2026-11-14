@@ -334,7 +334,7 @@ export function Terms({ onNavigate }) {
                 <p><strong>Commercial Brand:</strong> Fibax Ayurveda</p>
                 <p><strong>Constitution of Business:</strong> Sole Proprietorship registered under Indian law</p>
                 <p><strong>Proprietor Legal Name:</strong> [OWNER INPUT REQUIRED: Legal Name of Sole Proprietor]</p>
-                <p><strong>Registered Business Address:</strong> SCO 28, Lower Ground Floor, Metro Plaza City Market, Lohgarh Road, Zirakpur, Punjab – 140603, India</p>
+                <p><strong>Registered Business Address:</strong> Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA</p>
                 <p><strong>Official Website:</strong> https://fibaxpharma.com</p>
                 <p><strong>GSTIN / Tax ID:</strong> [OWNER INPUT REQUIRED: GSTIN / State Tax Identification Number]</p>
                 <p><strong>Drug & AYUSH Retail/Wholesale Licence:</strong> [OWNER INPUT REQUIRED: Relevant State AYUSH/Drug Licence Number]</p>
@@ -912,7 +912,7 @@ export function Terms({ onNavigate }) {
                 <p className="font-bold text-forest-deep">Grievance Officer Information:</p>
                 <p><strong>Name of Grievance Officer:</strong> [OWNER INPUT REQUIRED: Name of Grievance Redressal Officer]</p>
                 <p><strong>Official Designation:</strong> [OWNER INPUT REQUIRED: Grievance Officer / Operations Head]</p>
-                <p><strong>Postal Address:</strong> Fibax Pharma, SCO 28, Lower Ground Floor, Metro Plaza City Market, Lohgarh Road, Zirakpur, Punjab – 140603, India</p>
+                <p><strong>Postal Address:</strong> Fibax Pharma, Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA</p>
                 <p><strong>Dedicated Grievance Email:</strong> [OWNER INPUT REQUIRED: Dedicated Grievance Email, e.g. grievance@fibaxpharma.com or care@fibaxpharma.com]</p>
                 <p><strong>Grievance Helpline:</strong> [OWNER INPUT REQUIRED: Grievance Contact Number, or +91 8872544458]</p>
               </div>
@@ -982,7 +982,7 @@ export function Terms({ onNavigate }) {
                     <MapPin className="h-4 w-4 text-brand" /> Registered Office
                   </div>
                   <p className="text-charcoal leading-tight">
-                    SCO 28, Lower Ground Floor, Metro Plaza City Market, Lohgarh Road, Zirakpur, Punjab – 140603, India
+                    Office No. 316, 3rd Floor, Block B, CCC (Chandigarh City Center), VIP Road, Zirakpur 140603 (PB), INDIA
                   </p>
                 </div>
               </div>
