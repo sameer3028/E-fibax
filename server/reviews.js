@@ -1,11 +1,12 @@
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { readJsonFile, writeJsonFile } from './store.js';
+import { getDataFilePath } from './config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const REVIEWS_FILE = join(__dirname, 'data', 'reviews.json');
-const ORDERS_FILE = join(__dirname, 'data', 'orders.json');
+const REVIEWS_FILE = getDataFilePath('reviews.json');
+const ORDERS_FILE = getDataFilePath('orders.json');
 
 export function readReviews() {
   return readJsonFile(REVIEWS_FILE, []);

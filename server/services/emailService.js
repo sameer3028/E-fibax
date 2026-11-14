@@ -3,11 +3,12 @@ import nodemailer from 'nodemailer';
 import { generateOrderConfirmationHtml, generateOrderConfirmationText } from '../emailTemplates/orderConfirmation.js';
 import { generateAdminOrderAlertHtml, generateAdminOrderAlertText } from '../emailTemplates/adminOrderAlert.js';
 import { readJsonFile, writeJsonFile } from '../store.js';
+import { getDataFilePath } from '../config/paths.js';
 
 const __dirname = path.resolve();
-const CONFIG_FILE = path.join(__dirname, 'server', 'data', 'email_config.json');
-const LOGS_FILE = path.join(__dirname, 'server', 'data', 'email_logs.json');
-const ORDERS_FILE = path.join(__dirname, 'server', 'data', 'orders.json');
+const CONFIG_FILE = getDataFilePath('email_config.json');
+const LOGS_FILE = getDataFilePath('email_logs.json');
+const ORDERS_FILE = getDataFilePath('orders.json');
 
 // Default email configuration
 const DEFAULT_CONFIG = {

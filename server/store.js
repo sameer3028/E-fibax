@@ -15,6 +15,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, renameSync, copyFileSync, unlinkSync } from 'fs';
 import { dirname, join, basename } from 'path';
 import { fileURLToPath } from 'url';
+import { DATA_DIR, getDataFilePath, ensureStorageDirs, initializePersistentStorage } from './config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,7 +31,7 @@ const DRIVER = normalizeDriver(process.env.STORAGE_DRIVER);
 const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries', 'coupons'];
 const SINGLETON_NAMES = ['admin_auth', 'shipping_config', 'legal_pages'];
 
-const dataDir = join(__dirname, 'data');
+const dataDir = DATA_DIR;
 const FILE_FOR = {
   products: join(dataDir, 'products.json'),
   orders: join(dataDir, 'orders.json'),
@@ -61,7 +62,7 @@ export function storageDriver() {
 }
 
 function ensureDataDir() {
-  if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
+  ensureStorageDirs();
 }
 
 export function readJsonFile(file, fallback) {
@@ -148,6 +149,7 @@ function pickDbModule() {
 }
 
 export async function initStore() {
+  initializePersistentStorage();
   if (DB_DRIVERS.includes(DRIVER)) {
     try {
       const modulePath = pickDbModule();

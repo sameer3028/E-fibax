@@ -4,12 +4,13 @@ import { fileURLToPath } from 'url';
 import { existsSync, writeFileSync, readFileSync } from 'fs';
 import { requireAdminAuth } from '../middleware/auth.js';
 import { readJsonFile, writeJsonFile } from '../store.js';
+import { DATA_DIR, getDataFilePath } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = Router();
-const dataDir = join(__dirname, '..', 'data');
+const dataDir = DATA_DIR;
 const BLOGS_FILE = join(dataDir, 'blogs.json');
 const BLOG_CATEGORIES_FILE = join(dataDir, 'blog_categories.json');
 const PUBLIC_SITEMAP_FILE = join(__dirname, '..', '..', 'client', 'public', 'sitemap.xml');

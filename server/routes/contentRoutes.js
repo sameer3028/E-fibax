@@ -5,13 +5,14 @@ import { writeFileSync, existsSync } from 'fs';
 import { requireAdminAuth } from '../middleware/auth.js';
 import { contactLimiter, uploadLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray, readJsonFile, writeJsonFile } from '../store.js';
+import { DATA_DIR, UPLOADS_DIR, getDataFilePath } from '../config/paths.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const router = Router();
-const dataDir = join(__dirname, '..', 'data');
-const uploadsDir = join(__dirname, '..', 'uploads');
+const dataDir = DATA_DIR;
+const uploadsDir = UPLOADS_DIR;
 const ABOUT_BANNERS_FILE = join(dataDir, 'about_banners.json');
 const HOME_BANNERS_FILE = join(dataDir, 'home_banners.json');
 

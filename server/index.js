@@ -8,6 +8,7 @@ import { existsSync, mkdirSync } from 'fs';
 
 import { initShipping } from './shipping.js';
 import { initStore, storageDriver, getArray, flushStore } from './store.js';
+import { DATA_DIR, UPLOADS_DIR, initializePersistentStorage } from './config/paths.js';
 
 // Modular Route Handlers
 import adminRoutes from './routes/adminRoutes.js';
@@ -38,10 +39,8 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // Ensure data & upload directories exist
-const dataDir = join(__dirname, 'data');
-const uploadsDir =
-  process.env.UPLOADS_DIR ||
-  (existsSync('/var/www/fibax-uploads') ? '/var/www/fibax-uploads' : join(__dirname, 'uploads'));
+const dataDir = DATA_DIR;
+const uploadsDir = UPLOADS_DIR;
 
 if (!existsSync(dataDir)) mkdirSync(dataDir, { recursive: true });
 if (!existsSync(uploadsDir)) mkdirSync(uploadsDir, { recursive: true });

@@ -1,5 +1,255 @@
 [
   {
+    "orderId": "FBX-537882-RD7",
+    "createdAt": "2026-11-10T11:35:38.159Z",
+    "idempotencyKey": null,
+    "customer": {
+      "name": "Harpreet Singh",
+      "phone": "9988776655",
+      "email": "",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "95",
+        "title": "Arthobax Ayurvedic Capsules – 30 Capsules",
+        "price": 330,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "VPO Mehna, Tehsil Moga",
+      "city": "Moga",
+      "state": "Punjab",
+      "pincode": "142011"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 330,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 420
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "SKIPPED_NO_EMAIL",
+    "updatedAt": "2026-11-10T11:35:38.169Z",
+    "adminOrderAlertSent": false,
+    "adminOrderAlertStatus": "SKIPPED_CONFIG_DISABLED",
+    "adminOrderAlertRecipient": "fibaxpharma@gmail.com"
+  },
+  {
+    "orderId": "FBX-536774-NPC",
+    "createdAt": "2026-11-10T11:35:37.201Z",
+    "idempotencyKey": null,
+    "customer": {
+      "name": "Harpreet Singh",
+      "phone": "9988776655",
+      "email": "",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "95",
+        "title": "Arthobax Ayurvedic Capsules – 30 Capsules",
+        "price": 330,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "VPO Mehna, Tehsil Moga",
+      "city": "Moga",
+      "state": "Punjab",
+      "pincode": "142011"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 330,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 420
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "SKIPPED_NO_EMAIL",
+    "updatedAt": "2026-11-10T11:35:37.214Z",
+    "adminOrderAlertSent": false,
+    "adminOrderAlertSentAt": null,
+    "adminOrderAlertStatus": "NOT_CONFIGURED",
+    "adminOrderAlertRecipient": "fibaxpharma@gmail.com",
+    "adminOrderAlertError": "SMTP credentials not configured in settings."
+  },
+  {
+    "orderId": "FBX-536150-ONP",
+    "createdAt": "2026-11-10T11:35:36.151Z",
+    "idempotencyKey": null,
+    "customer": {
+      "name": "Simranjit Kaur",
+      "phone": "9876543210",
+      "email": "simran.test@gmail.com",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "101",
+        "title": "Axe Ortho Pain Relief- 30 Capsules",
+        "price": 425,
+        "quantity": 2
+      }
+    ],
+    "shipping": {
+      "address": "House #42, Model Town, Phase 1",
+      "city": "Bathinda",
+      "state": "Punjab",
+      "pincode": "151001"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 850,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 850
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "NOT_CONFIGURED",
+    "orderConfirmationEmailError": "SMTP credentials not configured in settings.",
+    "updatedAt": "2026-11-10T11:35:36.162Z",
+    "adminOrderAlertSent": false,
+    "adminOrderAlertSentAt": null,
+    "adminOrderAlertStatus": "NOT_CONFIGURED",
+    "adminOrderAlertRecipient": "fibaxpharma@gmail.com",
+    "adminOrderAlertError": "SMTP credentials not configured in settings."
+  },
+  {
+    "orderId": "FBX-511561-3HX",
+    "createdAt": "2026-11-10T11:35:12.092Z",
+    "idempotencyKey": null,
+    "customer": {
+      "name": "Harpreet Singh",
+      "phone": "9988776655",
+      "email": "",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "95",
+        "title": "Arthobax Ayurvedic Capsules – 30 Capsules",
+        "price": 330,
+        "quantity": 1
+      }
+    ],
+    "shipping": {
+      "address": "VPO Mehna, Tehsil Moga",
+      "city": "Moga",
+      "state": "Punjab",
+      "pincode": "142011"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 330,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 90,
+      "codFee": 0,
+      "grandTotal": 420
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "SKIPPED_NO_EMAIL",
+    "updatedAt": "2026-11-10T11:35:12.106Z",
+    "adminOrderAlertSent": false,
+    "adminOrderAlertSentAt": null,
+    "adminOrderAlertStatus": "NOT_CONFIGURED",
+    "adminOrderAlertRecipient": "fibaxpharma@gmail.com",
+    "adminOrderAlertError": "SMTP credentials not configured in settings."
+  },
+  {
+    "orderId": "FBX-510936-7FE",
+    "createdAt": "2026-11-10T11:35:10.938Z",
+    "idempotencyKey": null,
+    "customer": {
+      "name": "Simranjit Kaur",
+      "phone": "9876543210",
+      "email": "simran.test@gmail.com",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "101",
+        "title": "Axe Ortho Pain Relief- 30 Capsules",
+        "price": 425,
+        "quantity": 2
+      }
+    ],
+    "shipping": {
+      "address": "House #42, Model Town, Phase 1",
+      "city": "Bathinda",
+      "state": "Punjab",
+      "pincode": "151001"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 850,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 0,
+      "codFee": 0,
+      "grandTotal": 850
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null,
+    "orderConfirmationEmailSent": false,
+    "orderConfirmationEmailStatus": "NOT_CONFIGURED",
+    "orderConfirmationEmailError": "SMTP credentials not configured in settings.",
+    "updatedAt": "2026-11-10T11:35:10.949Z",
+    "adminOrderAlertSent": false,
+    "adminOrderAlertSentAt": null,
+    "adminOrderAlertStatus": "NOT_CONFIGURED",
+    "adminOrderAlertRecipient": "fibaxpharma@gmail.com",
+    "adminOrderAlertError": "SMTP credentials not configured in settings."
+  },
+  {
     "orderId": "FBX-556836-H4Q",
     "createdAt": "2026-10-26T11:02:37.591Z",
     "idempotencyKey": null,
@@ -1567,6 +1817,87 @@
     "cancellationBy": "CUSTOMER"
   },
   {
+    "orderId": "FBX-550945-7JM",
+    "createdAt": "2026-09-24T15:59:11.437Z",
+    "customer": {
+      "name": "Sunil Verma",
+      "email": "sunil.verma@example.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion and Detox",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House No 102, Sector 22-B, Opp Main Market",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160022"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": "43067410000291",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": "43067410000291",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000291",
+      "waybill": "43067410000291",
+      "shipmentId": "UPL6050835377291937255",
+      "status": "Cancelled",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-550945-7JM",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T15:59:11.869Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:31:54.045Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000291",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000291",
+          "order_id": "FBX-550945-7JM",
+          "remark": "Shipment has been cancelled."
+        }
+      }
+    },
+    "updatedAt": "2026-09-24T18:31:54.045Z",
+    "cancelledAt": "2026-09-24T18:31:54.045Z",
+    "cancellationReason": "Ordered by mistake",
+    "cancellationBy": "CUSTOMER"
+  },
+  {
     "orderId": "FBX-514695-ZTK",
     "createdAt": "2026-09-24T15:41:55.276Z",
     "customer": {
@@ -1703,6 +2034,175 @@
     "cancelledAt": "2026-09-24T18:10:27.091Z",
     "cancellationReason": "Changed my mind",
     "cancellationBy": "CUSTOMER"
+  },
+  {
+    "orderId": "FBX-630601-JPL",
+    "createdAt": "2026-09-24T15:27:11.066Z",
+    "customer": {
+      "name": "Ramesh Kumar",
+      "email": "ramesh.kumar@gmail.com",
+      "phone": "8872544458",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "Plot No 45, Sector 17, Main Market Road",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160017"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": "43067410000280",
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Cancelled",
+    "delhiveryAwb": "43067410000280",
+    "shipment": {
+      "success": true,
+      "awb": "43067410000280",
+      "waybill": "43067410000280",
+      "shipmentId": "UPL10480069300264584661",
+      "status": "Cancelled",
+      "remarks": [
+        ""
+      ],
+      "refnum": "FBX-630601-JPL",
+      "courier": "Delhivery Express Surface & Air",
+      "provider": "delhivery",
+      "pickupLocation": "Fibax Central Fulfillment Hub",
+      "mode": "production",
+      "createdAt": "2026-09-24T15:27:11.490Z",
+      "rawResponse": {
+        "success": true,
+        "cash_pickups": 0,
+        "packages_count": 1
+      },
+      "cancelled": true,
+      "cancelledAt": "2026-09-24T18:32:32.117Z",
+      "delhiveryCancelResponse": {
+        "success": true,
+        "awb": "43067410000280",
+        "remark": "Shipment has been cancelled.",
+        "rawResponse": {
+          "status": true,
+          "waybill": "43067410000280",
+          "order_id": "FBX-630601-JPL",
+          "remark": "Shipment has been cancelled."
+        }
+      }
+    },
+    "updatedAt": "2026-09-24T18:32:32.117Z",
+    "cancelledAt": "2026-09-24T18:32:32.117Z",
+    "cancellationReason": "Delivery taking too long",
+    "cancellationBy": "CUSTOMER"
+  },
+  {
+    "orderId": "FBX-587220-FXV",
+    "createdAt": "2026-09-24T15:26:27.721Z",
+    "customer": {
+      "name": "Test Customer",
+      "email": "test@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House 123, Model Town",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160002"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
+  },
+  {
+    "orderId": "FBX-429232-3V9",
+    "createdAt": "2026-09-24T15:23:49.811Z",
+    "customer": {
+      "name": "Test Customer",
+      "email": "test@example.com",
+      "phone": "9876543210",
+      "userId": null
+    },
+    "items": [
+      {
+        "id": "FBX-FIBAXTR-104",
+        "title": "Fibax Triphala Juice for Digestion",
+        "quantity": 1,
+        "price": 499,
+        "shippingPackage": {
+          "weightGrams": 500
+        }
+      }
+    ],
+    "shipping": {
+      "address": "House 123, Model Town",
+      "city": "Chandigarh",
+      "state": "Punjab",
+      "pincode": "160002"
+    },
+    "payment": {
+      "method": "COD",
+      "status": "Pending"
+    },
+    "totals": {
+      "subtotal": 499,
+      "discountAmount": 0,
+      "couponCode": null,
+      "shippingFee": 89,
+      "codFee": 0,
+      "grandTotal": 588
+    },
+    "trackingId": null,
+    "courier": "Delhivery Express Surface & Air",
+    "status": "Processing",
+    "delhiveryAwb": null,
+    "shipment": null
   },
   {
     "orderId": "FBX-151998-BSH",
@@ -2067,255 +2567,5 @@
       ]
     },
     "updatedAt": "2026-09-18T11:33:47.387Z"
-  },
-  {
-    "orderId": "FBX-550945-7JM",
-    "createdAt": "2026-09-24T15:59:11.437Z",
-    "customer": {
-      "name": "Sunil Verma",
-      "email": "sunil.verma@example.com",
-      "phone": "8872544458",
-      "userId": null
-    },
-    "items": [
-      {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion and Detox",
-        "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
-      }
-    ],
-    "shipping": {
-      "address": "House No 102, Sector 22-B, Opp Main Market",
-      "city": "Chandigarh",
-      "state": "Punjab",
-      "pincode": "160022"
-    },
-    "payment": {
-      "method": "COD",
-      "status": "Pending"
-    },
-    "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
-      "codFee": 0,
-      "grandTotal": 588
-    },
-    "trackingId": "43067410000291",
-    "courier": "Delhivery Express Surface & Air",
-    "status": "Cancelled",
-    "delhiveryAwb": "43067410000291",
-    "shipment": {
-      "success": true,
-      "awb": "43067410000291",
-      "waybill": "43067410000291",
-      "shipmentId": "UPL6050835377291937255",
-      "status": "Cancelled",
-      "remarks": [
-        ""
-      ],
-      "refnum": "FBX-550945-7JM",
-      "courier": "Delhivery Express Surface & Air",
-      "provider": "delhivery",
-      "pickupLocation": "Fibax Central Fulfillment Hub",
-      "mode": "production",
-      "createdAt": "2026-09-24T15:59:11.869Z",
-      "rawResponse": {
-        "success": true,
-        "cash_pickups": 0,
-        "packages_count": 1
-      },
-      "cancelled": true,
-      "cancelledAt": "2026-09-24T18:31:54.045Z",
-      "delhiveryCancelResponse": {
-        "success": true,
-        "awb": "43067410000291",
-        "remark": "Shipment has been cancelled.",
-        "rawResponse": {
-          "status": true,
-          "waybill": "43067410000291",
-          "order_id": "FBX-550945-7JM",
-          "remark": "Shipment has been cancelled."
-        }
-      }
-    },
-    "updatedAt": "2026-09-24T18:31:54.045Z",
-    "cancelledAt": "2026-09-24T18:31:54.045Z",
-    "cancellationReason": "Ordered by mistake",
-    "cancellationBy": "CUSTOMER"
-  },
-  {
-    "orderId": "FBX-630601-JPL",
-    "createdAt": "2026-09-24T15:27:11.066Z",
-    "customer": {
-      "name": "Ramesh Kumar",
-      "email": "ramesh.kumar@gmail.com",
-      "phone": "8872544458",
-      "userId": null
-    },
-    "items": [
-      {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion",
-        "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
-      }
-    ],
-    "shipping": {
-      "address": "Plot No 45, Sector 17, Main Market Road",
-      "city": "Chandigarh",
-      "state": "Punjab",
-      "pincode": "160017"
-    },
-    "payment": {
-      "method": "COD",
-      "status": "Pending"
-    },
-    "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
-      "codFee": 0,
-      "grandTotal": 588
-    },
-    "trackingId": "43067410000280",
-    "courier": "Delhivery Express Surface & Air",
-    "status": "Cancelled",
-    "delhiveryAwb": "43067410000280",
-    "shipment": {
-      "success": true,
-      "awb": "43067410000280",
-      "waybill": "43067410000280",
-      "shipmentId": "UPL10480069300264584661",
-      "status": "Cancelled",
-      "remarks": [
-        ""
-      ],
-      "refnum": "FBX-630601-JPL",
-      "courier": "Delhivery Express Surface & Air",
-      "provider": "delhivery",
-      "pickupLocation": "Fibax Central Fulfillment Hub",
-      "mode": "production",
-      "createdAt": "2026-09-24T15:27:11.490Z",
-      "rawResponse": {
-        "success": true,
-        "cash_pickups": 0,
-        "packages_count": 1
-      },
-      "cancelled": true,
-      "cancelledAt": "2026-09-24T18:32:32.117Z",
-      "delhiveryCancelResponse": {
-        "success": true,
-        "awb": "43067410000280",
-        "remark": "Shipment has been cancelled.",
-        "rawResponse": {
-          "status": true,
-          "waybill": "43067410000280",
-          "order_id": "FBX-630601-JPL",
-          "remark": "Shipment has been cancelled."
-        }
-      }
-    },
-    "updatedAt": "2026-09-24T18:32:32.117Z",
-    "cancelledAt": "2026-09-24T18:32:32.117Z",
-    "cancellationReason": "Delivery taking too long",
-    "cancellationBy": "CUSTOMER"
-  },
-  {
-    "orderId": "FBX-587220-FXV",
-    "createdAt": "2026-09-24T15:26:27.721Z",
-    "customer": {
-      "name": "Test Customer",
-      "email": "test@example.com",
-      "phone": "9876543210",
-      "userId": null
-    },
-    "items": [
-      {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion",
-        "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
-      }
-    ],
-    "shipping": {
-      "address": "House 123, Model Town",
-      "city": "Chandigarh",
-      "state": "Punjab",
-      "pincode": "160002"
-    },
-    "payment": {
-      "method": "COD",
-      "status": "Pending"
-    },
-    "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
-      "codFee": 0,
-      "grandTotal": 588
-    },
-    "trackingId": null,
-    "courier": "Delhivery Express Surface & Air",
-    "status": "Processing",
-    "delhiveryAwb": null,
-    "shipment": null
-  },
-  {
-    "orderId": "FBX-429232-3V9",
-    "createdAt": "2026-09-24T15:23:49.811Z",
-    "customer": {
-      "name": "Test Customer",
-      "email": "test@example.com",
-      "phone": "9876543210",
-      "userId": null
-    },
-    "items": [
-      {
-        "id": "FBX-FIBAXTR-104",
-        "title": "Fibax Triphala Juice for Digestion",
-        "quantity": 1,
-        "price": 499,
-        "shippingPackage": {
-          "weightGrams": 500
-        }
-      }
-    ],
-    "shipping": {
-      "address": "House 123, Model Town",
-      "city": "Chandigarh",
-      "state": "Punjab",
-      "pincode": "160002"
-    },
-    "payment": {
-      "method": "COD",
-      "status": "Pending"
-    },
-    "totals": {
-      "subtotal": 499,
-      "discountAmount": 0,
-      "couponCode": null,
-      "shippingFee": 89,
-      "codFee": 0,
-      "grandTotal": 588
-    },
-    "trackingId": null,
-    "courier": "Delhivery Express Surface & Air",
-    "status": "Processing",
-    "delhiveryAwb": null,
-    "shipment": null
   }
 ]

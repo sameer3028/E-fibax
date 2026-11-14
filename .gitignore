@@ -38,3 +38,18 @@ scratch/
 server/backups/
 *.bak
 *.tmp.*
+
+# Persistent Business Data (Separated from Git, managed via DATA_DIR)
+server/data/*.json
+server/data/*.bak
+server/data/*.tmp*
+server/data/*.corrupt*
+!server/data/.gitkeep
+
+# Persistent Media Uploads (Separated from Git, managed via UPLOADS_DIR)
+server/uploads/*
+!server/uploads/.gitkeep
+
+# Isolated test directories
+server/tests/tmp_test_data/
+server/tests/tmp_test_uploads/
