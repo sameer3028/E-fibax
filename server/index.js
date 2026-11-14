@@ -3,12 +3,12 @@ import express from 'express';
 import cors from 'cors';
 import compression from 'compression';
 import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
+import { dirname, join, resolve } from 'path';
 import { existsSync, mkdirSync } from 'fs';
 
 import { initShipping } from './shipping.js';
 import { initStore, storageDriver, getArray, flushStore } from './store.js';
-import { DATA_DIR, UPLOADS_DIR, initializePersistentStorage } from './config/paths.js';
+import { DATA_DIR, UPLOADS_DIR, REPO_ROOT, initializePersistentStorage } from './config/paths.js';
 
 // Modular Route Handlers
 import adminRoutes from './routes/adminRoutes.js';
@@ -61,7 +61,12 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptimeSeconds: Math.floor(process.uptime()),
     storageDriver: storageDriver(),
-    environment: process.env.NODE_ENV || 'development'
+    environment: process.env.NODE_ENV || 'development',
+    storagePaths: {
+      dataDir: DATA_DIR,
+      uploadsDir: UPLOADS_DIR,
+      isExternal: !resolve(DATA_DIR).toLowerCase().startsWith(resolve(REPO_ROOT).toLowerCase())
+    }
   });
 });
 
