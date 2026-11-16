@@ -72,6 +72,69 @@ export async function createRazorpayOrder({ amount, receipt, notes = {} }) {
  * @param {string} [params.razorpay_payment_id]
  * @param {string} [params.razorpay_signature]
  */
+/**
+ * Initiates an automatic refund via Razorpay REST API
+ * @param {Object} params
+ * @param {string} params.paymentId Razorpay payment ID (e.g. pay_xxx)
+ * @param {number} [params.amount] Refund amount in INR (optional; omits for full refund)
+ * @param {Object} [params.notes] Extra notes/metadata (order ID, reason, etc.)
+ */
+export async function createRazorpayRefund({ paymentId, amount, notes = {} }) {
+  if (!paymentId) {
+    return { success: false, error: 'Payment transaction ID is required for gateway refund.' };
+  }
+
+  const authHeader = 'Basic ' + Buffer.from(`${LIVE_KEY_ID}:${LIVE_KEY_SECRET}`).toString('base64');
+  const payload = {
+    notes: {
+      platform: 'Fibax Ayurveda Admin Order Cancellation',
+      ...notes
+    }
+  };
+
+  if (amount && Number(amount) > 0) {
+    payload.amount = Math.round(Number(amount) * 100); // Amount in paise
+  }
+
+  try {
+    const cleanPaymentId = String(paymentId).trim();
+    console.log(`💸 Requesting Razorpay refund for payment ${cleanPaymentId}...`);
+
+    const response = await fetch(`https://api.razorpay.com/v1/payments/${cleanPaymentId}/refund`, {
+      method: 'POST',
+      headers: {
+        'Authorization': authHeader,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.warn('⚠️ Razorpay Refund API error response:', data);
+      return {
+        success: false,
+        error: data?.error?.description || data?.error?.code || `HTTP ${response.status} from Razorpay gateway`,
+        rawResponse: data
+      };
+    }
+
+    console.log(`✅ Razorpay Refund processed: ${data.id} for ₹${(data.amount || 0) / 100}`);
+    return {
+      success: true,
+      refundId: data.id,
+      amount: data.amount ? data.amount / 100 : amount,
+      currency: data.currency || 'INR',
+      status: data.status || 'processed',
+      rawResponse: data
+    };
+  } catch (err) {
+    console.error('Razorpay refund network/gateway error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
 export function verifyPaymentSignature(params = {}) {
   const razorpay_order_id = params.razorpay_order_id || params.razorpayOrderId;
   const razorpay_payment_id = params.razorpay_payment_id || params.razorpayPaymentId || params.paymentId || params.transactionId;

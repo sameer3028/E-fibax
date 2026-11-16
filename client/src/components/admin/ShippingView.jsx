@@ -23,7 +23,9 @@ import {
   Check,
   RotateCcw,
   FileText,
-  Sparkles
+  Sparkles,
+  AlertTriangle,
+  CreditCard
 } from 'lucide-react';
 import { apiRequest } from '../../utils/api';
 
@@ -136,6 +138,67 @@ export function ShippingView() {
 
   const [shippingOrderId, setShippingOrderId] = useState(null);
 
+  // Cancellation Modal State
+  const [cancelModalOrder, setCancelModalOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState('Customer requested cancellation');
+  const [customCancelReason, setCustomCancelReason] = useState('');
+  const [cancelAdminRemarks, setCancelAdminRemarks] = useState('');
+  const [isCancellingOrder, setIsCancellingOrder] = useState(false);
+  const [cancelModalError, setCancelModalError] = useState(null);
+  const [cancelModalSuccess, setCancelModalSuccess] = useState(null);
+
+  const openCancelModal = (order) => {
+    setCancelModalOrder(order);
+    setCancelReason('Customer requested cancellation');
+    setCustomCancelReason('');
+    setCancelAdminRemarks('');
+    setCancelModalError(null);
+    setCancelModalSuccess(null);
+  };
+
+  const handleCancelOrderSubmit = async (e) => {
+    if (e) e.preventDefault();
+    if (!cancelModalOrder) return;
+
+    const finalReason = cancelReason === 'Other' ? customCancelReason.trim() : cancelReason;
+    if (!finalReason) {
+      setCancelModalError('Please select or specify a cancellation reason.');
+      return;
+    }
+
+    setIsCancellingOrder(true);
+    setCancelModalError(null);
+    setCancelModalSuccess(null);
+
+    try {
+      const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+      const res = await apiRequest(`/api/orders/${cancelModalOrder.orderId}/cancel`, {
+        method: 'POST',
+        headers: token ? { Authorization: 'Bearer ' + token } : {},
+        body: JSON.stringify({
+          reason: finalReason,
+          adminRemarks: cancelAdminRemarks.trim(),
+          adminOverride: true
+        })
+      });
+
+      if (res && res.success) {
+        setCancelModalSuccess(`Order #${cancelModalOrder.orderId} cancelled successfully.`);
+        await loadData();
+        setTimeout(() => {
+          setCancelModalOrder(null);
+          setCancelModalSuccess(null);
+        }, 1200);
+      } else {
+        setCancelModalError(res?.error || 'Failed to cancel order. Please verify shipment state.');
+      }
+    } catch (err) {
+      setCancelModalError('Network error cancelling order: ' + err.message);
+    } finally {
+      setIsCancellingOrder(false);
+    }
+  };
+
   // Email Notification State
   const [emailConfig, setEmailConfig] = useState(null);
   const [emailConfigSaving, setEmailConfigSaving] = useState(false);
@@ -226,14 +289,14 @@ export function ShippingView() {
 
   // Prevent background page scrolling when modal is open
   useEffect(() => {
-    if (isSettingsOpen || viewOrderModal || statusModalOrder) {
+    if (isSettingsOpen || viewOrderModal || statusModalOrder || cancelModalOrder) {
       const originalStyle = window.getComputedStyle(document.body).overflow;
       document.body.style.overflow = 'hidden';
       return () => {
         document.body.style.overflow = originalStyle;
       };
     }
-  }, [isSettingsOpen, viewOrderModal, statusModalOrder]);
+  }, [isSettingsOpen, viewOrderModal, statusModalOrder, cancelModalOrder]);
 
 
 
@@ -810,7 +873,7 @@ export function ShippingView() {
                       </td>
 
                       <td className="py-3 px-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                        <div className="flex items-center justify-end gap-1.5 flex-wrap sm:flex-nowrap">
                           {isCancelled ? (
                             <button
                               onClick={() => setViewOrderModal(order)}
@@ -819,24 +882,51 @@ export function ShippingView() {
                               <Eye className="h-3.5 w-3.5 text-forest" />
                               <span>Details</span>
                             </button>
-                          ) : !hasAwb || order.status === 'Processing' ? (
+                          ) : order.status === 'Delivered' ? (
                             <button
-                              onClick={() => handleShipOrder(order.orderId)}
-                              disabled={shippingOrderId === order.orderId}
-                              className="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all disabled:opacity-50"
+                              onClick={() => setViewOrderModal(order)}
+                              className="px-2.5 py-1.5 rounded-lg border border-sand-border hover:bg-sand text-[11px] font-semibold text-charcoal transition-colors flex items-center gap-1 ml-auto"
                             >
-                              {shippingOrderId === order.orderId ? (
-                                <>
-                                  <RefreshCw className="h-3 w-3 animate-spin" />
-                                  <span>Shipping...</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Truck className="h-3 w-3" />
-                                  <span>Ship Now</span>
-                                </>
-                              )}
+                              <Eye className="h-3.5 w-3.5 text-emerald-700" />
+                              <span>Details</span>
                             </button>
+                          ) : !hasAwb || order.status === 'Processing' ? (
+                            <>
+                              <button
+                                onClick={() => handleShipOrder(order.orderId)}
+                                disabled={shippingOrderId === order.orderId}
+                                className="px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all disabled:opacity-50"
+                              >
+                                {shippingOrderId === order.orderId ? (
+                                  <>
+                                    <RefreshCw className="h-3 w-3 animate-spin" />
+                                    <span>Shipping...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Truck className="h-3 w-3" />
+                                    <span>Ship Now</span>
+                                  </>
+                                )}
+                              </button>
+
+                              <button
+                                onClick={() => openCancelModal(order)}
+                                className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-900 border border-rose-200 text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all cursor-pointer"
+                                title="Cancel Customer Order"
+                              >
+                                <XCircle className="h-3.5 w-3.5 text-rose-600" />
+                                <span>Cancel</span>
+                              </button>
+
+                              <button
+                                onClick={() => setViewOrderModal(order)}
+                                title="Order Details"
+                                className="p-1.5 rounded-lg border border-sand-border hover:bg-sand text-charcoal transition-colors"
+                              >
+                                <Eye className="h-3.5 w-3.5 text-forest" />
+                              </button>
+                            </>
                           ) : (
                             <>
                               <button
@@ -857,6 +947,25 @@ export function ShippingView() {
                               >
                                 <Sliders className="h-3 w-3" />
                                 <span>Status</span>
+                              </button>
+
+                              {order.status !== 'In Transit' && order.status !== 'Dispatched' && order.status !== 'Out for Delivery' ? (
+                                <button
+                                  onClick={() => openCancelModal(order)}
+                                  className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 hover:text-rose-900 border border-rose-200 text-[11px] font-bold shadow-xs flex items-center gap-1 transition-all cursor-pointer"
+                                  title="Cancel Order & AWB"
+                                >
+                                  <XCircle className="h-3.5 w-3.5 text-rose-600" />
+                                  <span>Cancel</span>
+                                </button>
+                              ) : null}
+
+                              <button
+                                onClick={() => setViewOrderModal(order)}
+                                title="Order Details"
+                                className="p-1.5 rounded-lg border border-sand-border hover:bg-sand text-charcoal transition-colors"
+                              >
+                                <Eye className="h-3.5 w-3.5 text-forest" />
                               </button>
                             </>
                           )}
@@ -1467,6 +1576,183 @@ export function ShippingView() {
         </div>
       )}
 
+      {/* 4. Cancellation Confirmation Modal */}
+      {cancelModalOrder && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-sand-border space-y-4 max-h-[90vh] overflow-y-auto">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-sand-border">
+              <div className="flex items-center gap-2 text-rose-700 font-bold text-base">
+                <AlertTriangle className="h-5 w-5 text-rose-600" />
+                <span>Cancel Order #{cancelModalOrder.orderId}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => !isCancellingOrder && setCancelModalOrder(null)}
+                disabled={isCancellingOrder}
+                className="p-1.5 rounded-lg hover:bg-sand text-charcoal-muted transition-colors disabled:opacity-50"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Error Notification */}
+            {cancelModalError && (
+              <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs font-semibold text-rose-900 flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                <div>{cancelModalError}</div>
+              </div>
+            )}
+
+            {/* Success Notification */}
+            {cancelModalSuccess && (
+              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs font-semibold text-emerald-900 flex items-start gap-2">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                <div>{cancelModalSuccess}</div>
+              </div>
+            )}
+
+            {/* Order Summary Card */}
+            <div className="p-4 bg-sand/50 rounded-2xl border border-sand-border space-y-2 text-xs">
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <span className="text-charcoal-muted block text-[11px]">Customer Name:</span>
+                  <strong className="text-charcoal font-bold">{cancelModalOrder.customer?.name || 'Customer'}</strong>
+                  <div className="text-[10px] text-charcoal-muted font-mono">+91 {cancelModalOrder.customer?.phone}</div>
+                </div>
+                <div>
+                  <span className="text-charcoal-muted block text-[11px]">Order Amount:</span>
+                  <strong className="text-forest font-bold text-sm">
+                    {formatPrice(cancelModalOrder.totals?.grandTotal || 0)}
+                  </strong>
+                  <span className="text-[10px] font-semibold text-charcoal-muted block">
+                    {cancelModalOrder.payment?.method || 'COD'} ({cancelModalOrder.payment?.status || 'Pending'})
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-sand-border/60">
+                <div>
+                  <span className="text-charcoal-muted block text-[11px]">Current Status:</span>
+                  <span className="inline-block px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800">
+                    {cancelModalOrder.status || 'Processing'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-charcoal-muted block text-[11px]">Courier / AWB:</span>
+                  <span className="font-mono text-xs font-bold text-forest">
+                    {cancelModalOrder.trackingId || cancelModalOrder.delhiveryAwb || 'No AWB (Pre-shipment)'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Operational Impact Notices */}
+            <div className="space-y-1.5 text-[11px]">
+              {cancelModalOrder.trackingId && (
+                <div className="flex items-center gap-1.5 text-amber-900 bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                  <Truck className="h-4 w-4 flex-shrink-0 text-amber-700" />
+                  <span>Delhivery courier shipment will be cancelled for AWB #{cancelModalOrder.trackingId}.</span>
+                </div>
+              )}
+              {cancelModalOrder.payment?.method !== 'COD' && (
+                <div className="flex items-center gap-1.5 text-blue-900 bg-blue-50 p-2.5 rounded-xl border border-blue-200">
+                  <CreditCard className="h-4 w-4 flex-shrink-0 text-blue-700" />
+                  <span>Prepaid Order: Gateway refund will be automatically triggered or marked as Pending Refund.</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 text-emerald-900 bg-emerald-50 p-2.5 rounded-xl border border-emerald-200">
+                <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-emerald-700" />
+                <span>Reserved quantities for all ordered items will be automatically restored to active inventory.</span>
+              </div>
+            </div>
+
+            {/* Cancellation Reason Dropdown */}
+            <div>
+              <label className="block text-xs font-bold text-charcoal mb-1">
+                Select Cancellation Reason <span className="text-rose-600">*</span>
+              </label>
+              <select
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                disabled={isCancellingOrder}
+                className="w-full px-3 py-2 bg-sand rounded-xl text-xs font-semibold text-charcoal border border-sand-border focus:border-forest focus:outline-none"
+              >
+                <option value="Customer requested cancellation">Customer requested cancellation</option>
+                <option value="Product out of stock">Product out of stock</option>
+                <option value="Payment issue">Payment issue</option>
+                <option value="Incorrect order details">Incorrect order details</option>
+                <option value="Duplicate order">Duplicate order</option>
+                <option value="Delivery service unavailable">Delivery service unavailable</option>
+                <option value="Other">Other (Enter custom reason below)</option>
+              </select>
+            </div>
+
+            {/* Custom Reason Field */}
+            {cancelReason === 'Other' && (
+              <div>
+                <label className="block text-xs font-bold text-charcoal mb-1">
+                  Specify Custom Reason <span className="text-rose-600">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={customCancelReason}
+                  onChange={(e) => setCustomCancelReason(e.target.value)}
+                  placeholder="e.g. Customer cancelled via WhatsApp doctor helpline"
+                  disabled={isCancellingOrder}
+                  className="w-full px-3 py-2 bg-sand rounded-xl text-xs text-charcoal border border-sand-border focus:border-forest focus:outline-none"
+                />
+              </div>
+            )}
+
+            {/* Optional Admin Remarks */}
+            <div>
+              <label className="block text-xs font-bold text-charcoal mb-1">
+                Admin Remarks / Internal Notes (Optional)
+              </label>
+              <textarea
+                value={cancelAdminRemarks}
+                onChange={(e) => setCancelAdminRemarks(e.target.value)}
+                placeholder="e.g. Spoke with customer on phone. Confirmed cancellation. Notified dispatch team."
+                rows={2}
+                disabled={isCancellingOrder}
+                className="w-full p-2.5 bg-sand rounded-xl text-xs text-charcoal border border-sand-border focus:border-forest focus:outline-none"
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-sand-border">
+              <button
+                type="button"
+                onClick={() => setCancelModalOrder(null)}
+                disabled={isCancellingOrder}
+                className="px-4 py-2 rounded-xl text-xs font-bold text-charcoal-muted hover:bg-sand transition-colors disabled:opacity-50"
+              >
+                Go Back
+              </button>
+              <button
+                type="button"
+                onClick={handleCancelOrderSubmit}
+                disabled={isCancellingOrder}
+                className="px-4 py-2 rounded-xl text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition-all flex items-center gap-1.5 disabled:opacity-50"
+              >
+                {isCancellingOrder ? (
+                  <>
+                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                    <span>Processing Cancellation...</span>
+                  </>
+                ) : (
+                  <>
+                    <XCircle className="h-3.5 w-3.5" />
+                    <span>Confirm Cancellation</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 3. Order & Cancellation Details Modal */}
       {viewOrderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-fadeIn">
@@ -1495,35 +1781,46 @@ export function ShippingView() {
               </button>
             </div>
 
-            {/* Telecalling-Friendly Cancellation Details Card (if Cancelled) */}
+            {/* Telecalling & Audit Cancellation Details Card (if Cancelled) */}
             {viewOrderModal.status === 'Cancelled' && (
-              <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-200/90 space-y-2.5 shadow-xs">
-                <div className="flex items-center justify-between border-b border-amber-200/70 pb-2">
-                  <div className="flex items-center gap-2 text-amber-900 font-bold text-xs uppercase tracking-wider">
+              <div className="p-4 rounded-2xl bg-rose-50/70 border border-rose-200 space-y-3 shadow-xs">
+                <div className="flex items-center justify-between border-b border-rose-200/80 pb-2">
+                  <div className="flex items-center gap-2 text-rose-950 font-bold text-xs uppercase tracking-wider">
                     <XCircle className="h-4 w-4 text-rose-600 flex-shrink-0" />
-                    <span>Cancellation Details</span>
+                    <span>Cancellation &amp; Refund History</span>
                   </div>
-                  <span className="text-[10px] bg-rose-100 text-rose-800 font-bold px-2 py-0.5 rounded-full uppercase">
-                    Telecalling Review
+                  <span className="text-[10px] bg-rose-200 text-rose-900 font-bold px-2 py-0.5 rounded-full uppercase">
+                    Cancelled
                   </span>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-0.5">
                   <div className="sm:col-span-2">
-                    <span className="text-amber-900/70 block text-[11px] font-medium">Cancellation Reason:</span>
-                    <strong className="text-amber-950 font-bold text-sm">
+                    <span className="text-charcoal-muted block text-[11px] font-medium">Cancellation Reason:</span>
+                    <strong className="text-rose-950 font-bold text-sm">
                       {viewOrderModal.cancellationReason || 'Not recorded'}
                     </strong>
                   </div>
+
+                  {viewOrderModal.adminRemarks && (
+                    <div className="sm:col-span-2 p-2 rounded-xl bg-white/80 border border-rose-200 text-xs">
+                      <span className="text-charcoal-muted block text-[10px] font-bold uppercase tracking-wider mb-0.5">
+                        Admin Remarks:
+                      </span>
+                      <p className="text-charcoal font-medium">{viewOrderModal.adminRemarks}</p>
+                    </div>
+                  )}
+
                   <div>
-                    <span className="text-amber-900/70 block text-[11px] font-medium">Cancelled By:</span>
-                    <strong className="text-amber-950 font-semibold capitalize">
-                      {viewOrderModal.cancelledBy || viewOrderModal.cancellationBy || 'Customer'}
+                    <span className="text-charcoal-muted block text-[11px] font-medium">Cancelled By:</span>
+                    <strong className="text-charcoal font-semibold">
+                      {viewOrderModal.cancelledBy || viewOrderModal.cancellationBy || 'Admin'}
                     </strong>
                   </div>
+
                   <div>
-                    <span className="text-amber-900/70 block text-[11px] font-medium">Cancelled At:</span>
-                    <strong className="text-amber-950 font-semibold">
+                    <span className="text-charcoal-muted block text-[11px] font-medium">Cancelled Date:</span>
+                    <strong className="text-charcoal font-semibold">
                       {viewOrderModal.cancelledAt
                         ? new Date(viewOrderModal.cancelledAt).toLocaleString('en-IN', {
                             day: 'numeric',
@@ -1535,6 +1832,44 @@ export function ShippingView() {
                         : 'N/A'}
                     </strong>
                   </div>
+
+                  {/* Refund Status */}
+                  <div>
+                    <span className="text-charcoal-muted block text-[11px] font-medium">Refund Status:</span>
+                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold mt-0.5 ${
+                      viewOrderModal.refundStatus === 'Processed'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : viewOrderModal.refundStatus === 'Pending Refund'
+                        ? 'bg-amber-100 text-amber-800'
+                        : 'bg-sand text-charcoal'
+                    }`}>
+                      {viewOrderModal.refundStatus || (viewOrderModal.payment?.method === 'COD' ? 'Not Applicable (COD)' : 'Pending Refund')}
+                    </span>
+                    {viewOrderModal.refundDetails?.refundId && (
+                      <div className="text-[10px] text-charcoal-muted font-mono mt-0.5">
+                        ID: {viewOrderModal.refundDetails.refundId}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Inventory Restoration Result */}
+                  <div>
+                    <span className="text-charcoal-muted block text-[11px] font-medium">Inventory Stock:</span>
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold mt-0.5 bg-emerald-100 text-emerald-800">
+                      <Check className="h-3 w-3" />
+                      <span>{viewOrderModal.inventoryRestored ? 'Restored to Stock' : 'Stock Updated'}</span>
+                    </span>
+                  </div>
+
+                  {/* Courier Cancellation Status */}
+                  {viewOrderModal.trackingId && (
+                    <div className="sm:col-span-2 pt-1 border-t border-rose-200/60 text-[11px] text-charcoal-muted">
+                      <span>Delhivery AWB <strong>{viewOrderModal.trackingId}</strong>: </span>
+                      <span className="text-rose-900 font-semibold">
+                        {viewOrderModal.shipment?.cancelled ? 'Shipment Cancelled with Courier' : 'Shipment Cancelled'}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

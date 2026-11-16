@@ -1075,16 +1075,22 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                       className="bg-white rounded-2xl p-4 border border-sand-border/80 shadow-xs space-y-2"
                     >
                       <div className="flex items-center justify-between">
-                        <span className="font-mono text-xs font-bold text-forest">#{order.id}</span>
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800">
-                          {order.paymentMethod === 'COD' ? 'No Refund Needed (COD)' : 'Refund Initiated'}
+                        <span className="font-mono text-xs font-bold text-forest">#{order.orderId || order.id}</span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                          order.refundStatus === 'Processed'
+                            ? 'bg-emerald-100 text-emerald-800'
+                            : order.refundStatus === 'Pending Refund'
+                            ? 'bg-amber-100 text-amber-800'
+                            : 'bg-emerald-100 text-emerald-800'
+                        }`}>
+                          {order.refundStatus || (order.paymentMethod === 'COD' || order.payment?.method === 'COD' ? 'No Refund Needed (COD)' : 'Refund Initiated')}
                         </span>
                       </div>
                       <p className="text-xs text-charcoal">
-                        Amount: <strong>{formatPrice(order.totalAmount || order.total || 0)}</strong>
+                        Amount: <strong>{formatPrice(order.totals?.grandTotal || order.totalAmount || order.total || 0)}</strong>
                       </p>
                       <p className="text-[11px] text-charcoal-muted">
-                        Cancellation note: {order.cancelReason || 'Customer requested'}
+                        Cancellation note: {order.cancelReason || order.cancellationReason || 'Customer requested'}
                       </p>
                     </div>
                   ))}

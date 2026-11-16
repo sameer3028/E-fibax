@@ -2,6 +2,7 @@ import path from 'path';
 import nodemailer from 'nodemailer';
 import { generateOrderConfirmationHtml, generateOrderConfirmationText } from '../emailTemplates/orderConfirmation.js';
 import { generateAdminOrderAlertHtml, generateAdminOrderAlertText } from '../emailTemplates/adminOrderAlert.js';
+import { generateOrderCancellationHtml, generateOrderCancellationText } from '../emailTemplates/orderCancellation.js';
 import { readJsonFile, writeJsonFile } from '../store.js';
 import { getDataFilePath } from '../config/paths.js';
 
@@ -606,4 +607,123 @@ export async function sendTestEmail(recipientEmail) {
     messageId: info.messageId,
     previewUrl: previewUrl
   };
+}
+
+/**
+ * Send Customer Order Cancellation Email
+ * @param {Object} order Canonical order object
+ * @param {Object} cancellationDetails Reason, refund info, etc.
+ * @param {Boolean} forceSend Set true to bypass idempotency check
+ */
+export async function sendOrderCancellationEmail(order, cancellationDetails = {}, forceSend = false) {
+  if (!order || !order.orderId) {
+    return { success: false, error: 'Invalid order object' };
+  }
+
+  // 1. Idempotency Protection Check
+  if (order.cancellationEmailSent && !forceSend) {
+    console.log(`ℹ️ Cancellation email for Order #${order.orderId} was already sent at ${order.cancellationEmailSentAt}. Skipping duplicate send.`);
+    return { success: true, skipped: true, reason: 'already_sent' };
+  }
+
+  const config = readEmailConfig();
+
+  // 2. Settings Toggle Guard
+  if (config.enabled === false) {
+    console.log(`ℹ️ Email notifications disabled in Admin Settings. Skipping Order #${order.orderId} cancellation email.`);
+    updateOrderEmailFields(order.orderId, {
+      cancellationEmailSent: false,
+      cancellationEmailStatus: 'SKIPPED_CONFIG_DISABLED'
+    });
+    return { success: false, skipped: true, reason: 'config_disabled' };
+  }
+
+  // 3. Customer Email Validation
+  const recipientEmail = (order.customer?.email || '').trim().toLowerCase();
+  if (!recipientEmail || !recipientEmail.includes('@') || recipientEmail.endsWith('@customer.fibaxpharma.com')) {
+    console.log(`ℹ️ Customer email unavailable or placeholder for Order #${order.orderId} — cancellation email not sent.`);
+    updateOrderEmailFields(order.orderId, {
+      cancellationEmailSent: false,
+      cancellationEmailStatus: 'SKIPPED_NO_EMAIL'
+    });
+    logEmailExecution({
+      orderId: order.orderId,
+      type: 'Order Cancellation',
+      recipient: recipientEmail || 'None',
+      status: 'SKIPPED_NO_EMAIL',
+      details: 'Customer email unavailable or system placeholder.'
+    });
+    return { success: false, skipped: true, reason: 'no_email' };
+  }
+
+  // 4. Check if SMTP is configured
+  if (!isSmtpConfigured(config)) {
+    console.log(`ℹ️ SMTP credentials not configured. Customer cancellation for Order #${order.orderId} logged without live dispatch.`);
+    updateOrderEmailFields(order.orderId, {
+      cancellationEmailSent: false,
+      cancellationEmailStatus: 'NOT_CONFIGURED',
+      cancellationEmailError: 'SMTP credentials not configured in settings.'
+    });
+    logEmailExecution({
+      orderId: order.orderId,
+      type: 'Order Cancellation',
+      recipient: recipientEmail,
+      status: 'NOT_CONFIGURED',
+      details: 'SMTP not configured in Admin Settings. Live email delivery skipped.'
+    });
+    return { success: false, notConfigured: true, error: 'SMTP not configured' };
+  }
+
+  try {
+    const transporter = await createTransporter(config);
+    const html = generateOrderCancellationHtml(order, cancellationDetails, config);
+    const text = generateOrderCancellationText(order, cancellationDetails);
+
+    const mailOptions = {
+      from: `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'orders@fibaxpharma.com'}>`,
+      to: recipientEmail,
+      replyTo: config.replyToEmail || 'care@fibaxpharma.com',
+      subject: `Order #${order.orderId} Cancelled — Fibax Ayurveda`,
+      text,
+      html
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log(`✅ Cancellation email sent for Order #${order.orderId} to ${recipientEmail} (msgId: ${info.messageId})`);
+
+    updateOrderEmailFields(order.orderId, {
+      cancellationEmailSent: true,
+      cancellationEmailSentAt: new Date().toISOString(),
+      cancellationEmailStatus: 'SENT',
+      cancellationEmailMessageId: info.messageId || null,
+      cancellationEmailError: null
+    });
+
+    logEmailExecution({
+      orderId: order.orderId,
+      type: 'Order Cancellation',
+      recipient: recipientEmail,
+      status: 'SENT',
+      messageId: info.messageId || null
+    });
+
+    return { success: true, messageId: info.messageId };
+  } catch (err) {
+    console.error(`❌ Error sending cancellation email for Order #${order.orderId}:`, err.message);
+    updateOrderEmailFields(order.orderId, {
+      cancellationEmailSent: false,
+      cancellationEmailStatus: 'FAILED',
+      cancellationEmailError: err.message
+    });
+
+    logEmailExecution({
+      orderId: order.orderId,
+      type: 'Order Cancellation',
+      recipient: recipientEmail,
+      status: 'FAILED',
+      error: err.message
+    });
+
+    return { success: false, error: err.message };
+  }
 }

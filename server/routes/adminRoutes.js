@@ -12,6 +12,7 @@ import {
 } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray, setSingleton } from '../store.js';
+import { executeOrderCancellation } from './orderRoutes.js';
 
 const router = Router();
 
@@ -175,6 +176,31 @@ router.get('/orders', requireAdminAuth, (req, res) => {
     return res.json({ success: true, count: orders.length, data: orders });
   } catch (err) {
     console.error('Error fetching admin orders:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// POST /api/admin/orders/:orderId/cancel - Dedicated Admin Order Cancellation Endpoint
+router.post('/orders/:orderId/cancel', requireAdminAuth, async (req, res) => {
+  try {
+    const { orderId } = req.params;
+    const { reason, adminRemarks } = req.body || {};
+    const adminSession = getAdminSessionFromRequest(req);
+
+    const result = await executeOrderCancellation({
+      orderId,
+      reason,
+      adminRemarks,
+      isAdmin: true,
+      adminUser: adminSession?.username || 'admin'
+    });
+
+    if (!result.success) {
+      return res.status(result.status || 400).json(result);
+    }
+    return res.json(result);
+  } catch (err) {
+    console.error('Error in admin order cancellation:', err);
     return res.status(500).json({ success: false, error: err.message });
   }
 });

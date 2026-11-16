@@ -31,7 +31,7 @@ console.log(`🧪 Running ${testFiles.length} test suites against isolated test 
 console.log(`   DATA_DIR:    ${tmpDataDir}`);
 console.log(`   UPLOADS_DIR: ${tmpUploadsDir}\n`);
 
-const child = spawn(process.execPath, ['--test', ...testFiles], {
+const child = spawn(process.execPath, ['--test', '--test-concurrency=1', ...testFiles], {
   stdio: 'inherit',
   env: {
     ...process.env,

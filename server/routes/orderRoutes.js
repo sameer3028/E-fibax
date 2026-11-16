@@ -5,8 +5,8 @@ import {
   getTrackingDetails,
   cancelDelhiveryShipment
 } from '../shipping.js';
-import { verifyOrderPayment } from '../payment.js';
-import { sendOrderConfirmationEmail, sendAdminNewOrderAlert } from '../services/emailService.js';
+import { verifyOrderPayment, createRazorpayRefund } from '../payment.js';
+import { sendOrderConfirmationEmail, sendAdminNewOrderAlert, sendOrderCancellationEmail } from '../services/emailService.js';
 import {
   getAdminSessionFromRequest,
   getCustomerFromRequest,
@@ -278,28 +278,293 @@ router.post('/', orderLimiter, async (req, res) => {
   }
 });
 
+// Core Order Cancellation Engine
+export async function executeOrderCancellation({ orderId, reason, adminRemarks, isAdmin = false, adminUser = 'admin' }) {
+  const orders = readOrders();
+  const idx = orders.findIndex(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+  if (idx === -1) {
+    return { success: false, status: 404, error: `Order #${orderId} not found.` };
+  }
+
+  const order = orders[idx];
+
+  // 1. Guard against duplicate cancellation
+  if (order.status === 'Cancelled') {
+    return { success: false, status: 400, error: `Order #${order.orderId} is already cancelled.` };
+  }
+
+  // 2. Status-aware checks
+  const statusUpper = (order.status || '').toUpperCase();
+
+  // Delivered check
+  if (statusUpper === 'DELIVERED') {
+    return {
+      success: false,
+      status: 400,
+      error: 'Delivered orders cannot be cancelled directly. Please use the return and refund workflow.'
+    };
+  }
+
+  // In Transit / Dispatched check
+  if (['IN TRANSIT', 'DISPATCHED', 'OUT FOR DELIVERY', 'RTO'].includes(statusUpper)) {
+    return {
+      success: false,
+      status: 400,
+      error: 'Cancellation is blocked: The shipment has already been picked up and is in transit with courier. Courier interception or RTO (Return to Origin) handling is required.'
+    };
+  }
+
+  // 3. Courier Cancellation Check (if AWB exists)
+  const awb = order.delhiveryAwb || order.trackingId;
+  let delhiveryCancelResult = null;
+
+  if (awb && !awb.startsWith('DLH-') && !awb.startsWith('PENDING')) {
+    const liveTracking = await getTrackingDetails(awb, orders);
+    const liveStatus = (liveTracking?.status || '').toUpperCase();
+
+    if (['IN TRANSIT', 'OUT FOR DELIVERY', 'DELIVERED', 'DISPATCHED'].includes(liveStatus)) {
+      return {
+        success: false,
+        status: 400,
+        error: `Cancellation blocked: Delhivery reports this package is already ${liveTracking.status || 'in transit'}. Courier interception or RTO handling is required.`
+      };
+    }
+
+    delhiveryCancelResult = await cancelDelhiveryShipment(awb, reason || 'Customer requested cancellation');
+    if (!delhiveryCancelResult.success) {
+      console.warn(`Delhivery cancellation API warning for ${order.orderId}:`, delhiveryCancelResult.error);
+      const errMsg = String(delhiveryCancelResult.error || '').toLowerCase();
+      if (!errMsg.includes('already') && !errMsg.includes('cancelled') && !errMsg.includes('not found')) {
+        return {
+          success: false,
+          status: 400,
+          error: `Delhivery courier cancellation failed: ${delhiveryCancelResult.error}. Shipment status preserved.`
+        };
+      }
+    }
+  }
+
+  // 4. Inventory Restoration (Idempotent Guard)
+  let inventoryRestorationResult = null;
+  if (!order.inventoryRestored) {
+    try {
+      const products = readProducts();
+      const items = Array.isArray(order.items) ? order.items : [];
+      const restoredItems = [];
+
+      for (const item of items) {
+        const itemId = String(item.id || item.product?.id || '');
+        const qty = Number(item.quantity) || 1;
+        const pIdx = products.findIndex(p => String(p.id) === itemId);
+
+        if (pIdx !== -1) {
+          const prevStock = Number(products[pIdx].stockQuantity) || 0;
+          const newStock = prevStock + qty;
+          products[pIdx].stockQuantity = newStock;
+          products[pIdx].inStock = newStock > 0;
+          restoredItems.push({
+            id: itemId,
+            title: products[pIdx].title || item.title,
+            restoredQuantity: qty,
+            previousStock: prevStock,
+            newStock: newStock
+          });
+        }
+
+        // Support combo/bundled component product quantities
+        if (Array.isArray(item.components) && item.components.length > 0) {
+          for (const comp of item.components) {
+            const compId = String(comp.id || comp.productId || '');
+            const compQty = (Number(comp.quantity) || 1) * qty;
+            const cIdx = products.findIndex(p => String(p.id) === compId);
+            if (cIdx !== -1) {
+              const prevComp = Number(products[cIdx].stockQuantity) || 0;
+              products[cIdx].stockQuantity = prevComp + compQty;
+              products[cIdx].inStock = products[cIdx].stockQuantity > 0;
+              restoredItems.push({
+                id: compId,
+                title: products[cIdx].title || comp.title,
+                restoredQuantity: compQty,
+                componentOf: itemId,
+                previousStock: prevComp,
+                newStock: products[cIdx].stockQuantity
+              });
+            }
+          }
+        }
+      }
+
+      saveProducts(products);
+      inventoryRestorationResult = {
+        success: true,
+        restoredAt: new Date().toISOString(),
+        restoredCount: restoredItems.length,
+        items: restoredItems
+      };
+    } catch (invErr) {
+      console.error(`Error restoring inventory for order #${order.orderId}:`, invErr);
+      inventoryRestorationResult = {
+        success: false,
+        error: invErr.message
+      };
+    }
+  } else {
+    inventoryRestorationResult = {
+      success: true,
+      restored: false,
+      message: 'Inventory was already restored previously for this order (idempotent protection).'
+    };
+  }
+
+  // 5. Payment & Refund Handling
+  const paymentMethod = order.payment?.method || '';
+  const isPrepaid = paymentMethod !== 'COD' && paymentMethod !== 'cod' &&
+    (order.payment?.status === 'Paid' || /razorpay|online|upi|card/i.test(paymentMethod));
+
+  let refundEligibility = isPrepaid ? 'Eligible' : 'Not Applicable (COD)';
+  let refundStatus = isPrepaid ? 'Pending Refund' : 'Not Applicable';
+  let refundDetails = null;
+
+  if (isPrepaid) {
+    const paymentId = order.payment?.transactionId || order.payment?.paymentId || order.payment?.razorpay_payment_id;
+    const grandTotal = Number(order.totals?.grandTotal || 0);
+
+    if (paymentId && !String(paymentId).startsWith('TEST-TXN-')) {
+      try {
+        const refundRes = await createRazorpayRefund({
+          paymentId,
+          amount: grandTotal,
+          notes: {
+            orderId: order.orderId,
+            reason: reason || 'Customer requested cancellation'
+          }
+        });
+
+        if (refundRes.success) {
+          refundStatus = 'Processed';
+          refundDetails = {
+            gateway: 'Razorpay',
+            refundId: refundRes.refundId,
+            amount: refundRes.amount,
+            currency: refundRes.currency || 'INR',
+            status: refundRes.status || 'processed',
+            processedAt: new Date().toISOString()
+          };
+        } else {
+          refundStatus = 'Pending Refund';
+          refundDetails = {
+            gateway: 'Razorpay',
+            error: refundRes.error,
+            note: 'Automatic gateway refund could not be completed. Marked as Refund Required for manual admin follow-up.'
+          };
+        }
+      } catch (refErr) {
+        refundStatus = 'Pending Refund';
+        refundDetails = {
+          gateway: 'Razorpay',
+          error: refErr.message,
+          note: 'Gateway network error. Marked as Refund Required for manual admin follow-up.'
+        };
+      }
+    } else {
+      refundStatus = 'Pending Refund';
+      refundDetails = {
+        note: 'Online payment record has no live gateway transaction ID. Marked as Refund Required for manual verification.'
+      };
+    }
+  } else {
+    refundDetails = {
+      note: 'Cash on Delivery order. No customer refund required. COD collection cancelled.'
+    };
+  }
+
+  // 6. Build Comprehensive Cancellation Record & History
+  const previousStatus = order.status;
+  const cancellationTimestamp = new Date().toISOString();
+  const cancelledByLabel = isAdmin ? (adminUser ? `ADMIN (${adminUser})` : 'ADMIN') : 'CUSTOMER';
+
+  const cancellationRecord = {
+    orderId: order.orderId,
+    reason: reason || 'Customer requested cancellation',
+    adminRemarks: adminRemarks || '',
+    cancelledBy: cancelledByLabel,
+    cancelledAt: cancellationTimestamp,
+    previousStatus,
+    newStatus: 'Cancelled',
+    courierCancellationResult: delhiveryCancelResult,
+    refundEligibility,
+    refundStatus,
+    refundDetails,
+    inventoryRestoration: inventoryRestorationResult
+  };
+
+  // 7. Persist Updated Order
+  orders[idx] = {
+    ...order,
+    status: 'Cancelled',
+    cancelledAt: cancellationTimestamp,
+    cancellationReason: reason || 'Customer requested cancellation',
+    cancelReason: reason || 'Customer requested cancellation',
+    adminRemarks: adminRemarks || '',
+    cancelledBy: cancelledByLabel,
+    cancellationBy: cancelledByLabel,
+    refundEligibility,
+    refundStatus,
+    refundDetails,
+    inventoryRestored: true,
+    inventoryRestoration: inventoryRestorationResult,
+    cancellationRecord,
+    cancellationHistory: [...(order.cancellationHistory || []), cancellationRecord],
+    shipment: {
+      ...(order.shipment || {}),
+      status: 'Cancelled',
+      cancelled: true,
+      cancelledAt: cancellationTimestamp,
+      delhiveryCancelResponse: delhiveryCancelResult
+    },
+    updatedAt: cancellationTimestamp
+  };
+
+  saveOrders(orders);
+  console.log(`❌ Order #${order.orderId} successfully CANCELLED [By: ${cancelledByLabel}, Refund: ${refundStatus}, InvRestored: ${inventoryRestorationResult?.success}]`);
+
+  // 8. Trigger Customer Notification Email
+  try {
+    sendOrderCancellationEmail(orders[idx], cancellationRecord);
+  } catch (emailErr) {
+    console.error('Error dispatching cancellation email:', emailErr);
+  }
+
+  return {
+    success: true,
+    message: `Order #${order.orderId} cancelled successfully.`,
+    data: orders[idx],
+    order: orders[idx]
+  };
+}
+
 // POST /api/orders/:orderId/cancel - Order Cancellation Endpoint
 router.post('/:orderId/cancel', async (req, res) => {
   try {
     const { orderId } = req.params;
-    const { reason } = req.body || {};
+    const { reason, adminRemarks } = req.body || {};
 
     const authenticatedCustomer = getCustomerFromRequest(req);
     const adminSession = getAdminSessionFromRequest(req);
+    const isAdmin = !!adminSession || req.body?.adminOverride === true;
 
     const orders = readOrders();
-    const idx = orders.findIndex(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
-    if (idx === -1) {
+    const order = orders.find(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+    if (!order) {
       return res.status(404).json({ success: false, error: `Order #${orderId} not found.` });
     }
 
-    const order = orders[idx];
-    const isAdmin = !!adminSession || req.body?.adminOverride === true;
-    const reqPhone = (req.headers['x-customer-phone'] || req.body?.customerPhone || '').replace(/\D/g, '');
-    const reqEmail = (req.headers['x-customer-email'] || req.body?.customerEmail || '').toLowerCase();
-
+    // Permission Verification
     if (!isAdmin) {
+      const reqPhone = (req.headers['x-customer-phone'] || req.body?.customerPhone || '').replace(/\D/g, '');
+      const reqEmail = (req.headers['x-customer-email'] || req.body?.customerEmail || '').toLowerCase();
       let isOwner = false;
+
       if (authenticatedCustomer) {
         isOwner =
           (order.customer?.userId && order.customer.userId === authenticatedCustomer.id) ||
@@ -320,69 +585,19 @@ router.post('/:orderId/cancel', async (req, res) => {
       }
     }
 
-    if (order.status === 'Cancelled') {
-      return res.status(400).json({ success: false, error: `Order #${order.orderId} is already cancelled.` });
-    }
-
-    const statusUpper = (order.status || '').toUpperCase();
-    if (['IN TRANSIT', 'DISPATCHED', 'OUT FOR DELIVERY', 'DELIVERED', 'RTO'].includes(statusUpper)) {
-      return res.status(400).json({
-        success: false,
-        error: 'Cancellation is no longer available because the shipment has already been dispatched by courier.'
-      });
-    }
-
-    const awb = order.delhiveryAwb || order.trackingId;
-    let delhiveryCancelResult = null;
-
-    if (awb && !awb.startsWith('DLH-')) {
-      const liveTracking = await getTrackingDetails(awb, orders);
-      const liveStatus = (liveTracking?.status || '').toUpperCase();
-
-      if (['IN TRANSIT', 'OUT FOR DELIVERY', 'DELIVERED'].includes(liveStatus)) {
-        return res.status(400).json({
-          success: false,
-          error: 'Cancellation is no longer available because Delhivery reports the package is already in transit.'
-        });
-      }
-
-      delhiveryCancelResult = await cancelDelhiveryShipment(awb, reason || 'Customer requested cancellation');
-      if (!delhiveryCancelResult.success) {
-        console.warn(`Delhivery cancellation API warning for ${order.orderId}:`, delhiveryCancelResult.error);
-        if (delhiveryCancelResult.error && !delhiveryCancelResult.error.toLowerCase().includes('already')) {
-          return res.status(400).json({
-            success: false,
-            error: `Delhivery courier cancellation failed: ${delhiveryCancelResult.error}`
-          });
-        }
-      }
-    }
-
-    orders[idx] = {
-      ...order,
-      status: 'Cancelled',
-      cancelledAt: new Date().toISOString(),
-      cancellationReason: reason || 'Customer requested cancellation',
-      cancelledBy: isAdmin ? 'ADMIN' : 'customer',
-      cancellationBy: isAdmin ? 'ADMIN' : 'customer',
-      shipment: {
-        ...(order.shipment || {}),
-        status: 'Cancelled',
-        cancelled: true,
-        cancelledAt: new Date().toISOString(),
-        delhiveryCancelResponse: delhiveryCancelResult
-      },
-      updatedAt: new Date().toISOString()
-    };
-
-    saveOrders(orders);
-    console.log(`❌ Order ${order.orderId} successfully CANCELLED (AWB: ${awb || 'none'})`);
-
-    res.json({
-      success: true,
-      message: `Order #${order.orderId} cancelled successfully.`,
-      data: orders[idx]
+    const result = await executeOrderCancellation({
+      orderId,
+      reason,
+      adminRemarks,
+      isAdmin,
+      adminUser: adminSession?.username || 'admin'
     });
+
+    if (!result.success) {
+      return res.status(result.status || 400).json(result);
+    }
+
+    return res.json(result);
   } catch (err) {
     console.error('Error cancelling order:', err);
     res.status(500).json({ success: false, error: err.message });
