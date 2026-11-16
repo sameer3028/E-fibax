@@ -4,6 +4,7 @@ import { CONCERNS } from '../../data/concerns';
 import { BlogManager } from './BlogManager';
 import { LegalPagesManager } from './LegalPagesManager';
 import { WellnessClubManager } from './WellnessClubManager';
+import { DoctorCallbackManager } from './DoctorCallbackManager';
 import {
   Sparkles,
   Globe,
@@ -31,12 +32,20 @@ import {
   ExternalLink,
   RefreshCw,
   BookOpen,
-  Gift
+  Gift,
+  PhoneCall
 } from 'lucide-react';
 
 export function WebsiteContentManager() {
   // Navigation Sub Tab: 'home-hero' or 'about-hero'
-  const [activeSubTab, setActiveSubTab] = useState('home-hero');
+  const [activeSubTab, setActiveSubTab] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('subtab') || 'home-hero';
+    } catch {
+      return 'home-hero';
+    }
+  });
 
   // Home Page Banners State
   const [homeBanners, setHomeBanners] = useState([]);
@@ -655,6 +664,18 @@ export function WebsiteContentManager() {
         </button>
 
         <button
+          onClick={() => setActiveSubTab('doctor-callback')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
+            activeSubTab === 'doctor-callback'
+              ? 'bg-forest text-white shadow-xs'
+              : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
+          }`}
+        >
+          <PhoneCall className={`h-3.5 w-3.5 ${activeSubTab === 'doctor-callback' ? 'text-amber-300' : 'text-forest'}`} />
+          <span>Forms &amp; Popups: Doctor Callback</span>
+        </button>
+
+        <button
           onClick={() => setActiveSubTab('about-hero')}
           className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
             activeSubTab === 'about-hero'
@@ -1148,6 +1169,13 @@ export function WebsiteContentManager() {
       {/* ============================================================= */}
       {activeSubTab === 'wellness-club' && (
         <WellnessClubManager key="wellness-club" />
+      )}
+
+      {/* ============================================================= */}
+      {/* TAB: DOCTOR CALLBACK FORM CMS                                 */}
+      {/* ============================================================= */}
+      {activeSubTab === 'doctor-callback' && (
+        <DoctorCallbackManager key="doctor-callback" />
       )}
 
       {/* ============================================================= */}

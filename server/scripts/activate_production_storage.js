@@ -149,7 +149,9 @@ async function runActivation() {
     'users.json',
     'enquiries.json',
     'email_config.json',
-    'email_logs.json'
+    'email_logs.json',
+    'wellness_club.json',
+    'callback_form.json'
   ];
 
   for (const filename of CORE_FILES) {

@@ -1,0 +1,139 @@
+{
+  "enabled": true,
+  "status": "active",
+  "showOnDesktop": true,
+  "showOnMobile": true,
+  "popupEnabled": true,
+  "header": {
+    "badgeText": "FREE AYURVEDIC CARE CALLBACK",
+    "badgeIcon": "phone",
+    "heading": "Request a Doctor Call Back",
+    "description": "Leave your contact details and our certified Ayurvedic health consultants will call you back at your preferred time.",
+    "bgColor": "#173e27",
+    "headingColor": "#ffffff",
+    "descriptionColor": "rgba(243, 238, 221, 0.9)",
+    "badgeBgColor": "rgba(255, 255, 255, 0.12)",
+    "badgeTextColor": "#6ee7b7"
+  },
+  "fields": [
+    {
+      "id": "name",
+      "name": "name",
+      "type": "text",
+      "label": "Full Name",
+      "placeholder": "e.g. Ramesh Kumar",
+      "countryCode": "+91",
+      "required": true,
+      "enabled": true,
+      "system": true,
+      "order": 1,
+      "maxLength": 300
+    },
+    {
+      "id": "phone",
+      "name": "phone",
+      "type": "tel",
+      "label": "Mobile Number",
+      "placeholder": "9876543210",
+      "countryCode": "+91",
+      "required": true,
+      "enabled": true,
+      "system": true,
+      "order": 2,
+      "maxLength": 300
+    },
+    {
+      "id": "city",
+      "name": "city",
+      "type": "text",
+      "label": "City / State",
+      "placeholder": "e.g. Lucknow, Uttar Pradesh",
+      "countryCode": "+91",
+      "required": true,
+      "enabled": true,
+      "system": true,
+      "order": 3,
+      "maxLength": 300
+    },
+    {
+      "id": "concern",
+      "name": "concern",
+      "type": "select",
+      "label": "Health Concern",
+      "placeholder": "Select your health concern",
+      "countryCode": "+91",
+      "required": false,
+      "enabled": true,
+      "system": true,
+      "order": 4,
+      "maxLength": 300,
+      "options": [
+        "General Ayurvedic Consultation",
+        "Joint & Pain Care",
+        "Digestive & Gut Health",
+        "Hair & Skin Care",
+        "Women's Wellness",
+        "Men's Wellness",
+        "Other"
+      ]
+    },
+    {
+      "id": "preferredTime",
+      "name": "preferredTime",
+      "type": "select",
+      "label": "Preferred Callback Time",
+      "placeholder": "Select preferred time",
+      "countryCode": "+91",
+      "required": false,
+      "enabled": true,
+      "system": true,
+      "order": 5,
+      "maxLength": 300,
+      "options": [
+        "As soon as possible (Next 30 mins)",
+        "Within 1–2 hours",
+        "Morning",
+        "Afternoon",
+        "Evening"
+      ]
+    },
+    {
+      "id": "notes",
+      "name": "notes",
+      "type": "textarea",
+      "label": "Additional Notes / Symptoms",
+      "placeholder": "e.g. Joint pain in knees for 3 months, looking for herbal syrup or oil recommendations...",
+      "countryCode": "+91",
+      "required": false,
+      "enabled": true,
+      "system": true,
+      "order": 6,
+      "maxLength": 300
+    }
+  ],
+  "submitButton": {
+    "text": "Request Call Back Now",
+    "icon": "phone",
+    "bgColor": "#ea580c",
+    "textColor": "#ffffff",
+    "enabled": true
+  },
+  "privacy": {
+    "enabled": true,
+    "message": "Your number is 100% private. No spam, only genuine Ayurvedic assistance.",
+    "textColor": "#6b7280",
+    "icon": "shield"
+  },
+  "design": {
+    "modalBgColor": "#ffffff",
+    "headerBgColor": "#173e27",
+    "formBgColor": "#ffffff",
+    "borderRadius": "24px",
+    "desktopWidth": "520px",
+    "maxHeight": "90vh",
+    "inputBorderColor": "#e2d9cc",
+    "inputBgColor": "#f8f6f0",
+    "buttonBorderRadius": "12px"
+  },
+  "updatedAt": "2026-11-16T10:24:00.000Z"
+}

@@ -29,7 +29,8 @@ const REQUIRED_FILES = [
   'reviews.json',
   'shipping_config.json',
   'users.json',
-  'wellness_club.json'
+  'wellness_club.json',
+  'callback_form.json'
 ];
 
 /**

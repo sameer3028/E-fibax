@@ -633,6 +633,334 @@ router.put('/admin/website/wellness-club', requireAdminAuth, (req, res) => {
 });
 
 // ==========================================
+// 1D. DOCTOR CALLBACK FORM CMS
+// ==========================================
+
+const CALLBACK_FORM_FILE = join(dataDir, 'callback_form.json');
+
+const DEFAULT_CALLBACK_FORM = {
+  enabled: true,
+  status: 'active', // 'active' | 'paused'
+  showOnDesktop: true,
+  showOnMobile: true,
+  popupEnabled: true,
+  header: {
+    badgeText: 'FREE AYURVEDIC CARE CALLBACK',
+    badgeIcon: 'phone',
+    heading: 'Request a Doctor Call Back',
+    description: 'Leave your contact details and our certified Ayurvedic health consultants will call you back at your preferred time.',
+    bgColor: '#173e27',
+    headingColor: '#ffffff',
+    descriptionColor: 'rgba(243, 238, 221, 0.9)',
+    badgeBgColor: 'rgba(255, 255, 255, 0.12)',
+    badgeTextColor: '#6ee7b7'
+  },
+  fields: [
+    {
+      id: 'name',
+      name: 'name',
+      type: 'text',
+      label: 'Full Name',
+      placeholder: 'e.g. Ramesh Kumar',
+      required: true,
+      enabled: true,
+      system: true,
+      order: 1
+    },
+    {
+      id: 'phone',
+      name: 'phone',
+      type: 'tel',
+      label: 'Mobile Number',
+      placeholder: '9876543210',
+      countryCode: '+91',
+      required: true,
+      enabled: true,
+      system: true,
+      order: 2
+    },
+    {
+      id: 'city',
+      name: 'city',
+      type: 'text',
+      label: 'City / State',
+      placeholder: 'e.g. Lucknow, Uttar Pradesh',
+      required: true,
+      enabled: true,
+      system: true,
+      order: 3
+    },
+    {
+      id: 'concern',
+      name: 'concern',
+      type: 'select',
+      label: 'Health Concern',
+      placeholder: 'Select your health concern',
+      required: false,
+      enabled: true,
+      system: true,
+      order: 4,
+      options: [
+        'General Ayurvedic Consultation',
+        'Joint & Pain Care',
+        'Digestive & Gut Health',
+        'Hair & Skin Care',
+        'Women\'s Wellness',
+        'Men\'s Wellness',
+        'Other'
+      ]
+    },
+    {
+      id: 'preferredTime',
+      name: 'preferredTime',
+      type: 'select',
+      label: 'Preferred Callback Time',
+      placeholder: 'Select preferred time',
+      required: false,
+      enabled: true,
+      system: true,
+      order: 5,
+      options: [
+        'As soon as possible (Next 30 mins)',
+        'Within 1–2 hours',
+        'Morning',
+        'Afternoon',
+        'Evening'
+      ]
+    },
+    {
+      id: 'notes',
+      name: 'notes',
+      type: 'textarea',
+      label: 'Additional Notes / Symptoms',
+      placeholder: 'e.g. Joint pain in knees for 3 months, looking for herbal syrup or oil recommendations...',
+      maxLength: 300,
+      required: false,
+      enabled: true,
+      system: true,
+      order: 6
+    }
+  ],
+  submitButton: {
+    text: 'Request Call Back Now',
+    icon: 'phone',
+    bgColor: '#ea580c',
+    textColor: '#ffffff',
+    enabled: true
+  },
+  privacy: {
+    enabled: true,
+    message: 'Your number is 100% private. No spam, only genuine Ayurvedic assistance.',
+    textColor: '#6b7280',
+    icon: 'shield'
+  },
+  design: {
+    modalBgColor: '#ffffff',
+    headerBgColor: '#173e27',
+    formBgColor: '#ffffff',
+    borderRadius: '24px',
+    desktopWidth: '520px',
+    maxHeight: '90vh',
+    inputBorderColor: '#e2d9cc',
+    inputBgColor: '#f8f6f0',
+    buttonBorderRadius: '12px'
+  },
+  updatedAt: new Date().toISOString()
+};
+
+const readCallbackForm = () => {
+  const loaded = readJsonFile(CALLBACK_FORM_FILE, DEFAULT_CALLBACK_FORM);
+  if (!loaded || typeof loaded !== 'object') return DEFAULT_CALLBACK_FORM;
+  return {
+    ...DEFAULT_CALLBACK_FORM,
+    ...loaded,
+    header: { ...DEFAULT_CALLBACK_FORM.header, ...(loaded.header || {}) },
+    fields: Array.isArray(loaded.fields) && loaded.fields.length > 0 ? loaded.fields : DEFAULT_CALLBACK_FORM.fields,
+    submitButton: { ...DEFAULT_CALLBACK_FORM.submitButton, ...(loaded.submitButton || {}) },
+    privacy: { ...DEFAULT_CALLBACK_FORM.privacy, ...(loaded.privacy || {}) },
+    design: { ...DEFAULT_CALLBACK_FORM.design, ...(loaded.design || {}) }
+  };
+};
+
+const saveCallbackForm = (data) => {
+  return writeJsonFile(CALLBACK_FORM_FILE, data);
+};
+
+// GET /api/website/callback-form - Public endpoint for storefront
+router.get('/website/callback-form', (req, res) => {
+  try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    const config = readCallbackForm();
+    const isPaused = config.status === 'paused' || config.enabled === false;
+    res.json({
+      success: true,
+      enabled: !isPaused,
+      status: isPaused ? 'paused' : 'active',
+      data: isPaused ? null : config
+    });
+  } catch (err) {
+    console.error('Error fetching callback form config:', err);
+    res.status(500).json({ success: false, error: 'Failed to fetch callback form configuration' });
+  }
+});
+
+// GET /api/admin/website/callback-form - Admin editor endpoint (returns full config even if paused)
+router.get('/admin/website/callback-form', requireAdminAuth, (req, res) => {
+  try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    const config = readCallbackForm();
+    res.json({ success: true, data: config });
+  } catch (err) {
+    console.error('Error fetching callback form admin config:', err);
+    res.status(500).json({ success: false, error: 'Failed to fetch callback form admin config' });
+  }
+});
+
+// PUT /api/admin/website/callback-form - Admin update endpoint
+router.put('/admin/website/callback-form', requireAdminAuth, (req, res) => {
+  try {
+    const current = readCallbackForm();
+    const body = req.body || {};
+
+    const newStatus = body.status !== undefined
+      ? (body.status === 'paused' ? 'paused' : 'active')
+      : (body.enabled !== undefined ? (body.enabled ? 'active' : 'paused') : (current.status || 'active'));
+    const newEnabled = body.enabled !== undefined
+      ? Boolean(body.enabled)
+      : (newStatus === 'active');
+    const showOnDesktop = body.showOnDesktop !== undefined ? Boolean(body.showOnDesktop) : (current.showOnDesktop ?? true);
+    const showOnMobile = body.showOnMobile !== undefined ? Boolean(body.showOnMobile) : (current.showOnMobile ?? true);
+    const popupEnabled = body.popupEnabled !== undefined ? Boolean(body.popupEnabled) : (current.popupEnabled ?? true);
+
+    const sanitizeConfigString = (val, maxLen = 500) => {
+      if (typeof val !== 'string') return '';
+      return val.slice(0, maxLen).replace(/[<>]/g, '').trim();
+    };
+
+    // Sanitize Header
+    const incomingHeader = body.header || {};
+    const sanitizedHeader = {
+      badgeText: sanitizeConfigString(incomingHeader.badgeText || current.header?.badgeText || 'FREE AYURVEDIC CARE CALLBACK', 80),
+      badgeIcon: sanitizeConfigString(incomingHeader.badgeIcon || current.header?.badgeIcon || 'phone', 40),
+      heading: sanitizeConfigString(incomingHeader.heading || current.header?.heading || 'Request a Doctor Call Back', 120),
+      description: sanitizeConfigString(incomingHeader.description || current.header?.description || '', 400),
+      bgColor: sanitizeConfigString(incomingHeader.bgColor || current.header?.bgColor || '#173e27', 60),
+      headingColor: sanitizeConfigString(incomingHeader.headingColor || current.header?.headingColor || '#ffffff', 40),
+      descriptionColor: sanitizeConfigString(incomingHeader.descriptionColor || current.header?.descriptionColor || 'rgba(243, 238, 221, 0.9)', 50),
+      badgeBgColor: sanitizeConfigString(incomingHeader.badgeBgColor || current.header?.badgeBgColor || 'rgba(255, 255, 255, 0.12)', 50),
+      badgeTextColor: sanitizeConfigString(incomingHeader.badgeTextColor || current.header?.badgeTextColor || '#6ee7b7', 40)
+    };
+
+    // Sanitize Fields
+    let sanitizedFields = current.fields;
+    if (Array.isArray(body.fields)) {
+      sanitizedFields = body.fields.map((f, idx) => {
+        const id = sanitizeConfigString(f.id || `field_${idx + 1}`, 50);
+        const name = sanitizeConfigString(f.name || id, 50);
+        const type = ['text', 'tel', 'select', 'textarea', 'email', 'number'].includes(f.type) ? f.type : 'text';
+        const label = sanitizeConfigString(f.label || 'Field Label', 80);
+        const placeholder = sanitizeConfigString(f.placeholder || '', 120);
+        const countryCode = sanitizeConfigString(f.countryCode || '+91', 10);
+        const required = Boolean(f.required);
+        const enabled = f.enabled !== false;
+        const system = Boolean(f.system);
+        const order = typeof f.order === 'number' ? f.order : idx + 1;
+        const maxLength = typeof f.maxLength === 'number' ? Math.min(1000, Math.max(10, f.maxLength)) : 300;
+        
+        let options = [];
+        if (Array.isArray(f.options)) {
+          options = f.options.map(opt => sanitizeConfigString(String(opt || ''), 100)).filter(Boolean);
+        }
+
+        return {
+          id,
+          name,
+          type,
+          label,
+          placeholder,
+          countryCode,
+          required,
+          enabled,
+          system,
+          order,
+          maxLength,
+          ...(type === 'select' ? { options } : {})
+        };
+      });
+    }
+
+    // Sanitize Submit Button
+    const incomingBtn = body.submitButton || {};
+    const sanitizedBtn = {
+      text: sanitizeConfigString(incomingBtn.text || current.submitButton?.text || 'Request Call Back Now', 80),
+      icon: sanitizeConfigString(incomingBtn.icon || current.submitButton?.icon || 'phone', 40),
+      bgColor: sanitizeConfigString(incomingBtn.bgColor || current.submitButton?.bgColor || '#ea580c', 50),
+      textColor: sanitizeConfigString(incomingBtn.textColor || current.submitButton?.textColor || '#ffffff', 40),
+      enabled: incomingBtn.enabled !== false
+    };
+
+    // Sanitize Privacy Message
+    const incomingPrivacy = body.privacy || {};
+    const sanitizedPrivacy = {
+      enabled: incomingPrivacy.enabled !== false,
+      message: sanitizeConfigString(incomingPrivacy.message || current.privacy?.message || 'Your number is 100% private. No spam, only genuine Ayurvedic assistance.', 250),
+      textColor: sanitizeConfigString(incomingPrivacy.textColor || current.privacy?.textColor || '#6b7280', 50),
+      icon: sanitizeConfigString(incomingPrivacy.icon || current.privacy?.icon || 'shield', 40)
+    };
+
+    // Sanitize Design
+    const incomingDesign = body.design || {};
+    const sanitizedDesign = {
+      modalBgColor: sanitizeConfigString(incomingDesign.modalBgColor || current.design?.modalBgColor || '#ffffff', 50),
+      headerBgColor: sanitizeConfigString(incomingDesign.headerBgColor || current.design?.headerBgColor || '#173e27', 50),
+      formBgColor: sanitizeConfigString(incomingDesign.formBgColor || current.design?.formBgColor || '#ffffff', 50),
+      borderRadius: sanitizeConfigString(incomingDesign.borderRadius || current.design?.borderRadius || '24px', 30),
+      desktopWidth: sanitizeConfigString(incomingDesign.desktopWidth || current.design?.desktopWidth || '520px', 30),
+      maxHeight: sanitizeConfigString(incomingDesign.maxHeight || current.design?.maxHeight || '90vh', 30),
+      inputBorderColor: sanitizeConfigString(incomingDesign.inputBorderColor || current.design?.inputBorderColor || '#e2d9cc', 50),
+      inputBgColor: sanitizeConfigString(incomingDesign.inputBgColor || current.design?.inputBgColor || '#f8f6f0', 50),
+      buttonBorderRadius: sanitizeConfigString(incomingDesign.buttonBorderRadius || current.design?.buttonBorderRadius || '12px', 30)
+    };
+
+    const updated = {
+      enabled: newEnabled,
+      status: newStatus,
+      showOnDesktop,
+      showOnMobile,
+      popupEnabled,
+      header: sanitizedHeader,
+      fields: sanitizedFields,
+      submitButton: sanitizedBtn,
+      privacy: sanitizedPrivacy,
+      design: sanitizedDesign,
+      updatedAt: new Date().toISOString()
+    };
+
+    const saved = saveCallbackForm(updated);
+    if (!saved) {
+      return res.status(500).json({ success: false, error: 'Failed to write callback form configuration to storage' });
+    }
+
+    res.json({
+      success: true,
+      data: updated,
+      message: 'Doctor callback form configuration updated successfully'
+    });
+  } catch (err) {
+    console.error('Error updating callback form configuration:', err);
+    res.status(500).json({ success: false, error: 'Failed to update callback form configuration' });
+  }
+});
+
+// ==========================================
 // 2. COUPONS & PROMOTIONAL OFFERS
 // ==========================================
 
@@ -864,10 +1192,10 @@ router.post('/enquiry', contactLimiter, (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid submission.' });
     }
 
-    if (!name || !phone || !city) {
+    if (!name || !phone) {
       return res.status(400).json({
         success: false,
-        error: 'Name, phone, and city/state are required fields.'
+        error: 'Name and phone are required fields.'
       });
     }
 
@@ -898,7 +1226,7 @@ router.post('/enquiry', contactLimiter, (req, res) => {
       });
     }
 
-    const cleanCity = String(city).trim();
+    const cleanCity = String(city || '').trim() || 'India';
     if (!/^[a-zA-Z0-9\s,.\-()]{2,100}$/.test(cleanCity)) {
       return res.status(400).json({
         success: false,
