@@ -1,0 +1,76 @@
+{
+  "enabled": true,
+  "status": "active",
+  "showOnDesktop": true,
+  "showOnMobile": true,
+  "badge": {
+    "show": true,
+    "text": "EXCLUSIVE MEMBERSHIP BENEFIT",
+    "bgColor": "#fbbf24",
+    "textColor": "#062512"
+  },
+  "heading": {
+    "main": "FIBAX WELLNESS CLUB",
+    "highlight": "GET FLAT ₹100 OFF",
+    "suffix": "ON 1ST ORDER"
+  },
+  "description": "Join over 1,00,000+ members enjoying direct-to-home priority dispatch, complimentary Doctor WhatsApp consultations, and seasonal discount coupons.",
+  "benefits": [
+    {
+      "id": "benefit-1",
+      "text": "Free Delhivery tracking on all orders",
+      "icon": "truck",
+      "enabled": true
+    },
+    {
+      "id": "benefit-2",
+      "text": "Direct Ayurvedic Vaidya consultation",
+      "icon": "phone",
+      "enabled": true
+    },
+    {
+      "id": "benefit-3",
+      "text": "Fresh farm harvest priority batches",
+      "icon": "leaf",
+      "enabled": true
+    },
+    {
+      "id": "benefit-4",
+      "text": "Cash on Delivery + UPI accepted",
+      "icon": "check",
+      "enabled": true
+    }
+  ],
+  "cta": {
+    "show": true,
+    "text": "ORDER DIRECT ON WHATSAPP",
+    "url": "https://wa.me/918872544458?text=Hello%20Fibax,%20I%20want%20to%20join%20the%20Wellness%20Club",
+    "whatsappNumber": "918872544458",
+    "whatsappMessage": "Hello Fibax, I want to join the Wellness Club",
+    "openInNewTab": true
+  },
+  "coupon": {
+    "show": true,
+    "code": "WELCOME10",
+    "label": "Use Coupon"
+  },
+  "productCard": {
+    "show": true,
+    "topLabel": "Fibax Express",
+    "statusLabel": "ONLINE",
+    "image": "/uploads/safed-musli.png",
+    "altText": "Safed Musli Vitality Powder",
+    "name": "Safed Musli Vitality Powder",
+    "price": "600",
+    "originalPrice": "672",
+    "bottomPromoMessage": "Free Delivery Unlocked!"
+  },
+  "design": {
+    "bgColor": "#173e27",
+    "textColor": "#ffffff",
+    "highlightColor": "#fcd34d",
+    "badgeBgColor": "#fbbf24",
+    "btnColor": "#ea580c"
+  },
+  "updatedAt": "2026-11-16T13:00:00.000Z"
+}

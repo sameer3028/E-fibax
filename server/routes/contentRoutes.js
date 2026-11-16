@@ -398,6 +398,241 @@ router.delete('/website/home-banners/:id', requireAdminAuth, (req, res) => {
 });
 
 // ==========================================
+// 1C. FIBAX WELLNESS CLUB PROMOTIONAL BANNER
+// ==========================================
+
+const WELLNESS_CLUB_FILE = join(dataDir, 'wellness_club.json');
+
+const DEFAULT_WELLNESS_CLUB = {
+  enabled: true,
+  status: 'active', // 'active' | 'paused'
+  showOnDesktop: true,
+  showOnMobile: true,
+  badge: {
+    show: true,
+    text: 'EXCLUSIVE MEMBERSHIP BENEFIT',
+    bgColor: '#fbbf24',
+    textColor: '#062512'
+  },
+  heading: {
+    main: 'FIBAX WELLNESS CLUB',
+    highlight: 'GET FLAT ₹100 OFF',
+    suffix: 'ON 1ST ORDER'
+  },
+  description: 'Join over 1,00,000+ members enjoying direct-to-home priority dispatch, complimentary Doctor WhatsApp consultations, and seasonal discount coupons.',
+  benefits: [
+    {
+      id: 'benefit-1',
+      text: 'Free Delhivery tracking on all orders',
+      icon: 'truck',
+      enabled: true
+    },
+    {
+      id: 'benefit-2',
+      text: 'Direct Ayurvedic Vaidya consultation',
+      icon: 'phone',
+      enabled: true
+    },
+    {
+      id: 'benefit-3',
+      text: 'Fresh farm harvest priority batches',
+      icon: 'leaf',
+      enabled: true
+    },
+    {
+      id: 'benefit-4',
+      text: 'Cash on Delivery + UPI accepted',
+      icon: 'check',
+      enabled: true
+    }
+  ],
+  cta: {
+    show: true,
+    text: 'ORDER DIRECT ON WHATSAPP',
+    url: 'https://wa.me/918872544458?text=Hello%20Fibax,%20I%20want%20to%20join%20the%20Wellness%20Club',
+    whatsappNumber: '918872544458',
+    whatsappMessage: 'Hello Fibax, I want to join the Wellness Club',
+    openInNewTab: true
+  },
+  coupon: {
+    show: true,
+    code: 'WELCOME10',
+    label: 'Use Coupon'
+  },
+  productCard: {
+    show: true,
+    topLabel: 'Fibax Express',
+    statusLabel: 'ONLINE',
+    image: '/uploads/safed-musli.png',
+    altText: 'Safed Musli Vitality Powder',
+    name: 'Safed Musli Vitality Powder',
+    price: '600',
+    originalPrice: '672',
+    bottomPromoMessage: 'Free Delivery Unlocked!'
+  },
+  design: {
+    bgColor: '#173e27',
+    textColor: '#ffffff',
+    highlightColor: '#fcd34d',
+    badgeBgColor: '#fbbf24',
+    btnColor: '#ea580c'
+  },
+  updatedAt: new Date().toISOString()
+};
+
+const readWellnessClub = () => {
+  const loaded = readJsonFile(WELLNESS_CLUB_FILE, DEFAULT_WELLNESS_CLUB);
+  if (!loaded || typeof loaded !== 'object') return DEFAULT_WELLNESS_CLUB;
+  return {
+    ...DEFAULT_WELLNESS_CLUB,
+    ...loaded,
+    badge: { ...DEFAULT_WELLNESS_CLUB.badge, ...(loaded.badge || {}) },
+    heading: { ...DEFAULT_WELLNESS_CLUB.heading, ...(loaded.heading || {}) },
+    benefits: Array.isArray(loaded.benefits) ? loaded.benefits : DEFAULT_WELLNESS_CLUB.benefits,
+    cta: { ...DEFAULT_WELLNESS_CLUB.cta, ...(loaded.cta || {}) },
+    coupon: { ...DEFAULT_WELLNESS_CLUB.coupon, ...(loaded.coupon || {}) },
+    productCard: { ...DEFAULT_WELLNESS_CLUB.productCard, ...(loaded.productCard || {}) },
+    design: { ...DEFAULT_WELLNESS_CLUB.design, ...(loaded.design || {}) }
+  };
+};
+
+const saveWellnessClub = (data) => {
+  return writeJsonFile(WELLNESS_CLUB_FILE, data);
+};
+
+// GET /api/website/wellness-club - Public endpoint for storefront
+router.get('/website/wellness-club', (req, res) => {
+  try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    const config = readWellnessClub();
+    const isPaused = config.status === 'paused' || config.enabled === false;
+    res.json({
+      success: true,
+      enabled: !isPaused,
+      status: isPaused ? 'paused' : 'active',
+      data: isPaused ? null : config
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch wellness club configuration' });
+  }
+});
+
+// GET /api/admin/website/wellness-club - Admin editor endpoint (returns full config even if paused)
+router.get('/admin/website/wellness-club', requireAdminAuth, (req, res) => {
+  try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    const config = readWellnessClub();
+    res.json({ success: true, data: config });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to fetch wellness club admin config' });
+  }
+});
+
+// PUT /api/admin/website/wellness-club - Admin update endpoint
+router.put('/admin/website/wellness-club', requireAdminAuth, (req, res) => {
+  try {
+    const current = readWellnessClub();
+    const body = req.body || {};
+
+    const newStatus = body.status !== undefined
+      ? (body.status === 'paused' ? 'paused' : 'active')
+      : (body.enabled !== undefined ? (body.enabled ? 'active' : 'paused') : (current.status || 'active'));
+    const newEnabled = body.enabled !== undefined
+      ? Boolean(body.enabled)
+      : (newStatus === 'active');
+
+    const updated = {
+      ...current,
+      enabled: newEnabled,
+      status: newStatus,
+      showOnDesktop: body.showOnDesktop !== false,
+      showOnMobile: body.showOnMobile !== false,
+      badge: {
+        ...current.badge,
+        ...(body.badge || {}),
+        show: body.badge?.show !== false,
+        text: body.badge?.text ? String(body.badge.text).trim() : current.badge.text,
+        bgColor: body.badge?.bgColor ? String(body.badge.bgColor).trim() : current.badge.bgColor,
+        textColor: body.badge?.textColor ? String(body.badge.textColor).trim() : current.badge.textColor
+      },
+      heading: {
+        ...current.heading,
+        ...(body.heading || {}),
+        main: body.heading?.main ? String(body.heading.main).trim() : current.heading.main,
+        highlight: body.heading?.highlight !== undefined ? String(body.heading.highlight).trim() : current.heading.highlight,
+        suffix: body.heading?.suffix !== undefined ? String(body.heading.suffix).trim() : current.heading.suffix
+      },
+      description: body.description !== undefined ? String(body.description).trim() : current.description,
+      benefits: Array.isArray(body.benefits)
+        ? body.benefits.slice(0, 6).map((b, idx) => ({
+            id: b.id || ('benefit-' + (idx + 1) + '-' + Date.now()),
+            text: String(b.text || '').trim(),
+            icon: String(b.icon || 'check').trim().toLowerCase(),
+            enabled: b.enabled !== false
+          })).filter(b => b.text.length > 0)
+        : current.benefits,
+      cta: {
+        ...current.cta,
+        ...(body.cta || {}),
+        show: body.cta?.show !== false,
+        text: body.cta?.text ? String(body.cta.text).trim() : current.cta.text,
+        url: body.cta?.url ? String(body.cta.url).trim() : current.cta.url,
+        whatsappNumber: body.cta?.whatsappNumber ? String(body.cta.whatsappNumber).trim() : current.cta.whatsappNumber,
+        whatsappMessage: body.cta?.whatsappMessage ? String(body.cta.whatsappMessage).trim() : current.cta.whatsappMessage,
+        openInNewTab: body.cta?.openInNewTab !== false
+      },
+      coupon: {
+        ...current.coupon,
+        ...(body.coupon || {}),
+        show: body.coupon?.show !== false,
+        code: body.coupon?.code ? String(body.coupon.code).trim().toUpperCase() : current.coupon.code,
+        label: body.coupon?.label ? String(body.coupon.label).trim() : current.coupon.label
+      },
+      productCard: {
+        ...current.productCard,
+        ...(body.productCard || {}),
+        show: body.productCard?.show !== false,
+        topLabel: body.productCard?.topLabel ? String(body.productCard.topLabel).trim() : current.productCard.topLabel,
+        statusLabel: body.productCard?.statusLabel ? String(body.productCard.statusLabel).trim() : current.productCard.statusLabel,
+        image: body.productCard?.image ? String(body.productCard.image).trim() : current.productCard.image,
+        altText: body.productCard?.altText ? String(body.productCard.altText).trim() : current.productCard.altText,
+        name: body.productCard?.name ? String(body.productCard.name).trim() : current.productCard.name,
+        price: body.productCard?.price !== undefined ? String(body.productCard.price).trim() : current.productCard.price,
+        originalPrice: body.productCard?.originalPrice !== undefined ? String(body.productCard.originalPrice).trim() : current.productCard.originalPrice,
+        bottomPromoMessage: body.productCard?.bottomPromoMessage ? String(body.productCard.bottomPromoMessage).trim() : current.productCard.bottomPromoMessage
+      },
+      design: {
+        ...current.design,
+        ...(body.design || {}),
+        bgColor: body.design?.bgColor ? String(body.design.bgColor).trim() : current.design.bgColor,
+        textColor: body.design?.textColor ? String(body.design.textColor).trim() : current.design.textColor,
+        highlightColor: body.design?.highlightColor ? String(body.design.highlightColor).trim() : current.design.highlightColor,
+        badgeBgColor: body.design?.badgeBgColor ? String(body.design.badgeBgColor).trim() : current.design.badgeBgColor,
+        btnColor: body.design?.btnColor ? String(body.design.btnColor).trim() : current.design.btnColor
+      },
+      updatedAt: new Date().toISOString()
+    };
+
+    saveWellnessClub(updated);
+    res.json({
+      success: true,
+      data: updated,
+      message: 'Fibax Wellness Club banner configuration updated successfully'
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: 'Failed to update wellness club banner' });
+  }
+});
+
+// ==========================================
 // 2. COUPONS & PROMOTIONAL OFFERS
 // ==========================================
 

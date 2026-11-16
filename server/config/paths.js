@@ -28,7 +28,8 @@ const REQUIRED_FILES = [
   'products.json',
   'reviews.json',
   'shipping_config.json',
-  'users.json'
+  'users.json',
+  'wellness_club.json'
 ];
 
 /**

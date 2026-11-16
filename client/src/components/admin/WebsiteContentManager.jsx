@@ -3,6 +3,7 @@ import { apiRequest } from '../../utils/api';
 import { CONCERNS } from '../../data/concerns';
 import { BlogManager } from './BlogManager';
 import { LegalPagesManager } from './LegalPagesManager';
+import { WellnessClubManager } from './WellnessClubManager';
 import {
   Sparkles,
   Globe,
@@ -29,7 +30,8 @@ import {
   Smartphone,
   ExternalLink,
   RefreshCw,
-  BookOpen
+  BookOpen,
+  Gift
 } from 'lucide-react';
 
 export function WebsiteContentManager() {
@@ -596,7 +598,7 @@ export function WebsiteContentManager() {
       />
 
       {/* Top Section Breadcrumb & Header */}
-      {activeSubTab !== 'blogs' && !activeSubTab.startsWith('legal-') && (
+      {activeSubTab !== 'blogs' && !activeSubTab.startsWith('legal-') && activeSubTab !== 'wellness-club' && (
         <div className="bg-white p-6 rounded-3xl border border-sand-border shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             {/* Admin Navigation Path */}
@@ -642,6 +644,14 @@ export function WebsiteContentManager() {
         >
           <Sparkles className={`h-3.5 w-3.5 ${activeSubTab === 'home-hero' ? 'text-amber-300' : 'text-gold'}`} />
           <span>Home Page Hero Banners ({homeBanners.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveSubTab('wellness-club')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${activeSubTab === 'wellness-club' ? 'bg-forest text-white shadow-xs' : 'bg-white text-charcoal hover:bg-sand border border-sand-border'}`}
+        >
+          <Gift className={`h-3.5 w-3.5 ${activeSubTab === 'wellness-club' ? 'text-amber-300' : 'text-forest'}`} />
+          <span>Home Section: Fibax Wellness Club</span>
         </button>
 
         <button
@@ -1131,6 +1141,13 @@ export function WebsiteContentManager() {
       {/* ============================================================= */}
       {activeSubTab === 'legal-privacy' && (
         <LegalPagesManager initialPage="privacy" key="privacy" />
+      )}
+
+      {/* ============================================================= */}
+      {/* TAB: FIBAX WELLNESS CLUB BANNER CMS                          */}
+      {/* ============================================================= */}
+      {activeSubTab === 'wellness-club' && (
+        <WellnessClubManager key="wellness-club" />
       )}
 
       {/* ============================================================= */}
