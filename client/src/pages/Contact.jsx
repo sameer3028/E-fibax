@@ -309,6 +309,18 @@ export function Contact({ onOpenCallback }) {
                   <Clock className="h-3 w-3 text-leaf-dark" />
                   <span>Mon - Sat: 9:30 AM – 7:00 PM IST</span>
                 </p>
+                {onOpenCallback && (
+                  <div className="mt-3 pt-2.5 border-t border-sand-border/70">
+                    <button
+                      type="button"
+                      onClick={() => onOpenCallback()}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:text-brand-hover transition-colors cursor-pointer"
+                    >
+                      <PhoneCall className="h-3.5 w-3.5 text-brand" />
+                      <span>Request Doctor Call Back &rarr;</span>
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -352,13 +364,13 @@ export function Contact({ onOpenCallback }) {
       </section>
 
       {/* 3. Main Form with Field-by-Field Validation & Anti-Injection Protection */}
-      <section className="py-16 sm:py-20 bg-white">
+      <section className="py-10 sm:py-16 md:py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             {/* Left: Validated Secure Form (7 cols) */}
             <div className="lg:col-span-7">
-              <div className="bg-sand rounded-3xl p-6 sm:p-10 border border-sand-border shadow-subtle relative">
+              <div className="bg-sand rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 border border-sand-border shadow-subtle relative box-border">
                 
                 {/* Security Badge */}
                 <div className="flex items-center justify-between gap-2 mb-4">
@@ -471,8 +483,8 @@ export function Contact({ onOpenCallback }) {
                           </span>
                         )}
                       </div>
-                      <div className="relative">
-                        <span className="absolute left-3 top-2.5 text-xs font-semibold text-charcoal-subtle">
+                      <div className="relative flex items-center">
+                        <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-xs font-semibold text-charcoal-subtle">
                           +91
                         </span>
                         <input
@@ -661,7 +673,7 @@ export function Contact({ onOpenCallback }) {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       placeholder="e.g. Inquiring about Axe-Ortho oil dosage for joint pain, or asking about delivery timeline..."
-                      className={`w-full px-4 py-2.5 bg-white border rounded-xl text-xs text-charcoal focus:outline-none transition-colors ${
+                      className={`w-full max-w-full box-border px-4 py-2.5 bg-white border rounded-xl text-xs text-charcoal focus:outline-none transition-colors resize-none min-h-[84px] leading-relaxed ${
                         touched.message && errors.message
                           ? 'border-rose-500 bg-rose-50/20 focus:border-rose-600'
                           : 'border-sand-border focus:border-brand'
@@ -726,7 +738,7 @@ export function Contact({ onOpenCallback }) {
                     <button
                       type="submit"
                       disabled={status.submitting}
-                      className={`w-full py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm shadow-orange-glow transition-all flex items-center justify-center gap-2 ${
+                      className={`w-full max-w-full box-border py-3.5 px-6 rounded-xl font-bold text-xs sm:text-sm shadow-orange-glow transition-all flex items-center justify-center gap-2 cursor-pointer ${
                         status.submitting
                           ? 'bg-charcoal-subtle text-white cursor-not-allowed'
                           : 'bg-brand hover:bg-brand-hover text-white transform active:scale-[0.99]'
