@@ -1185,7 +1185,21 @@ function saveEnquiries(enquiries) {
 router.post('/enquiry', contactLimiter, (req, res) => {
   try {
     const clientIp = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
-    const { name, phone, city, message, requirement, email, experience, hp_field } = req.body || {};
+    const {
+      name,
+      phone,
+      city,
+      message,
+      requirement,
+      email,
+      experience,
+      hp_field,
+      type,
+      concern,
+      preferredTime,
+      notes,
+      customFields
+    } = req.body || {};
 
     if (hp_field && String(hp_field).trim() !== '') {
       console.warn(`🤖 Honeypot trap triggered from: ${clientIp}`);
@@ -1199,7 +1213,7 @@ router.post('/enquiry', contactLimiter, (req, res) => {
       });
     }
 
-    const rawInputs = [name, phone, city, message, requirement, email, experience].filter(Boolean);
+    const rawInputs = [name, phone, city, message, requirement, email, experience, concern, preferredTime, notes].filter(Boolean);
     for (const input of rawInputs) {
       if (typeof input === 'string' && containsInjectionPayload(input)) {
         console.warn(`🚨 Code injection attempt detected from ${clientIp}:`, input.slice(0, 100));
@@ -1245,17 +1259,34 @@ router.post('/enquiry', contactLimiter, (req, res) => {
       }
     }
 
-    const combinedMessage = (message || requirement || '').trim();
+    const cleanConcern = concern ? sanitizeInput(String(concern), 100) : '';
+    const cleanPreferredTime = preferredTime ? sanitizeInput(String(preferredTime), 100) : '';
+    const cleanNotes = notes ? sanitizeInput(String(notes), 1000) : '';
+
+    const isDoctorCallback = (type === 'doctor_callback') ||
+      Boolean(cleanConcern) ||
+      Boolean(cleanPreferredTime) ||
+      (experience && String(experience).toLowerCase().includes('callback'));
+
+    const combinedMessage = (message || requirement || cleanNotes || '').trim();
     const sanitizedEnquiry = {
-      id: Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+      id: 'enq_' + Date.now().toString(36) + Math.random().toString(36).substring(2, 7),
+      type: isDoctorCallback ? 'doctor_callback' : (type ? sanitizeInput(String(type), 40) : 'general_enquiry'),
       name: sanitizeInput(cleanName, 70),
       phone: sanitizeInput(phoneClean, 15),
       email: cleanEmail ? sanitizeInput(cleanEmail, 100) : '',
       city: sanitizeInput(cleanCity, 100),
-      experience: experience ? sanitizeInput(String(experience), 60) : 'General Inquiry',
+      concern: cleanConcern || (isDoctorCallback ? 'General Ayurvedic Consultation' : ''),
+      preferredTime: cleanPreferredTime || '',
+      notes: cleanNotes || '',
+      status: 'New',
+      followUpNotes: '',
+      customFields: (customFields && typeof customFields === 'object') ? customFields : {},
+      experience: experience ? sanitizeInput(String(experience), 60) : (isDoctorCallback ? `Callback Request - ${cleanConcern || 'Ayurvedic Consultation'}` : 'General Inquiry'),
       message: sanitizeInput(combinedMessage, 1000),
       timestamp: new Date().toISOString(),
-      source: req.headers.referer || 'contact_page',
+      updatedAt: new Date().toISOString(),
+      source: req.headers.referer || (isDoctorCallback ? 'callback_modal' : 'contact_page'),
       ip: clientIp
     };
 
@@ -1263,10 +1294,11 @@ router.post('/enquiry', contactLimiter, (req, res) => {
     enquiries.push(sanitizedEnquiry);
     saveEnquiries(enquiries);
 
-    console.log(`✅ Secure enquiry logged: ${sanitizedEnquiry.name} (${sanitizedEnquiry.city}) - ${sanitizedEnquiry.phone}`);
+    console.log(`✅ Secure enquiry logged: ${sanitizedEnquiry.name} (${sanitizedEnquiry.city}) - ${sanitizedEnquiry.phone} [${sanitizedEnquiry.type}]`);
     res.status(201).json({
       success: true,
-      message: 'Thank you! Your enquiry has been submitted. Our team will contact you shortly.'
+      message: 'Thank you! Your enquiry has been submitted. Our team will contact you shortly.',
+      id: sanitizedEnquiry.id
     });
   } catch (error) {
     console.error('❌ Error saving enquiry:', error);

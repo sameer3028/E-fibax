@@ -44,6 +44,7 @@ export function AdminLayout({ onExitAdmin }) {
   }); // products, offers, inventory, orders, reviews, users, website-content
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
+  const [newCallbacksCount, setNewCallbacksCount] = useState(0);
   const { addProduct, updateProduct, stats } = useProducts();
 
   // Verify authentication on mount
@@ -103,6 +104,28 @@ export function AdminLayout({ onExitAdmin }) {
         // network blip, ignore
       }
     }, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [isAuthenticated]);
+
+  // Poll new doctor callback requests count for navigation badge
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const fetchBadgeCount = async () => {
+      try {
+        const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+        const res = await apiRequest('/api/admin/enquiries', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (res && res.success && typeof res.newCount === 'number') {
+          setNewCallbacksCount(res.newCount);
+        }
+      } catch (err) {
+        // silent
+      }
+    };
+
+    fetchBadgeCount();
+    const interval = setInterval(fetchBadgeCount, 15000);
     return () => clearInterval(interval);
   }, [isAuthenticated]);
 
@@ -323,6 +346,11 @@ export function AdminLayout({ onExitAdmin }) {
           >
             <Users className="h-4 w-4 text-emerald-500" />
             <span>Customers & Logins</span>
+            {newCallbacksCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-pulse">
+                {newCallbacksCount}
+              </span>
+            )}
           </button>
 
           <button

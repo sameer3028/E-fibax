@@ -309,6 +309,12 @@ export function CallbackModal({
           name: cleanName || 'Anonymous',
           phone: cleanPhone,
           city: cleanCity,
+          type: 'doctor_callback',
+          concern: selectedConcern,
+          preferredTime: selectedSlot,
+          notes: notesText,
+          status: 'New',
+          customFields: customFields.reduce((acc, f) => { acc[f.id] = formData[f.id] || ''; return acc; }, {}),
           experience: `Callback Request - ${selectedConcern}`,
           message: messageParts.join(' | ') || 'Doctor callback request',
           hp_field: formData.hp_field

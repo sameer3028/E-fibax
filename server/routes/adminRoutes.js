@@ -11,7 +11,7 @@ import {
   customerSessions
 } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
-import { getArray, setSingleton } from '../store.js';
+import { getArray, setArray, setSingleton } from '../store.js';
 
 const router = Router();
 
@@ -175,6 +175,145 @@ router.get('/orders', requireAdminAuth, (req, res) => {
     return res.json({ success: true, count: orders.length, data: orders });
   } catch (err) {
     console.error('Error fetching admin orders:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Helper: Normalize enquiry records for consistent dashboard consumption
+function normalizeEnquiryRecord(e) {
+  if (!e || typeof e !== 'object') return null;
+  const isDoctorCallback = (e.type === 'doctor_callback') ||
+    (e.experience && String(e.experience).toLowerCase().includes('callback')) ||
+    (e.message && String(e.message).toLowerCase().includes('preferred slot'));
+
+  let concern = e.concern || '';
+  if (!concern && e.experience && String(e.experience).startsWith('Callback Request - ')) {
+    concern = String(e.experience).replace('Callback Request - ', '').trim();
+  }
+
+  let preferredTime = e.preferredTime || '';
+  if (!preferredTime && e.message && String(e.message).includes('Preferred Slot: ')) {
+    preferredTime = String(e.message).split('Preferred Slot: ')[1]?.split('|')[0]?.trim() || '';
+  }
+
+  let notes = e.notes || '';
+  if (!notes && e.message && String(e.message).includes('Notes: ')) {
+    notes = String(e.message).split('Notes: ')[1]?.split('|')[0]?.trim() || '';
+  }
+
+  return {
+    id: e.id || `enq_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+    type: isDoctorCallback ? 'doctor_callback' : (e.type || 'general_enquiry'),
+    name: e.name || 'Anonymous',
+    phone: e.phone || '',
+    email: e.email || '',
+    city: e.city || 'India',
+    concern: concern || (isDoctorCallback ? 'General Ayurvedic Consultation' : ''),
+    preferredTime: preferredTime || '',
+    notes: notes || '',
+    status: e.status || 'New',
+    followUpNotes: e.followUpNotes || '',
+    customFields: e.customFields && typeof e.customFields === 'object' ? e.customFields : {},
+    experience: e.experience || '',
+    message: e.message || '',
+    timestamp: e.timestamp || e.createdAt || new Date().toISOString(),
+    updatedAt: e.updatedAt || e.timestamp || new Date().toISOString(),
+    source: e.source || 'website',
+    ip: e.ip || 'unknown'
+  };
+}
+
+// GET /api/admin/enquiries - Dedicated Admin Enquiries & Doctor Callbacks endpoint
+router.get('/enquiries', requireAdminAuth, (req, res) => {
+  try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    const raw = getArray('enquiries');
+    const enquiries = raw.map(normalizeEnquiryRecord).filter(Boolean);
+    
+    // Sort descending by timestamp (newest submissions first)
+    enquiries.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    const newCount = enquiries.filter(e => e.status === 'New').length;
+    const callbackCount = enquiries.filter(e => e.type === 'doctor_callback').length;
+    const newCallbackCount = enquiries.filter(e => e.type === 'doctor_callback' && e.status === 'New').length;
+
+    return res.json({
+      success: true,
+      count: enquiries.length,
+      newCount,
+      callbackCount,
+      newCallbackCount,
+      data: enquiries
+    });
+  } catch (err) {
+    console.error('Error fetching admin enquiries:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// PUT /api/admin/enquiries/:id - Update Enquiry Status & Follow-up Notes
+router.put('/enquiries/:id', requireAdminAuth, (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status, followUpNotes } = req.body || {};
+
+    const enquiries = getArray('enquiries');
+    const index = enquiries.findIndex(e => String(e.id) === String(id));
+    if (index === -1) {
+      return res.status(404).json({ success: false, error: 'Enquiry not found.' });
+    }
+
+    const validStatuses = ['New', 'Contacted', 'Completed', 'Cancelled'];
+    if (status && !validStatuses.includes(status)) {
+      return res.status(400).json({
+        success: false,
+        error: `Invalid status. Must be one of: ${validStatuses.join(', ')}`
+      });
+    }
+
+    const current = enquiries[index];
+    enquiries[index] = {
+      ...current,
+      ...(status ? { status } : {}),
+      ...(followUpNotes !== undefined ? { followUpNotes: String(followUpNotes).slice(0, 1000).trim() } : {}),
+      updatedAt: new Date().toISOString()
+    };
+
+    setArray('enquiries', enquiries);
+    console.log(`📝 Updated Enquiry #${id} status: ${enquiries[index].status}`);
+
+    return res.json({
+      success: true,
+      message: 'Enquiry record updated successfully.',
+      data: normalizeEnquiryRecord(enquiries[index])
+    });
+  } catch (err) {
+    console.error('Error updating admin enquiry:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// DELETE /api/admin/enquiries/:id - Remove invalid / spam enquiry
+router.delete('/enquiries/:id', requireAdminAuth, (req, res) => {
+  try {
+    const { id } = req.params;
+    const enquiries = getArray('enquiries');
+    const filtered = enquiries.filter(e => String(e.id) !== String(id));
+
+    if (filtered.length === enquiries.length) {
+      return res.status(404).json({ success: false, error: 'Enquiry not found.' });
+    }
+
+    setArray('enquiries', filtered);
+    console.log(`🗑️ Deleted Enquiry #${id}`);
+
+    return res.json({ success: true, message: 'Enquiry deleted successfully.' });
+  } catch (err) {
+    console.error('Error deleting admin enquiry:', err);
     return res.status(500).json({ success: false, error: err.message });
   }
 });
