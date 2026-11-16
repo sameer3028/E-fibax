@@ -59,22 +59,26 @@ export async function apiRequest(endpoint, options = {}) {
     const rawCustomerToken = localStorage.getItem('fibax_auth_token') || sessionStorage.getItem('fibax_auth_token');
     const customerToken = rawCustomerToken && rawCustomerToken !== 'null' && rawCustomerToken !== 'undefined' ? rawCustomerToken.trim() : null;
 
-    const cleanEndpoint = String(endpoint);
-    const isAdminRoute = cleanEndpoint.includes('/admin') ||
+    const cleanEndpoint = String(endpoint).toLowerCase();
+    const isAdminPath = typeof window !== 'undefined' && window.location.pathname.startsWith('/admin');
+
+    // Admin routes or any request originating inside the Admin Portal
+    const isAdminRoute = isAdminPath ||
+      cleanEndpoint.includes('/admin') ||
       cleanEndpoint.includes('/website') ||
       cleanEndpoint.includes('/coupons') ||
-      cleanEndpoint.includes('/shipping/config') ||
-      cleanEndpoint.includes('/email/config') ||
-      cleanEndpoint.includes('/email/test') ||
+      cleanEndpoint.includes('/shipping') ||
+      cleanEndpoint.includes('/email') ||
       cleanEndpoint.includes('/ship-order') ||
-      cleanEndpoint.includes('/resend-email');
+      cleanEndpoint.includes('/resend-email') ||
+      (adminToken && (cleanEndpoint === '/api/orders' || cleanEndpoint === '/orders'));
 
     if (isAdminRoute && adminToken) {
-      headers['Authorization'] = `Bearer ${adminToken}`;
-    } else if (adminToken && (options.method === 'POST' || options.method === 'PUT' || options.method === 'DELETE' || options.method === 'PATCH') && !cleanEndpoint.includes('/orders') && !cleanEndpoint.includes('/enquiries') && !cleanEndpoint.includes('/reviews') && !cleanEndpoint.includes('/auth/')) {
-      headers['Authorization'] = `Bearer ${adminToken}`;
-    } else if (customerToken && (cleanEndpoint.includes('/auth/') || cleanEndpoint.includes('/orders'))) {
-      headers['Authorization'] = `Bearer ${customerToken}`;
+      headers['Authorization'] = 'Bearer ' + adminToken;
+    } else if (adminToken && (options.method === 'POST' || options.method === 'PUT' || options.method === 'DELETE' || options.method === 'PATCH') && !cleanEndpoint.includes('/enquiries') && !cleanEndpoint.includes('/reviews') && !cleanEndpoint.includes('/auth/')) {
+      headers['Authorization'] = 'Bearer ' + adminToken;
+    } else if (customerToken && (cleanEndpoint.includes('/auth/') || cleanEndpoint.includes('/user/orders') || (!adminToken && cleanEndpoint.includes('/orders')))) {
+      headers['Authorization'] = 'Bearer ' + customerToken;
     }
   }
 

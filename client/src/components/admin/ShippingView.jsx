@@ -145,28 +145,45 @@ export function ShippingView() {
   const [isSendingTestEmail, setIsSendingTestEmail] = useState(false);
   const [isResendingEmail, setIsResendingEmail] = useState(false);
   const [resendMessage, setResendMessage] = useState('');
+  const [loadError, setLoadError] = useState(null);
 
   // Load orders & shipping configuration & email configuration
   const loadData = async () => {
     try {
       setIsLoading(true);
-      const [ordersRes, configRes, emailConfigRes] = await Promise.all([
-        apiRequest('/api/orders'),
-        apiRequest('/api/shipping/config'),
-        apiRequest('/api/email/config')
+      setLoadError(null);
+
+      const token = localStorage.getItem('fibax_admin_token') || sessionStorage.getItem('fibax_admin_token');
+      const authHeaders = token ? { 'Authorization': 'Bearer ' + token } : {};
+
+      // 1. Try dedicated admin orders endpoint first, fall back to /api/orders
+      let ordersRes = await apiRequest('/api/admin/orders', { headers: authHeaders });
+      if (!ordersRes || !ordersRes.success) {
+        ordersRes = await apiRequest('/api/orders', { headers: authHeaders });
+      }
+
+      const [configRes, emailConfigRes] = await Promise.all([
+        apiRequest('/api/shipping/config', { headers: authHeaders }),
+        apiRequest('/api/email/config', { headers: authHeaders })
       ]);
 
-      if (ordersRes.success && Array.isArray(ordersRes.data)) {
+      if (ordersRes && ordersRes.success && Array.isArray(ordersRes.data)) {
         setOrders(ordersRes.data);
+      } else {
+        const errMsg = ordersRes?.error || 'Failed to load orders. Please verify Admin login session.';
+        setLoadError(errMsg);
+        console.warn('[ShippingView] Orders fetch warning:', ordersRes);
       }
-      if (configRes.success && configRes.data) {
+
+      if (configRes && configRes.success && configRes.data) {
         setShippingConfig(configRes.data);
       }
-      if (emailConfigRes.success && emailConfigRes.data) {
+      if (emailConfigRes && emailConfigRes.success && emailConfigRes.data) {
         setEmailConfig(emailConfigRes.data);
       }
     } catch (err) {
       console.error('Error loading shipping data:', err);
+      setLoadError(err.message || 'Network error loading shipping operations data.');
     } finally {
       setIsLoading(false);
     }
@@ -445,6 +462,7 @@ export function ShippingView() {
       const matchesSearch =
         (order.orderId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (order.trackingId || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (order.delhiveryAwb || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (order.customer?.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
         (order.customer?.phone || '').includes(searchQuery) ||
         (order.shipping?.city || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -463,6 +481,22 @@ export function ShippingView() {
 
   return (
     <div className="space-y-6">
+      {/* Load Error Notification Banner */}
+      {loadError && (
+        <div className="bg-rose-50 border border-rose-200 text-rose-900 p-4 rounded-2xl flex items-center justify-between text-xs font-semibold shadow-xs animate-fadeIn">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-rose-600 flex-shrink-0" />
+            <span>{loadError}</span>
+          </div>
+          <button
+            onClick={loadData}
+            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs cursor-pointer transition-colors"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
       {/* Top Banner & Settings Button */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-3xl border border-sand-border shadow-xs">
         <div>

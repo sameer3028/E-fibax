@@ -48,6 +48,11 @@ function saveUsers(users) {
 // GET /api/orders - List orders (admin sees all, authenticated customer sees their own)
 router.get('/', (req, res) => {
   try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
     const adminSession = getAdminSessionFromRequest(req);
     const customer = getCustomerFromRequest(req);
     const orders = readOrders();

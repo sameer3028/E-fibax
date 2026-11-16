@@ -163,4 +163,20 @@ router.get('/users', requireAdminAuth, (req, res) => {
   }
 });
 
+// GET /api/admin/orders - Dedicated Admin Orders endpoint (Guaranteed Admin Auth, Strict No-Cache)
+router.get('/orders', requireAdminAuth, (req, res) => {
+  try {
+    res.set({
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Pragma': 'no-cache',
+      'Expires': '0'
+    });
+    const orders = getArray('orders');
+    return res.json({ success: true, count: orders.length, data: orders });
+  } catch (err) {
+    console.error('Error fetching admin orders:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 export default router;
