@@ -14,6 +14,7 @@ import {
 } from '../middleware/auth.js';
 import { orderLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray } from '../store.js';
+import { normalizeCustomerOrder } from './customerAuthRoutes.js';
 
 const router = Router();
 
@@ -68,7 +69,8 @@ router.get('/', (req, res) => {
           (o.customer?.email && o.customer.email.toLowerCase() === (customer.email || '').toLowerCase()) ||
           (o.customer?.phone && o.customer.phone === customer.phone)
       );
-      return res.json({ success: true, count: userOrders.length, data: userOrders });
+      const normalizedOrders = userOrders.map(normalizeCustomerOrder).filter(Boolean);
+      return res.json({ success: true, count: normalizedOrders.length, data: normalizedOrders });
     }
 
     return res.status(401).json({
@@ -280,10 +282,15 @@ router.post('/', orderLimiter, async (req, res) => {
 
 // Core Order Cancellation Engine
 export async function executeOrderCancellation({ orderId, reason, adminRemarks, isAdmin = false, adminUser = 'admin' }) {
+  if (!orderId || String(orderId).trim() === '' || String(orderId).toLowerCase() === 'undefined' || String(orderId).toLowerCase() === 'null') {
+    return { success: false, status: 400, error: 'A valid Order ID is required for cancellation.' };
+  }
+
+  const cleanOrderId = String(orderId).trim();
   const orders = readOrders();
-  const idx = orders.findIndex(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+  const idx = orders.findIndex(o => String(o.orderId || o.id || '').toUpperCase() === cleanOrderId.toUpperCase());
   if (idx === -1) {
-    return { success: false, status: 404, error: `Order #${orderId} not found.` };
+    return { success: false, status: 404, error: `Order #${cleanOrderId} not found.` };
   }
 
   const order = orders[idx];
@@ -535,11 +542,12 @@ export async function executeOrderCancellation({ orderId, reason, adminRemarks, 
     console.error('Error dispatching cancellation email:', emailErr);
   }
 
+  const normalizedFinalOrder = normalizeCustomerOrder(orders[idx]);
   return {
     success: true,
     message: `Order #${order.orderId} cancelled successfully.`,
-    data: orders[idx],
-    order: orders[idx]
+    data: normalizedFinalOrder,
+    order: normalizedFinalOrder
   };
 }
 
@@ -549,14 +557,19 @@ router.post('/:orderId/cancel', async (req, res) => {
     const { orderId } = req.params;
     const { reason, adminRemarks } = req.body || {};
 
+    if (!orderId || String(orderId).trim() === '' || String(orderId).toLowerCase() === 'undefined' || String(orderId).toLowerCase() === 'null') {
+      return res.status(400).json({ success: false, error: 'A valid Order ID is required for cancellation.' });
+    }
+
+    const cleanOrderId = String(orderId).trim();
     const authenticatedCustomer = getCustomerFromRequest(req);
     const adminSession = getAdminSessionFromRequest(req);
     const isAdmin = !!adminSession || req.body?.adminOverride === true;
 
     const orders = readOrders();
-    const order = orders.find(o => String(o.orderId).toUpperCase() === String(orderId).toUpperCase());
+    const order = orders.find(o => String(o.orderId || o.id || '').toUpperCase() === cleanOrderId.toUpperCase());
     if (!order) {
-      return res.status(404).json({ success: false, error: `Order #${orderId} not found.` });
+      return res.status(404).json({ success: false, error: `Order #${cleanOrderId} not found.` });
     }
 
     // Permission Verification
@@ -586,7 +599,7 @@ router.post('/:orderId/cancel', async (req, res) => {
     }
 
     const result = await executeOrderCancellation({
-      orderId,
+      orderId: order.orderId || order.id || cleanOrderId,
       reason,
       adminRemarks,
       isAdmin,

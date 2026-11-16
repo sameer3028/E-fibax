@@ -335,6 +335,28 @@ router.post('/logout', (req, res) => {
   return res.json({ success: true, message: 'Logged out successfully.' });
 });
 
+// Helper: Normalize order record for customer-facing interfaces (guarantees canonical id and orderId parity)
+export function normalizeCustomerOrder(order) {
+  if (!order || typeof order !== 'object') return null;
+  const canonicalId = order.orderId || order.id || order._id || '';
+  const total = order.totals?.grandTotal ?? order.totalAmount ?? order.total ?? 0;
+  const paymentMethod = order.payment?.method || order.paymentMethod || 'COD';
+  const waybill = order.delhiveryAwb || order.trackingId || order.waybill || order.shipment?.waybill || null;
+  const cancelReason = order.cancellationReason || order.cancelReason || null;
+
+  return {
+    ...order,
+    id: canonicalId,
+    orderId: canonicalId,
+    totalAmount: total,
+    total: total,
+    paymentMethod,
+    waybill,
+    cancelReason,
+    cancellationReason: cancelReason
+  };
+}
+
 // GET /api/user/orders - Customer order history
 router.get('/user/orders', (req, res) => {
   try {
@@ -350,10 +372,12 @@ router.get('/user/orders', (req, res) => {
       (o.customer?.phone && o.customer.phone === customer.phone)
     );
 
+    const normalizedOrders = userOrders.map(normalizeCustomerOrder).filter(Boolean);
+
     return res.json({
       success: true,
-      count: userOrders.length,
-      data: userOrders
+      count: normalizedOrders.length,
+      data: normalizedOrders
     });
   } catch (err) {
     console.error('User orders error:', err);

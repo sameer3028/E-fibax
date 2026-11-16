@@ -54,8 +54,13 @@ export function AuthProvider({ children }) {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.success && Array.isArray(res.data)) {
-        setUserOrders(res.data);
-        return res.data;
+        const normalized = res.data.map(o => ({
+          ...o,
+          id: o.orderId || o.id || '',
+          orderId: o.orderId || o.id || ''
+        }));
+        setUserOrders(normalized);
+        return normalized;
       }
     } catch (err) {
       console.error('Failed to fetch user orders:', err);

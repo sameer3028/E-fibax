@@ -170,9 +170,16 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
     setCancelSuccess('');
 
     const finalReason = cancelReason === 'Other' ? customReason.trim() : cancelReason;
+    const targetOrderId = cancelModalOrder.orderId || cancelModalOrder.id;
+
+    if (!targetOrderId || String(targetOrderId).trim() === '' || targetOrderId === 'undefined') {
+      setCancelError('Valid order ID could not be determined. Please refresh your orders.');
+      setIsCancelling(false);
+      return;
+    }
 
     try {
-      const res = await apiRequest(`/api/orders/${cancelModalOrder.id}/cancel`, {
+      const res = await apiRequest(`/api/orders/${encodeURIComponent(targetOrderId)}/cancel`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`
@@ -775,13 +782,17 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                 </div>
               ) : (
                 <div className="space-y-3.5">
-                  {userOrders.map((order) => {
+                  {userOrders.map((order, idx) => {
+                    const canonicalOrderId = order.orderId || order.id || `order-${idx}`;
                     const statusStr = String(order.status || '').toLowerCase();
-                    const isCancellable = ['pending', 'processing', 'placed'].includes(statusStr) && !order.waybill;
+                    const awb = order.delhiveryAwb || order.trackingId || order.waybill || order.shipment?.waybill;
+                    const isCancellable = ['pending', 'processing', 'placed'].includes(statusStr) && !awb;
+                    const isCod = (order.payment?.method || order.paymentMethod) === 'COD';
+                    const orderTotal = order.totals?.grandTotal ?? order.totalAmount ?? order.total ?? 0;
 
                     return (
                       <div
-                        key={order.id}
+                        key={canonicalOrderId}
                         className="bg-white rounded-2xl p-4 sm:p-5 border border-sand-border/80 shadow-xs space-y-3"
                       >
                         {/* Order Header */}
@@ -791,7 +802,7 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                               Order ID
                             </span>
                             <span className="font-mono text-xs font-bold text-forest">
-                              #{order.id}
+                              #{order.orderId || order.id}
                             </span>
                           </div>
                           <div className="text-right">
@@ -804,8 +815,8 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
 
                         {/* Order Items */}
                         <div className="divide-y divide-sand-border/40">
-                          {order.items?.map((item, idx) => (
-                            <div key={idx} className="py-2 flex items-center justify-between text-xs">
+                          {order.items?.map((item, itmIdx) => (
+                            <div key={itmIdx} className="py-2 flex items-center justify-between text-xs">
                               <div className="flex items-center gap-2.5 min-w-0">
                                 {item.featuredImage || item.image ? (
                                   <img
@@ -833,16 +844,16 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                         </div>
 
                         {/* Delhivery Tracking Details */}
-                        {order.waybill && (
+                        {awb && (
                           <div className="p-3 bg-blue-50/80 rounded-xl border border-blue-200/60 flex items-center justify-between text-xs">
                             <div className="flex items-center gap-2 min-w-0">
                               <Truck className="h-4 w-4 text-blue-700 flex-shrink-0" />
                               <div className="min-w-0">
                                 <p className="font-bold text-blue-950 truncate">
-                                  Delhivery AWB: <span className="font-mono">{order.waybill}</span>
+                                  Delhivery AWB: <span className="font-mono">{awb}</span>
                                 </p>
                                 <p className="text-[10px] text-blue-700">
-                                  Courier: {order.courierName || 'Delhivery Express'}
+                                  Courier: {order.courier || order.courierName || 'Delhivery Express'}
                                 </p>
                               </div>
                             </div>
@@ -850,7 +861,7 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                               type="button"
                               onClick={() => {
                                 closeAccountModal();
-                                if (onOpenTrackOrder) onOpenTrackOrder(order.waybill);
+                                if (onOpenTrackOrder) onOpenTrackOrder(awb);
                               }}
                               className="px-2.5 py-1 rounded-lg bg-blue-700 text-white text-[11px] font-bold hover:bg-blue-800 transition-colors whitespace-nowrap flex-shrink-0 ml-2"
                             >
@@ -864,13 +875,13 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                           <div>
                             <span className="text-[10px] text-charcoal-muted block">Payment</span>
                             <span className="text-xs font-bold text-charcoal">
-                              {order.paymentMethod === 'COD' ? '💵 Cash on Delivery' : '🟢 Prepaid (Online)'}
+                              {isCod ? '💵 Cash on Delivery' : '🟢 Prepaid (Online)'}
                             </span>
                           </div>
                           <div className="text-right">
                             <span className="text-[10px] text-charcoal-muted block">Total Amount</span>
                             <span className="font-heading font-extrabold text-sm text-forest-deep">
-                              {formatPrice(order.totalAmount || order.total || 0)}
+                              {formatPrice(orderTotal)}
                             </span>
                           </div>
                         </div>
@@ -1069,9 +1080,9 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {cancelledOrders.map((order) => (
+                  {cancelledOrders.map((order, idx) => (
                     <div
-                      key={order.id}
+                      key={order.orderId || order.id || `cancelled-${idx}`}
                       className="bg-white rounded-2xl p-4 border border-sand-border/80 shadow-xs space-y-2"
                     >
                       <div className="flex items-center justify-between">
@@ -1498,7 +1509,7 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
               <div className="flex items-center justify-between border-b border-sand-border pb-2.5">
                 <h4 className="font-heading font-bold text-sm text-charcoal flex items-center gap-1.5">
                   <AlertCircle className="h-4 w-4 text-rose-600" />
-                  <span>Cancel Order #{cancelModalOrder.id}</span>
+                  <span>Cancel Order #{cancelModalOrder.orderId || cancelModalOrder.id}</span>
                 </h4>
                 <button
                   type="button"
@@ -1510,6 +1521,26 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                 >
                   <X className="h-4 w-4" />
                 </button>
+              </div>
+
+              {/* Order Context Summary in Modal */}
+              <div className="p-3 bg-sand/60 rounded-xl border border-sand-border text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-charcoal-muted">Order ID:</span>
+                  <span className="font-mono font-bold text-forest">#{cancelModalOrder.orderId || cancelModalOrder.id}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-charcoal-muted">Amount:</span>
+                  <span className="font-bold text-charcoal">
+                    {formatPrice(cancelModalOrder.totals?.grandTotal ?? cancelModalOrder.totalAmount ?? cancelModalOrder.total ?? 0)}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-charcoal-muted">Payment:</span>
+                  <span className="font-semibold text-charcoal">
+                    {(cancelModalOrder.payment?.method || cancelModalOrder.paymentMethod) === 'COD' ? 'Cash on Delivery' : 'Prepaid (Online)'}
+                  </span>
+                </div>
               </div>
 
               {cancelSuccess ? (
