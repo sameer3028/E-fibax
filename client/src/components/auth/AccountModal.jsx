@@ -12,7 +12,6 @@ import {
   Calendar,
   CheckCircle2,
   Clock,
-  ExternalLink,
   Edit2,
   Save,
   ShoppingBag,
@@ -685,32 +684,6 @@ export function AccountModal({ onExploreProducts, onOpenTrackOrder, onNavigate }
                   </div>
                   <ChevronRight className="h-4 w-4 text-charcoal-muted group-hover:text-forest transition-colors" />
                 </button>
-
-                {/* Doctor WhatsApp Support */}
-                <a
-                  href="https://wa.me/918872544458?text=Hello%20Fibax%20Ayurveda%20Doctor%2C%20I%20need%20expert%20consultation"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full px-4 py-3.5 flex items-center justify-between text-left hover:bg-sand/20 transition-colors group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                      <MessageCircle className="h-4 w-4" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <p className="text-xs sm:text-sm font-bold text-charcoal group-hover:text-forest transition-colors">
-                          Ayurvedic Doctor on WhatsApp
-                        </p>
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                      </div>
-                      <p className="text-[11px] text-charcoal-muted">
-                        Free personalized dosage & regimen guidance (+91 88725 44458)
-                      </p>
-                    </div>
-                  </div>
-                  <ExternalLink className="h-4 w-4 text-charcoal-muted group-hover:text-forest transition-colors" />
-                </a>
               </div>
 
               {/* 7. Full-Width Logout Button */}
