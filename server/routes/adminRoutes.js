@@ -13,6 +13,7 @@ import {
 import { authLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray, setSingleton } from '../store.js';
 import { executeOrderCancellation } from './orderRoutes.js';
+import { auditDuplicateCustomers } from '../services/userService.js';
 
 const router = Router();
 
@@ -160,6 +161,22 @@ router.get('/users', requireAdminAuth, (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching admin users:', err);
+    return res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// GET /api/admin/users/audit-duplicates - Audit existing duplicate mobile numbers across all customer accounts
+router.get('/users/audit-duplicates', requireAdminAuth, (req, res) => {
+  try {
+    const users = getArray('users');
+    const orders = getArray('orders');
+    const report = auditDuplicateCustomers(users, orders);
+    return res.json({
+      success: true,
+      data: report
+    });
+  } catch (err) {
+    console.error('Error auditing duplicate customers:', err);
     return res.status(500).json({ success: false, error: err.message });
   }
 });

@@ -107,9 +107,14 @@ export function AuthModal() {
       return;
     }
 
-    const cleanPhone = regData.phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 10) {
-      setErrorMessage('Please enter a valid 10-digit mobile number.');
+    const digits = regData.phone.replace(/\D/g, '');
+    let cleanPhone = digits;
+    if (digits.length === 11 && digits.startsWith('0')) cleanPhone = digits.slice(1);
+    else if (digits.length === 12 && digits.startsWith('91')) cleanPhone = digits.slice(2);
+    else if (digits.length > 10) cleanPhone = digits.slice(-10);
+
+    if (cleanPhone.length !== 10 || !/^[6-9]\d{9}$/.test(cleanPhone)) {
+      setErrorMessage('Please enter a valid 10-digit Indian mobile number.');
       return;
     }
 
@@ -122,6 +127,9 @@ export function AuthModal() {
 
     if (!res.success) {
       setErrorMessage(res.error || 'Failed to create account.');
+      if (res.error && res.error.includes('already registered')) {
+        setLoginId(cleanPhone);
+      }
     }
   };
 
@@ -342,9 +350,37 @@ export function AuthModal() {
 
           {/* Feedback Banners */}
           {errorMessage && (
-            <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2 animate-shake">
-              <AlertCircle className="h-4 w-4 text-rose-600 flex-shrink-0 mt-0.5" />
-              <span className="leading-relaxed">{errorMessage}</span>
+            <div className="p-3 mb-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex flex-col gap-1.5 animate-shake">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="h-4 w-4 text-rose-600 flex-shrink-0 mt-0.5" />
+                <span className="leading-relaxed font-medium">{errorMessage}</span>
+              </div>
+              {errorMessage.includes('already registered') && (
+                <div className="flex items-center gap-3 pl-6 pt-1 text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthModalTab('login');
+                      setErrorMessage('');
+                    }}
+                    className="font-bold text-forest hover:underline"
+                  >
+                    👉 Sign In Now
+                  </button>
+                  <span className="text-rose-300">|</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAuthModalTab('forgot');
+                      setForgotStep('email');
+                      setErrorMessage('');
+                    }}
+                    className="font-bold text-forest hover:underline"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
@@ -494,10 +530,10 @@ export function AuthModal() {
                     <input
                       type="tel"
                       required
-                      maxLength={10}
+                      maxLength={15}
                       value={regData.phone}
-                      onChange={(e) => setRegData({ ...regData, phone: e.target.value.replace(/\D/g, '') })}
-                      placeholder="10-digit number"
+                      onChange={(e) => setRegData({ ...regData, phone: e.target.value })}
+                      placeholder="10-digit mobile (e.g. 9876543210 or +91)"
                       className="w-full pl-9 pr-3 py-2 bg-white border border-sand-border rounded-xl text-xs text-charcoal focus:outline-none focus:border-brand"
                     />
                     <Phone className="h-3.5 w-3.5 text-charcoal-subtle absolute left-3 top-2.5" />

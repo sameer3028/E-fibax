@@ -11,104 +11,49 @@ import {
 import { authLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray } from '../store.js';
 import { sendForgotPasswordOtpEmail } from '../services/emailService.js';
+import {
+  normalizeIndianMobileNumber,
+  findUserByMobile,
+  findUserByEmail,
+  findUsersByIdentifier,
+  registerCustomerAtomic,
+  withRegistrationLock
+} from '../services/userService.js';
 
 const router = Router();
 const otpStore = new Map();
 export const forgotPasswordStore = new Map();
 
-function readUsers() {
+export function readUsers() {
   return getArray('users');
 }
 
-function saveUsers(users) {
+export function saveUsers(users) {
   setArray('users', users);
 }
 
-function readOrders() {
+export function readOrders() {
   return getArray('orders');
 }
 
 // POST /api/auth/register - Customer Account Creation
-router.post('/register', authLimiter, (req, res) => {
+// POST /api/auth/register - Customer Account Creation
+router.post('/register', authLimiter, async (req, res) => {
   try {
-    const { name, email, phone, password, address, city, pincode } = req.body || {};
-
-    if (!name || !name.trim()) {
-      return res.status(400).json({ success: false, error: 'Full name is required.' });
-    }
-    if (!email || !email.trim()) {
-      return res.status(400).json({ success: false, error: 'Email address is required.' });
-    }
-    if (!phone || !phone.trim()) {
-      return res.status(400).json({ success: false, error: 'Mobile number is required.' });
-    }
-    if (!password || password.length < 6) {
-      return res.status(400).json({ success: false, error: 'Password must be at least 6 characters long.' });
-    }
-
-    const cleanEmail = email.trim().toLowerCase();
-    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(cleanEmail)) {
-      return res.status(400).json({ success: false, error: 'Please enter a valid email address.' });
-    }
-
-    const cleanPhone = phone.replace(/[^0-9]/g, '');
-    if (cleanPhone.length < 10 || cleanPhone.length > 15) {
-      return res.status(400).json({ success: false, error: 'Please enter a valid 10-digit mobile number.' });
-    }
-
-    const cleanName = name.replace(/[<>]/g, '').trim();
-    if (cleanName.length < 2) {
-      return res.status(400).json({ success: false, error: 'Name must be at least 2 characters.' });
-    }
-
-    const users = readUsers();
-
-    if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
-      return res.status(400).json({ success: false, error: 'An account with this email address already exists. Please log in.' });
-    }
-
-    if (users.some(u => u.phone === cleanPhone)) {
-      return res.status(400).json({ success: false, error: 'An account with this mobile number already exists. Please log in.' });
-    }
-
-    const salt = crypto.randomBytes(16).toString('hex');
-    const passwordHash = hashPassword(password, salt);
-    const userId = 'USR-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6).toUpperCase();
-
-    const addresses = [];
-    if (address && address.trim()) {
-      addresses.push({
-        id: 'addr_' + Date.now(),
-        address: address.trim(),
-        city: (city || '').trim(),
-        pincode: (pincode || '').trim(),
-        isDefault: true
+    const result = await registerCustomerAtomic(req.body || {});
+    if (!result.success) {
+      return res.status(result.status || 400).json({
+        success: false,
+        error: result.error,
+        errorCode: result.errorCode
       });
     }
 
-    const newUser = {
-      id: userId,
-      name: cleanName,
-      email: cleanEmail,
-      phone: cleanPhone,
-      salt,
-      passwordHash,
-      addresses,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-
-    users.push(newUser);
-    saveUsers(users);
-
-    const token = generateCustomerToken(userId);
-    console.log(`👤 New customer registered: ${newUser.name} (${newUser.email}) - ID: ${newUser.id}`);
-
     return res.status(201).json({
       success: true,
-      message: 'Account created successfully!',
-      token,
-      user: sanitizeUser(newUser)
+      message: result.message,
+      token: result.token,
+      user: result.user
     });
   } catch (err) {
     console.error('Registration error:', err);
@@ -121,41 +66,46 @@ router.post('/login', authLimiter, (req, res) => {
   try {
     const { identifier, password } = req.body || {};
 
-    if (!identifier || !identifier.trim() || !password) {
+    if (!identifier || !String(identifier).trim() || !password) {
       return res.status(400).json({ success: false, error: 'Please enter your email or phone and password.' });
     }
 
-    const rawId = identifier.trim();
-    const cleanId = rawId.toLowerCase();
-    const phoneDigits = rawId.replace(/[^0-9]/g, '');
-
     const users = readUsers();
-    const user = users.find(u =>
-      u.email.toLowerCase() === cleanId ||
-      (phoneDigits.length >= 10 && u.phone === phoneDigits)
-    );
+    // Search candidates matching either email or normalized mobile number
+    const candidates = findUsersByIdentifier(users, identifier);
 
-    if (!user) {
+    if (!candidates || candidates.length === 0) {
       return res.status(401).json({ success: false, error: 'No account found with this email or mobile number.' });
     }
 
-    const isMatch = verifyPassword(password, user.salt, user.passwordHash);
-    if (!isMatch) {
+    // Check credentials across candidate accounts (handles historical duplicate mobile accounts gracefully)
+    let authenticatedUser = null;
+    for (const candidate of candidates) {
+      if (candidate.salt && candidate.passwordHash) {
+        const isMatch = verifyPassword(password, candidate.salt, candidate.passwordHash);
+        if (isMatch) {
+          authenticatedUser = candidate;
+          break;
+        }
+      }
+    }
+
+    if (!authenticatedUser) {
       return res.status(401).json({ success: false, error: 'Incorrect password. Please try again.' });
     }
 
-    const token = generateCustomerToken(user.id);
-    user.lastLoginAt = new Date().toISOString();
-    user.loginCount = (user.loginCount || 0) + 1;
+    const token = generateCustomerToken(authenticatedUser.id);
+    authenticatedUser.lastLoginAt = new Date().toISOString();
+    authenticatedUser.loginCount = (authenticatedUser.loginCount || 0) + 1;
     saveUsers(users);
 
-    console.log(`🔑 Customer logged in: ${user.name} (${user.email}) - Total logins: ${user.loginCount}`);
+    console.log(`🔑 Customer logged in: ${authenticatedUser.name} (${authenticatedUser.email}) - Total logins: ${authenticatedUser.loginCount}`);
 
     return res.json({
       success: true,
       message: 'Logged in successfully!',
       token,
-      user: sanitizeUser(user)
+      user: sanitizeUser(authenticatedUser)
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -200,73 +150,80 @@ router.post('/send-otp', (req, res) => {
 });
 
 // POST /api/auth/verify-otp - Verify OTP and auto-authenticate customer
-router.post('/verify-otp', (req, res) => {
+// POST /api/auth/verify-otp - Verify OTP and auto-authenticate customer
+router.post('/verify-otp', async (req, res) => {
   try {
     const { phone, otp, name } = req.body || {};
     if (!phone || !otp) {
       return res.status(400).json({ success: false, error: 'Mobile number and OTP are required.' });
     }
 
-    const cleanPhone = phone.replace(/[^0-9]/g, '').slice(-10);
-    const cleanOtp = String(otp).trim();
+    const standardPhone = normalizeIndianMobileNumber(phone);
+    if (!standardPhone) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid 10-digit Indian mobile number.' });
+    }
 
-    const record = otpStore.get(cleanPhone);
+    const cleanOtp = String(otp).trim();
+    const record = otpStore.get(standardPhone);
     const isValid = cleanOtp === '1234' || (record && record.otp === cleanOtp && Date.now() < record.expiresAt);
 
     if (!isValid) {
       return res.status(400).json({ success: false, error: 'Invalid or expired OTP. Use 1234 or request a new OTP.' });
     }
 
-    otpStore.delete(cleanPhone);
+    otpStore.delete(standardPhone);
 
-    const users = readUsers();
-    let user = users.find(u => u.phone === cleanPhone);
+    const authResult = await withRegistrationLock(async () => {
+      const users = readUsers();
+      let user = findUserByMobile(users, standardPhone);
 
-    if (!user) {
-      const userId = 'USR-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6).toUpperCase();
-      const cleanName = (name && name.trim()) || 'Fibax Customer';
-      const cleanEmail = `${cleanPhone}@customer.fibaxpharma.com`;
-      const salt = crypto.randomBytes(16).toString('hex');
-      const passwordHash = hashPassword(Math.random().toString(36), salt);
+      if (!user) {
+        const userId = 'USR-' + Date.now().toString(36) + Math.random().toString(36).substring(2, 6).toUpperCase();
+        const cleanName = (name && name.trim()) || 'Fibax Customer';
+        const cleanEmail = `${standardPhone}@customer.fibaxpharma.com`;
+        const salt = crypto.randomBytes(16).toString('hex');
+        const passwordHash = hashPassword(Math.random().toString(36), salt);
 
-      user = {
-        id: userId,
-        name: cleanName,
-        email: cleanEmail,
-        phone: cleanPhone,
-        salt,
-        passwordHash,
-        addresses: [],
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        loginCount: 1,
-        lastLoginAt: new Date().toISOString()
-      };
+        user = {
+          id: userId,
+          name: cleanName,
+          email: cleanEmail,
+          phone: standardPhone,
+          salt,
+          passwordHash,
+          addresses: [],
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+          loginCount: 1,
+          lastLoginAt: new Date().toISOString()
+        };
 
-      users.push(user);
-      saveUsers(users);
-      console.log(`👤 New OTP customer created: ${user.name} (+91 ${user.phone})`);
-    } else {
-      user.lastLoginAt = new Date().toISOString();
-      user.loginCount = (user.loginCount || 0) + 1;
-      if (name && name.trim() && (!user.name || user.name === 'Fibax Customer')) {
-        user.name = name.trim();
+        users.push(user);
+        saveUsers(users);
+        console.log(`👤 New OTP customer created: ${user.name} (+91 ${user.phone})`);
+      } else {
+        user.lastLoginAt = new Date().toISOString();
+        user.loginCount = (user.loginCount || 0) + 1;
+        if (name && name.trim() && (!user.name || user.name === 'Fibax Customer')) {
+          user.name = name.trim();
+        }
+        saveUsers(users);
+        console.log(`🔑 Existing customer logged in via OTP: ${user.name} (+91 ${user.phone})`);
       }
-      saveUsers(users);
-      console.log(`🔑 Existing customer logged in via OTP: ${user.name} (+91 ${user.phone})`);
-    }
 
-    const token = generateCustomerToken(user.id);
+      const token = generateCustomerToken(user.id);
+      return { token, user: sanitizeUser(user) };
+    });
 
     return res.json({
       success: true,
-      message: 'Mobile number verified successfully!',
-      token,
-      user: sanitizeUser(user)
+      message: 'Logged in successfully!',
+      token: authResult.token,
+      user: authResult.user
     });
   } catch (err) {
     console.error('Verify OTP error:', err);
-    return res.status(500).json({ success: false, error: 'OTP verification failed. Please try again.' });
+    return res.status(500).json({ success: false, error: 'Internal server error during OTP verification.' });
   }
 });
 
@@ -297,8 +254,26 @@ router.put('/profile', (req, res) => {
     if (name && name.trim()) {
       users[idx].name = name.replace(/[<>]/g, '').trim();
     }
-    if (phone && phone.replace(/[^0-9]/g, '').length >= 10) {
-      users[idx].phone = phone.replace(/[^0-9]/g, '');
+
+    if (phone && String(phone).trim()) {
+      const normalizedPhone = normalizeIndianMobileNumber(phone);
+      if (!normalizedPhone) {
+        return res.status(400).json({
+          success: false,
+          error: 'Please enter a valid 10-digit Indian mobile number.'
+        });
+      }
+
+      // Check if another customer already has this mobile number
+      const existingUserWithPhone = findUserByMobile(users, normalizedPhone);
+      if (existingUserWithPhone && existingUserWithPhone.id !== customer.id) {
+        return res.status(400).json({
+          success: false,
+          error: 'This mobile number is already registered. Please sign in or use Forgot Password.'
+        });
+      }
+
+      users[idx].phone = normalizedPhone;
     }
 
     if (address && address.trim()) {
