@@ -208,6 +208,43 @@ export function AuthProvider({ children }) {
     setIsAccountModalOpen(false);
   };
 
+
+  const sendForgotPasswordOtp = async (email) => {
+    try {
+      const res = await apiRequest('/api/auth/forgot-password/send-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email })
+      });
+      return res;
+    } catch (err) {
+      return { success: false, error: err.message || 'Failed to send verification code.' };
+    }
+  };
+
+  const verifyForgotPasswordOtp = async (email, otp) => {
+    try {
+      const res = await apiRequest('/api/auth/forgot-password/verify-otp', {
+        method: 'POST',
+        body: JSON.stringify({ email, otp })
+      });
+      return res;
+    } catch (err) {
+      return { success: false, error: err.message || 'Failed to verify code.' };
+    }
+  };
+
+  const resetForgotPassword = async (email, resetToken, newPassword) => {
+    try {
+      const res = await apiRequest('/api/auth/forgot-password/reset-password', {
+        method: 'POST',
+        body: JSON.stringify({ email, resetToken, newPassword })
+      });
+      return res;
+    } catch (err) {
+      return { success: false, error: err.message || 'Failed to reset password.' };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -232,7 +269,10 @@ export function AuthProvider({ children }) {
         accountModalTab,
         setAccountModalTab,
         openAccountModal,
-        closeAccountModal
+        closeAccountModal,
+        sendForgotPasswordOtp,
+        verifyForgotPasswordOtp,
+        resetForgotPassword
       }}
     >
       {children}

@@ -3,6 +3,7 @@ import nodemailer from 'nodemailer';
 import { generateOrderConfirmationHtml, generateOrderConfirmationText } from '../emailTemplates/orderConfirmation.js';
 import { generateAdminOrderAlertHtml, generateAdminOrderAlertText } from '../emailTemplates/adminOrderAlert.js';
 import { generateOrderCancellationHtml, generateOrderCancellationText } from '../emailTemplates/orderCancellation.js';
+import { generateForgotPasswordOtpHtml, generateForgotPasswordOtpText } from '../emailTemplates/forgotPasswordOtp.js';
 import { readJsonFile, writeJsonFile } from '../store.js';
 import { getDataFilePath } from '../config/paths.js';
 
@@ -725,5 +726,96 @@ export async function sendOrderCancellationEmail(order, cancellationDetails = {}
     });
 
     return { success: false, error: err.message };
+  }
+}
+
+
+/**
+ * Send Password Reset OTP Email
+ * @param {Object} params
+ * @param {string} params.toEmail Recipient customer email
+ * @param {string} params.customerName Customer name
+ * @param {string} params.otp 6-digit verification code
+ */
+export async function sendForgotPasswordOtpEmail({ toEmail, customerName, otp }) {
+  const cleanEmail = (toEmail || '').trim().toLowerCase();
+  if (!cleanEmail || !cleanEmail.includes('@')) {
+    return { success: false, error: 'A valid email address is required.' };
+  }
+
+  const config = readEmailConfig();
+
+  // Validate SMTP configuration
+  if (!isSmtpConfigured(config)) {
+    const missing = [];
+    if (!(config.smtpHost || process.env.SMTP_HOST)) missing.push('SMTP_HOST');
+    if (!(config.smtpUser || process.env.SMTP_USER)) missing.push('SMTP_USER');
+    if (!(config.smtpPassword || process.env.SMTP_PASSWORD)) missing.push('SMTP_PASSWORD');
+
+    console.log(`ℹ️ SMTP credentials not configured. Password reset OTP for ${cleanEmail} cannot be sent live.`);
+    logEmailExecution({
+      orderId: 'AUTH-FORGOT-PASS',
+      type: 'Forgot Password OTP',
+      recipient: cleanEmail,
+      status: 'NOT_CONFIGURED',
+      details: `SMTP not configured. Missing: ${missing.join(', ')}`
+    });
+
+    return {
+      success: false,
+      notConfigured: true,
+      missing,
+      error: `Email delivery service is currently not configured. Missing environment variables: ${missing.join(', ')}.`
+    };
+  }
+
+  try {
+    const transporter = await createTransporter(config);
+    const html = generateForgotPasswordOtpHtml(customerName, otp, config);
+    const text = generateForgotPasswordOtpText(customerName, otp, config);
+
+    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'orders@fibaxpharma.com'}>`;
+    const subject = `${otp} is your Fibax Ayurveda password reset code`;
+
+    const info = await transporter.sendMail({
+      from: fromAddress,
+      to: cleanEmail,
+      replyTo: config.replyToEmail || 'care@fibaxpharma.com',
+      subject,
+      text,
+      html
+    });
+
+    const previewUrl = nodemailer.getTestMessageUrl ? nodemailer.getTestMessageUrl(info) : null;
+
+    logEmailExecution({
+      orderId: 'AUTH-FORGOT-PASS',
+      type: 'Forgot Password OTP',
+      recipient: cleanEmail,
+      status: 'SENT',
+      messageId: info.messageId || null,
+      previewUrl
+    });
+
+    console.log(`✉️ Password reset OTP email dispatched successfully to ${cleanEmail} (MessageId: ${info.messageId})`);
+
+    return {
+      success: true,
+      messageId: info.messageId,
+      previewUrl
+    };
+  } catch (err) {
+    console.error(`❌ Failed to send password reset OTP to ${cleanEmail}:`, err.message);
+    logEmailExecution({
+      orderId: 'AUTH-FORGOT-PASS',
+      type: 'Forgot Password OTP',
+      recipient: cleanEmail,
+      status: 'FAILED',
+      error: err.message
+    });
+    return {
+      success: false,
+      error: `Failed to send verification email: ${err.message}`
+    };
   }
 }

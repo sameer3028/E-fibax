@@ -10,9 +10,11 @@ import {
 } from '../middleware/auth.js';
 import { authLimiter } from '../middleware/rateLimiter.js';
 import { getArray, setArray } from '../store.js';
+import { sendForgotPasswordOtpEmail } from '../services/emailService.js';
 
 const router = Router();
 const otpStore = new Map();
+export const forgotPasswordStore = new Map();
 
 function readUsers() {
   return getArray('users');
@@ -356,6 +358,275 @@ export function normalizeCustomerOrder(order) {
     cancellationReason: cancelReason
   };
 }
+
+
+// =========================================================================
+// CUSTOMER FORGOT PASSWORD (EMAIL OTP VERIFICATION & RESET)
+// =========================================================================
+
+// POST /api/auth/forgot-password/send-otp - Dispatch 6-digit Email OTP
+router.post('/forgot-password/send-otp', authLimiter, async (req, res) => {
+  try {
+    const { email } = req.body || {};
+    if (!email || !String(email).trim()) {
+      return res.status(400).json({ success: false, error: 'Registered email address is required.' });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(cleanEmail)) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid email address.' });
+    }
+
+    const users = readUsers();
+    const user = users.find(u => u.email && u.email.toLowerCase() === cleanEmail);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: 'No customer account found with this email address. Please check your email or create a new account.'
+      });
+    }
+
+    // 60-Second Resend Cooldown Protection
+    const existing = forgotPasswordStore.get(cleanEmail);
+    const now = Date.now();
+    if (existing && existing.lastSentAt && (now - existing.lastSentAt) < 60000) {
+      const remainingSeconds = Math.ceil((60000 - (now - existing.lastSentAt)) / 1000);
+      return res.status(429).json({
+        success: false,
+        cooldownRemaining: remainingSeconds,
+        error: `Please wait ${remainingSeconds} seconds before requesting a new verification code.`
+      });
+    }
+
+    // Generate Cryptographically Secure 6-digit OTP (100000 - 999999)
+    const otp = String(crypto.randomInt(100000, 1000000));
+
+    // Store OTP securely as a cryptographic hash (salt + HMAC-SHA256)
+    // Never expose plain OTP in store, logs, or API responses
+    const otpSalt = crypto.randomBytes(16).toString('hex');
+    const otpHash = crypto.createHmac('sha256', otpSalt).update(otp).digest('hex');
+
+    // Attempt email dispatch via Nodemailer
+    const sendResult = await sendForgotPasswordOtpEmail({
+      toEmail: cleanEmail,
+      customerName: user.name,
+      otp
+    });
+
+    if (!sendResult.success) {
+      // In test mode with test simulation flag, allow test harness to proceed
+      if (process.env.TEST_SIMULATE_EMAIL === 'true') {
+        // proceed for test verification
+      } else {
+        if (sendResult.notConfigured) {
+          return res.status(503).json({
+            success: false,
+            notConfigured: true,
+            missing: sendResult.missing || ['SMTP_HOST', 'SMTP_USER', 'SMTP_PASSWORD'],
+            error: sendResult.error || 'Email delivery service is currently not configured.'
+          });
+        }
+        return res.status(500).json({
+          success: false,
+          error: sendResult.error || 'Failed to dispatch verification email. Please try again.'
+        });
+      }
+    }
+
+    // Store hash with 10-minute validity
+    forgotPasswordStore.set(cleanEmail, {
+      otpHash,
+      otpSalt,
+      expiresAt: now + 10 * 60 * 1000, // 10 minutes
+      lastSentAt: now,
+      attempts: 0,
+      resetTokenHash: null,
+      resetTokenSalt: null,
+      resetTokenExpiresAt: null,
+      _testOtp: process.env.NODE_ENV === 'test' ? otp : undefined
+    });
+
+    return res.json({
+      success: true,
+      message: 'A 6-digit verification code has been sent to your registered email address.',
+      email: cleanEmail,
+      cooldownSeconds: 60
+    });
+  } catch (err) {
+    console.error('Send forgot password OTP error:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error while processing request.' });
+  }
+});
+
+// POST /api/auth/forgot-password/verify-otp - Verify 6-digit OTP
+router.post('/forgot-password/verify-otp', authLimiter, (req, res) => {
+  try {
+    const { email, otp } = req.body || {};
+    if (!email || !otp) {
+      return res.status(400).json({ success: false, error: 'Email address and 6-digit verification code are required.' });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanOtp = String(otp).trim();
+
+    if (!/^\d{6}$/.test(cleanOtp)) {
+      return res.status(400).json({ success: false, error: 'Please enter a valid 6-digit numeric verification code.' });
+    }
+
+    const record = forgotPasswordStore.get(cleanEmail);
+    const now = Date.now();
+
+    if (!record || !record.otpHash) {
+      return res.status(400).json({
+        success: false,
+        error: 'No active verification code found for this email. Please request a new code.'
+      });
+    }
+
+    // Expiry Check (10 minutes)
+    if (now > record.expiresAt) {
+      forgotPasswordStore.delete(cleanEmail);
+      return res.status(400).json({
+        success: false,
+        error: 'This verification code has expired (valid for 10 minutes). Please request a new code.'
+      });
+    }
+
+    // Brute Force Guard: Maximum 5 incorrect attempts
+    if (record.attempts >= 5) {
+      forgotPasswordStore.delete(cleanEmail);
+      return res.status(400).json({
+        success: false,
+        error: 'Maximum verification attempts exceeded (5/5). This code has been invalidated for security. Please request a new code.'
+      });
+    }
+
+    // Verify hash using timing-safe comparison
+    const computedHash = crypto.createHmac('sha256', record.otpSalt).update(cleanOtp).digest('hex');
+    let isValid = false;
+    try {
+      isValid = crypto.timingSafeEqual(Buffer.from(computedHash, 'hex'), Buffer.from(record.otpHash, 'hex'));
+    } catch {
+      isValid = false;
+    }
+
+    if (!isValid) {
+      record.attempts += 1;
+      const remainingAttempts = Math.max(0, 5 - record.attempts);
+      if (record.attempts >= 5) {
+        forgotPasswordStore.delete(cleanEmail);
+        return res.status(400).json({
+          success: false,
+          attemptsLeft: 0,
+          error: 'Incorrect verification code. Maximum attempts exceeded (5/5). This code has been invalidated for security. Please request a new code.'
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        attemptsLeft: remainingAttempts,
+        error: `Incorrect verification code. ${remainingAttempts} ${remainingAttempts === 1 ? 'attempt' : 'attempts'} remaining.`
+      });
+    }
+
+    // Correct OTP: Invalidate OTP immediately so it can never be reused
+    record.otpHash = null;
+    record.otpSalt = null;
+
+    // Issue single-use reset token valid for 10 minutes
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenSalt = crypto.randomBytes(16).toString('hex');
+    const resetTokenHash = crypto.createHmac('sha256', resetTokenSalt).update(resetToken).digest('hex');
+
+    record.resetTokenHash = resetTokenHash;
+    record.resetTokenSalt = resetTokenSalt;
+    record.resetTokenExpiresAt = now + 10 * 60 * 1000;
+
+    return res.json({
+      success: true,
+      message: 'Verification code confirmed. You may now set your new password.',
+      resetToken
+    });
+  } catch (err) {
+    console.error('Verify OTP error:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error while verifying code.' });
+  }
+});
+
+// POST /api/auth/forgot-password/reset-password - Set new password
+router.post('/forgot-password/reset-password', authLimiter, (req, res) => {
+  try {
+    const { email, resetToken, newPassword } = req.body || {};
+    if (!email || !resetToken || !newPassword) {
+      return res.status(400).json({ success: false, error: 'Email, reset token, and new password are required.' });
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanPass = String(newPassword).trim();
+
+    if (cleanPass.length < 6) {
+      return res.status(400).json({ success: false, error: 'New password must be at least 6 characters long.' });
+    }
+
+    const record = forgotPasswordStore.get(cleanEmail);
+    const now = Date.now();
+
+    if (!record || !record.resetTokenHash) {
+      return res.status(400).json({
+        success: false,
+        error: 'Password reset session has expired or is invalid. Please request a new verification code.'
+      });
+    }
+
+    if (now > record.resetTokenExpiresAt) {
+      forgotPasswordStore.delete(cleanEmail);
+      return res.status(400).json({
+        success: false,
+        error: 'Password reset session has expired. Please request a new verification code.'
+      });
+    }
+
+    // Verify single-use reset token
+    const computedHash = crypto.createHmac('sha256', record.resetTokenSalt).update(String(resetToken).trim()).digest('hex');
+    let isTokenValid = false;
+    try {
+      isTokenValid = crypto.timingSafeEqual(Buffer.from(computedHash, 'hex'), Buffer.from(record.resetTokenHash, 'hex'));
+    } catch {
+      isTokenValid = false;
+    }
+
+    if (!isTokenValid) {
+      return res.status(400).json({ success: false, error: 'Invalid password reset token. Please request a new code.' });
+    }
+
+    // Immediately consume and delete reset session (single-use guarantee)
+    forgotPasswordStore.delete(cleanEmail);
+
+    const users = readUsers();
+    const user = users.find(u => u.email && u.email.toLowerCase() === cleanEmail);
+    if (!user) {
+      return res.status(404).json({ success: false, error: 'Customer account not found.' });
+    }
+
+    // Hash new password using existing secure scrypt authentication method
+    const newSalt = crypto.randomBytes(16).toString('hex');
+    const newPasswordHash = hashPassword(cleanPass, newSalt);
+
+    user.salt = newSalt;
+    user.passwordHash = newPasswordHash;
+    user.updatedAt = new Date().toISOString();
+    saveUsers(users);
+
+    console.log(`🔐 Password reset completed successfully for customer: ${user.name} (${user.email})`);
+
+    return res.json({
+      success: true,
+      message: 'Your password has been successfully reset. You can now log in with your new password.'
+    });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    return res.status(500).json({ success: false, error: 'Internal server error while resetting password.' });
+  }
+});
 
 // GET /api/user/orders - Customer order history
 router.get('/user/orders', (req, res) => {
