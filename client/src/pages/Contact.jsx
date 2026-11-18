@@ -317,7 +317,7 @@ export function Contact({ onOpenCallback }) {
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-brand hover:text-brand-hover transition-colors cursor-pointer"
                     >
                       <PhoneCall className="h-3.5 w-3.5 text-brand" />
-                      <span>Request Doctor Call Back &rarr;</span>
+                      <span>Request Call Back &rarr;</span>
                     </button>
                   </div>
                 )}
