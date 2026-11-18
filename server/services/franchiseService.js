@@ -5,117 +5,137 @@ import { generateFranchiseAdminAlertHtml, generateFranchiseAdminAlertText } from
 import { generateFranchiseCustomerConfirmationHtml, generateFranchiseCustomerConfirmationText } from '../emailTemplates/franchiseCustomerConfirmation.js';
 
 // Fallback CMS configuration if storage is not yet populated
-export function getDefaultFranchiseCmsConfig() {
+export function getDefaultFranchisePublishedConfig() {
   return {
     isActive: true,
     desktopVisible: true,
     mobileVisible: true,
-    hero: {
+    pageContent: {
+      heading: 'Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda',
+      subtitle: 'Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.',
+      description: 'Fibax Ayurveda is a premier Ayurvedic and herbal pharmaceutical company providing verified PCD Pharma Franchise business opportunities across India.',
+      sectionHeadings: {
+        whyChoose: 'Why Choose Fibax Ayurveda?',
+        whyChooseSubtitle: 'Key business advantages of partnering with our growing Ayurvedic PCD franchise network.',
+        portfolio: 'Diverse Ayurvedic Formulations',
+        portfolioSubtitle: 'Explore our certified remedies tailored for high patient satisfaction and repeat distribution.',
+        process: '5 Simple Steps to Launch Your PCD Franchise',
+        processSubtitle: 'Transparent, structured, and compliant partnership onboarding from enquiry to stock dispatch.',
+        audience: 'Who Can Partner With Us?',
+        audienceSubtitle: 'Our franchise model is designed for experienced healthcare professionals and ambitious entrepreneurs.',
+        form: 'Apply for Ayurvedic PCD Pharma Franchise',
+        formSubtitle: 'Submit your territory requirements and our institutional sales desk will connect with you within 24 hours.',
+        faqs: 'Frequently Asked Questions',
+        faqsSubtitle: 'Clear answers to the most common queries about our Ayurvedic PCD franchise model and terms.'
+      },
+      ctaButtons: {
+        primaryLabel: 'Apply for Franchise',
+        primaryDestination: '#franchise-form',
+        secondaryLabel: 'WhatsApp Enquiry',
+        secondaryDestination: 'https://wa.me/918872544458'
+      },
+      contactInfo: {
+        helplineNumber: '+91 88725 44458',
+        whatsappNumber: '918872544458',
+        email: 'info@fibaxpharma.com',
+        adminNotificationEmail: 'fibaxpharma@gmail.com'
+      }
+    },
+    banner: {
+      enabled: true,
       badge: 'WHO-GMP & AYUSH PREMIUM QUALITY ASSURED',
       heading: 'Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda',
       subtitle: 'Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.',
-      bannerImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&auto=format&fit=crop&q=80',
-      primaryCta: 'Apply for Franchise',
-      secondaryCta: 'WhatsApp Enquiry',
-      whatsappNumber: '918872544458',
-      helplineNumber: '+91 88725 44458'
+      desktopImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&auto=format&fit=crop&q=80',
+      mobileImage: '',
+      primaryCtaText: 'Apply for Franchise',
+      primaryCtaLink: '#franchise-form',
+      secondaryCtaText: 'WhatsApp Enquiry',
+      secondaryCtaLink: 'https://wa.me/918872544458'
     },
     benefits: [
       {
         id: 'ben_1',
         title: 'Wide Ayurvedic Product Portfolio',
         description: 'Access 250+ clinically standardized Ayurvedic formulations across classical syrups, oils, capsules, churnas, and vati.',
-        icon: 'Package'
+        icon: 'Package',
+        enabled: true,
+        order: 1
       },
       {
         id: 'ben_2',
         title: 'Marketing and Promotional Support',
         description: 'Receive comprehensive marketing literature, visual aids, MR bags, visiting cards, catch covers, and product glossaries.',
-        icon: 'Sparkles'
+        icon: 'Sparkles',
+        enabled: true,
+        order: 2
       },
       {
         id: 'ben_3',
         title: 'Product and Packaging Information',
         description: 'Premium alu-alu and blister packaging with tamper-proof seals, transparent herbal compositions, and batch lab test certificates.',
-        icon: 'ShieldCheck'
+        icon: 'ShieldCheck',
+        enabled: true,
+        order: 3
       },
       {
         id: 'ben_4',
         title: 'Business Enquiry Assistance',
         description: 'Prompt quotations, dedicated relationship executives, transparent billing, and dedicated assistance for all commercial queries.',
-        icon: 'Headphones'
+        icon: 'Headphones',
+        enabled: true,
+        order: 4
       },
       {
         id: 'ben_5',
         title: 'Territory-Based Franchise Opportunities',
         description: 'Mutually agreed district and territory distribution partnerships ensuring focused local market growth without channel conflict.',
-        icon: 'MapPin'
+        icon: 'MapPin',
+        enabled: true,
+        order: 5
       },
       {
         id: 'ben_6',
         title: 'Dedicated Business Communication',
         description: 'Reliable dispatch tracking via Delhivery, structured dispatch timelines, and regular pipeline updates directly from headquarters.',
-        icon: 'Truck'
+        icon: 'Truck',
+        enabled: true,
+        order: 6
       }
     ],
-    portfolioCategories: [
-      { id: 'cat_capsules', name: 'Ayurvedic Capsules', slug: 'capsules', icon: 'Pill' },
-      { id: 'cat_syrups', name: 'Herbal Syrups', slug: 'syrups', icon: 'FlaskConical' },
-      { id: 'cat_tablets', name: 'Tablets', slug: 'tablets', icon: 'Layers' },
-      { id: 'cat_powders', name: 'Herbal Powders', slug: 'powders', icon: 'Sparkles' },
-      { id: 'cat_oils', name: 'Ayurvedic Oils', slug: 'oils', icon: 'Droplet' },
-      { id: 'cat_nutra', name: 'Herbal and Nutraceutical Products', slug: 'nutraceuticals', icon: 'Heart' }
+    productCategories: [
+      { id: 'cat_capsules', name: 'Ayurvedic Capsules', slug: 'capsules', icon: 'Pill', enabled: true, order: 1, description: 'Standardized extract capsules in premium blister packaging.' },
+      { id: 'cat_syrups', name: 'Herbal Syrups', slug: 'syrups', icon: 'FlaskConical', enabled: true, order: 2, description: 'Classical Ayurvedic kwath syrups for cough, liver, and digestion.' },
+      { id: 'cat_tablets', name: 'Tablets', slug: 'tablets', icon: 'Layers', enabled: true, order: 3, description: 'Purified classical herbal vati and ghana tablets.' },
+      { id: 'cat_powders', name: 'Herbal Powders', slug: 'powders', icon: 'Sparkles', enabled: true, order: 4, description: 'Single-herb and compound Ayurvedic churnas.' },
+      { id: 'cat_oils', name: 'Ayurvedic Oils', slug: 'oils', icon: 'Droplet', enabled: true, order: 5, description: 'Medicated taila and pain relief oils formulated via authentic tel pak vidhi.' },
+      { id: 'cat_nutra', name: 'Herbal and Nutraceutical Products', slug: 'nutraceuticals', icon: 'Heart', enabled: true, order: 6, description: 'Modern botanical wellness blends and vitality boosters.' }
     ],
     processSteps: [
-      {
-        step: 1,
-        title: 'Submit Franchise Enquiry',
-        description: 'Fill the quick franchise enquiry form with your contact details, target territory, and background.'
-      },
-      {
-        step: 2,
-        title: 'Our Team Contacts You',
-        description: 'Our senior business development manager reviews your application and reaches out within 24-48 business hours.'
-      },
-      {
-        step: 3,
-        title: 'Territory & Business Discussion',
-        description: 'We discuss available territory rights, product margins, quotation terms, and order minimums tailored to your district.'
-      },
-      {
-        step: 4,
-        title: 'Documentation & Verification',
-        description: 'Submit basic KYC, GSTIN, and relevant business registrations to establish authorized distribution credentials.'
-      },
-      {
-        step: 5,
-        title: 'Franchise Approval & Onboarding',
-        description: 'Receive official franchise approval, promotional starter kit, marketing collateral, and first stock dispatch.'
-      }
+      { step: 1, id: 'step_1', title: 'Submit Franchise Enquiry', description: 'Fill the quick franchise enquiry form with your contact details, target territory, and background.', enabled: true },
+      { step: 2, id: 'step_2', title: 'Our Team Contacts You', description: 'Our senior business development manager reviews your application and reaches out within 24-48 business hours.', enabled: true },
+      { step: 3, id: 'step_3', title: 'Territory & Business Discussion', description: 'We discuss available territory rights, product margins, quotation terms, and order minimums tailored to your district.', enabled: true },
+      { step: 4, id: 'step_4', title: 'Documentation & Verification', description: 'Submit basic KYC, GSTIN, and relevant business registrations to establish authorized distribution credentials.', enabled: true },
+      { step: 5, id: 'step_5', title: 'Franchise Approval & Onboarding', description: 'Receive official franchise approval, promotional starter kit, marketing collateral, and first stock dispatch.', enabled: true }
     ],
     targetAudience: [
-      {
-        title: 'Pharma Distributors',
-        description: 'Established distribution firms aiming to expand their portfolio with proven, high-demand Ayurvedic lines.'
-      },
-      {
-        title: 'Medical Representatives',
-        description: 'Experienced pharma professionals seeking to transition into independent entrepreneurship with company backing.'
-      },
-      {
-        title: 'Pharma Wholesalers',
-        description: 'Stockists and wholesale medicine traders looking for competitive trade discounts and reliable supply chains.'
-      },
-      {
-        title: 'Ayurvedic Product Retailers',
-        description: 'Retail pharmacies, chemists, and Ayurvedic clinics wishing to stock authentic classical remedies.'
-      },
-      {
-        title: 'New Business Entrepreneurs',
-        description: 'Aspiring entrepreneurs entering India\'s high-growth herbal healthcare and botanical wellness ecosystem.'
-      }
+      { id: 'aud_1', title: 'Pharma Distributors', description: 'Established distribution firms aiming to expand their portfolio with proven, high-demand Ayurvedic lines.' },
+      { id: 'aud_2', title: 'Medical Representatives', description: 'Experienced pharma professionals seeking to transition into independent entrepreneurship with company backing.' },
+      { id: 'aud_3', title: 'Pharma Wholesalers', description: 'Stockists and wholesale medicine traders looking for competitive trade discounts and reliable supply chains.' },
+      { id: 'aud_4', title: 'Ayurvedic Product Retailers', description: 'Retail pharmacies, chemists, and Ayurvedic clinics wishing to stock authentic classical remedies.' },
+      { id: 'aud_5', title: 'New Business Entrepreneurs', description: 'Aspiring entrepreneurs entering India\'s high-growth herbal healthcare and botanical wellness ecosystem.' }
     ],
-    formConfig: {
+    faqs: [
+      { id: 'faq_1', question: 'What is an Ayurvedic PCD Pharma Franchise?', answer: 'Propaganda Cum Distribution (PCD) is a business model where Fibax Ayurveda grants marketing and distribution rights to a franchise partner for a defined geographic territory, backed by promotional materials and consistent product supply.', enabled: true, order: 1 },
+      { id: 'faq_2', question: 'Who can apply for a Fibax Ayurveda franchise?', answer: 'We welcome pharmaceutical distributors, experienced medical representatives, wholesalers, retail chemists, and aspiring healthcare entrepreneurs looking to build a sustainable business with authentic Ayurvedic remedies.', enabled: true, order: 2 },
+      { id: 'faq_3', question: 'How is a territory allocated?', answer: 'Territories are allocated based on mutual commercial agreement, district vacancy, and existing distribution channels to prevent market cannibalization and protect your commercial efforts.', enabled: true, order: 3 },
+      { id: 'faq_4', question: 'What documents are required?', answer: 'Basic identification (PAN and Aadhaar), GST registration certificate (if applicable), and existing business documentation. For proprietary Ayurvedic OTC products, our team will guide you on the simple regulatory requirements.', enabled: true, order: 4 },
+      { id: 'faq_5', question: 'How can I enquire about the product range and price list?', answer: 'Submit the franchise enquiry form on this page or message our WhatsApp business helpline. Our team will share the complete Ayurvedic product catalogue, net dealer price list, and profit margins.', enabled: true, order: 5 },
+      { id: 'faq_6', question: 'How does the franchise onboarding process work?', answer: 'Once your enquiry is verified and terms are agreed upon, we process your initial inventory order, prepare your marketing starter kit (visual aids, product literature), and dispatch via our express courier partner.', enabled: true, order: 6 }
+    ],
+    formSettings: {
+      heading: 'Apply for Ayurvedic PCD Pharma Franchise',
+      description: 'Submit your territory requirements and our institutional sales desk will connect with you within 24 hours.',
       businessTypes: [
         'Pharma Distributor',
         'Medical Representative',
@@ -137,62 +157,324 @@ export function getDefaultFranchiseCmsConfig() {
         '₹1,00,000 - ₹2,50,000',
         '₹2,50,000 - ₹5,00,000',
         '₹5,00,000+'
-      ]
-    },
-    faqs: [
-      {
-        question: 'What is an Ayurvedic PCD Pharma Franchise?',
-        answer: 'Propaganda Cum Distribution (PCD) is a business model where Fibax Ayurveda grants marketing and distribution rights to a franchise partner for a defined geographic territory, backed by promotional materials and consistent product supply.'
-      },
-      {
-        question: 'Who can apply for a Fibax Ayurveda franchise?',
-        answer: 'We welcome pharmaceutical distributors, experienced medical representatives, wholesalers, retail chemists, and aspiring healthcare entrepreneurs looking to build a sustainable business with authentic Ayurvedic remedies.'
-      },
-      {
-        question: 'How is a territory allocated?',
-        answer: 'Territories are allocated based on mutual commercial agreement, district vacancy, and existing distribution channels to prevent market cannibalization and protect your commercial efforts.'
-      },
-      {
-        question: 'What documents are required?',
-        answer: 'Basic identification (PAN and Aadhaar), GST registration certificate (if applicable), and existing business documentation. For proprietary Ayurvedic OTC products, our team will guide you on the simple regulatory requirements.'
-      },
-      {
-        question: 'How can I enquire about the product range and price list?',
-        answer: 'Submit the franchise enquiry form on this page or message our WhatsApp business helpline. Our team will share the complete Ayurvedic product catalogue, net dealer price list, and profit margins.'
-      },
-      {
-        question: 'How does the franchise onboarding process work?',
-        answer: 'Once your enquiry is verified and terms are agreed upon, we process your initial inventory order, prepare your marketing starter kit (visual aids, product literature), and dispatch via our express courier partner.'
+      ],
+      consentText: 'I agree to be contacted by Fibax Ayurveda regarding my franchise enquiry and accept the Privacy Policy.',
+      submitButtonText: 'Submit Franchise Enquiry',
+      successTitle: 'Application Received',
+      successMessage: 'Your PCD Pharma Franchise application has been registered with our institutional sales team.',
+      adminNotificationEmail: 'fibaxpharma@gmail.com',
+      fieldSettings: {
+        name: { required: true, locked: true, label: 'Full Name' },
+        phone: { required: true, locked: true, label: 'Mobile Number' },
+        consent: { required: true, locked: true, label: 'Consent Agreement' },
+        email: { required: true, label: 'Email Address' },
+        state: { required: true, label: 'Target State' },
+        city: { required: true, label: 'District / City' },
+        businessType: { required: false, label: 'Business Profile' },
+        experience: { required: false, label: 'Pharma Experience' },
+        investmentRange: { required: false, label: 'Investment Range' },
+        message: { required: false, label: 'Additional Requirements' }
       }
-    ],
-    contact: {
-      phone: '+91 88725 44458',
-      whatsapp: '918872544458',
-      email: 'info@fibaxpharma.com',
-      adminNotificationEmail: 'fibaxpharma@gmail.com'
     },
-    updatedAt: new Date().toISOString()
+    seo: {
+      title: 'Ayurvedic PCD Pharma Franchise | Fibax Ayurveda',
+      metaDescription: 'Explore PCD Pharma Franchise opportunities with Fibax Ayurveda. High-margin Ayurvedic remedies, monopoly marketing support, and fast dispatch across India.',
+      canonicalUrl: 'https://www.fibaxpharma.com/pcd-pharma-franchise',
+      ogTitle: 'Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda',
+      ogDescription: 'Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.',
+      ogImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&auto=format&fit=crop&q=80'
+    },
+    publishedAt: new Date().toISOString(),
+    publishedBy: 'system'
   };
 }
 
-export function getFranchiseCmsConfig() {
-  const cms = getSingleton('franchise_page_cms');
-  if (cms && typeof cms === 'object') {
-    return { ...getDefaultFranchiseCmsConfig(), ...cms };
+// Backwards-compatible format mapper
+export function formatFranchiseConfigResponse(config) {
+  if (!config || typeof config !== 'object') {
+    return getDefaultFranchisePublishedConfig();
   }
-  return getDefaultFranchiseCmsConfig();
+
+  const base = { ...config };
+
+  // Backwards-compatible aliases for legacy readers & tests:
+  base.hero = {
+    badge: base.banner?.badge || 'WHO-GMP & AYUSH PREMIUM QUALITY ASSURED',
+    heading: base.pageContent?.heading || base.banner?.heading || base.hero?.heading || 'Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda',
+    subtitle: base.pageContent?.subtitle || base.banner?.subtitle || base.hero?.subtitle || 'Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.',
+    bannerImage: base.banner?.desktopImage || base.hero?.bannerImage || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&auto=format&fit=crop&q=80',
+    primaryCta: base.pageContent?.ctaButtons?.primaryLabel || base.hero?.primaryCta || 'Apply for Franchise',
+    secondaryCta: base.pageContent?.ctaButtons?.secondaryLabel || base.hero?.secondaryCta || 'WhatsApp Enquiry',
+    whatsappNumber: base.pageContent?.contactInfo?.whatsappNumber || base.hero?.whatsappNumber || '918872544458',
+    helplineNumber: base.pageContent?.contactInfo?.helplineNumber || base.hero?.helplineNumber || '+91 88725 44458'
+  };
+
+  base.benefits = Array.isArray(base.benefits) ? base.benefits : [];
+  base.portfolioCategories = Array.isArray(base.productCategories) ? base.productCategories : (Array.isArray(base.portfolioCategories) ? base.portfolioCategories : []);
+  base.productCategories = base.portfolioCategories;
+  base.processSteps = Array.isArray(base.processSteps) ? base.processSteps : [];
+  base.targetAudience = Array.isArray(base.targetAudience) ? base.targetAudience : [];
+  base.faqs = Array.isArray(base.faqs) ? base.faqs : [];
+
+  base.formConfig = {
+    businessTypes: base.formSettings?.businessTypes || base.formConfig?.businessTypes || [],
+    experienceOptions: base.formSettings?.experienceOptions || base.formConfig?.experienceOptions || [],
+    investmentRanges: base.formSettings?.investmentRanges || base.formConfig?.investmentRanges || []
+  };
+
+  base.contact = {
+    phone: base.pageContent?.contactInfo?.helplineNumber || base.contact?.phone || '+91 88725 44458',
+    whatsapp: base.pageContent?.contactInfo?.whatsappNumber || base.contact?.whatsapp || '918872544458',
+    email: base.pageContent?.contactInfo?.email || base.contact?.email || 'info@fibaxpharma.com',
+    adminNotificationEmail: base.formSettings?.adminNotificationEmail || base.contact?.adminNotificationEmail || 'fibaxpharma@gmail.com'
+  };
+
+  return base;
 }
 
-export function updateFranchiseCmsConfig(updates, adminUser = 'admin') {
-  const current = getFranchiseCmsConfig();
-  const merged = {
-    ...current,
-    ...updates,
-    updatedAt: new Date().toISOString(),
-    lastModifiedBy: adminUser
+export function getDefaultFranchiseCmsConfig() {
+  return formatFranchiseConfigResponse(getDefaultFranchisePublishedConfig());
+}
+
+// Retrieves the full CMS storage object including published, draft, and change history
+export function getFranchiseCmsFull() {
+  let stored = getSingleton('franchise_page_cms');
+
+  if (!stored || typeof stored !== 'object') {
+    stored = {
+      published: getDefaultFranchisePublishedConfig(),
+      draft: null,
+      history: [
+        {
+          id: 'hist_initial',
+          action: 'published',
+          timestamp: new Date().toISOString(),
+          adminUser: 'system',
+          summary: 'Baseline PCD franchise configuration published'
+        }
+      ]
+    };
+    setSingleton('franchise_page_cms', stored);
+  }
+
+  // Handle legacy flat object in storage
+  if (!stored.published && stored.hero) {
+    const defaultFull = getDefaultFranchisePublishedConfig();
+    const migratedPublished = {
+      ...defaultFull,
+      isActive: stored.isActive !== undefined ? stored.isActive : true,
+      desktopVisible: stored.desktopVisible !== undefined ? stored.desktopVisible : true,
+      mobileVisible: stored.mobileVisible !== undefined ? stored.mobileVisible : true,
+      pageContent: {
+        ...defaultFull.pageContent,
+        heading: stored.hero?.heading || defaultFull.pageContent.heading,
+        subtitle: stored.hero?.subtitle || defaultFull.pageContent.subtitle
+      },
+      banner: {
+        ...defaultFull.banner,
+        heading: stored.hero?.heading || defaultFull.banner.heading,
+        subtitle: stored.hero?.subtitle || defaultFull.banner.subtitle,
+        desktopImage: stored.hero?.bannerImage || defaultFull.banner.desktopImage
+      },
+      benefits: stored.benefits || defaultFull.benefits,
+      productCategories: stored.portfolioCategories || defaultFull.productCategories,
+      processSteps: stored.processSteps || defaultFull.processSteps,
+      faqs: stored.faqs || defaultFull.faqs,
+      publishedAt: stored.updatedAt || new Date().toISOString(),
+      publishedBy: stored.lastModifiedBy || 'admin'
+    };
+
+    stored = {
+      published: migratedPublished,
+      draft: JSON.parse(JSON.stringify(migratedPublished)),
+      history: [
+        {
+          id: 'hist_migrated',
+          action: 'published',
+          timestamp: new Date().toISOString(),
+          adminUser: 'system',
+          summary: 'Migrated legacy franchise configuration to Draft/Publish CMS'
+        }
+      ]
+    };
+    setSingleton('franchise_page_cms', stored);
+  }
+
+  // Ensure published has all default fields
+  const fullPublished = {
+    ...getDefaultFranchisePublishedConfig(),
+    ...(stored.published || {})
   };
-  setSingleton('franchise_page_cms', merged);
-  return merged;
+
+  // Ensure draft exists
+  const fullDraft = stored.draft
+    ? { ...fullPublished, ...stored.draft }
+    : JSON.parse(JSON.stringify(fullPublished));
+
+  const history = Array.isArray(stored.history) ? stored.history : [];
+
+  // Check if draft has unpublished changes
+  const isDraftDirty = JSON.stringify(fullDraft) !== JSON.stringify(fullPublished);
+
+  return {
+    published: fullPublished,
+    draft: fullDraft,
+    history,
+    isDraftDirty
+  };
+}
+
+// Public or Admin reader for active configuration
+export function getFranchiseCmsConfig(mode = 'published') {
+  const full = getFranchiseCmsFull();
+  const source = mode === 'draft' ? full.draft : full.published;
+  return formatFranchiseConfigResponse(source);
+}
+
+// Saves a new draft to persistent storage without affecting the live website
+export function saveFranchiseCmsDraft(draftUpdates, adminUser = 'admin') {
+  const full = getFranchiseCmsFull();
+  const updatedDraft = {
+    ...full.draft,
+    ...draftUpdates,
+    savedAt: new Date().toISOString(),
+    savedBy: adminUser
+  };
+
+  // If hero is passed in legacy format, map it into pageContent and banner
+  if (draftUpdates.hero) {
+    if (draftUpdates.hero.heading) {
+      updatedDraft.pageContent = {
+        ...(updatedDraft.pageContent || {}),
+        heading: draftUpdates.hero.heading
+      };
+      updatedDraft.banner = {
+        ...(updatedDraft.banner || {}),
+        heading: draftUpdates.hero.heading
+      };
+    }
+    if (draftUpdates.hero.subtitle) {
+      updatedDraft.pageContent = {
+        ...(updatedDraft.pageContent || {}),
+        subtitle: draftUpdates.hero.subtitle
+      };
+      updatedDraft.banner = {
+        ...(updatedDraft.banner || {}),
+        subtitle: draftUpdates.hero.subtitle
+      };
+    }
+    if (draftUpdates.hero.bannerImage) {
+      updatedDraft.banner = {
+        ...(updatedDraft.banner || {}),
+        desktopImage: draftUpdates.hero.bannerImage
+      };
+    }
+  }
+
+  const newHistoryItem = {
+    id: `hist_${Date.now()}`,
+    action: 'draft_saved',
+    timestamp: new Date().toISOString(),
+    adminUser,
+    summary: 'Draft configuration updated'
+  };
+
+  const updatedHistory = [newHistoryItem, ...full.history].slice(0, 30);
+
+  const newStored = {
+    published: full.published,
+    draft: updatedDraft,
+    history: updatedHistory
+  };
+
+  setSingleton('franchise_page_cms', newStored);
+
+  return {
+    success: true,
+    draft: formatFranchiseConfigResponse(updatedDraft),
+    history: updatedHistory,
+    isDraftDirty: true
+  };
+}
+
+// Publishes the current draft to the live production website
+export function publishFranchiseCms(adminUser = 'admin', summary = 'Published changes to live website') {
+  const full = getFranchiseCmsFull();
+
+  const now = new Date().toISOString();
+  const newPublished = {
+    ...full.draft,
+    publishedAt: now,
+    publishedBy: adminUser
+  };
+
+  const newDraft = JSON.parse(JSON.stringify(newPublished));
+
+  const newHistoryItem = {
+    id: `hist_${Date.now()}`,
+    action: 'published',
+    timestamp: now,
+    adminUser,
+    summary: summary || 'Published changes to live website'
+  };
+
+  const updatedHistory = [newHistoryItem, ...full.history].slice(0, 30);
+
+  const newStored = {
+    published: newPublished,
+    draft: newDraft,
+    history: updatedHistory
+  };
+
+  setSingleton('franchise_page_cms', newStored);
+
+  return {
+    success: true,
+    published: formatFranchiseConfigResponse(newPublished),
+    draft: formatFranchiseConfigResponse(newDraft),
+    history: updatedHistory,
+    isDraftDirty: false
+  };
+}
+
+// Discards draft changes and restores draft from currently published state
+export function revertFranchiseCmsDraft(adminUser = 'admin') {
+  const full = getFranchiseCmsFull();
+  const restoredDraft = JSON.parse(JSON.stringify(full.published));
+  restoredDraft.savedAt = new Date().toISOString();
+  restoredDraft.savedBy = adminUser;
+
+  const newHistoryItem = {
+    id: `hist_${Date.now()}`,
+    action: 'draft_reverted',
+    timestamp: new Date().toISOString(),
+    adminUser,
+    summary: 'Draft changes discarded and reset to published state'
+  };
+
+  const updatedHistory = [newHistoryItem, ...full.history].slice(0, 30);
+
+  const newStored = {
+    published: full.published,
+    draft: restoredDraft,
+    history: updatedHistory
+  };
+
+  setSingleton('franchise_page_cms', newStored);
+
+  return {
+    success: true,
+    draft: formatFranchiseConfigResponse(restoredDraft),
+    history: updatedHistory,
+    isDraftDirty: false
+  };
+}
+
+// Backwards-compatible legacy updater that updates both published & draft immediately
+export function updateFranchiseCmsConfig(updates, adminUser = 'admin') {
+  saveFranchiseCmsDraft(updates, adminUser);
+  const publishedRes = publishFranchiseCms(adminUser, 'Direct update via legacy API');
+  return publishedRes.published;
 }
 
 // Generate unique lead reference ID

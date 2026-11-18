@@ -44,13 +44,13 @@ export const INDIAN_STATES = [
   'Delhi (NCT)', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'
 ];
 
-export function FranchisePage({ onNavigate }) {
+export function FranchisePage({ onNavigate, previewMode = false, previewData = null }) {
   const { products } = useProducts();
   const formRef = useRef(null);
 
   // CMS Content State
-  const [cms, setCms] = useState(null);
-  const [loadingCms, setLoadingCms] = useState(true);
+  const [cms, setCms] = useState(previewData || null);
+  const [loadingCms, setLoadingCms] = useState(!previewData);
 
   // Category Filter for Products Section
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -78,8 +78,13 @@ export function FranchisePage({ onNavigate }) {
   const [formError, setFormError] = useState('');
   const [submittedLead, setSubmittedLead] = useState(null);
 
-  // Load Franchise CMS Content from API
+  // Load Franchise CMS Content from API (or previewData when in preview mode)
   useEffect(() => {
+    if (previewData) {
+      setCms(previewData);
+      setLoadingCms(false);
+      return;
+    }
     let isMounted = true;
     apiRequest('/api/franchise/content')
       .then((res) => {
@@ -94,11 +99,14 @@ export function FranchisePage({ onNavigate }) {
         if (isMounted) setLoadingCms(false);
       });
     return () => { isMounted = false; };
-  }, []);
+  }, [previewData]);
 
   // SEO Meta and Schema Injection
   useEffect(() => {
-    document.title = 'Ayurvedic PCD Pharma Franchise | Fibax Ayurveda';
+    if (previewMode) return; // Do not alter document head in admin preview mode
+
+    const seo = cms?.seo || {};
+    document.title = seo.title || 'Ayurvedic PCD Pharma Franchise | Fibax Ayurveda';
 
     // Meta Description
     let metaDesc = document.querySelector('meta[name="description"]');
@@ -107,7 +115,7 @@ export function FranchisePage({ onNavigate }) {
       metaDesc.name = 'description';
       document.head.appendChild(metaDesc);
     }
-    metaDesc.content = 'Explore Ayurvedic PCD Pharma Franchise opportunities with Fibax Ayurveda. Enquire about our herbal product portfolio and franchise business opportunities across India.';
+    metaDesc.content = seo.metaDescription || 'Explore Ayurvedic PCD Pharma Franchise opportunities with Fibax Ayurveda. Enquire about our herbal product portfolio and franchise business opportunities across India.';
 
     // Canonical Link
     let canonical = document.querySelector('link[rel="canonical"]');
@@ -116,7 +124,7 @@ export function FranchisePage({ onNavigate }) {
       canonical.rel = 'canonical';
       document.head.appendChild(canonical);
     }
-    canonical.href = 'https://fibaxpharma.com/pcd-pharma-franchise';
+    canonical.href = seo.canonicalUrl || 'https://fibaxpharma.com/pcd-pharma-franchise';
 
     // JSON-LD Structured Data
     const schemaScript = document.createElement('script');
@@ -249,63 +257,73 @@ export function FranchisePage({ onNavigate }) {
   };
 
   // Content defaults
-  const heroData = cms?.hero || {
-    badge: 'WHO-GMP & AYUSH PREMIUM QUALITY ASSURED',
-    heading: 'Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda',
-    subtitle: 'Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.',
-    bannerImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&auto=format&fit=crop&q=80',
-    primaryCta: 'Apply for Franchise',
-    secondaryCta: 'WhatsApp Enquiry',
-    whatsappNumber: '918872544458',
-    helplineNumber: '+91 88725 44458'
+  const heroData = {
+    badge: cms?.banner?.badge || cms?.hero?.badge || 'WHO-GMP & AYUSH PREMIUM QUALITY ASSURED',
+    heading: cms?.pageContent?.heading || cms?.banner?.heading || cms?.hero?.heading || 'Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda',
+    subtitle: cms?.pageContent?.subtitle || cms?.banner?.subtitle || cms?.hero?.subtitle || 'Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.',
+    bannerImage: cms?.banner?.desktopImage || cms?.hero?.bannerImage || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&auto=format&fit=crop&q=80',
+    mobileBannerImage: cms?.banner?.mobileImage || '',
+    primaryCta: cms?.pageContent?.ctaButtons?.primaryLabel || cms?.banner?.primaryCtaText || cms?.hero?.primaryCta || 'Apply for Franchise',
+    secondaryCta: cms?.pageContent?.ctaButtons?.secondaryLabel || cms?.banner?.secondaryCtaText || cms?.hero?.secondaryCta || 'WhatsApp Enquiry',
+    whatsappNumber: cms?.pageContent?.contactInfo?.whatsappNumber || cms?.hero?.whatsappNumber || '918872544458',
+    helplineNumber: cms?.pageContent?.contactInfo?.helplineNumber || cms?.hero?.helplineNumber || '+91 88725 44458',
+    bannerEnabled: cms?.banner?.enabled !== false
   };
 
-  const benefitsList = cms?.benefits || [
+  const rawBenefits = cms?.benefits || [
     {
       id: 'ben_1',
       title: 'Wide Ayurvedic Product Portfolio',
       description: 'Access 250+ clinically standardized Ayurvedic formulations across classical syrups, oils, capsules, churnas, and vati.',
-      icon: 'Package'
+      icon: 'Package',
+      enabled: true
     },
     {
       id: 'ben_2',
       title: 'Marketing and Promotional Support',
       description: 'Receive comprehensive marketing literature, visual aids, MR bags, visiting cards, catch covers, and product glossaries.',
-      icon: 'Sparkles'
+      icon: 'Sparkles',
+      enabled: true
     },
     {
       id: 'ben_3',
       title: 'Product and Packaging Information',
       description: 'Premium alu-alu and blister packaging with tamper-proof seals, transparent herbal compositions, and batch lab test certificates.',
-      icon: 'ShieldCheck'
+      icon: 'ShieldCheck',
+      enabled: true
     },
     {
       id: 'ben_4',
       title: 'Business Enquiry Assistance',
       description: 'Prompt quotations, dedicated relationship executives, transparent billing, and dedicated assistance for all commercial queries.',
-      icon: 'Headphones'
+      icon: 'Headphones',
+      enabled: true
     },
     {
       id: 'ben_5',
       title: 'Territory-Based Franchise Opportunities',
       description: 'Mutually agreed district and territory distribution partnerships ensuring focused local market growth without channel conflict.',
-      icon: 'MapPin'
+      icon: 'MapPin',
+      enabled: true
     },
     {
       id: 'ben_6',
       title: 'Dedicated Business Communication',
       description: 'Reliable dispatch tracking via Delhivery, structured dispatch timelines, and regular pipeline updates directly from headquarters.',
-      icon: 'Truck'
+      icon: 'Truck',
+      enabled: true
     }
   ];
+  const benefitsList = rawBenefits.filter((b) => b.enabled !== false);
 
-  const processSteps = cms?.processSteps || [
-    { step: 1, title: 'Submit Franchise Enquiry', description: 'Fill the quick franchise enquiry form with your contact details, target territory, and background.' },
-    { step: 2, title: 'Our Team Contacts You', description: 'Our senior business development manager reviews your application and reaches out within 24-48 business hours.' },
-    { step: 3, title: 'Territory & Business Discussion', description: 'We discuss available territory rights, product margins, quotation terms, and order minimums tailored to your district.' },
-    { step: 4, title: 'Documentation & Verification', description: 'Submit basic KYC, GSTIN, and relevant business registrations to establish authorized distribution credentials.' },
-    { step: 5, title: 'Franchise Approval & Onboarding', description: 'Receive official franchise approval, promotional starter kit, marketing collateral, and first stock dispatch.' }
+  const rawSteps = cms?.processSteps || [
+    { step: 1, title: 'Submit Franchise Enquiry', description: 'Fill the quick franchise enquiry form with your contact details, target territory, and background.', enabled: true },
+    { step: 2, title: 'Our Team Contacts You', description: 'Our senior business development manager reviews your application and reaches out within 24-48 business hours.', enabled: true },
+    { step: 3, title: 'Territory & Business Discussion', description: 'We discuss available territory rights, product margins, quotation terms, and order minimums tailored to your district.', enabled: true },
+    { step: 4, title: 'Documentation & Verification', description: 'Submit basic KYC, GSTIN, and relevant business registrations to establish authorized distribution credentials.', enabled: true },
+    { step: 5, title: 'Franchise Approval & Onboarding', description: 'Receive official franchise approval, promotional starter kit, marketing collateral, and first stock dispatch.', enabled: true }
   ];
+  const processSteps = rawSteps.filter((s) => s.enabled !== false);
 
   const targetAudience = cms?.targetAudience || [
     { title: 'Pharma Distributors', description: 'Established distribution firms aiming to expand their portfolio with proven, high-demand Ayurvedic lines.' },
@@ -315,7 +333,18 @@ export function FranchisePage({ onNavigate }) {
     { title: 'New Business Entrepreneurs', description: 'Aspiring entrepreneurs entering India\'s high-growth herbal healthcare and botanical wellness ecosystem.' }
   ];
 
-  const faqsList = cms?.faqs || [];
+  const rawFaqs = cms?.faqs || [];
+  const faqsList = rawFaqs.filter((f) => f.enabled !== false);
+
+  const rawCategories = cms?.productCategories || cms?.portfolioCategories || [
+    { id: 'cat_capsules', name: 'Ayurvedic Capsules', slug: 'capsules', icon: 'Pill', enabled: true },
+    { id: 'cat_syrups', name: 'Herbal Syrups', slug: 'syrups', icon: 'FlaskConical', enabled: true },
+    { id: 'cat_tablets', name: 'Tablets', slug: 'tablets', icon: 'Layers', enabled: true },
+    { id: 'cat_powders', name: 'Herbal Powders', slug: 'powders', icon: 'Sparkles', enabled: true },
+    { id: 'cat_oils', name: 'Ayurvedic Oils', slug: 'oils', icon: 'Droplet', enabled: true },
+    { id: 'cat_nutra', name: 'Herbal and Nutraceutical Products', slug: 'nutraceuticals', icon: 'Heart', enabled: true }
+  ];
+  const categoriesList = rawCategories.filter((c) => c.enabled !== false);
 
   // Filter products for Section C
   const allProductsList = Array.isArray(products) && products.length > 0 ? products : [];
@@ -468,10 +497,10 @@ export function FranchisePage({ onNavigate }) {
               Commercial Advantages
             </span>
             <h2 className="font-heading font-black text-2xl sm:text-3xl lg:text-4xl text-forest tracking-tight">
-              Why Partner with Fibax Ayurveda?
+              {cms?.pageContent?.sectionHeadings?.whyChoose || 'Why Partner with Fibax Ayurveda?'}
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-muted leading-relaxed">
-              We provide transparent franchise policies, premium classical formulations, and dedicated ground support to help pharma professionals scale sustainable businesses.
+              {cms?.pageContent?.sectionHeadings?.whyChooseSubtitle || 'We provide transparent franchise policies, premium classical formulations, and dedicated ground support to help pharma professionals scale sustainable businesses.'}
             </p>
           </div>
 
@@ -524,10 +553,10 @@ export function FranchisePage({ onNavigate }) {
                 Certified Classical Formulations
               </span>
               <h2 className="font-heading font-black text-2xl sm:text-3xl text-forest tracking-tight">
-                Our Commercial Product Portfolio
+                {cms?.pageContent?.sectionHeadings?.portfolio || 'Our Commercial Product Portfolio'}
               </h2>
               <p className="text-xs sm:text-sm text-charcoal-muted max-w-xl">
-                Manufactured with standardized herbal actives in our certified production facilities. Every batch undergoes rigorous microbiological testing.
+                {cms?.pageContent?.sectionHeadings?.portfolioSubtitle || 'Manufactured with standardized herbal actives in our certified production facilities. Every batch undergoes rigorous microbiological testing.'}
               </p>
             </div>
 
@@ -548,7 +577,7 @@ export function FranchisePage({ onNavigate }) {
             <button
               type="button"
               onClick={() => setSelectedCategory('all')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap cursor-pointer ${
                 selectedCategory === 'all'
                   ? 'bg-forest text-white shadow-xs'
                   : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
@@ -556,61 +585,20 @@ export function FranchisePage({ onNavigate }) {
             >
               All Formulations
             </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('capsules')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                selectedCategory === 'capsules'
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
-              }`}
-            >
-              <Pill className="h-3.5 w-3.5" /> Ayurvedic Capsules
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('syrups')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                selectedCategory === 'syrups'
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
-              }`}
-            >
-              <FlaskConical className="h-3.5 w-3.5" /> Herbal Syrups
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('tablets')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                selectedCategory === 'tablets'
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
-              }`}
-            >
-              <Layers className="h-3.5 w-3.5" /> Tablets &amp; Vati
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('powders')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                selectedCategory === 'powders'
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
-              }`}
-            >
-              <Sparkles className="h-3.5 w-3.5" /> Herbal Powders
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('oils')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap flex items-center gap-1.5 ${
-                selectedCategory === 'oils'
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
-              }`}
-            >
-              <Droplet className="h-3.5 w-3.5" /> Ayurvedic Oils
-            </button>
+            {categoriesList.map((cat) => (
+              <button
+                key={cat.id || cat.slug}
+                type="button"
+                onClick={() => setSelectedCategory(cat.slug)}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
+                  selectedCategory === cat.slug
+                    ? 'bg-forest text-white shadow-xs'
+                    : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
+                }`}
+              >
+                <span>{cat.name}</span>
+              </button>
+            ))}
           </div>
 
           {/* Product Cards Grid */}
@@ -692,10 +680,10 @@ export function FranchisePage({ onNavigate }) {
               Structured Journey
             </span>
             <h2 className="font-heading font-black text-2xl sm:text-3xl lg:text-4xl text-forest tracking-tight">
-              5-Step Franchise Onboarding Process
+              {cms?.pageContent?.sectionHeadings?.process || '5-Step Franchise Onboarding Process'}
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-muted">
-              From your initial enquiry to territory allocation and your first inventory dispatch, our team assists you at every milestone.
+              {cms?.pageContent?.sectionHeadings?.processSubtitle || 'From your initial enquiry to territory allocation and your first inventory dispatch, our team assists you at every milestone.'}
             </p>
           </div>
 
@@ -738,10 +726,10 @@ export function FranchisePage({ onNavigate }) {
               Eligibility &amp; Partners
             </span>
             <h2 className="font-heading font-black text-2xl sm:text-3xl text-forest tracking-tight">
-              Who Can Apply for a Franchise?
+              {cms?.pageContent?.sectionHeadings?.audience || 'Who Can Apply for a Franchise?'}
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-muted">
-              We collaborate with experienced pharmaceutical professionals and healthcare distributors seeking mutually beneficial growth.
+              {cms?.pageContent?.sectionHeadings?.audienceSubtitle || 'We collaborate with experienced pharmaceutical professionals and healthcare distributors seeking mutually beneficial growth.'}
             </p>
           </div>
 
@@ -778,10 +766,10 @@ export function FranchisePage({ onNavigate }) {
               Official Application
             </span>
             <h2 className="font-heading font-black text-2xl sm:text-3xl lg:text-4xl text-forest tracking-tight">
-              Apply for PCD Pharma Franchise
+              {cms?.pageContent?.sectionHeadings?.form || cms?.formSettings?.heading || 'Apply for PCD Pharma Franchise'}
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-muted max-w-xl mx-auto">
-              Please provide complete details regarding your target district and business profile. Our business development desk will evaluate territory availability and respond promptly.
+              {cms?.pageContent?.sectionHeadings?.formSubtitle || cms?.formSettings?.description || 'Please provide complete details regarding your target district and business profile. Our business development desk will evaluate territory availability and respond promptly.'}
             </p>
           </div>
 
@@ -1147,7 +1135,7 @@ export function FranchisePage({ onNavigate }) {
                     ) : (
                       <>
                         <Send className="h-4 w-4 text-gold" />
-                        <span>Submit Franchise Enquiry &rarr;</span>
+                        <span>{cms?.formSettings?.submitButtonText || 'Submit Franchise Enquiry →'}</span>
                       </>
                     )}
                   </button>
@@ -1175,10 +1163,10 @@ export function FranchisePage({ onNavigate }) {
               Common Inquiries
             </span>
             <h2 className="font-heading font-black text-2xl sm:text-3xl text-forest tracking-tight">
-              Frequently Asked Questions
+              {cms?.pageContent?.sectionHeadings?.faqs || 'Frequently Asked Questions'}
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-muted">
-              Key operational, legal, and territory allocation details for prospective partners.
+              {cms?.pageContent?.sectionHeadings?.faqsSubtitle || 'Key operational, legal, and territory allocation details for prospective partners.'}
             </p>
           </div>
 

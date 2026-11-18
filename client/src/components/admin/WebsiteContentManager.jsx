@@ -5,6 +5,7 @@ import { BlogManager } from './BlogManager';
 import { LegalPagesManager } from './LegalPagesManager';
 import { WellnessClubManager } from './WellnessClubManager';
 import { DoctorCallbackManager } from './DoctorCallbackManager';
+import { PcdFranchiseManager } from './PcdFranchiseManager';
 import { FranchisePageCMS } from './FranchisePageCMS';
 import {
   Sparkles,
@@ -1196,7 +1197,7 @@ export function WebsiteContentManager() {
       {/* TAB: PCD PHARMA FRANCHISE PAGE CMS                             */}
       {/* ============================================================= */}
       {activeSubTab === 'franchise-page' && (
-        <FranchisePageCMS key="franchise-page" />
+        <PcdFranchiseManager key="franchise-page" />
       )}
 
       {/* ============================================================= */}

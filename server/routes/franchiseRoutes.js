@@ -1,15 +1,26 @@
 import express from 'express';
+import { writeFileSync, existsSync } from 'fs';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
 import { requireAdminAuth } from '../middleware/auth.js';
-import { franchiseEnquiryLimiter } from '../middleware/rateLimiter.js';
+import { franchiseEnquiryLimiter, uploadLimiter } from '../middleware/rateLimiter.js';
 import {
   getFranchiseCmsConfig,
   updateFranchiseCmsConfig,
+  getFranchiseCmsFull,
+  saveFranchiseCmsDraft,
+  publishFranchiseCms,
+  revertFranchiseCmsDraft,
   submitFranchiseLead,
   queryFranchiseLeads,
   updateFranchiseLead,
   deleteFranchiseLead
 } from '../services/franchiseService.js';
 import { getArray } from '../store.js';
+import { UPLOADS_DIR } from '../config/paths.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const router = express.Router();
 
@@ -19,13 +30,16 @@ const router = express.Router();
 
 /**
  * GET /api/franchise/content
- * Returns active PCD Pharma Franchise page CMS content
+ * Returns active PCD Pharma Franchise page CMS content (published by default)
+ * If mode=draft and admin token provided, returns draft for preview
  */
 router.get('/franchise/content', (req, res) => {
   try {
-    const config = getFranchiseCmsConfig();
+    const mode = req.query.mode === 'draft' ? 'draft' : 'published';
+    const config = getFranchiseCmsConfig(mode);
     return res.json({
       success: true,
+      mode,
       data: config
     });
   } catch (err) {
@@ -229,6 +243,160 @@ router.put('/admin/franchise/content', requireAdminAuth, (req, res) => {
   } catch (err) {
     console.error('Error saving franchise CMS content:', err);
     return res.status(500).json({ success: false, error: 'Failed to save franchise page settings.' });
+  }
+});
+
+/**
+ * GET /api/admin/franchise/cms
+ * Returns full CMS structure: published, draft, history, and dirty status
+ */
+router.get('/admin/franchise/cms', requireAdminAuth, (req, res) => {
+  try {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    const full = getFranchiseCmsFull();
+    return res.json({
+      success: true,
+      ...full
+    });
+  } catch (err) {
+    console.error('Error loading admin franchise CMS full structure:', err);
+    return res.status(500).json({ success: false, error: 'Failed to load franchise CMS data.' });
+  }
+});
+
+/**
+ * PUT /api/admin/franchise/cms/draft
+ * Saves draft configuration without affecting live website
+ */
+router.put('/api/admin/franchise/cms/draft', requireAdminAuth, (req, res) => {
+  try {
+    const adminUser = req.admin?.username || 'admin';
+    const result = saveFranchiseCmsDraft(req.body, adminUser);
+    return res.json({
+      success: true,
+      message: 'Draft saved successfully.',
+      ...result
+    });
+  } catch (err) {
+    console.error('Error saving franchise CMS draft:', err);
+    return res.status(500).json({ success: false, error: 'Failed to save franchise draft.' });
+  }
+});
+
+// Also support route without redundant /api prefix
+router.put('/admin/franchise/cms/draft', requireAdminAuth, (req, res) => {
+  try {
+    const adminUser = req.admin?.username || 'admin';
+    const result = saveFranchiseCmsDraft(req.body, adminUser);
+    return res.json({
+      success: true,
+      message: 'Draft saved successfully.',
+      ...result
+    });
+  } catch (err) {
+    console.error('Error saving franchise CMS draft:', err);
+    return res.status(500).json({ success: false, error: 'Failed to save franchise draft.' });
+  }
+});
+
+/**
+ * POST /api/admin/franchise/cms/publish
+ * Publishes draft changes to the live production website
+ */
+router.post('/admin/franchise/cms/publish', requireAdminAuth, (req, res) => {
+  try {
+    const adminUser = req.admin?.username || 'admin';
+    const summary = req.body?.summary || 'Published PCD Franchise updates to live site';
+    const result = publishFranchiseCms(adminUser, summary);
+    return res.json({
+      success: true,
+      message: 'Changes published successfully to live website.',
+      ...result
+    });
+  } catch (err) {
+    console.error('Error publishing franchise CMS:', err);
+    return res.status(500).json({ success: false, error: 'Failed to publish franchise changes.' });
+  }
+});
+
+/**
+ * POST /api/admin/franchise/cms/revert
+ * Discards draft edits and resets draft to current published state
+ */
+router.post('/admin/franchise/cms/revert', requireAdminAuth, (req, res) => {
+  try {
+    const adminUser = req.admin?.username || 'admin';
+    const result = revertFranchiseCmsDraft(adminUser);
+    return res.json({
+      success: true,
+      message: 'Draft changes discarded and reset to published state.',
+      ...result
+    });
+  } catch (err) {
+    console.error('Error reverting franchise CMS draft:', err);
+    return res.status(500).json({ success: false, error: 'Failed to revert franchise draft.' });
+  }
+});
+
+/**
+ * POST /api/admin/franchise/upload-image
+ * Authenticated upload endpoint specifically for franchise CMS media
+ */
+router.post('/admin/franchise/upload-image', requireAdminAuth, uploadLimiter, (req, res) => {
+  try {
+    const { image, file, filename } = req.body || {};
+    const mediaData = image || file;
+
+    if (!mediaData || typeof mediaData !== 'string') {
+      return res.status(400).json({ success: false, error: 'No valid image data provided' });
+    }
+
+    const matches = mediaData.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    if (!matches || matches.length !== 3) {
+      return res.status(400).json({ success: false, error: 'Invalid base64 image encoding' });
+    }
+
+    const mime = matches[1].toLowerCase();
+    const base64Content = matches[2];
+
+    const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+    if (!ALLOWED_MIMES.includes(mime)) {
+      return res.status(400).json({ success: false, error: `Disallowed mime type: ${mime}` });
+    }
+
+    const buffer = Buffer.from(base64Content, 'base64');
+    if (buffer.length > 10 * 1024 * 1024) {
+      return res.status(400).json({ success: false, error: 'File size exceeds maximum 10MB limit' });
+    }
+
+    let ext = 'jpg';
+    if (mime === 'image/png') ext = 'png';
+    else if (mime === 'image/webp') ext = 'webp';
+    else if (mime === 'image/gif') ext = 'gif';
+    else if (mime === 'image/svg+xml') ext = 'svg';
+
+    const cleanBase = filename
+      ? String(filename).replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9_-]/g, '_').substring(0, 30)
+      : 'franchise_media';
+    const safeName = `franchise-${cleanBase}-${Date.now()}.${ext}`;
+    const filePath = join(UPLOADS_DIR, safeName);
+    writeFileSync(filePath, buffer);
+
+    const clientPublicUploadsDir = join(__dirname, '..', '..', 'client', 'public', 'uploads');
+    if (existsSync(clientPublicUploadsDir)) {
+      try {
+        writeFileSync(join(clientPublicUploadsDir, safeName), buffer);
+      } catch (_) {}
+    }
+
+    return res.json({
+      success: true,
+      url: `/uploads/${safeName}`,
+      filename: safeName
+    });
+  } catch (err) {
+    console.error('Error uploading franchise media:', err);
+    return res.status(500).json({ success: false, error: 'Failed to upload franchise image.' });
   }
 });
 

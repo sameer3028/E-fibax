@@ -10,6 +10,7 @@ import { UsersView } from './UsersView';
 import { WebsiteContentManager } from './WebsiteContentManager';
 import { ReviewManager } from './ReviewManager';
 import { FranchiseLeadsManager } from './FranchiseLeadsManager';
+import { PcdFranchiseManager } from './PcdFranchiseManager';
 import { AdminLogin } from './AdminLogin';
 import { ChangeCredentialsModal } from './ChangeCredentialsModal';
 import {
@@ -28,7 +29,8 @@ import {
   Users,
   Globe,
   Star,
-  Briefcase
+  Briefcase,
+  Award
 } from 'lucide-react';
 
 export function AdminLayout({ onExitAdmin }) {
@@ -380,6 +382,18 @@ export function AdminLayout({ onExitAdmin }) {
           </button>
 
           <button
+            onClick={() => setActiveTab('pcd-franchise-management')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              activeTab === 'pcd-franchise-management' || activeTab === 'franchise-cms'
+                ? 'bg-forest text-white shadow-xs'
+                : 'text-charcoal hover:bg-sand text-charcoal-muted'
+            }`}
+          >
+            <Award className="h-4 w-4 text-amber-500" />
+            <span>PCD Franchise Management</span>
+          </button>
+
+          <button
             onClick={() => setActiveTab('website-content')}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === 'website-content'
@@ -404,6 +418,7 @@ export function AdminLayout({ onExitAdmin }) {
         {activeTab === 'reviews' && <ReviewManager />}
         {activeTab === 'users' && <UsersView />}
         {activeTab === 'franchise-leads' && <FranchiseLeadsManager />}
+        {(activeTab === 'pcd-franchise-management' || activeTab === 'franchise-cms') && <PcdFranchiseManager />}
         {activeTab === 'website-content' && <WebsiteContentManager />}
       </main>
 
