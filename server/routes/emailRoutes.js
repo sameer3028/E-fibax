@@ -5,11 +5,25 @@ import {
   sendTestEmail,
   sendTestAdminAlert,
   isSmtpConfigured,
-  readEmailLogs
+  readEmailLogs,
+  verifySmtpConnection
 } from '../services/emailService.js';
 import { requireAdminAuth } from '../middleware/auth.js';
 
 const router = Router();
+
+// POST /api/email/verify-connection - Test SMTP connection & auth handshake (Admin only)
+router.post('/verify-connection', requireAdminAuth, async (req, res) => {
+  try {
+    const result = await verifySmtpConnection();
+    if (!result.success) {
+      return res.status(400).json({ success: false, notConfigured: result.notConfigured, error: result.error, code: result.code });
+    }
+    res.json({ success: true, message: 'SMTP connection and authentication verified successfully.', data: result });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
 
 // GET /api/email/config - Get email configuration (password masked) (Admin only)
 router.get('/config', requireAdminAuth, (req, res) => {

@@ -12,25 +12,36 @@ const CONFIG_FILE = getDataFilePath('email_config.json');
 const LOGS_FILE = getDataFilePath('email_logs.json');
 const ORDERS_FILE = getDataFilePath('orders.json');
 
-// Default email configuration
-const DEFAULT_CONFIG = {
-  enabled: true,
-  orderConfirmationEnabled: true,
-  adminAlertEnabled: true,
-  adminAlertEmail: 'fibaxpharma@gmail.com',
-  senderName: process.env.SMTP_FROM_NAME || 'Fibax Ayurveda',
-  senderEmail: process.env.SMTP_FROM_EMAIL || 'orders@fibaxpharma.com',
-  replyToEmail: 'care@fibaxpharma.com',
-  supportEmail: 'care@fibaxpharma.com',
-  smtpHost: process.env.SMTP_HOST || '',
-  smtpPort: Number(process.env.SMTP_PORT) || 587,
-  smtpSecure: process.env.SMTP_SECURE === 'true',
-  smtpUser: process.env.SMTP_USER || '',
-  smtpPassword: process.env.SMTP_PASSWORD || '',
-  lastAdminAlertStatus: null,
-  lastAdminAlertTimestamp: null,
-  lastAdminAlertRecipient: 'fibaxpharma@gmail.com'
-};
+// Default email configuration builder respecting environment variables
+export function getDefaultConfig() {
+  const host = (process.env.SMTP_HOST || '').trim();
+  const envPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : null;
+  const port = envPort || (host.includes('hostinger') ? 465 : 587);
+  const secure = process.env.SMTP_SECURE !== undefined
+    ? process.env.SMTP_SECURE === 'true'
+    : (port === 465);
+
+  return {
+    enabled: true,
+    orderConfirmationEnabled: true,
+    adminAlertEnabled: true,
+    adminAlertEmail: process.env.ADMIN_ALERT_EMAIL || 'fibaxpharma@gmail.com',
+    senderName: process.env.MAIL_FROM_NAME || process.env.SMTP_FROM_NAME || 'Fibax Ayurveda',
+    senderEmail: process.env.MAIL_FROM_EMAIL || process.env.SMTP_FROM_EMAIL || (process.env.SMTP_USER || 'info@fibaxpharma.com'),
+    replyToEmail: process.env.MAIL_REPLY_TO || process.env.SMTP_REPLY_TO || 'care@fibaxpharma.com',
+    supportEmail: process.env.MAIL_REPLY_TO || process.env.SMTP_REPLY_TO || 'care@fibaxpharma.com',
+    smtpHost: host,
+    smtpPort: port,
+    smtpSecure: secure,
+    smtpUser: (process.env.SMTP_USER || '').trim(),
+    smtpPassword: (process.env.SMTP_PASSWORD || '').trim(),
+    lastAdminAlertStatus: null,
+    lastAdminAlertTimestamp: null,
+    lastAdminAlertRecipient: 'fibaxpharma@gmail.com'
+  };
+}
+
+export const DEFAULT_CONFIG = getDefaultConfig();
 
 // Helper: Check if SMTP is configured with actual host and credentials
 export function isSmtpConfigured(config = null) {
@@ -41,17 +52,46 @@ export function isSmtpConfigured(config = null) {
   return Boolean(host && user && pass);
 }
 
-// Helper: Read email configuration
+// Helper: Read email configuration (merging file settings and environment variables)
 export function readEmailConfig() {
+  const defaults = getDefaultConfig();
   try {
     const data = readJsonFile(CONFIG_FILE, null);
     if (data) {
-      return { ...DEFAULT_CONFIG, ...data };
+      const smtpHost = (data.smtpHost || defaults.smtpHost || '').trim();
+      const smtpUser = (data.smtpUser || defaults.smtpUser || '').trim();
+      const smtpPassword = (data.smtpPassword || defaults.smtpPassword || '').trim();
+
+      const envPort = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : null;
+      const smtpPort = (!data.smtpHost && envPort)
+        ? envPort
+        : (Number(data.smtpPort) || envPort || (smtpHost.includes('hostinger') ? 465 : 587));
+
+      const smtpSecure = data.smtpSecure !== undefined && data.smtpHost
+        ? Boolean(data.smtpSecure)
+        : (process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === 'true' : smtpPort === 465);
+
+      const senderName = process.env.MAIL_FROM_NAME || process.env.SMTP_FROM_NAME || data.senderName || defaults.senderName;
+      const senderEmail = process.env.MAIL_FROM_EMAIL || process.env.SMTP_FROM_EMAIL || data.senderEmail || defaults.senderEmail;
+      const replyToEmail = process.env.MAIL_REPLY_TO || process.env.SMTP_REPLY_TO || data.replyToEmail || defaults.replyToEmail;
+
+      return {
+        ...defaults,
+        ...data,
+        smtpHost,
+        smtpPort,
+        smtpSecure,
+        smtpUser,
+        smtpPassword,
+        senderName,
+        senderEmail,
+        replyToEmail
+      };
     }
   } catch (err) {
     console.error('Error reading email_config.json:', err.message);
   }
-  return { ...DEFAULT_CONFIG };
+  return defaults;
 }
 
 // Helper: Save email configuration
@@ -118,12 +158,13 @@ function updateAdminAlertConfigStatus(status, recipient) {
 }
 
 // Create Nodemailer Transporter
-async function createTransporter(config) {
-  const host = (config.smtpHost || process.env.SMTP_HOST || '').trim();
-  const user = (config.smtpUser || process.env.SMTP_USER || '').trim();
-  const pass = (config.smtpPassword || process.env.SMTP_PASSWORD || '').trim();
-  const port = Number(config.smtpPort || process.env.SMTP_PORT || 587);
-  const secure = config.smtpSecure || process.env.SMTP_SECURE === 'true';
+export async function createTransporter(config = null) {
+  const cfg = config || readEmailConfig();
+  const host = (cfg.smtpHost || process.env.SMTP_HOST || '').trim();
+  const user = (cfg.smtpUser || process.env.SMTP_USER || '').trim();
+  const pass = (cfg.smtpPassword || process.env.SMTP_PASSWORD || '').trim();
+  const port = Number(cfg.smtpPort || (host.includes('hostinger') ? 465 : 587));
+  const secure = cfg.smtpSecure !== undefined ? Boolean(cfg.smtpSecure) : (port === 465 || process.env.SMTP_SECURE === 'true');
 
   if (host && user && pass) {
     return nodemailer.createTransport({
@@ -138,6 +179,47 @@ async function createTransporter(config) {
   return nodemailer.createTransport({
     jsonTransport: true
   });
+}
+
+/**
+ * Verify SMTP Connection & Authentication Handshake
+ * Tests socket connection, TLS/SSL handshake, and SMTP AUTH credentials.
+ * Never leaks the password.
+ */
+export async function verifySmtpConnection(config = null) {
+  const cfg = config || readEmailConfig();
+  if (!isSmtpConfigured(cfg)) {
+    const missing = [];
+    if (!(cfg.smtpHost || process.env.SMTP_HOST)) missing.push('SMTP_HOST');
+    if (!(cfg.smtpUser || process.env.SMTP_USER)) missing.push('SMTP_USER');
+    if (!(cfg.smtpPassword || process.env.SMTP_PASSWORD)) missing.push('SMTP_PASSWORD');
+    return {
+      success: false,
+      notConfigured: true,
+      missing,
+      error: `SMTP not configured. Missing: ${missing.join(', ')}`
+    };
+  }
+
+  try {
+    const transporter = await createTransporter(cfg);
+    await transporter.verify();
+    return {
+      success: true,
+      host: cfg.smtpHost,
+      port: cfg.smtpPort,
+      secure: cfg.smtpSecure,
+      user: cfg.smtpUser
+    };
+  } catch (err) {
+    return {
+      success: false,
+      error: err.message,
+      code: err.code || null,
+      command: err.command || null,
+      response: err.response || null
+    };
+  }
 }
 
 /**
@@ -209,7 +291,7 @@ export async function sendOrderConfirmationEmail(order, forceSend = false) {
     const html = generateOrderConfirmationHtml(order, config);
     const text = generateOrderConfirmationText(order, config);
 
-    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'orders@fibaxpharma.com'}>`;
+    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'info@fibaxpharma.com'}>`;
     const subject = `Order Confirmed – #${order.orderId} | Fibax Ayurveda`;
 
     const mailOptions = {
@@ -351,7 +433,7 @@ export async function sendAdminNewOrderAlert(order, forceSend = false) {
     const html = generateAdminOrderAlertHtml(order, config);
     const text = generateAdminOrderAlertText(order, config);
 
-    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'orders@fibaxpharma.com'}>`;
+    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'info@fibaxpharma.com'}>`;
     const subject = `NEW ORDER RECEIVED | Order #${order.orderId} | Fibax Ayurveda`;
 
     const mailOptions = {
@@ -774,7 +856,7 @@ export async function sendForgotPasswordOtpEmail({ toEmail, customerName, otp })
     const html = generateForgotPasswordOtpHtml(customerName, otp, config);
     const text = generateForgotPasswordOtpText(customerName, otp, config);
 
-    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'orders@fibaxpharma.com'}>`;
+    const fromAddress = `"${config.senderName || 'Fibax Ayurveda'}" <${config.senderEmail || 'info@fibaxpharma.com'}>`;
     const subject = `${otp} is your Fibax Ayurveda password reset code`;
 
     const info = await transporter.sendMail({
