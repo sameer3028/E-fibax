@@ -29,6 +29,7 @@ export function Navbar({
     { id: 'home', label: 'Home' },
     { id: 'about', label: 'About Us' },
     { id: 'products', label: 'Products', hasDropdown: true },
+    { id: 'franchise', label: 'PCD Franchise' },
     { id: 'blogs', label: 'Blog' },
     { id: 'contact', label: 'Contact Us' }
   ];

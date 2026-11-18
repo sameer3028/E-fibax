@@ -28,8 +28,8 @@ function normalizeDriver(raw) {
 }
 const DRIVER = normalizeDriver(process.env.STORAGE_DRIVER);
 
-const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries', 'coupons'];
-const SINGLETON_NAMES = ['admin_auth', 'shipping_config', 'legal_pages', 'callback_form'];
+const ARRAY_NAMES = ['products', 'orders', 'users', 'enquiries', 'coupons', 'franchise_leads'];
+const SINGLETON_NAMES = ['admin_auth', 'shipping_config', 'legal_pages', 'callback_form', 'franchise_page_cms'];
 
 const dataDir = DATA_DIR;
 const FILE_FOR = {
@@ -38,10 +38,12 @@ const FILE_FOR = {
   users: join(dataDir, 'users.json'),
   enquiries: join(dataDir, 'enquiries.json'),
   coupons: join(dataDir, 'coupons.json'),
+  franchise_leads: join(dataDir, 'franchise_leads.json'),
   admin_auth: join(dataDir, 'admin_auth.json'),
   shipping_config: join(dataDir, 'shipping_config.json'),
   legal_pages: join(dataDir, 'legal_pages.json'),
-  callback_form: join(dataDir, 'callback_form.json')
+  callback_form: join(dataDir, 'callback_form.json'),
+  franchise_page_cms: join(dataDir, 'franchise_page_cms.json')
 };
 
 // In-memory cache. Arrays default to []; singletons default to null.
@@ -51,10 +53,12 @@ const cache = {
   users: [],
   enquiries: [],
   coupons: [],
+  franchise_leads: [],
   admin_auth: null,
   shipping_config: null,
   legal_pages: null,
-  callback_form: null
+  callback_form: null,
+  franchise_page_cms: null
 };
 
 let db = null; // lazily imported mysql module when driver === 'mysql'

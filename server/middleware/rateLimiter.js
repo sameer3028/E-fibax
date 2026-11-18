@@ -66,3 +66,9 @@ export const contactLimiter = createRateLimiter({
   max: 10,                  // 10 enquiries per 10 mins
   message: 'Too many messages sent. Please wait before submitting another enquiry.'
 });
+
+export const franchiseEnquiryLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 15,                  // 15 enquiries per 15 mins
+  message: 'Too many franchise submissions from this connection. Please wait a few minutes before trying again.'
+});

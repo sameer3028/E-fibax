@@ -15,7 +15,8 @@ const KEY_FIELD = {
   products: 'id',
   orders: 'orderId',
   users: 'id',
-  enquiries: 'id'
+  enquiries: 'id',
+  franchise_leads: 'id'
 };
 
 const SINGLETON_KEY = '_singleton';

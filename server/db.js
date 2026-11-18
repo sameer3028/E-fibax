@@ -12,16 +12,17 @@ import mysql from 'mysql2/promise';
 let pool = null;
 
 // Names that are stored as an ordered array of documents.
-export const ARRAY_COLLECTIONS = ['products', 'orders', 'users', 'enquiries'];
+export const ARRAY_COLLECTIONS = ['products', 'orders', 'users', 'enquiries', 'franchise_leads'];
 // Names that are stored as a single document.
-export const SINGLETON_COLLECTIONS = ['admin_auth', 'shipping_config'];
+export const SINGLETON_COLLECTIONS = ['admin_auth', 'shipping_config', 'franchise_page_cms'];
 
 // Natural key field per array collection (used as the row's item_id).
 const KEY_FIELD = {
   products: 'id',
   orders: 'orderId',
   users: 'id',
-  enquiries: 'id'
+  enquiries: 'id',
+  franchise_leads: 'id'
 };
 
 const SINGLETON_KEY = '_singleton';

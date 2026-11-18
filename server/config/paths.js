@@ -30,7 +30,9 @@ const REQUIRED_FILES = [
   'shipping_config.json',
   'users.json',
   'wellness_club.json',
-  'callback_form.json'
+  'callback_form.json',
+  'franchise_leads.json',
+  'franchise_page_cms.json'
 ];
 
 /**

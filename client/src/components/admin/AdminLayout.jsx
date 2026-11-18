@@ -9,6 +9,7 @@ import { ShippingView } from './ShippingView';
 import { UsersView } from './UsersView';
 import { WebsiteContentManager } from './WebsiteContentManager';
 import { ReviewManager } from './ReviewManager';
+import { FranchiseLeadsManager } from './FranchiseLeadsManager';
 import { AdminLogin } from './AdminLogin';
 import { ChangeCredentialsModal } from './ChangeCredentialsModal';
 import {
@@ -26,7 +27,8 @@ import {
   UserCheck,
   Users,
   Globe,
-  Star
+  Star,
+  Briefcase
 } from 'lucide-react';
 
 export function AdminLayout({ onExitAdmin }) {
@@ -45,6 +47,7 @@ export function AdminLayout({ onExitAdmin }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [productToEdit, setProductToEdit] = useState(null);
   const [newCallbacksCount, setNewCallbacksCount] = useState(0);
+  const [newFranchiseLeadsCount, setNewFranchiseLeadsCount] = useState(0);
   const { addProduct, updateProduct, stats } = useProducts();
 
   // Verify authentication on mount
@@ -118,6 +121,12 @@ export function AdminLayout({ onExitAdmin }) {
         });
         if (res && res.success && typeof res.newCount === 'number') {
           setNewCallbacksCount(res.newCount);
+        }
+        const fRes = await apiRequest('/api/admin/franchise/leads', {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        if (fRes && fRes.success && fRes.stats && typeof fRes.stats.newCount === 'number') {
+          setNewFranchiseLeadsCount(fRes.stats.newCount);
         }
       } catch (err) {
         // silent
@@ -354,6 +363,23 @@ export function AdminLayout({ onExitAdmin }) {
           </button>
 
           <button
+            onClick={() => setActiveTab('franchise-leads')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+              activeTab === 'franchise-leads'
+                ? 'bg-forest text-white shadow-xs'
+                : 'text-charcoal hover:bg-sand text-charcoal-muted'
+            }`}
+          >
+            <Briefcase className="h-4 w-4 text-amber-500" />
+            <span>Franchise Leads</span>
+            {newFranchiseLeadsCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-black bg-rose-500 text-white animate-pulse">
+                {newFranchiseLeadsCount}
+              </span>
+            )}
+          </button>
+
+          <button
             onClick={() => setActiveTab('website-content')}
             className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
               activeTab === 'website-content'
@@ -377,6 +403,7 @@ export function AdminLayout({ onExitAdmin }) {
         {activeTab === 'orders' && <ShippingView />}
         {activeTab === 'reviews' && <ReviewManager />}
         {activeTab === 'users' && <UsersView />}
+        {activeTab === 'franchise-leads' && <FranchiseLeadsManager />}
         {activeTab === 'website-content' && <WebsiteContentManager />}
       </main>
 

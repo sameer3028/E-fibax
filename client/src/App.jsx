@@ -14,6 +14,7 @@ import { Blogs } from './pages/Blogs';
 import { BlogDetail } from './pages/BlogDetail';
 import { Terms } from './pages/Terms';
 import { Privacy } from './pages/Privacy';
+import { FranchisePage } from './pages/FranchisePage';
 import { BLOG_POSTS } from './data/blogs';
 import { PRODUCTS as INITIAL_PRODUCTS } from './data/products';
 import { CartDrawer } from './components/common/Cart/CartDrawer';
@@ -84,6 +85,7 @@ function StorefrontApp() {
         else if (rawHash === 'blogs' || rawHash === 'journal') migratedPath = '/blogs';
         else if (rawHash.startsWith('blog/')) migratedPath = `/${rawHash}`;
         else if (rawHash === 'contact') migratedPath = '/contact';
+        else if (rawHash === 'franchise' || rawHash === 'pcd-pharma-franchise') migratedPath = '/pcd-pharma-franchise';
         else if (rawHash === 'admin') migratedPath = '/admin';
         else if (rawHash === 'checkout' || rawHash === 'checkout-custom') migratedPath = '/checkout-custom';
         else if (rawHash === 'track' || rawHash.startsWith('track/') || rawHash.startsWith('track?')) migratedPath = `/${rawHash}`;
@@ -153,6 +155,9 @@ function StorefrontApp() {
         setSelectedBlogPost(found || { slug: identifier, title: 'Ayurvedic Article' });
         setCurrentPage('blog-detail');
         document.title = found ? `${found.title} | Fibax Pharma` : 'Ayurvedic Health Journal | Fibax Pharma';
+      } else if (pathname === '/pcd-pharma-franchise' || pathname === '/franchise') {
+        setCurrentPage('franchise');
+        document.title = 'Ayurvedic PCD Pharma Franchise | Fibax Ayurveda';
       } else if (pathname === '/contact') {
         setCurrentPage('contact');
         document.title = 'Contact Us | Fibax Pharma';
@@ -233,6 +238,10 @@ function StorefrontApp() {
       targetUrl = `/blog/${params.post.slug || params.post.id}`;
       setCurrentPage('blog-detail');
       document.title = `${params.post.title} | Fibax Pharma`;
+    } else if (pageId === 'franchise' || pageId === 'pcd-pharma-franchise') {
+      targetUrl = '/pcd-pharma-franchise';
+      setCurrentPage('franchise');
+      document.title = 'Ayurvedic PCD Pharma Franchise | Fibax Ayurveda';
     } else if (pageId === 'contact') {
       targetUrl = '/contact';
       setCurrentPage('contact');
@@ -403,6 +412,10 @@ function StorefrontApp() {
                 post={selectedBlogPost}
                 onNavigate={handleNavigate}
               />
+            )}
+
+            {currentPage === 'franchise' && (
+              <FranchisePage onNavigate={handleNavigate} />
             )}
 
             {currentPage === 'contact' && (

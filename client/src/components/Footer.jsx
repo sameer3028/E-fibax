@@ -162,6 +162,15 @@ export function Footer({ onNavigate, onSelectCategory, onSelectConcern, onOpenTr
               </li>
               <li>
                 <button
+                  onClick={() => handleNav('franchise')}
+                  className="hover:text-gold text-amber-300 font-bold transition-colors flex items-center gap-1.5"
+                >
+                  <ArrowRight className="h-3 w-3 text-amber-300" />
+                  <span>PCD Pharma Franchise</span>
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => onOpenTrackOrder && onOpenTrackOrder()}
                   className="text-leaf font-semibold hover:underline transition-colors flex items-center gap-1.5"
                 >

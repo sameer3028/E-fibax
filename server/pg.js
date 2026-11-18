@@ -13,14 +13,15 @@ const { Pool } = pg;
 
 let pool = null;
 
-export const ARRAY_COLLECTIONS = ['products', 'orders', 'users', 'enquiries'];
-export const SINGLETON_COLLECTIONS = ['admin_auth', 'shipping_config'];
+export const ARRAY_COLLECTIONS = ['products', 'orders', 'users', 'enquiries', 'franchise_leads'];
+export const SINGLETON_COLLECTIONS = ['admin_auth', 'shipping_config', 'franchise_page_cms'];
 
 const KEY_FIELD = {
   products: 'id',
   orders: 'orderId',
   users: 'id',
-  enquiries: 'id'
+  enquiries: 'id',
+  franchise_leads: 'id'
 };
 
 const SINGLETON_KEY = '_singleton';

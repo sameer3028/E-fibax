@@ -22,6 +22,7 @@ import emailRoutes from './routes/emailRoutes.js';
 import contentRoutes from './routes/contentRoutes.js';
 import blogRoutes, { getBlogs } from './routes/blogRoutes.js';
 import legalRoutes from './routes/legalRoutes.js';
+import franchiseRoutes from './routes/franchiseRoutes.js';
 
 // Middleware
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
@@ -110,6 +111,7 @@ app.use('/api/email', emailRoutes);
 app.use('/api', contentRoutes); // Includes /api/coupons, /api/website/about-banners, /api/enquiry, /api/upload
 app.use('/api', blogRoutes); // Includes /api/blogs, /api/admin/blogs, categories, SEO
 app.use('/api', legalRoutes); // Includes /api/legal/:slug, /api/admin/legal/:slug
+app.use('/api', franchiseRoutes); // Includes /api/franchise/content, /api/franchise/enquiry, /api/admin/franchise/*
 
 // ==========================================
 // SEO & SEARCH ENGINE CRAWLER ROUTES

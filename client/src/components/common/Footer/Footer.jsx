@@ -130,6 +130,11 @@ export function Footer({ onSelectConcern, onSelectCategory }) {
             <h5 className="font-heading font-semibold text-white text-sm mb-3">Customer Support</h5>
             <ul className="space-y-2">
               <li>
+                <a href="/pcd-pharma-franchise" className="hover:text-gold transition-colors text-amber-300 font-bold">
+                  PCD Pharma Franchise
+                </a>
+              </li>
+              <li>
                 <a href="/track" className="hover:text-gold transition-colors">
                   Track Your Order (Delhivery)
                 </a>

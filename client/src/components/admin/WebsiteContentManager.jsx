@@ -5,6 +5,7 @@ import { BlogManager } from './BlogManager';
 import { LegalPagesManager } from './LegalPagesManager';
 import { WellnessClubManager } from './WellnessClubManager';
 import { DoctorCallbackManager } from './DoctorCallbackManager';
+import { FranchisePageCMS } from './FranchisePageCMS';
 import {
   Sparkles,
   Globe,
@@ -33,7 +34,8 @@ import {
   RefreshCw,
   BookOpen,
   Gift,
-  PhoneCall
+  PhoneCall,
+  Briefcase
 } from 'lucide-react';
 
 export function WebsiteContentManager() {
@@ -676,6 +678,18 @@ export function WebsiteContentManager() {
         </button>
 
         <button
+          onClick={() => setActiveSubTab('franchise-page')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
+            activeSubTab === 'franchise-page'
+              ? 'bg-forest text-white shadow-xs'
+              : 'bg-white text-charcoal hover:bg-sand border border-sand-border'
+          }`}
+        >
+          <Briefcase className={`h-3.5 w-3.5 ${activeSubTab === 'franchise-page' ? 'text-amber-300' : 'text-forest'}`} />
+          <span>Landing Page: PCD Franchise</span>
+        </button>
+
+        <button
           onClick={() => setActiveSubTab('about-hero')}
           className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition-all whitespace-nowrap cursor-pointer ${
             activeSubTab === 'about-hero'
@@ -1176,6 +1190,13 @@ export function WebsiteContentManager() {
       {/* ============================================================= */}
       {activeSubTab === 'doctor-callback' && (
         <DoctorCallbackManager key="doctor-callback" />
+      )}
+
+      {/* ============================================================= */}
+      {/* TAB: PCD PHARMA FRANCHISE PAGE CMS                             */}
+      {/* ============================================================= */}
+      {activeSubTab === 'franchise-page' && (
+        <FranchisePageCMS key="franchise-page" />
       )}
 
       {/* ============================================================= */}

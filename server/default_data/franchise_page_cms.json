@@ -1,0 +1,167 @@
+{
+  "isActive": true,
+  "desktopVisible": true,
+  "mobileVisible": true,
+  "hero": {
+    "badge": "WHO-GMP & AYUSH PREMIUM QUALITY ASSURED",
+    "heading": "Start Your Own Ayurvedic Pharma Business with Fibax Ayurveda",
+    "subtitle": "Explore PCD Pharma Franchise opportunities with a growing Ayurvedic product portfolio and dedicated business support.",
+    "bannerImage": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1600&auto=format&fit=crop&q=80",
+    "primaryCta": "Apply for Franchise",
+    "secondaryCta": "WhatsApp Enquiry",
+    "whatsappNumber": "918872544458",
+    "helplineNumber": "+91 88725 44458"
+  },
+  "benefits": [
+    {
+      "id": "ben_1",
+      "title": "Wide Ayurvedic Product Portfolio",
+      "description": "Access 250+ clinically standardized Ayurvedic formulations across classical syrups, oils, capsules, churnas, and vati.",
+      "icon": "Package"
+    },
+    {
+      "id": "ben_2",
+      "title": "Marketing and Promotional Support",
+      "description": "Receive comprehensive marketing literature, visual aids, MR bags, visiting cards, catch covers, and product glossaries.",
+      "icon": "Sparkles"
+    },
+    {
+      "id": "ben_3",
+      "title": "Product and Packaging Information",
+      "description": "Premium alu-alu and blister packaging with tamper-proof seals, transparent herbal compositions, and batch lab test certificates.",
+      "icon": "ShieldCheck"
+    },
+    {
+      "id": "ben_4",
+      "title": "Business Enquiry Assistance",
+      "description": "Prompt quotations, dedicated relationship executives, transparent billing, and dedicated assistance for all commercial queries.",
+      "icon": "Headphones"
+    },
+    {
+      "id": "ben_5",
+      "title": "Territory-Based Franchise Opportunities",
+      "description": "Mutually agreed district and territory distribution partnerships ensuring focused local market growth without channel conflict.",
+      "icon": "MapPin"
+    },
+    {
+      "id": "ben_6",
+      "title": "Dedicated Business Communication",
+      "description": "Reliable dispatch tracking via Delhivery, structured dispatch timelines, and regular pipeline updates directly from headquarters.",
+      "icon": "Truck"
+    }
+  ],
+  "portfolioCategories": [
+    { "id": "cat_capsules", "name": "Ayurvedic Capsules", "slug": "capsules", "icon": "Pill" },
+    { "id": "cat_syrups", "name": "Herbal Syrups", "slug": "syrups", "icon": "FlaskConical" },
+    { "id": "cat_tablets", "name": "Tablets", "slug": "tablets", "icon": "Layers" },
+    { "id": "cat_powders", "name": "Herbal Powders", "slug": "powders", "icon": "Sparkles" },
+    { "id": "cat_oils", "name": "Ayurvedic Oils", "slug": "oils", "icon": "Droplet" },
+    { "id": "cat_nutra", "name": "Herbal and Nutraceutical Products", "slug": "nutraceuticals", "icon": "Heart" }
+  ],
+  "processSteps": [
+    {
+      "step": 1,
+      "title": "Submit Franchise Enquiry",
+      "description": "Fill the quick franchise enquiry form with your contact details, target territory, and background."
+    },
+    {
+      "step": 2,
+      "title": "Our Team Contacts You",
+      "description": "Our senior business development manager reviews your application and reaches out within 24-48 business hours."
+    },
+    {
+      "step": 3,
+      "title": "Territory & Business Discussion",
+      "description": "We discuss available territory rights, product margins, quotation terms, and order minimums tailored to your district."
+    },
+    {
+      "step": 4,
+      "title": "Documentation & Verification",
+      "description": "Submit basic KYC, GSTIN, and relevant business registrations to establish authorized distribution credentials."
+    },
+    {
+      "step": 5,
+      "title": "Franchise Approval & Onboarding",
+      "description": "Receive official franchise approval, promotional starter kit, marketing collateral, and first stock dispatch."
+    }
+  ],
+  "targetAudience": [
+    {
+      "title": "Pharma Distributors",
+      "description": "Established distribution firms aiming to expand their portfolio with proven, high-demand Ayurvedic lines."
+    },
+    {
+      "title": "Medical Representatives",
+      "description": "Experienced pharma professionals seeking to transition into independent entrepreneurship with company backing."
+    },
+    {
+      "title": "Pharma Wholesalers",
+      "description": "Stockists and wholesale medicine traders looking for competitive trade discounts and reliable supply chains."
+    },
+    {
+      "title": "Ayurvedic Product Retailers",
+      "description": "Retail pharmacies, chemists, and Ayurvedic clinics wishing to stock authentic classical remedies."
+    },
+    {
+      "title": "New Business Entrepreneurs",
+      "description": "Aspiring entrepreneurs entering India's high-growth herbal healthcare and botanical wellness ecosystem."
+    }
+  ],
+  "formConfig": {
+    "businessTypes": [
+      "Pharma Distributor",
+      "Medical Representative",
+      "Pharma Wholesaler / Stockist",
+      "Retail Chemist / Pharmacy Owner",
+      "New Business Entrepreneur",
+      "Other Healthcare Professional"
+    ],
+    "experienceOptions": [
+      "None / Fresher",
+      "Less than 2 years",
+      "2 to 5 years",
+      "5 to 10 years",
+      "10+ years"
+    ],
+    "investmentRanges": [
+      "₹25,000 - ₹50,000",
+      "₹50,000 - ₹1,00,000",
+      "₹1,00,000 - ₹2,50,000",
+      "₹2,50,000 - ₹5,00,000",
+      "₹5,00,000+"
+    ]
+  },
+  "faqs": [
+    {
+      "question": "What is an Ayurvedic PCD Pharma Franchise?",
+      "answer": "Propaganda Cum Distribution (PCD) is a business model where Fibax Ayurveda grants marketing and distribution rights to a franchise partner for a defined geographic territory, backed by promotional materials and consistent product supply."
+    },
+    {
+      "question": "Who can apply for a Fibax Ayurveda franchise?",
+      "answer": "We welcome pharmaceutical distributors, experienced medical representatives, wholesalers, retail chemists, and aspiring healthcare entrepreneurs looking to build a sustainable business with authentic Ayurvedic remedies."
+    },
+    {
+      "question": "How is a territory allocated?",
+      "answer": "Territories are allocated based on mutual commercial agreement, district vacancy, and existing distribution channels to prevent market cannibalization and protect your commercial efforts."
+    },
+    {
+      "question": "What documents are required?",
+      "answer": "Basic identification (PAN and Aadhaar), GST registration certificate (if applicable), and existing business documentation. For proprietary Ayurvedic OTC products, our team will guide you on the simple regulatory requirements."
+    },
+    {
+      "question": "How can I enquire about the product range and price list?",
+      "answer": "Submit the franchise enquiry form on this page or message our WhatsApp business helpline. Our team will share the complete Ayurvedic product catalogue, net dealer price list, and profit margins."
+    },
+    {
+      "question": "How does the franchise onboarding process work?",
+      "answer": "Once your enquiry is verified and terms are agreed upon, we process your initial inventory order, prepare your marketing starter kit (visual aids, product literature), and dispatch via our express courier partner."
+    }
+  ],
+  "contact": {
+    "phone": "+91 88725 44458",
+    "whatsapp": "918872544458",
+    "email": "info@fibaxpharma.com",
+    "adminNotificationEmail": "fibaxpharma@gmail.com"
+  },
+  "updatedAt": "2026-11-18T17:30:00.000Z"
+}
