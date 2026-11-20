@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { HeroBannerSlider } from '../components/sections/HeroBannerSlider';
 import { TrustBar } from '../components/sections/TrustBar';
 import { ShopByConcernSection } from '../components/sections/ShopByConcernSection';
-import { CustomerStoriesSection } from '../components/sections/CustomerStoriesSection';
 import { BestsellersSection } from '../components/sections/BestsellersSection';
 import { ShopByCategoriesSection } from '../components/sections/ShopByCategoriesSection';
 import { ComboDealsSection } from '../components/sections/ComboDealsSection';
@@ -65,12 +64,7 @@ export function Home({
         </FadeInWhenVisible>
       </div>
 
-      {/* 4. Customer Video Reels / Stories Carousel */}
-      <FadeInWhenVisible>
-        <CustomerStoriesSection onSelectProduct={onSelectProduct} />
-      </FadeInWhenVisible>
-
-      {/* 5. Our Bestsellers */}
+      {/* 4. Our Bestsellers */}
       <FadeInWhenVisible>
         <BestsellersSection
           products={products}
@@ -81,7 +75,7 @@ export function Home({
         />
       </FadeInWhenVisible>
 
-      {/* 6. Shop by Categories */}
+      {/* 5. Shop by Categories */}
       <FadeInWhenVisible>
         <ShopByCategoriesSection
           onSelectCategory={(catSlug) => {
@@ -94,7 +88,7 @@ export function Home({
         />
       </FadeInWhenVisible>
 
-      {/* 7. Dual Promotional Banners Grid (Livupchar Liver Tonic & Aloe Vera Neem Face Wash) */}
+      {/* 6. Dual Promotional Banners Grid (Livupchar Liver Tonic & Aloe Vera Neem Face Wash) */}
       <FadeInWhenVisible>
         <section className="py-10 sm:py-14 bg-[#fbf9f4] border-y border-sand-border/70">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

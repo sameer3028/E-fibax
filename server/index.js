@@ -23,6 +23,7 @@ import contentRoutes from './routes/contentRoutes.js';
 import blogRoutes, { getBlogs } from './routes/blogRoutes.js';
 import legalRoutes from './routes/legalRoutes.js';
 import franchiseRoutes from './routes/franchiseRoutes.js';
+import { customerStoriesRouter } from './routes/customerStoriesRoutes.js';
 
 // Middleware
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
@@ -112,6 +113,7 @@ app.use('/api', contentRoutes); // Includes /api/coupons, /api/website/about-ban
 app.use('/api', blogRoutes); // Includes /api/blogs, /api/admin/blogs, categories, SEO
 app.use('/api', legalRoutes); // Includes /api/legal/:slug, /api/admin/legal/:slug
 app.use('/api', franchiseRoutes); // Includes /api/franchise/content, /api/franchise/enquiry, /api/admin/franchise/*
+app.use('/api', customerStoriesRouter); // Includes /api/website/customer-stories, /api/admin/website/customer-stories
 
 // ==========================================
 // SEO & SEARCH ENGINE CRAWLER ROUTES

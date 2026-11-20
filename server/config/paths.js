@@ -32,7 +32,8 @@ const REQUIRED_FILES = [
   'wellness_club.json',
   'callback_form.json',
   'franchise_leads.json',
-  'franchise_page_cms.json'
+  'franchise_page_cms.json',
+  'customer_stories.json'
 ];
 
 /**
