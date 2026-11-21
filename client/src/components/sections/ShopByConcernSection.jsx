@@ -22,10 +22,10 @@ export function ShopByConcernSection({ onSelectProduct, onViewAllConcern }) {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h2 className="font-heading text-2xl sm:text-3xl font-bold text-forest-deep">
-              Shop By <span className="text-brand">Concern?</span>
+              Shop By <span className="text-brand">Category</span>
             </h2>
             <p className="text-xs text-charcoal-muted mt-0.5">
-              Select a health category to discover targeted Ayurvedic therapies
+              Select a herbal category to discover targeted Product
             </p>
           </div>
           <button

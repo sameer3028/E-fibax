@@ -70,10 +70,10 @@ export function BestsellersSection({ products, onSelectProduct, onViewAll }) {
               <span>Customer Favorites & Highest Rated</span>
             </div>
             <h2 className="font-heading text-xl sm:text-3xl md:text-4xl font-extrabold text-forest-deep tracking-tight">
-              Our Most Trusted Ayurvedic Remedies
+              Our Most Trusted Ayurvedic Product
             </h2>
             <p className="text-xs sm:text-sm text-charcoal-muted mt-1.5">
-              Tried, tested, and recommended by Ayurvedic practitioners for rapid, natural healing.
+              Tried, tested Product for natural healing
             </p>
           </div>
 
